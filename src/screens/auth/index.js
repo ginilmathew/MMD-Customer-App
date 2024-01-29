@@ -1,14 +1,13 @@
-import { ImageBackground, StyleSheet, Text, View } from 'react-native'
+import {  StyleSheet } from 'react-native'
 import React from 'react'
+import Background from './Background';
 
 const Login = () => {
 
     return (
-        <View style={styles.container}>
-            <ImageBackground source={require('../../images/login.png')} resizeMode="cover" style={styles.image}>
-                <Text style={styles.text}>Inside</Text>
-            </ImageBackground>
-        </View>
+        <Background>
+
+        </Background>
     );
 
 }
