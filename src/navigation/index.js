@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { navigationRef } from './RootNavigation';
 import SplashScreen from 'react-native-splash-screen'
 import Login from '../screens/auth';
@@ -11,10 +11,15 @@ import Home from '../screens/home';
 const Stack = createNativeStackNavigator();
 const Navigation = () => {
   const [initialScreen, setInitialScreen] = useState(null)
+
+  const onReady = useCallback(() => {
+    SplashScreen.hide()
+  }, [])
+
+
   return (
-    <NavigationContainer ref={navigationRef}>
-      <Stack.Navigator initialRouteName={'Home'} screenOptions={{ headerShown: false }}>
-        {/* <Stack.Screen name="SplashScreen" component={SplashScreen} /> */}
+    <NavigationContainer ref={navigationRef} onReady={onReady}>
+      <Stack.Navigator initialRouteName={initialScreen ? 'Home' : 'Login'} screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Home" component={Home} />
       </Stack.Navigator>
