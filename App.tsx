@@ -118,12 +118,22 @@
 // export default App;
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+<<<<<<< HEAD
 
 const App = () => {
   return (
     <View>
       <Text>App</Text>
     </View>
+=======
+import Navigation from './src/navigation'
+
+const App = () => {
+  return (
+    <>
+     <Navigation/>
+    </>
+>>>>>>> main
   )
 }
 
