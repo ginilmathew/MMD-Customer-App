@@ -11,7 +11,6 @@ const CustomHeading = ({ label, hide }) => {
           <Text style={styles.text2}>{'View All'}</Text>
           <Ionicons name='arrow-forward' color={COLORS.primary} size={25} />
         </TouchableOpacity>}
-
     </View>
   );
 };

@@ -10,5 +10,6 @@ export const COLORS = {
     status_processing: '#C53883',
     status_completed: '#66C538',
     status_cancelled: '#FF6161',
-    white: '#fff'
+    white: '#fff',
+    Offer_box:'#ffd8d8' 
 }

@@ -10,7 +10,7 @@ const CommonHeader = ({ heading, backBtn, onPress }) => {
 
     const goBack = useCallback(() => {
         navigation.goBack()
-    }, [])
+    }, [navigation])
 
     return (
         <>
