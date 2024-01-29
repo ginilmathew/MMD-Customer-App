@@ -127,11 +127,14 @@ const App = () => {
     </View>
 =======
 import Navigation from './src/navigation'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 const App = () => {
   return (
     <>
-     <Navigation/>
+      <SafeAreaView style={styles.safeArea}>
+        <Navigation />
+      </SafeAreaView>
     </>
 >>>>>>> main
   )
@@ -139,4 +142,8 @@ const App = () => {
 
 export default App
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  }
+})
