@@ -1,10 +1,6 @@
 import { StyleSheet, TextInput, Image, View, TouchableOpacity } from 'react-native'
 import React, { useCallback, useRef, useState } from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-
-import { Controller } from 'react-hook-form'
-
-import { useFocusEffect } from '@react-navigation/native'
 import { COLORS } from '../constants/COLORS'
 
 
@@ -12,25 +8,25 @@ const CustomSearch = ({ placeholder, placeHoldeColor, keyboardType, onPress, onC
 
     const textRef = useRef(null);
 
-    useFocusEffect(
-        useCallback(() => {
-            // When the screen is focused
-            const focus = () => {
-                setTimeout(() => {
-                    textRef?.current?.focus();
-                }, 1);
-            };
-            focus();
-            return focus; // cleanup
-        }, []),
-    );
+    // useFocusEffect(
+    //     useCallback(() => {
+    //         // When the screen is focused
+    //         const focus = () => {
+    //             setTimeout(() => {
+    //                 textRef?.current?.focus();
+    //             }, 1);
+    //         };
+    //         focus();
+    //         return focus; // cleanup
+    //     }, []),
+    // );
 
     return (
 
         <>
             <View
                 style={{
-                    backgroundColor: '#f5f5f5',
+                    backgroundColor: COLORS.dark_gray,
                     borderRadius: 15,
                     marginTop: 5,
                     shadowOpacity: 0.1,
@@ -52,7 +48,7 @@ const CustomSearch = ({ placeholder, placeHoldeColor, keyboardType, onPress, onC
                     value={values}
                     variant="unstyled"
                     placeholder={placeholder}
-                    backgroundColor={'#f5f5f5'}
+                    backgroundColor={COLORS.dark_gray}
                     placeholderTextColor={placeHoldeColor ? placeHoldeColor : '#0C256C21'}
                     borderColor={0}
                     keyboardType={keyboardType}
