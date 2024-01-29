@@ -75,22 +75,26 @@ const styles = StyleSheet.create({
         color: COLORS.light,
         fontSize: 30,
         fontWeight: '600',
-        letterSpacing: .5
+        letterSpacing: .5,
+        fontFamily: 'Poppins-ExtraBold'
     },
     subHead: {
         color: COLORS.text,
         fontSize: 15,
-        marginBottom: 23
+        marginBottom: 23,
+        fontFamily: 'Poppins-bold'
     },
     link: {
         color: COLORS.blue,
         fontSize: 15,
         fontWeight: '600',
-        textAlign: 'center'
+        textAlign: 'center',
+        fontFamily: 'Poppins-bold'
     },
     description: {
         textAlign: 'center',
-        color: COLORS.light
+        color: COLORS.light,
+        fontFamily: 'Poppins-bold'
     },
     line: {
         borderBottomWidth: 1,

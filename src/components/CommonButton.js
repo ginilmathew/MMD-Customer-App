@@ -30,10 +30,11 @@ const styles = (mt, mb) => StyleSheet.create({
         justifyContent: 'center'
     },
     text: {
-        fontWeight: '600',
+        fontWeight: '700',
         fontSize: 22,
         color: COLORS.white,
-        letterSpacing: .5
+        letterSpacing: .5,
+        fontFamily: 'Poppins-ExtraBold'
     }
 })
 

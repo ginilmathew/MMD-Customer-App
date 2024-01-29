@@ -24,12 +24,12 @@ const Login = ({ navigation }) => {
 
     const navToRegister = useCallback(() => {
         navigation.navigate('Register')
-    }, [])
+    }, [navigation])
 
 
     const navToForget = useCallback(() => {
         navigation.navigate('Register')
-    }, [])
+    }, [navigation])
 
 
     return (
@@ -89,5 +89,6 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: '500',
         textAlign: 'right',
+        fontFamily: 'Poppins-bold'
     },
 })

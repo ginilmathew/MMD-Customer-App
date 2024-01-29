@@ -82,7 +82,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 0,
     borderBottomLeftRadius: 0,
     backgroundColor: COLORS.gray,
-    color: COLORS.light
+    color: COLORS.light,
+    fontFamily: 'Poppins-bold'
   },
   error: {
     fontSize: 22,
