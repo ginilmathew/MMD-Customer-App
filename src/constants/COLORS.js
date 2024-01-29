@@ -9,5 +9,6 @@ export const COLORS = {
     dark_gray: '#D8D8D8',
     status_processing: '#C53883',
     status_completed: '#66C538',
-    status_cancelled: '#FF6161'
+    status_cancelled: '#FF6161',
+    white: '#fff'
 }
