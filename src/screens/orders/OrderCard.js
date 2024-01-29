@@ -1,10 +1,10 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { memo } from 'react'
 import { COLORS } from '../../constants/COLORS'
 
-const OrderCard = () => {
+const OrderCard = ({onPress}) => {
     return (
-        <TouchableOpacity style={styles.container}>
+        <TouchableOpacity style={styles.container} onPress={onPress}>
             <View style={styles.orderStyle}>
                 <View style={styles.orderTwoStyle}>
                     <Text style={styles.subText}>Order ID : </Text>
@@ -34,7 +34,7 @@ const OrderCard = () => {
     )
 }
 
-export default OrderCard
+export default memo(OrderCard);
 
 const styles = StyleSheet.create({
     container: {
