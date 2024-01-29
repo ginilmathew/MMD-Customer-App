@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { memo } from 'react'
 
-const index = () => {
+const Header = memo(() => {
   return (
     <View>
-      <Text>index</Text>
+      <Text>Header</Text>
     </View>
   )
-}
+})
 
-export default index
+export default Header
 
 const styles = StyleSheet.create({})
