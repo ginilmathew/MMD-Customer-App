@@ -10,7 +10,7 @@ import Home from '../screens/home';
 
 const Stack = createNativeStackNavigator();
 const Navigation = () => {
-  const [initialScreen, setInitialScreen] = useState(null)
+  const [initialScreen, setInitialScreen] = useState('Home')
 
   const onReady = useCallback(() => {
     SplashScreen.hide()
