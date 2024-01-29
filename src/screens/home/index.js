@@ -5,6 +5,7 @@ import CustomSearch from '../../components/CustomSearch'
 import CustomSlider from '../../components/CustomSlider'
 import CustomHeading from '../../components/CustomHeading'
 import CategoryCard from '../../components/CategoryCard'
+import ItemCard from '../../components/ItemCard'
 
 const Home = () => {
   return (
@@ -12,8 +13,10 @@ const Home = () => {
       <Header/>
       <CustomSearch/>
       <CustomSlider/>
-      <CustomHeading label={'Product'} hide={true}/>
+      <CustomHeading label={'Category'} hide={false}/>
       <CategoryCard/>
+      <CustomHeading label={'Product'} hide={true}/>
+      <ItemCard/>
     </View>
   )
 }
