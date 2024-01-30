@@ -41,6 +41,15 @@ const Home = ({ navigation }) => {
         navigation.navigate('AllProducts')
     }, [navigation])
 
+    const NavigateToSearch = useCallback(() => {
+        navigation.navigate('Search')
+    }, [navigation])
+
+    const NavigateToSingleProduct = useCallback(() => {
+        navigation.navigate('SingleProduct')
+    }, [navigation])
+
+
 
     const HeaderComponents = useCallback(() => {
         return (
@@ -76,8 +85,8 @@ const Home = ({ navigation }) => {
     const renderItem = useCallback(({ item, index }) => {
         return (
             <>
-                <View style={{ paddingHorizontal: 16, paddingVertical: 5}}>
-                    <ItemCard />
+                <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
+                    <ItemCard key={index} onPress={NavigateToSingleProduct} />
                 </View>
             </>
         )
@@ -110,7 +119,7 @@ const Home = ({ navigation }) => {
     return (
 
         <>
-            <DummySearch />
+            <DummySearch press={NavigateToSearch} />
             <FlatList
                 data={DATA}
                 ListHeaderComponent={HeaderComponents}

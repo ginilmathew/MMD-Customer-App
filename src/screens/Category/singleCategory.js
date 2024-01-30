@@ -6,6 +6,7 @@ import CommonHeader from '../../components/CommonHeader'
 import Animated, { FadeInDown } from 'react-native-reanimated'
 import ItemCard from '../../components/ItemCard'
 import CustomTab from '../../components/CustomTab'
+import { COLORS } from '../../constants/COLORS'
 
 const SingleCategory = () => {
     const DATA2 = [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -17,6 +18,29 @@ const SingleCategory = () => {
 
 
 
+ 
+
+
+    const ListHeaderComponents = useCallback(({ item, index }) => {
+        return (
+            <View style={{ padding: 8,backgroundColor:COLORS.white }}>
+                <ScrollView
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}
+                >
+                    {LIST.map((res, index) => (
+                        
+                        <Animated.View entering={FadeInDown.delay(index * 50).duration(200).springify().damping(12)} key={index} style={{ marginRight: 10 }}>
+                            <CustomTab label={res?.name} />
+                        </Animated.View>
+                    ))}
+                </ScrollView>
+            </View>
+        )
+
+    }, [])
+
     const renderItem = useCallback(({ item, index }) => {
         return (
             <>
@@ -27,30 +51,10 @@ const SingleCategory = () => {
         )
     }, [])
 
-
-    const ListHeaderComponents = useCallback(({ item, index }) => {
-        return (
-            <ScrollView
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-              
-                >
-                <View style={styles.tabView}>
-                    {LIST.map((res) => (
-                        <CustomTab label={res?.name}/>
-                    ))}
-                </View>
-
-            </ScrollView>
-        )
-
-    }, [])
-
-
     const ListFooterComponent = useCallback(() => {
         return (
             <>
-                <View></View>
+                <View style={{ marginBottom: 30 }}></View>
             </>
         )
     }, [])
@@ -61,12 +65,14 @@ const SingleCategory = () => {
             <Header />
             <CommonHeader heading={'Spinach'} backBtn />
             <FlatList
+                stickyHeaderIndices={[0]}
                 data={DATA2}
                 ListHeaderComponent={ListHeaderComponents}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
                 showsVerticalScrollIndicator={false}
-            // ListFooterComponent={ListFooterComponent}
+                ListFooterComponent={ListFooterComponent}
+             
             />
 
         </>
@@ -76,11 +82,11 @@ const SingleCategory = () => {
 export default SingleCategory
 
 const styles = StyleSheet.create({
-    tabConatiner:{
-        paddingHorizontal:20,
+    tabConatiner: {
+        paddingHorizontal: 20,
     },
-    tabView:{
-        gap:5,
-        flexDirection:'row'
+    tabView: {
+        gap: 5,
+        flexDirection: 'row'
     }
 })

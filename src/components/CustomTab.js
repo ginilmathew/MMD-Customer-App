@@ -14,15 +14,19 @@ export default CustomTab
 
 const styles = StyleSheet.create({
     container:{
-        padding:2,
-        color:COLORS.primary,
+        marginVertical:3,
+        padding:5,
+        backgroundColor:COLORS.dark_gray,
         justifyContent:'center',
+        borderRadius:5,
         alignItems:'center'
     },
     textStyle:{
+        fontFamily: 'Poppins-Italic',
+        letterSpacing:1,
         fontWeight:'bold',
         fontSize:14,
-        color:COLORS.white
+        color:'#000'
     }
 
 })

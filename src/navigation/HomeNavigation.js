@@ -3,7 +3,7 @@ import Home from '../screens/home';
 import Orders from '../screens/orders';
 import Profile from '../screens/Profile';
 import IonIcons from 'react-native-vector-icons/Ionicons'
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, View, useWindowDimensions } from 'react-native';
 import { COLORS } from '../constants/COLORS';
 import Header from '../components/Header';
@@ -11,6 +11,8 @@ import SingleCategory from '../screens/Category/singleCategory';
 import AllProducts from '../screens/AllProducts';
 import Category from '../screens/Category';
 import SingleOrder from '../screens/orders/SingleOrder';
+import Animated, { useSharedValue, withSpring, withTiming, useAnimatedStyle, FadeInDown, BounceIn, BounceOut, FadeInUp } from 'react-native-reanimated';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 
@@ -50,6 +52,31 @@ function HomeNavigation({ navigation }) {
         navigation.navigate('Notification')
     }, [navigation])
 
+//     const animatedValue = useSharedValue(0);
+
+//   const iconStyle = useAnimatedStyle(() => {
+//     return {
+//       transform: [
+//         {
+//           scale: withTiming(animatedValue.value, { duration: 300 }),
+//         },
+//       ],
+//     };
+//   });
+
+//   useEffect(() => {
+//     animatedValue.value = withSpring(1);
+//   }, [animatedValue]);
+
+//   useFocusEffect(
+//     useCallback(() => {
+//       return () => {
+//         // Clean up the animation when the screen is unfocused
+//         animatedValue.value = withTiming(0);
+//       };
+//     }, [animatedValue])
+//   );
+
     return (
         <>
             <Header toCart={toCart} toNotification={toNotification} />
@@ -65,22 +92,24 @@ function HomeNavigation({ navigation }) {
                         tabBarHideOnKeyboard: true,
                         tabBarLabel: () => '',
                         tabBarIcon: ({ focused }) => nav && (
-                            <TouchableOpacity onPress={route?.name === 'Home' ? navToHome : route?.name === "Orders" ? navToOrder : navToProfile} style={[{
-                                width: Math.floor(width / 3),
-                                height: '100%',
-                                justifyContent: 'center',
-                                alignItems: 'center'
-                            }]}>
+                              <Animated.View entering={FadeInUp.delay(100).duration(100).springify().damping(12)}>
+                                <TouchableOpacity onPress={route?.name === 'Home' ? navToHome : route?.name === "Orders" ? navToOrder : navToProfile} style={[{
+                                    width: Math.floor(width / 3),
+                                    height: '100%',
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }]}>
 
-                                <View style={[styles.icon, route?.name === "Orders" && { borderRightWidth: 2, borderLeftWidth: 2 }]}>
-                                    <IonIcons name={route?.name === "Home" ?
-                                        focused ? 'home' : 'home-outline'
-                                        : route?.name === "Orders" ?
-                                            focused ? 'basket' : 'basket-outline'
-                                            : focused ? 'person-circle' : 'person-circle-outline'} color={focused ? COLORS.primary : COLORS.light} size={25} />
-                                </View>
+                                    <View style={[styles.icon, route?.name === "Orders" && { borderRightWidth: 2, borderLeftWidth: 2 }]}>
+                                        <IonIcons name={route?.name === "Home" ?
+                                            focused ? 'home' : 'home-outline'
+                                            : route?.name === "Orders" ?
+                                                focused ? 'basket' : 'basket-outline'
+                                                : focused ? 'person-circle' : 'person-circle-outline'} color={focused ? COLORS.primary : COLORS.light} size={25} />
+                                    </View>
 
-                            </TouchableOpacity>
+                                </TouchableOpacity>
+                            </Animated.View>
                         ),
                     })
                 }}
