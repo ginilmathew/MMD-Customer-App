@@ -6,7 +6,7 @@ import IonIcons from 'react-native-vector-icons/Ionicons'
 import { useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View, useWindowDimensions } from 'react-native';
 import { COLORS } from '../constants/COLORS';
-import { dataTagSymbol } from '@tanstack/react-query';
+
 
 
 const Tab = createBottomTabNavigator();
@@ -27,7 +27,14 @@ function HomeNavigation({ navigation }) {
         navigation.navigate("Profile")
     }, [navigation]);
 
-
+    const FixedComponent = () => {
+        // Add your fixed component here
+        return (
+          <View style={styles.fixedComponent}>
+            {/* Your fixed component content goes here */}
+          </View>
+        );
+      };
 
     return (
         <Tab.Navigator
@@ -60,6 +67,7 @@ function HomeNavigation({ navigation }) {
                     ),
                 })
             }}
+           
         >
             <Tab.Screen name="Home" component={Home} />
             <Tab.Screen name="Orders" component={Orders} />
