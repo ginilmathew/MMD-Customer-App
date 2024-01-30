@@ -10,8 +10,10 @@ const AllProducts = ({ navigation }) => {
 
     const renderItem = useCallback(({ item, index }) => {
         return (
-            <Animated.View entering={FadeInDown.delay(index * 200).duration(200).springify().damping(12)} style={{ paddingHorizontal: 16, paddingVertical: 5}}>
-                <ItemCard />
+            <Animated.View entering={FadeInDown.delay(index * 200).duration(200).springify().damping(12)}>
+                <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
+                    <ItemCard />
+                </View>
             </Animated.View>
         )
     }, [])
@@ -27,9 +29,9 @@ const AllProducts = ({ navigation }) => {
 
     return (
         <>
-            {/* <Header /> */}
+            <Header />
             <CommonHeader heading={"Products"} backBtn={true} />
-            <FlatList
+            <Animated.FlatList
                 data={DATA2}
                 ListFooterComponent={ListFooterComponents}
                 renderItem={renderItem}

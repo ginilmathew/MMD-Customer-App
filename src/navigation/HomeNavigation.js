@@ -118,10 +118,7 @@ function HomeNavigation({ navigation }) {
                 <Tab.Screen name="Home" component={Home} />
                 <Tab.Screen name="Orders" component={Orders} />
                 <Tab.Screen name="Profile" component={Profile} />
-                <Tab.Screen name="Category" component={Category} />
-                <Tab.Screen name="AllProducts" component={AllProducts} />
-                <Tab.Screen name="SingleCategory" component={SingleCategory} />
-                
+           
             </Tab.Navigator>
         </>
     );

@@ -45,7 +45,9 @@ const SingleCategory = () => {
         return (
             <>
                 <Animated.View entering={FadeInDown.delay(index * 200).duration(200).springify().damping(12)} >
+                    <View style={{paddingHorizontal:16,paddingVertical:5}}>
                     <ItemCard />
+                    </View>
                 </Animated.View>
             </>
         )
@@ -62,7 +64,7 @@ const SingleCategory = () => {
 
     return (
         <>
-            <Header />
+     
             <CommonHeader heading={'Spinach'} backBtn />
             <FlatList
                 stickyHeaderIndices={[0]}
