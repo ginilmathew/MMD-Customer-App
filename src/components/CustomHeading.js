@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
   },
   text: {
     letterSpacing: 1,
+    color: COLORS.light,
     fontSize: 16, // Adjust the font size as needed
     fontWeight: 'bold', // Optional: Apply bold styling
   },

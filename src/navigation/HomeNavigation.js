@@ -7,6 +7,10 @@ import { useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View, useWindowDimensions } from 'react-native';
 import { COLORS } from '../constants/COLORS';
 import Header from '../components/Header';
+import EditProfile from '../screens/Profile/EditProfile';
+import AddAddress from '../screens/Profile/AddAddress';
+import ProfileNavigator from './ProfileNavigator';
+import LocationContext from '../context/location/locationContext';
 
 
 
@@ -25,7 +29,7 @@ function HomeNavigation({ navigation }) {
     }, [navigation]);
 
     const navToProfile = useCallback(() => {
-        navigation.navigate("Profile")
+        navigation.navigate("ProfileNavigator")
     }, [navigation]);
 
     const FixedComponent = () => {
@@ -39,7 +43,7 @@ function HomeNavigation({ navigation }) {
 
 
     const toCart = useCallback(() => {
-        navigation.navigate('Cart')
+        navigation.navigate('ProfileNavigator')
     }, [navigation])
 
     const toNotification = useCallback(() => {
@@ -47,13 +51,15 @@ function HomeNavigation({ navigation }) {
     }, [navigation])
 
     return (
-        <>
+        <LocationContext>
+
             <Header toCart={toCart} toNotification={toNotification} />
 
             <Tab.Navigator
+                initialRouteName='Profile'
                 screenOptions={({ route }) => {
 
-                    const nav = ['Home', 'Profile', 'Orders'].includes(route?.name);
+                    const nav = ['Home', 'ProfileNavigator', 'Orders'].includes(route?.name);
 
                     return ({
                         headerShown: false,
@@ -84,10 +90,10 @@ function HomeNavigation({ navigation }) {
             >
                 <Tab.Screen name="Home" component={Home} />
                 <Tab.Screen name="Orders" component={Orders} />
-                <Tab.Screen name="Profile" component={Profile} />
+                <Tab.Screen name="ProfileNavigator" component={ProfileNavigator} />
 
             </Tab.Navigator>
-        </>
+        </LocationContext>
     );
 }
 

@@ -78,19 +78,17 @@ const styles = StyleSheet.create({
         color: COLORS.text,
         fontSize: 15,
         marginBottom: 23,
-        fontFamily: 'Poppins-bold'
     },
     link: {
         color: COLORS.blue,
         fontSize: 15,
         fontWeight: '600',
         textAlign: 'center',
-        fontFamily: 'Poppins-bold'
+        fontFamily: 'Poppins-Medium'
     },
     description: {
         textAlign: 'center',
         color: COLORS.light,
-        fontFamily: 'Poppins-bold'
     },
     line: {
         borderBottomWidth: 1,

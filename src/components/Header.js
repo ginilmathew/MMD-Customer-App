@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React, { memo } from 'react'
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { COLORS } from '../constants/COLORS';
 const Header = memo(({ onPress }) => {
     return (
         <View style={styles.container}>
@@ -28,7 +29,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between', // Space between children
         alignItems: 'center', // Align items in the center vertically
         paddingHorizontal: 22,
-        height: 60
+        height: 60,
+        backgroundColor: COLORS.white 
     },
     imageContainer: {
         marginRight:10, // Margin to separate the image from the icon

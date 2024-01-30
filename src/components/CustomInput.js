@@ -38,7 +38,8 @@ const CustomInput = ({ left, right, color, passwd, control, name, placeholder, t
             }
 
             <TextInput
-              style={[styles.textInput, passwd && { borderRadius: 0 }]}
+              value={value}
+              style={[styles.textInput, passwd && { borderRadius: 0 }, { paddingHorizontal: !left && !right && 20 }]}
               secureTextEntry={hidePasswd}
               onChangeText={onChange}
               placeholder={placeholder}
@@ -84,7 +85,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 0,
     backgroundColor: COLORS.gray,
     color: COLORS.light,
-    fontFamily: 'Poppins-Italic'
+    fontFamily: 'Poppins-Italic',
   },
   error: {
     fontSize: 14,
