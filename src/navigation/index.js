@@ -8,12 +8,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import HomeNavigation from './HomeNavigation';
 import Register from '../screens/auth/Register';
 import Forget from '../screens/auth/Forget';
+import Category from '../screens/Category';
 
 
 const Stack = createNativeStackNavigator();
 const Navigation = () => {
 
-  const [initialScreen, setInitialScreen] = useState(null)
+  const [initialScreen, setInitialScreen] = useState("null")
 
   const onReady = useCallback(() => {
     SplashScreen.hide()
@@ -26,8 +27,8 @@ const Navigation = () => {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen name="Forget" component={Forget} />
-
         <Stack.Screen name="HomeNavigator" component={HomeNavigation} />
+        <Stack.Screen name="Category" component={Category} />
       </Stack.Navigator>
     </NavigationContainer>
   )

@@ -49,7 +49,7 @@ export default memo(CustomSlider);
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical:10,
+    marginVertical:5,
  
      height:120,
     justifyContent: 'center',

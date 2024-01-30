@@ -6,7 +6,8 @@ import IonIcons from 'react-native-vector-icons/Ionicons'
 import { useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View, useWindowDimensions } from 'react-native';
 import { COLORS } from '../constants/COLORS';
-import { dataTagSymbol } from '@tanstack/react-query';
+import Header from '../components/Header';
+
 
 
 const Tab = createBottomTabNavigator();
@@ -27,45 +28,66 @@ function HomeNavigation({ navigation }) {
         navigation.navigate("Profile")
     }, [navigation]);
 
+    const FixedComponent = () => {
+        // Add your fixed component here
+        return (
+            <View style={styles.fixedComponent}>
+                {/* Your fixed component content goes here */}
+            </View>
+        );
+    };
 
+
+    const toCart = useCallback(() => {
+        navigation.navigate('Cart')
+    }, [navigation])
+
+    const toNotification = useCallback(() => {
+        navigation.navigate('Notification')
+    }, [navigation])
 
     return (
-        <Tab.Navigator
-            screenOptions={({ route }) => {
+        <>
+            <Header toCart={toCart} toNotification={toNotification} />
 
-                const nav = ['Home', 'Profile', 'Orders'].includes(route?.name);
+            <Tab.Navigator
+                screenOptions={({ route }) => {
 
-                return ({
-                    headerShown: false,
-                    tabBarItemStyle: { display: !nav ? 'none' : 'flex' },
-                    tabBarHideOnKeyboard: true,
-                    tabBarLabel: () => '',
-                    tabBarIcon: ({ focused }) => nav && (
-                        <TouchableOpacity onPress={route?.name === 'Home' ? navToHome : route?.name === "Orders" ? navToOrder : navToProfile} style={[{
-                            width: Math.floor(width / 3),
-                            height: '100%',
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                        }]}>
+                    const nav = ['Home', 'Profile', 'Orders'].includes(route?.name);
 
-                            <View style={[styles.icon, route?.name === "Orders" && { borderRightWidth: 2, borderLeftWidth: 2 }]}>
-                                <IonIcons name={route?.name === "Home" ?
-                                    focused ? 'home' : 'home-outline'
-                                    : route?.name === "Orders" ?
-                                        focused ? 'basket' : 'basket-outline'
-                                        : focused ? 'person-circle' : 'person-circle-outline'} color={focused ? COLORS.primary : COLORS.light} size={25} />
-                            </View>
+                    return ({
+                        headerShown: false,
+                        tabBarItemStyle: { display: !nav ? 'none' : 'flex' },
+                        tabBarHideOnKeyboard: true,
+                        tabBarLabel: () => '',
+                        tabBarIcon: ({ focused }) => nav && (
+                            <TouchableOpacity onPress={route?.name === 'Home' ? navToHome : route?.name === "Orders" ? navToOrder : navToProfile} style={[{
+                                width: Math.floor(width / 3),
+                                height: '100%',
+                                justifyContent: 'center',
+                                alignItems: 'center'
+                            }]}>
 
-                        </TouchableOpacity>
-                    ),
-                })
-            }}
-        >
-            <Tab.Screen name="Home" component={Home} />
-            <Tab.Screen name="Orders" component={Orders} />
-            <Tab.Screen name="Profile" component={Profile} />
+                                <View style={[styles.icon, route?.name === "Orders" && { borderRightWidth: 2, borderLeftWidth: 2 }]}>
+                                    <IonIcons name={route?.name === "Home" ?
+                                        focused ? 'home' : 'home-outline'
+                                        : route?.name === "Orders" ?
+                                            focused ? 'basket' : 'basket-outline'
+                                            : focused ? 'person-circle' : 'person-circle-outline'} color={focused ? COLORS.primary : COLORS.light} size={25} />
+                                </View>
 
-        </Tab.Navigator>
+                            </TouchableOpacity>
+                        ),
+                    })
+                }}
+
+            >
+                <Tab.Screen name="Home" component={Home} />
+                <Tab.Screen name="Orders" component={Orders} />
+                <Tab.Screen name="Profile" component={Profile} />
+
+            </Tab.Navigator>
+        </>
     );
 }
 

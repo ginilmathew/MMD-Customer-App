@@ -20,7 +20,6 @@ const Orders = ({ navigation }) => {
 
     return (
         <View style={styles.mainStyle}>
-            <Header />
             <CommonHeader heading={"My Orders"} />
             <View style={styles.innerContainer}>
                 <OrderCard onPress={orderPage} />

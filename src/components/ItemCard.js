@@ -43,15 +43,15 @@ const styles = StyleSheet.create({
  
     borderColor: '#ddd',
     borderRadius: 8,
-    marginVertical: 8,
+    // marginVertical: 8,
   },
   leftContainer: {
     flex: .3,
-    marginRight: 16,
+    marginRight: 14,
   },
   leftImage: {
-    width: 100, // Set your desired width
-    height: 100, // Set your desired height
+    width: 80, // Set your desired width
+    height: 80, // Set your desired height
     borderRadius: 8,
   },
   centerContainer: {

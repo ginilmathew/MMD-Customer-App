@@ -9,7 +9,7 @@ const CustomHeading = ({ label, hide }) => {
       {hide &&
         <TouchableOpacity style={styles.iconConatiner}>
           <Text style={styles.text2}>{'View All'}</Text>
-          <Ionicons name='arrow-forward' color={COLORS.primary} size={25} />
+          <Ionicons name='arrow-forward' color={COLORS.primary} size={20} />
         </TouchableOpacity>}
     </View>
   );
@@ -30,12 +30,12 @@ const styles = StyleSheet.create({
   },
   text: {
     letterSpacing: 1,
-    fontSize: 20, // Adjust the font size as needed
+    fontSize: 16, // Adjust the font size as needed
     fontWeight: 'bold', // Optional: Apply bold styling
   },
   text2: {
     letterSpacing: 1,
-    fontSize: 16, // Adjust the font size as needed
+    fontSize: 13, // Adjust the font size as needed
     fontWeight: 'bold',
     color: COLORS.primary// Optional: Apply bold styling
   },
