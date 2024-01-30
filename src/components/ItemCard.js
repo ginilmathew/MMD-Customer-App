@@ -3,9 +3,10 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { COLORS } from '../constants/COLORS';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
-const CustomItemCard = () => {
+const CustomItemCard = ({onPress}) => {
   return (
     <Animated.View entering={FadeInDown.easing().delay(300)}>
+     <TouchableOpacity onPress={onPress}>  
     <View style={styles.container}>
       {/* Left Side */}
       <View style={styles.leftContainer}>
@@ -26,13 +27,14 @@ const CustomItemCard = () => {
 
       {/* Right Side */}
       <View style={styles.rightContainer}>
-        <Text style={styles.topPrice}>200</Text>
+        <Text style={styles.topPrice}>₹200</Text>
         <Text></Text>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Add To Cart</Text>
         </TouchableOpacity>
       </View>
     </View>
+    </TouchableOpacity> 
     </Animated.View>
   );
 };
