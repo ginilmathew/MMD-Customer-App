@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import CommonHeader from '../../components/CommonHeader'
 import Header from '../../components/Header'
@@ -25,6 +25,21 @@ const SingleOrder = () => {
 
                 <View style={styles.singleContainer}>
                     <SubHeading label={"Products & Bill"} />
+
+                    <View style={styles.imgContainer}>
+                        <View style={styles.boxStyle}>
+                            <Image source={require('../../images/propic.jpg')} style={styles.imgStyle} />
+                            <View style={styles.imgSection}>
+                                <Text style={styles.productName}>Elite Premium Rice Puttupodi 1Kg Pouch</Text>
+                                <Text style={styles.categoryName}>Category : Grocery</Text>
+                            </View>
+                        </View>
+                        <View style={styles.qtyBox}>
+                            <Text style={styles.price}>₹100.50</Text>
+                            <Text style={styles.qty}>Qty x 1</Text>
+                        </View>
+                    </View>
+
                     <View style={styles.totalContainer}>
                         <View style={styles.textBox}>
                             <Text style={styles.subBox}>Sub-Total</Text>
@@ -59,7 +74,7 @@ export default SingleOrder
 
 const styles = StyleSheet.create({
     mainStyle: {
-        backgroundColor: "#fff",
+        backgroundColor: COLORS.white,
         flex: 1
     },
     innerContainer: {
@@ -109,7 +124,7 @@ const styles = StyleSheet.create({
         marginVertical: 10
     },
     totalContainer: {
-        marginTop: 10,
+        marginTop: 12,
         borderWidth: 1,
         borderColor: "#EBEBEB",
         borderStyle: 'dashed',
@@ -142,6 +157,49 @@ const styles = StyleSheet.create({
         borderTopColor: "#F2F2F2",
         marginTop: 5,
         flexDirection: "row",
+        justifyContent: "space-between"
+    },
+    imgContainer: {
+        marginTop: 12,
+        flexDirection: "row",
+        justifyContent: "space-between"
+    },
+    imgStyle: {
+        width: 80,
+        height: 80,
+        borderRadius: 12
+    },
+    imgSection: {
+        width: "57%"
+    },
+    productName: {
+        fontFamily: "Poppins-Medium",
+        fontSize: 12,
+        color: COLORS.light,
+        marginLeft: 10
+    },
+    categoryName: {
+        fontFamily: "Poppins-Italic",
+        fontSize: 10,
+        color: COLORS.light,
+        opacity: 0.5,
+        marginLeft: 10
+    },
+     boxStyle: {
+        flexDirection: "row"
+     },
+     price: {
+        fontFamily: "Poppins-SemiBold",
+        fontSize: 18,
+        color: COLORS.light,
+    },
+    qty: {
+        fontFamily: "Poppins-Regular",
+        fontSize: 15,
+        color: COLORS.light,
+    },
+    qtyBox: {
+        alignItems: "flex-end",
         justifyContent: "space-between"
     }
 })

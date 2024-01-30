@@ -10,6 +10,7 @@ import { COLORS } from '../../constants/COLORS'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import DummySearch from '../../components/DummySearch'
 import ItemBox from '../../components/ItemBox'
+import Animated from 'react-native-reanimated'
 const Home = ({ navigation }) => {
 
     const DATA = [
@@ -28,17 +29,34 @@ const Home = ({ navigation }) => {
     ];
 
 
-    const DATA2 = [1, 2, 3, 4, 5, 6, 7, 8,9]
+    const DATA2 = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 
     const NavigateToCategory = useCallback(() => {
         navigation.navigate('Category')
     }, [navigation])
 
+
+    const NavigateToAllPages = useCallback(() => {
+        navigation.navigate('AllProducts')
+    }, [navigation])
+
+    const NavigateToSearch = useCallback(() => {
+        navigation.navigate('Search')
+    }, [navigation])
+
+    const NavigateToSingleProduct = useCallback(() => {
+        navigation.navigate('SingleProduct')
+    }, [navigation])
+
+
+
     const HeaderComponents = useCallback(() => {
         return (
             <>
-                <CustomSlider />
+                <View style={{ marginVertical: 4 }}>
+                    <CustomSlider />
+                </View>
                 <CustomHeading label={'Categories'} hide={false} />
                 <ScrollView
                     horizontal={true}
@@ -57,17 +75,19 @@ const Home = ({ navigation }) => {
                     </TouchableOpacity>
                 </ScrollView>
                 <View style={{ marginTop: 3 }}>
-                    <CustomHeading label={'Popular Products'} hide={true} />
+                    <CustomHeading label={'Popular Products'} hide={true} onPress={NavigateToAllPages} />
                 </View>
             </>
 
         )
     }, [])
 
-    const renderItem = useCallback(() => {
+    const renderItem = useCallback(({ item, index }) => {
         return (
             <>
-                <ItemCard />
+                <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
+                    <ItemCard key={index} onPress={NavigateToSingleProduct} />
+                </View>
             </>
         )
     }, [])
@@ -75,26 +95,21 @@ const Home = ({ navigation }) => {
 
     const ListFooterComponent = useCallback(() => {
         return (
-            <View>
+            <Animated.View>
                 <View style={{ marginBottom: 20 }}>
                     <CustomSlider />
                 </View>
                 <View style={{ marginTop: 3 }}>
                     <CustomHeading label={'HighLights'} hide={false} />
                 </View>
-                <View style={[styles.boxItem,styles.footerBox]}>
+                <View style={[styles.boxItem, styles.footerBox]}>
                     {DATA2?.map((res, index) => (
-
-                        <ItemBox />
+                        <ItemBox onPress={NavigateToAllPages} index={index} />
                     ))}
                 </View>
-
-
                 <View style={{ marginBottom: 30 }}>
-
-
                 </View>
-            </View>
+            </Animated.View>
         )
     }, [])
 
@@ -104,7 +119,7 @@ const Home = ({ navigation }) => {
     return (
 
         <>
-            <DummySearch />
+            <DummySearch press={NavigateToSearch} />
             <FlatList
                 data={DATA}
                 ListHeaderComponent={HeaderComponents}
@@ -112,10 +127,7 @@ const Home = ({ navigation }) => {
                 keyExtractor={item => item.id}
                 showsVerticalScrollIndicator={false}
                 ListFooterComponent={ListFooterComponent}
-                
             />
-
-
         </>
 
     )
@@ -141,7 +153,7 @@ const styles = StyleSheet.create({
 
     },
     footerBox: {
-        paddingHorizontal:18
+        paddingHorizontal: 18
     },
     boxItem: {
         flexDirection: 'row',

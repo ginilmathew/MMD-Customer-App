@@ -50,8 +50,7 @@ export default memo(CustomSlider);
 const styles = StyleSheet.create({
   container: {
     marginVertical:5,
- 
-     height:120,
+     height:140,
     justifyContent: 'center',
     alignItems: 'center',
   },

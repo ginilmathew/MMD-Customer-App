@@ -4,6 +4,7 @@ import { FlatList, StyleSheet, View, Dimensions, useWindowDimensions } from 'rea
 import CategoryCard from '../../components/CategoryCard';
 import Header from '../../components/Header';
 import CommonHeader from '../../components/CommonHeader';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 
 const Category = () => {
 const {width} =useWindowDimensions()
@@ -11,9 +12,11 @@ const {width} =useWindowDimensions()
   const DATA2 = [1, 2, 3, 4, 5, 6, 7, 8];
 
   const renderSectionHeader = ({ item, index }) => (
+    <Animated.View entering={FadeInDown.delay(index * 100).duration(200).springify().damping(12)}>
     <View style={styles.itemContainer}>
       <CategoryCard key={index} />
     </View>
+    </Animated.View>
   );
 
   return (

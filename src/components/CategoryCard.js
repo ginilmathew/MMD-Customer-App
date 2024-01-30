@@ -1,12 +1,23 @@
-import React, { memo } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import React, { memo, useCallback } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 
 const CategoryCard = ({ key }) => {
+
+    const navigation = useNavigation()
+
+    const NavigateToSingle = useCallback(() => {
+        navigation.navigate('SingleCategory')
+    }, [navigation])
+
     return (
-        <TouchableOpacity style={styles.container} key={key}>
-            <Image source={require('../images/spinach.jpg')} style={styles.image} />
-            <Text style={styles.text}>Spinach</Text>
-        </TouchableOpacity>
+        <Animated.View entering={FadeInDown.easing().delay(200)}>
+            <TouchableOpacity style={styles.container} key={key} onPress={NavigateToSingle}>
+                <Image source={require('../images/spinach.jpg')} style={styles.image} />
+                <Text style={styles.text}>Spinach</Text>
+            </TouchableOpacity>
+        </Animated.View>
     );
 };
 

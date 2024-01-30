@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     borderStyle: {
         paddingVertical: 4,
         borderBottomWidth: 2,
-        borderBottomColor: "#707070",
+        borderBottomColor: COLORS.border_color,
         opacity: 0.1,
         width: "100%"
     },

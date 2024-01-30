@@ -53,8 +53,9 @@ const styles = StyleSheet.create({
         // paddingBottom: 10,
         backgroundColor: COLORS.white,
         borderBottomWidth: 2,
-        borderBottomColor: COLORS.gray,
+        borderBottomColor: COLORS.border_color,
         opacity: 0.1,
-        width: "100%"
+        width: "100%",
+        backgroundColor: "#FFF"
     }
 })
