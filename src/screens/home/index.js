@@ -102,7 +102,6 @@ const Home = ({ navigation }) => {
     return (
 
         <>
-            <Header />
             <DummySearch />
             <FlatList
                 data={DATA}

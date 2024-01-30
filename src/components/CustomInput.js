@@ -5,7 +5,7 @@ import IonIcons from 'react-native-vector-icons/Ionicons'
 import { Controller } from 'react-hook-form'
 
 
-const CustomInput = ({ left, right, color, passwd, control, name, placeholder }) => {
+const CustomInput = ({ left, right, color, passwd, control, name, placeholder, type }) => {
 
   const [hidePasswd, setShowPasswd] = useState(passwd);
 
@@ -27,7 +27,7 @@ const CustomInput = ({ left, right, color, passwd, control, name, placeholder })
       render={({ fieldState: { error }, field: { onChange, value } }) => (
         <>
           <View
-            style={styles.input}
+            style={[styles.input, { marginBottom: error ? 0 : 20 }]}
           >
             {
               left && (
@@ -36,12 +36,14 @@ const CustomInput = ({ left, right, color, passwd, control, name, placeholder })
                 </View>
               )
             }
+
             <TextInput
               style={[styles.textInput, passwd && { borderRadius: 0 }]}
               secureTextEntry={hidePasswd}
               onChangeText={onChange}
               placeholder={placeholder}
               placeholderTextColor={COLORS.text}
+              keyboardType={type}
             />
 
             {passwd && (
@@ -51,7 +53,7 @@ const CustomInput = ({ left, right, color, passwd, control, name, placeholder })
             )}
           </View>
 
-          {error && <Text style={styles.error}>{error?.message}</Text>}
+          {error && <Text style={[styles.error, { marginBottom: 20 }]}>{error?.message}</Text>}
         </>
       )} />
   )
@@ -65,7 +67,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.gray,
     borderRadius: 12,
     justifyContent: 'center',
-    marginBottom: 20,
     flexDirection: 'row',
     overflow: 'hidden'
   },
@@ -83,10 +84,10 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 0,
     backgroundColor: COLORS.gray,
     color: COLORS.light,
-    fontFamily: 'Poppins-bold'
+    fontFamily: 'Poppins-Italic'
   },
   error: {
-    fontSize: 22,
+    fontSize: 14,
     color: COLORS.red,
     textAlign: 'left'
   }

@@ -6,34 +6,32 @@ import { COLORS } from '../../constants/COLORS';
 const Background = ({ headline, subhead, children, onPress, link, description }) => {
 
     return (
-        <View style={styles.container}>
-            <ImageBackground source={require('../../images/login.png')} resizeMode="cover" style={styles.bg}>
+        <ImageBackground source={require('../../images/login.png')} resizeMode="cover" style={styles.bg}>
+            <ScrollView style={{ flex: 1 }}>
 
                 <View style={styles.img}>
                     <Image source={require('../../images/LogoMain.png')} style={styles.image} />
                 </View>
 
-               <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps='always'>
-                    <View style={styles.headline}>
-                        <Text style={styles.text_headline}>{headline}</Text>
-                    </View>
+                <View style={styles.headline}>
+                    <Text style={styles.text_headline}>{headline}</Text>
+                </View>
 
-                    <Text style={styles.subHead}>{subhead}</Text>
+                <Text style={styles.subHead}>{subhead}</Text>
 
-                    {children}
+                {children}
 
 
-                    <View style={styles.footer}>
-                        <Text style={styles.description}>{description}</Text>
-                        <View style={styles.line} />
+                <View style={styles.footer}>
+                    <Text style={styles.description}>{description}</Text>
+                    <View style={styles.line} />
 
-                        <TouchableOpacity onPress={onPress}>
-                            <Text style={styles.link}>{link}</Text>
-                        </TouchableOpacity>
-                    </View>
-               </ScrollView>
-            </ImageBackground>
-        </View>
+                    <TouchableOpacity onPress={onPress}>
+                        <Text style={styles.link}>{link}</Text>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
+        </ImageBackground>
     );
 
 }
@@ -41,20 +39,17 @@ const Background = ({ headline, subhead, children, onPress, link, description })
 export default Background
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
     bg: {
         flex: 1,
         justifyContent: 'center',
         padding: 21
     },
     img: {
-        height: '20%',
+        height: 150,
         marginBottom: 'auto',
     },
     image: {
-        height: 56,
+        height: 73,
         width: '100%',
         resizeMode: 'contain',
         marginTop: 'auto'
@@ -68,15 +63,16 @@ const styles = StyleSheet.create({
     headline: {
         borderBottomWidth: 1,
         borderBottomColor: COLORS.gray,
-        paddingBottom: 6.5,
+        // paddingBottom: 6.5,
+        marginTop: 23,
         marginBottom: 4.5
     },
     text_headline: {
         color: COLORS.light,
         fontSize: 30,
-        fontWeight: '600',
+        fontWeight: '500',
         letterSpacing: .5,
-        fontFamily: 'Poppins-ExtraBold'
+        fontFamily: 'Poppins-SemiBold'
     },
     subHead: {
         color: COLORS.text,
