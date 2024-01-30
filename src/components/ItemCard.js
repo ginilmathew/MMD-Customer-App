@@ -1,9 +1,11 @@
 import React, { memo } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { COLORS } from '../constants/COLORS';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 
 const CustomItemCard = () => {
   return (
+    <Animated.View entering={FadeInDown.easing().delay(300)}>
     <View style={styles.container}>
       {/* Left Side */}
       <View style={styles.leftContainer}>
@@ -31,6 +33,7 @@ const CustomItemCard = () => {
         </TouchableOpacity>
       </View>
     </View>
+    </Animated.View>
   );
 };
 
@@ -43,15 +46,15 @@ const styles = StyleSheet.create({
  
     borderColor: '#ddd',
     borderRadius: 8,
-    marginVertical: 8,
+    // marginVertical: 8,
   },
   leftContainer: {
     flex: .3,
-    marginRight: 16,
+    marginRight: 14,
   },
   leftImage: {
-    width: 100, // Set your desired width
-    height: 100, // Set your desired height
+    width: 80, // Set your desired width
+    height: 80, // Set your desired height
     borderRadius: 8,
   },
   centerContainer: {

@@ -2,14 +2,14 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React, { memo } from 'react'
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-const Header = memo(() => {
+const Header = memo(({ onPress }) => {
     return (
         <View style={styles.container}>
             <View style={styles.imageContainer}>
                 <Image source={require('../images/DG.png')} style={styles.logo} />
             </View>
             <View style={styles.iconContainer}>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={onPress}>
                     <FontAwesome name='shopping-cart' size={20} color="#000" />
                 </TouchableOpacity>
                 <TouchableOpacity>
