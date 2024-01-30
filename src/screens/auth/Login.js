@@ -47,6 +47,7 @@ const Login = ({ navigation }) => {
                 placeholder='Email Address'
                 left={'mail'}
                 color={COLORS.blue}
+                type={'email-address'}
             />
 
             <CustomInput

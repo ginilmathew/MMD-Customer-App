@@ -2,24 +2,21 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import React from 'react'
 import { COLORS } from '../constants/COLORS'
 
-const CommonButton = ({ text, ...props }) => {
-
-    const style = styles(props)
+const CommonButton = ({ text, mb, mt }) => {
 
     return (
-        <View style={style.container}>
-            <TouchableOpacity style={style.button}>
-                <Text style={style.text}>{text}</Text>
+        <View style={[styles.container, { marginTop: mt, marginBottom: mb }]}>
+            <TouchableOpacity style={styles.button}>
+                <Text style={styles.text}>{text}</Text>
             </TouchableOpacity>
         </View>
     )
 }
 
-const styles = (mt, mb) => StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         width: '100%',
         height: 56,
-        marginBottom: mb || 10
     },
     button: {
         backgroundColor: COLORS.primary,

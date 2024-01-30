@@ -6,12 +6,14 @@ import Login from '../screens/auth/Login';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import HomeNavigation from './HomeNavigation';
+import Register from '../screens/auth/Register';
+import Forget from '../screens/auth/Forget';
 
 
 const Stack = createNativeStackNavigator();
 const Navigation = () => {
 
-  const [initialScreen, setInitialScreen] = useState("null")
+  const [initialScreen, setInitialScreen] = useState(null)
 
   const onReady = useCallback(() => {
     SplashScreen.hide()
@@ -20,10 +22,10 @@ const Navigation = () => {
 
   return (
     <NavigationContainer ref={navigationRef} onReady={onReady}>
-      <Stack.Navigator initialRouteName={initialScreen ?  'HomeNavigator' : 'Login'} screenOptions={{ headerShown: false }}>
+      <Stack.Navigator initialRouteName={initialScreen ?  'HomeNavigator' : 'Register'} screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Register" component={Login} />
-        <Stack.Screen name="Forget" component={Login} />
+        <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name="Forget" component={Forget} />
 
         <Stack.Screen name="HomeNavigator" component={HomeNavigation} />
       </Stack.Navigator>
