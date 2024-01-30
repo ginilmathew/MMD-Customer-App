@@ -41,9 +41,7 @@ const SingleProduct = () => {
                 </ScrollView>
                 <ProductData />
                 <AboutSection />
-              
                 <DescriptionSection />
-             
             </ScrollView>
             <BuyButton />
         </>

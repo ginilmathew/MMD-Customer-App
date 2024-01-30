@@ -15,22 +15,16 @@ const SingleCategory = () => {
     const LIST = [{ id: 1, name: 'All' }, { id: 2, name: 'fruits' }, { id: 3, name: 'nuts' }, { id: 4, name: 'seed' }, { id: 5, name: 'vitamins' }]
 
 
-
-
-
- 
-
-
     const ListHeaderComponents = useCallback(({ item, index }) => {
         return (
-            <View style={{ padding: 8,backgroundColor:COLORS.white }}>
+            <View style={{ padding: 8, backgroundColor: COLORS.white }}>
                 <ScrollView
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}
                 >
                     {LIST.map((res, index) => (
-                        
+
                         <Animated.View entering={FadeInDown.delay(index * 50).duration(200).springify().damping(12)} key={index} style={{ marginRight: 10 }}>
                             <CustomTab label={res?.name} />
                         </Animated.View>
@@ -45,10 +39,10 @@ const SingleCategory = () => {
         return (
             <>
                 <Animated.View entering={FadeInDown.delay(index * 200).duration(200).springify().damping(12)} >
-                    <View style={{paddingHorizontal:16,paddingVertical:5}}>
-                    <ItemCard />
+                    <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
+                        <ItemCard />
                     </View>
-                  
+
                 </Animated.View>
             </>
         )
@@ -75,7 +69,7 @@ const SingleCategory = () => {
                 keyExtractor={item => item.id}
                 showsVerticalScrollIndicator={false}
                 ListFooterComponent={ListFooterComponent}
-             
+
             />
 
         </>
