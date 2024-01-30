@@ -48,6 +48,7 @@ const SingleCategory = () => {
                     <View style={{paddingHorizontal:16,paddingVertical:5}}>
                     <ItemCard />
                     </View>
+                  
                 </Animated.View>
             </>
         )
@@ -64,7 +65,7 @@ const SingleCategory = () => {
 
     return (
         <>
-     
+            <Header />
             <CommonHeader heading={'Spinach'} backBtn />
             <FlatList
                 stickyHeaderIndices={[0]}
