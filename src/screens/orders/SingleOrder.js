@@ -25,6 +25,9 @@ const SingleOrder = () => {
 
                 <View style={styles.singleContainer}>
                     <SubHeading label={"Products & Bill"} />
+                    <View style={styles.productContainer}>
+
+                    </View>
                     <View style={styles.totalContainer}>
                         <View style={styles.textBox}>
                             <Text style={styles.subBox}>Sub-Total</Text>
@@ -107,6 +110,10 @@ const styles = StyleSheet.create({
     },
     singleContainer: {
         marginVertical: 10
+    },
+    productContainer: {
+        marginTop: 10,
+        flexDirection: "row"
     },
     totalContainer: {
         marginTop: 10,
