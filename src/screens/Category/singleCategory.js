@@ -62,7 +62,7 @@ const SingleCategory = () => {
 
     return (
         <>
-            <Header />
+            {/* <Header /> */}
             <CommonHeader heading={'Spinach'} backBtn />
             <FlatList
                 stickyHeaderIndices={[0]}

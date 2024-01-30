@@ -85,9 +85,9 @@ const Home = ({ navigation }) => {
     const renderItem = useCallback(({ item, index }) => {
         return (
             <>
-                <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
+                <Animated.View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
                     <ItemCard key={index} onPress={NavigateToSingleProduct} />
-                </View>
+                </Animated.View>
             </>
         )
     }, [])
