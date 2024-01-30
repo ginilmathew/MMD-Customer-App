@@ -28,7 +28,7 @@ const Home = ({ navigation }) => {
     ];
 
 
-    const DATA2 = [1, 2, 3, 4, 5, 6, 7, 8,9]
+    const DATA2 = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 
     const NavigateToCategory = useCallback(() => {
@@ -37,8 +37,11 @@ const Home = ({ navigation }) => {
 
     const HeaderComponents = useCallback(() => {
         return (
-            <>
-                <CustomSlider />
+            <>  
+            <View style={{marginVertical:2}}>
+            <CustomSlider/>
+            </View>
+               
                 <CustomHeading label={'Categories'} hide={false} />
                 <ScrollView
                     horizontal={true}
@@ -82,17 +85,12 @@ const Home = ({ navigation }) => {
                 <View style={{ marginTop: 3 }}>
                     <CustomHeading label={'HighLights'} hide={false} />
                 </View>
-                <View style={[styles.boxItem,styles.footerBox]}>
+                <View style={[styles.boxItem, styles.footerBox]}>
                     {DATA2?.map((res, index) => (
-
                         <ItemBox />
                     ))}
                 </View>
-
-
                 <View style={{ marginBottom: 30 }}>
-
-
                 </View>
             </View>
         )
@@ -113,10 +111,7 @@ const Home = ({ navigation }) => {
                 keyExtractor={item => item.id}
                 showsVerticalScrollIndicator={false}
                 ListFooterComponent={ListFooterComponent}
-                
             />
-
-
         </>
 
     )
@@ -142,7 +137,7 @@ const styles = StyleSheet.create({
 
     },
     footerBox: {
-        paddingHorizontal:18
+        paddingHorizontal: 18
     },
     boxItem: {
         flexDirection: 'row',
