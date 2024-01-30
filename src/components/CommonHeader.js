@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
     container: {
         paddingLeft: 12,
         alignItems: 'flex-start',
+        backgroundColor: "#FFF"
     },
     insideContainer: {
         flexDirection: 'row',
@@ -49,10 +50,10 @@ const styles = StyleSheet.create({
         marginTop: -5
     },
     borderStyle: {
-        paddingBottom: 10,
         borderBottomWidth: 2,
-        borderBottomColor: "#707070",
+        borderBottomColor: COLORS.border_color,
         opacity: 0.1,
-        width: "100%"
+        width: "100%",
+        backgroundColor: "#FFF"
     }
 })

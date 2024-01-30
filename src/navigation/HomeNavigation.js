@@ -7,6 +7,10 @@ import { useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View, useWindowDimensions } from 'react-native';
 import { COLORS } from '../constants/COLORS';
 import Header from '../components/Header';
+import SingleCategory from '../screens/Category/singleCategory';
+import AllProducts from '../screens/AllProducts';
+import Category from '../screens/Category';
+import SingleOrder from '../screens/orders/SingleOrder';
 
 
 
@@ -85,7 +89,10 @@ function HomeNavigation({ navigation }) {
                 <Tab.Screen name="Home" component={Home} />
                 <Tab.Screen name="Orders" component={Orders} />
                 <Tab.Screen name="Profile" component={Profile} />
-
+                <Tab.Screen name="Category" component={Category} />
+                <Tab.Screen name="AllProducts" component={AllProducts} />
+                <Tab.Screen name="SingleCategory" component={SingleCategory} />
+                
             </Tab.Navigator>
         </>
     );

@@ -27,11 +27,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     text: {
-        fontWeight: '700',
         fontSize: 22,
         color: COLORS.white,
         letterSpacing: .5,
-        fontFamily: 'Poppins-ExtraBold'
+        fontFamily: "Poppins-SemiBold",
     }
 })
 

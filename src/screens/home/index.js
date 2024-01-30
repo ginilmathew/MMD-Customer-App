@@ -73,10 +73,12 @@ const Home = ({ navigation }) => {
         )
     }, [])
 
-    const renderItem = useCallback(({item,index}) => {
+    const renderItem = useCallback(({ item, index }) => {
         return (
             <>
-                <ItemCard />
+                <View style={{ paddingHorizontal: 16, paddingVertical: 5}}>
+                    <ItemCard />
+                </View>
             </>
         )
     }, [])
@@ -93,7 +95,7 @@ const Home = ({ navigation }) => {
                 </View>
                 <View style={[styles.boxItem, styles.footerBox]}>
                     {DATA2?.map((res, index) => (
-                        <ItemBox onPress={NavigateToAllPages} index={index}/>
+                        <ItemBox onPress={NavigateToAllPages} index={index} />
                     ))}
                 </View>
                 <View style={{ marginBottom: 30 }}>

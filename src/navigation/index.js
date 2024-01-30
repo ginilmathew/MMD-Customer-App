@@ -11,6 +11,10 @@ import Forget from '../screens/auth/Forget';
 import Category from '../screens/Category';
 import AllProducts from '../screens/AllProducts';
 import SingleCategory from '../screens/Category/singleCategory';
+import SingleOrder from '../screens/orders/SingleOrder';
+
+import NotificationPage from '../screens/notification';
+import Cart from '../screens/cart';
 
 
 const Stack = createNativeStackNavigator();
@@ -30,9 +34,9 @@ const Navigation = () => {
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen name="Forget" component={Forget} />
         <Stack.Screen name="HomeNavigator" component={HomeNavigation} />
-        <Stack.Screen name="Category" component={Category} />
-        <Stack.Screen name="AllProducts" component={AllProducts} />
-        <Stack.Screen name="SingleCategory" component={SingleCategory} />
+        <Stack.Screen name="SingleOrder" component={SingleOrder} />
+        <Stack.Screen name="Notification" component={NotificationPage} />
+        <Stack.Screen name="Cart" component={Cart} />
       </Stack.Navigator>
     </NavigationContainer>
   )

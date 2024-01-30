@@ -1,19 +1,31 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
-import React, { memo } from 'react'
+import React, { memo, useCallback } from 'react'
+import IonIcons from 'react-native-vector-icons/Ionicons'
+import { useNavigation } from '@react-navigation/native'
 
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 const Header = memo(({ onPress }) => {
+
+    const navigation = useNavigation()
+
+    const notPage = useCallback(() => {
+        navigation.navigate('Notification')
+    }, [navigation])
+
+    const cartPage = useCallback(() => {
+        navigation.navigate('Cart')
+    }, [navigation])
+
     return (
         <View style={styles.container}>
             <View style={styles.imageContainer}>
                 <Image source={require('../images/DG.png')} style={styles.logo} />
             </View>
             <View style={styles.iconContainer}>
-                <TouchableOpacity onPress={onPress}>
-                    <FontAwesome name='shopping-cart' size={20} color="#000" />
+                <TouchableOpacity onPress={cartPage}>
+                    <IonIcons name='cart' size={20} color="#000" />
                 </TouchableOpacity>
-                <TouchableOpacity>
-                    <FontAwesome name='bell' size={20} color="#000" />
+                <TouchableOpacity onPress={notPage}>
+                    <IonIcons name='notifications' size={20} color="#000" />
                 </TouchableOpacity>
             </View>
         </View>
@@ -28,7 +40,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between', // Space between children
         alignItems: 'center', // Align items in the center vertically
         paddingHorizontal: 22,
-        height: 60
+        height: 60,
+        backgroundColor: "#fff"
     },
     imageContainer: {
         marginRight:10, // Margin to separate the image from the icon
