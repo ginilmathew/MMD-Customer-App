@@ -23,18 +23,23 @@ const Register = ({ navigation }) => {
         resolver: yupResolver(schema)
     })
 
+    const goBack = useCallback(() => {
+        navigation?.goBack()
+    }, [navigation]);
 
-    const navToLogin = useCallback(() => {
-        navigation.navigate('Login')
-    }, [navigation])
+
+    const onSubmit = useCallback((data) => {
+        
+    }, [])
+
 
     return (
         <Background
             headline={'REGISTER'}
-            subhead={'To your registered account'}
-            onPress={navToLogin}
-            link={'Already have an account?'}
-            description={"Don't have an account yet?"}
+            subhead={'Join the DGCart family'}
+            onPress={goBack}
+            link={'Go to Login'}
+            description={"Already have an account?"}
         >
             <CustomInput
                 control={control}
@@ -68,7 +73,7 @@ const Register = ({ navigation }) => {
                 type='number-pad'
             />
 
-            <CommonButton text={'Register'} mt={23} />
+            <CommonButton text={'Register'} mt={23} onPress={handleSubmit(onSubmit)} />
 
         </Background>
     )

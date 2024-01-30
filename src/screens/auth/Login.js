@@ -28,9 +28,13 @@ const Login = ({ navigation }) => {
 
 
     const navToForget = useCallback(() => {
-        navigation.navigate('Register')
+        navigation.navigate('Forget')
     }, [navigation])
 
+
+    const onSubmit = useCallback((data) => {
+
+    }, [])
 
     return (
         <Background
@@ -63,7 +67,7 @@ const Login = ({ navigation }) => {
                 <Text style={styles.link}>{'Forget Password?'}</Text>
             </TouchableOpacity>
 
-            <CommonButton text={'Login'} />
+            <CommonButton text={'Login'} onPress={handleSubmit(onSubmit)} />
 
 
         </Background>
