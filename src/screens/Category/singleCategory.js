@@ -51,14 +51,14 @@ const SingleCategory = () => {
     const ListFooterComponent = useCallback(() => {
         return (
             <>
-                <View style={{ marginBottom: 30 }}></View>
+                <View style={{ marginBottom: 130 }}></View>
             </>
         )
     }, [])
 
 
     return (
-        <>
+        <View style={{backgroundColor:'#fff'}}>
             <Header />
             <CommonHeader heading={'Spinach'} backBtn />
             <FlatList
@@ -72,7 +72,7 @@ const SingleCategory = () => {
 
             />
 
-        </>
+        </View>
     )
 }
 

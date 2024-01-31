@@ -61,11 +61,13 @@ const styles = StyleSheet.create({
         flex: .5,
     },
     heading: {
+        fontFamily: 'Poppins-Regular',
         fontSize: 12,
         fontWeight: 'bold',
         marginBottom: 4,
     },
     subHeading: {
+        fontFamily: 'Poppins-Regular',
         fontSize: 12,
         fontStyle: 'italic',
         color: COLORS.text,
@@ -78,6 +80,7 @@ const styles = StyleSheet.create({
         borderRadius: 6,
     },
     offerText: {
+        fontFamily: 'Poppins-Regular',
         fontSize: 12,
         color: COLORS.status_cancelled
     },
@@ -86,6 +89,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end',
     },
     topPrice: {
+        fontFamily: 'Poppins-Regular',
         fontSize: 16,
         fontWeight: 'bold',
         marginBottom: 8,
@@ -96,6 +100,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
     buttonText: {
+        fontFamily: 'Poppins-Regular',
         fontSize: 12,
         color: 'white',
         fontWeight: 'bold',

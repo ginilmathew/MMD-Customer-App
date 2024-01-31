@@ -1,5 +1,5 @@
 import { FlatList, StyleSheet, Text, View } from 'react-native'
-import React, { useCallback } from 'react'
+import React, { memo, useCallback } from 'react'
 import Header from '../../components/Header'
 import CommonHeader from '../../components/CommonHeader'
 import ItemCard from '../../components/ItemCard'
@@ -18,17 +18,17 @@ const AllProducts = ({ navigation }) => {
         )
     }, [])
 
-    const ListFooterComponents = useCallback(() => {
+    const ListFooterComponents = memo(() => {
         return (
-            <View style={{ marginBottom: 30 }}>
+            <View style={{ marginBottom: 130 }}>
             </View>
         )
-    }, [])
+    },)
 
 
 
     return (
-        <>
+        <View style={{ backgroundColor: '#fff' }}>
             <Header />
             <CommonHeader heading={"Products"} backBtn={true} />
             <Animated.FlatList
@@ -37,10 +37,9 @@ const AllProducts = ({ navigation }) => {
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
                 showsVerticalScrollIndicator={false}
-
             />
 
-        </>
+        </View>
     )
 }
 
