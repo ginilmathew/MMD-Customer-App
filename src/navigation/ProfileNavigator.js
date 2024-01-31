@@ -14,7 +14,7 @@ const ProfileNavigator = () => {
     return (
         <Stack.Navigator screenOptions={{
             headerShown: false
-        }} initialRouteName='MapPage'>
+        }}>
             <Stack.Screen name='Profile' component={Profile} />
             <Stack.Screen name='EditProfile' component={EditProfile} />
             <Stack.Screen name='Address' component={AddAddress} />

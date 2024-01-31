@@ -8,6 +8,8 @@ import { COLORS } from '../../constants/COLORS';
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useMutation } from 'react-query';
+import { loginApi } from '../../api/auth';
 
 
 const Login = ({ navigation }) => {
@@ -22,6 +24,14 @@ const Login = ({ navigation }) => {
         resolver: yupResolver(schema)
     })
 
+    // const on
+
+    const { mutate } = useMutation({
+        mutationKey: ['login-query'],
+        mutationFn: loginApi,
+        onSuccess
+    })
+
     const navToRegister = useCallback(() => {
         navigation.navigate('Register')
     }, [navigation])
@@ -33,7 +43,7 @@ const Login = ({ navigation }) => {
 
 
     const onSubmit = useCallback((data) => {
-
+        console.log(data);
     }, [])
 
     return (

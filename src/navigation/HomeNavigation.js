@@ -87,7 +87,7 @@ function HomeNavigation({ navigation }) {
             <Header toCart={toCart} toNotification={toNotification} />
 
             <Tab.Navigator
-                initialRouteName='Profile'
+                initialRouteName='profileNavigator'
                 screenOptions={({ route }) => {
 
                     const nav = ['Home', 'ProfileNavigator', 'Orders'].includes(route?.name);
