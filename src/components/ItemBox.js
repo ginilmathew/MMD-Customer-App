@@ -30,7 +30,8 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.primary, // Box background color
         borderRadius: 8, // Optional: Add border radius for rounded corners
         justifyContent: 'center', // Center text vertically
-        alignItems: 'center', // Center text horizontally
+        alignItems: 'center',
+        textAlign:'center', // Center text horizontally
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.3,
@@ -43,6 +44,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontStyle:'italic',
         letterSpacing:1,
+        fontFamily: 'Poppins-Regular',
     },
 });
 

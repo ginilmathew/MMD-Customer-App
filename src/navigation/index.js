@@ -31,6 +31,7 @@ const Navigation = () => {
 
 
   return (
+    
     <NavigationContainer ref={navigationRef} onReady={onReady}>
       <Stack.Navigator initialRouteName={initialScreen ?  'HomeNavigator' : 'Login'} screenOptions={{ headerShown: false}}>
         <Stack.Screen name="Login" component={Login} />

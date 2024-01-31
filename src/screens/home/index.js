@@ -53,7 +53,7 @@ const Home = ({ navigation }) => {
 
     const HeaderComponents = useCallback(() => {
         return (
-            <>
+            <View style={{ backgroundColor: '#fff' }}>
                 <View style={{ marginVertical: 4 }}>
                     <CustomSlider />
                 </View>
@@ -77,7 +77,7 @@ const Home = ({ navigation }) => {
                 <View style={{ marginTop: 3 }}>
                     <CustomHeading label={'Popular Products'} hide={true} onPress={NavigateToAllPages} />
                 </View>
-            </>
+            </View>
 
         )
     }, [])
@@ -99,7 +99,7 @@ const Home = ({ navigation }) => {
                 <View style={{ marginBottom: 20 }}>
                     <CustomSlider />
                 </View>
-                <View style={{ marginTop: 3 }}>
+                <View style={{ marginTop: 2 }}>
                     <CustomHeading label={'HighLights'} hide={false} />
                 </View>
                 <View style={[styles.boxItem, styles.footerBox]}>
@@ -107,7 +107,7 @@ const Home = ({ navigation }) => {
                         <ItemBox onPress={NavigateToAllPages} index={index} />
                     ))}
                 </View>
-                <View style={{ marginBottom: 30 }}>
+                <View style={{ marginBottom: 80 }}>
                 </View>
             </Animated.View>
         )
@@ -118,7 +118,7 @@ const Home = ({ navigation }) => {
 
     return (
 
-        <>
+        <View style={{ backgroundColor: '#fff' }}>
             <DummySearch press={NavigateToSearch} />
             <FlatList
                 data={DATA}
@@ -128,7 +128,7 @@ const Home = ({ navigation }) => {
                 showsVerticalScrollIndicator={false}
                 ListFooterComponent={ListFooterComponent}
             />
-        </>
+        </View>
 
     )
 }
@@ -150,7 +150,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         flexDirection: 'row',
         gap: 2
-
     },
     footerBox: {
         paddingHorizontal: 18
@@ -160,7 +159,7 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         gap: 15,
         justifyContent: 'space-between',
-        marginTop: 5
+        marginTop: 3
     }
 
 })

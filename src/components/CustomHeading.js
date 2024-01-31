@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   text: {
+    fontFamily: 'Poppins-Regular',
     letterSpacing: 1,
     color: COLORS.light,
     fontSize: 16, // Adjust the font size as needed

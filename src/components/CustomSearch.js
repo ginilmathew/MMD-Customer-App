@@ -2,24 +2,25 @@ import { StyleSheet, TextInput, Image, View, TouchableOpacity } from 'react-nati
 import React, { useCallback, useRef, useState } from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { COLORS } from '../constants/COLORS'
+import { useFocusEffect } from '@react-navigation/native'
 
 
 const CustomSearch = ({ placeholder, placeHoldeColor, keyboardType, onPress, onChangeText, readonly, autoFocus, values }) => {
 
     const textRef = useRef(null);
 
-    // useFocusEffect(
-    //     useCallback(() => {
-    //         // When the screen is focused
-    //         const focus = () => {
-    //             setTimeout(() => {
-    //                 textRef?.current?.focus();
-    //             }, 1);
-    //         };
-    //         focus();
-    //         return focus; // cleanup
-    //     }, []),
-    // );
+    useFocusEffect(
+        useCallback(() => {
+            // When the screen is focused
+            const focus = () => {
+                setTimeout(() => {
+                    textRef?.current?.focus();
+                }, 1);
+            };
+            focus();
+            return focus; // cleanup
+        }, []),
+    );
 
     return (
 
