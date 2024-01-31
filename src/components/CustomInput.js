@@ -5,7 +5,7 @@ import IonIcons from 'react-native-vector-icons/Ionicons'
 import { Controller } from 'react-hook-form'
 
 
-const CustomInput = ({ left, right, color, passwd, control, name, placeholder, type }) => {
+const CustomInput = ({ left, right, color, passwd, control, name, placeholder, type, autoFocus }) => {
 
   const [hidePasswd, setShowPasswd] = useState(passwd);
 
@@ -45,6 +45,7 @@ const CustomInput = ({ left, right, color, passwd, control, name, placeholder, t
               placeholder={placeholder}
               placeholderTextColor={COLORS.text}
               keyboardType={type}
+              autoFocus={autoFocus}
             />
 
             {passwd && (

@@ -6,13 +6,24 @@ import ItemCard from '../../components/ItemCard'
 import Animated, { FadeInDown } from 'react-native-reanimated'
 
 const AllProducts = ({ navigation }) => {
-    const DATA2 = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    const DATA2 =
+    [
+        { id: 1 },
+        { id: 2 },
+        { id: 3 },
+        { id: 4 },
+        { id: 5 },
+        { id: 6 },
+        { id: 7 },
+        { id: 8 },
+
+    ]
 
     const renderItem = useCallback(({ item, index }) => {
         return (
             <Animated.View entering={FadeInDown.delay(index * 200).duration(200).springify().damping(12)}>
                 <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
-                    <ItemCard />
+                    <ItemCard item={item}/>
                 </View>
             </Animated.View>
         )

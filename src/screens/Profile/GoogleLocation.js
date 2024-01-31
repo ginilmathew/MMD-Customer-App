@@ -6,17 +6,23 @@ import ProfileButton from '../../components/ProfileButton'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import IonIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import locationContext from '../../context/location/index'
+import { GOOGLE_API } from '../../constants/API'
 
 
 const GoogleLocation = ({ navigation }) => {
 
-  const { location, setLocation } = useContext(locationContext)
+  const { setLocation, getLocation } = useContext(locationContext)
 
   const addLoc = (_, data) => {
     setLocation({
-      latitude: data?.geometry?.location?.lat,
-      longitude: data?.geometry?.location?.lng,
-      address: data?.formatted_address
+      location: {
+        latitude: data?.geometry?.location?.lat,
+        longitude: data?.geometry?.location?.lng,
+      },
+      address: {
+        main: data?.formatted_address.split(',')[0],
+        secondary: data?.formatted_address
+      }
     })
 
     navigation.navigate("MapPage")
@@ -39,6 +45,7 @@ const GoogleLocation = ({ navigation }) => {
       <CommonHeader heading={'Place'} backBtn />
 
       <View style={styles.container}>
+
         <GooglePlacesAutocomplete
           isRowScrollable
           keyboardShouldPersistTaps='always'
@@ -56,7 +63,7 @@ const GoogleLocation = ({ navigation }) => {
             textInput: {
               color: 'black',
               borderWidth: 1,
-              fontFamily: 'Poppins-Medium'
+              fontFamily: 'Poppins-Medium',
             },
             description: {
               fontWeight: 'bold',
@@ -73,14 +80,16 @@ const GoogleLocation = ({ navigation }) => {
           }}
           onPress={addLoc}
           query={{
-            key: 'AIzaSyBBcghyB0FvhqML5Vjmg3uTwASFdkV8wZY',
+            key: GOOGLE_API,
             language: 'en'
           }}
         />
 
-        {/* <TouchableOpacity style={styles.location}>
-          <Text style={styles.locationText}>Use my current location</Text>
-        </TouchableOpacity> */}
+        <TouchableOpacity style={{ flexDirection: 'row' }} onPress={getLocation}>
+          <IonIcon name='navigation-variant' size={23} color={COLORS.blue} />
+          <Text style={{ color: COLORS.blue, fontFamily: 'Poppins-Medium' }}>Use my current location</Text>
+        </TouchableOpacity>
+        
       </View>
     </>
   )
