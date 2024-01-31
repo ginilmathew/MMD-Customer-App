@@ -5,9 +5,25 @@ import CommonHeader from '../../components/CommonHeader'
 import ProfileButton from '../../components/ProfileButton'
 import IonIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { queryClient, storage } from '../../../App'
+import { useMMKVStorage } from 'react-native-mmkv-storage'
+import { useQuery } from 'react-query'
+import { getProfile } from '../../api/Profile'
+import useRefetch from '../../hooks/useRefetch'
 
 
 const Profile = ({ navigation }) => {
+
+  const [user, setUser] = useMMKVStorage('user', storage)
+
+
+  const { data, refetch } = useQuery('profile-query', {
+    queryFn: getProfile,
+    onSuccess({ data }) {
+      setUser({ ...user, user: data })
+    }
+  })
+
+  useRefetch(refetch)
 
   const navToEdit = useCallback(() => {
     navigation.navigate('EditProfile')
@@ -53,8 +69,8 @@ const Profile = ({ navigation }) => {
       <View style={styles.container}>
 
         <View style={styles.user}>
-          <Text style={styles.name}>asdfasdf</Text>
-          <Text style={styles.email}>asdfasdfas@gmail.com</Text>
+          <Text style={styles.name}>{data?.data?.name}</Text>
+          <Text style={styles.email}>{data?.data?.email}</Text>
         </View>
 
         <ProfileButton text={'Edit Profile'} onPress={navToEdit} />

@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity } from 'react-native'
-import React, { useCallback } from 'react'
+import React, { useCallback, useContext } from 'react'
 import Background from './Background';
 import IonIcons from 'react-native-vector-icons/Ionicons'
 import CommonButton from '../../components/CommonButton';
@@ -13,10 +13,12 @@ import { loginApi } from '../../api/auth';
 import { useMMKVStorage } from 'react-native-mmkv-storage';
 import { storage } from '../../../App';
 import { CommonActions } from '@react-navigation/native';
+import locationContext from '../../context/location';
 
 
 const Login = ({ navigation }) => {
 
+    const { getLocation } = useContext(locationContext)
 
     const schema = yup.object({
         email: yup.string().email('Please enter valid email address').required('Email is required'),
@@ -28,8 +30,8 @@ const Login = ({ navigation }) => {
     })
 
     const onSuccess = async ({ data }) => {
-        // await storage.setMapAsync('user', data);
-        // storage.setString('success', data?.message)
+        await storage.setMapAsync('user', data);
+        storage.setString('success', 'Login successful')
        
         navigation.dispatch(CommonActions.reset(
             {

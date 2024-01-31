@@ -9,13 +9,13 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { COLORS } from '../../constants/COLORS'
 import OTPInput from 'react-native-otp-textinput'
 import { useMutation } from 'react-query'
-import { forgetApi } from '../../api/auth'
+import { forgetApi, otpApi } from '../../api/auth'
 import { storage } from '../../../App'
 
 
 const Forget = ({ navigation }) => {
 
-  const [forget, setForget] = useState(true);
+  const [forget, setForget] = useState(!true);
 
   const schema = yup.object(forget ? {
     email: yup.string().email('Please enter valid email address').required('Email is required'),
@@ -26,14 +26,14 @@ const Forget = ({ navigation }) => {
   })
 
 
-  const onSuccessForget = ({ data }) => {
-    storage.setString('success', data?.message)
+  const onSuccessForget = () => {
+    storage.setString('success', 'OTP has been successfully sent')
     setForget(false)
   }
 
-  const onSuccessOtp = ({ data }) => {
-    storage.setString('success', data?.message)
-    navigation.navigate('Login')
+  const onSuccessOtp = () => {
+    storage.setString('success', 'OTP has been successfully sent')
+    // navigation.navigate('Login')
   }
 
   const { mutate } = useMutation({
@@ -44,7 +44,7 @@ const Forget = ({ navigation }) => {
 
   const { mutate: mutateOtp } = useMutation({
     mutationKey: ['forget-query'],
-    mutationFn: forgetApi,
+    mutationFn: otpApi,
     onSuccess: onSuccessOtp
   })
 
