@@ -1,17 +1,39 @@
-import React, { memo } from 'react';
+import React, { memo, useCallback, useContext, useState } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { COLORS } from '../constants/COLORS';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import CartContext from '../context/cart';
 
-const CustomItemCard = ({ onPress }) => {
+const CustomItemCard = ({ onPress, item, key }) => {
+   
+    const { cartItems, addToCart, incrementItem, decrementItem } = useContext(CartContext);
+
+    const isCartAdded = cartItems.some(cartItem => cartItem.id === item.id);
+    const cartItem = cartItems.find(cartItem => cartItem.id === item.id);
+
+    const handleAddToCart = useCallback(() => {
+        addToCart(item.id);
+    }, [addToCart, item.id]);
+
+    const handleIncrement = useCallback(() => {
+        incrementItem(item.id);
+    }, [incrementItem, item.id]);
+
+    const handleDecrement = useCallback(() => {
+        decrementItem(item.id);
+    }, [decrementItem, item.id]);
+
+
+  
+
     return (
-        <Animated.View entering={FadeInDown.easing().delay(300)}>
+        <Animated.View entering={FadeInDown.easing().delay(300)} key={key}>
             <TouchableOpacity onPress={onPress}>
                 <View style={styles.container}>
                     {/* Left Side */}
                     <View style={styles.leftContainer}>
                         <Image
-                            source={require('../images/spinach.jpg')} // Replace 'path_to_your_left_image' with the actual path to your left image
+                            source={require('../images/spinach.jpg')}
                             style={styles.leftImage}
                         />
                     </View>
@@ -19,7 +41,7 @@ const CustomItemCard = ({ onPress }) => {
                     {/* Center Content */}
                     <View style={styles.centerContainer}>
                         <Text style={styles.heading}>Elite Premium Rice puttupodi 1kg </Text>
-                        <Text style={styles.subHeading}>Category:Grocery</Text>
+                        <Text style={styles.subHeading}>Category: Grocery</Text>
                         <View style={styles.offerBox}>
                             <Text style={styles.offerText}>Up to 10% off!</Text>
                         </View>
@@ -28,10 +50,21 @@ const CustomItemCard = ({ onPress }) => {
                     {/* Right Side */}
                     <View style={styles.rightContainer}>
                         <Text style={styles.topPrice}>₹200</Text>
-                        <Text></Text>
-                        <TouchableOpacity style={styles.button}>
-                            <Text style={styles.buttonText}>Add To Cart</Text>
-                        </TouchableOpacity>
+                        {isCartAdded ? (
+                            <View style={styles.buttonContainer}>
+                                <TouchableOpacity style={styles.incrementButton} onPress={handleDecrement}>
+                                    <Text style={styles.buttonText}>-</Text>
+                                </TouchableOpacity>
+                                <Text style={styles.countText}>{cartItem.count}</Text>
+                                <TouchableOpacity style={[styles.incrementButton,{marginLeft:5}]} onPress={handleIncrement}>
+                                    <Text style={styles.buttonText}>+</Text>
+                                </TouchableOpacity>
+                            </View>
+                        ) : (
+                            <TouchableOpacity style={styles.button} onPress={handleAddToCart}>
+                                <Text style={styles.buttonText}>Add To Cart</Text>
+                            </TouchableOpacity>
+                        )}
                     </View>
                 </View>
             </TouchableOpacity>
@@ -49,16 +82,16 @@ const styles = StyleSheet.create({
         // marginVertical: 8,
     },
     leftContainer: {
-        flex: .3,
+        flex: 0.3,
         marginRight: 14,
     },
     leftImage: {
-        width: 80, // Set your desired width
-        height: 80, // Set your desired height
+        width: 80,
+        height: 80,
         borderRadius: 8,
     },
     centerContainer: {
-        flex: .5,
+        flex: 0.5,
     },
     heading: {
         fontFamily: 'Poppins-Regular',
@@ -82,10 +115,10 @@ const styles = StyleSheet.create({
     offerText: {
         fontFamily: 'Poppins-Regular',
         fontSize: 12,
-        color: COLORS.status_cancelled
+        color: COLORS.status_cancelled,
     },
     rightContainer: {
-        flex: .3,
+        flex: 0.3,
         alignItems: 'flex-end',
     },
     topPrice: {
@@ -104,6 +137,24 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: 'white',
         fontWeight: 'bold',
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between', // Center the count between the buttons
+        gap:5
+    },
+    incrementButton: {
+        backgroundColor: COLORS.primary,
+        padding: 6,
+        borderRadius: 8,
+        marginRight: 5,
+    },
+    countText: {
+        fontFamily: 'Poppins-Regular',
+        fontSize: 14,
+       
+
     },
 });
 

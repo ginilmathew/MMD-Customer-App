@@ -9,7 +9,20 @@ import CustomTab from '../../components/CustomTab'
 import { COLORS } from '../../constants/COLORS'
 
 const SingleCategory = () => {
-    const DATA2 = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+    const DATA2 =
+        [
+            { id: 1 },
+            { id: 2 },
+            { id: 3 },
+            { id: 4 },
+            { id: 5 },
+            { id: 6 },
+            { id: 7 },
+            { id: 8 },
+
+        ]
+
 
 
     const LIST = [{ id: 1, name: 'All' }, { id: 2, name: 'fruits' }, { id: 3, name: 'nuts' }, { id: 4, name: 'seed' }, { id: 5, name: 'vitamins' }]
@@ -40,7 +53,7 @@ const SingleCategory = () => {
             <>
                 <Animated.View entering={FadeInDown.delay(index * 200).duration(200).springify().damping(12)} >
                     <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
-                        <ItemCard />
+                        <ItemCard item={item} />
                     </View>
 
                 </Animated.View>
@@ -58,7 +71,7 @@ const SingleCategory = () => {
 
 
     return (
-        <View style={{backgroundColor:'#fff'}}>
+        <View style={{ backgroundColor: '#fff' }}>
             <Header />
             <CommonHeader heading={'Spinach'} backBtn />
             <FlatList

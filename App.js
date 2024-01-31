@@ -10,13 +10,13 @@ import { onlineManager } from '@tanstack/react-query';
 import { focusManager } from '@tanstack/react-query';
 import LocationContext from './src/context/location/locationContext'
 
+import CartProvider from './src/context/cart/cartContext'
 
 
 export const queryClient = new QueryClient();
 export const storage = new MMKVLoader().initialize()
 
 const App = () => {
-
 
   onlineManager.setEventListener(setOnline => {
     return NetInfo.addEventListener(state => {
@@ -42,7 +42,9 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <SafeAreaView style={styles.safeArea}>
         <LocationContext>
+          <CartProvider>
           <Navigation />
+          </CartProvider>
         </LocationContext>
       </SafeAreaView>
     </QueryClientProvider>
