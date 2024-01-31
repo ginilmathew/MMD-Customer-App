@@ -20,8 +20,9 @@ const AllProducts = ({ navigation }) => {
     ]
 
     const renderItem = useCallback(({ item, index }) => {
+        const animatedStyle = FadeInDown.delay(index * 200).duration(200).springify().damping(12);
         return (
-            <Animated.View entering={FadeInDown.delay(index * 200).duration(200).springify().damping(12)}>
+            <Animated.View entering={animatedStyle}>
                 <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
                     <ItemCard item={item}/>
                 </View>
@@ -48,7 +49,9 @@ const AllProducts = ({ navigation }) => {
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
                 showsVerticalScrollIndicator={false}
-            />
+                removeClippedSubviews={true} 
+                initialNumToRender={6} 
+                maxToRenderPerBatch={6} />
 
         </View>
     )

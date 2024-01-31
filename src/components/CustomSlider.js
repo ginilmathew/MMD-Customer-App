@@ -34,7 +34,7 @@ const CustomSlider = memo(({ slider }) => {
     <View style={[styles.container]}>
       <Carousel
         loop
-        width={width/1.1}
+        width={width/1 - 10}
         height={height / 5}
         autoPlay={false}
         data={IMAGE_ARRAY}
