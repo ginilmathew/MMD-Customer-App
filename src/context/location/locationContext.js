@@ -6,12 +6,11 @@ import { useNavigation } from '@react-navigation/native';
 import { getLocation as locationApi } from '../../api/Profile';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 import Context from '.'
+import { navigationRef } from '../../navigation/RootNavigation';
 
 
 
 const locationContext = ({ children }) => {
-
-    const navigation = useNavigation();
 
     const [location, setLocation] = useState({
         location: {
@@ -32,7 +31,7 @@ const locationContext = ({ children }) => {
             },
         }));
 
-        navigation.navigate('MapPage');
+        navigationRef.navigate('MapPage');
     }
 
 

@@ -6,8 +6,9 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { MMKVLoader } from 'react-native-mmkv-storage'
 import { QueryClientProvider, QueryClient } from 'react-query'
 import NetInfo from '@react-native-community/netinfo';
-import {onlineManager} from '@tanstack/react-query';
-import {focusManager} from '@tanstack/react-query';
+import { onlineManager } from '@tanstack/react-query';
+import { focusManager } from '@tanstack/react-query';
+import LocationContext from './src/context/location/locationContext'
 
 
 
@@ -17,30 +18,32 @@ export const storage = new MMKVLoader().initialize()
 const App = () => {
 
 
-onlineManager.setEventListener(setOnline => {
-  return NetInfo.addEventListener(state => {
-    setOnline(!!state.isConnected);
+  onlineManager.setEventListener(setOnline => {
+    return NetInfo.addEventListener(state => {
+      setOnline(!!state.isConnected);
+    });
   });
-});
 
-// function onAppStateChange(status) {
-//   if (Platform.OS !== 'web') {
-//     focusManager.setFocused(status === 'active');
-//   }
-// }
+  // function onAppStateChange(status) {
+  //   if (Platform.OS !== 'web') {
+  //     focusManager.setFocused(status === 'active');
+  //   }
+  // }
 
-// useEffect(() => {
-//   const subscription = AppState.addEventListener('change', onAppStateChange);
+  // useEffect(() => {
+  //   const subscription = AppState.addEventListener('change', onAppStateChange);
 
-//   return () => subscription.remove();
-// }, []);
+  //   return () => subscription.remove();
+  // }, []);
 
 
 
   return (
     <QueryClientProvider client={queryClient}>
       <SafeAreaView style={styles.safeArea}>
-        <Navigation />
+        <LocationContext>
+          <Navigation />
+        </LocationContext>
       </SafeAreaView>
     </QueryClientProvider>
   )
