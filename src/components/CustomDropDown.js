@@ -146,11 +146,11 @@ const styles = StyleSheet.create({
     inputSearchStyle: {
         height: 40,
         fontSize: 13,
-        color:'red'
+        color:COLORS.text
     },
     dropdownText: {
         fontSize: 13,
         fontFamily:'Poppins-Regular',
-        color:'red',
+        color:COLORS.text,
     },
 })
