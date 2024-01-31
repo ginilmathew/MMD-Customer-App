@@ -39,6 +39,7 @@ customAxios.interceptors.response.use(function (res) {
     storage.setBool('loading', false);
     return Promise.resolve(res);
 }, (err) => {
+    console.log(err.response.data);
     if (err?.response?.data?.message) {
 
         if ((err?.response?.status === 403 || err?.response?.status === 401) && err?.response?.data?.message === "Unauthenticated.") {
@@ -61,7 +62,7 @@ customAxios.interceptors.response.use(function (res) {
             storage.clearStore();
         }
 
-        // storage.setString('error', err?.response?.data[i18n.language === 'ar' ? err?.response?.data?.message_ar ? 'message_ar' : 'message' : 'message']);
+        storage.setString('error', err?.response?.data['message']);
     }
     storage.setBool('loading', false);
     return Promise.reject(err)

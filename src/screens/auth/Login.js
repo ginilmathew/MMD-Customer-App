@@ -28,7 +28,9 @@ const Login = ({ navigation }) => {
     })
 
     const onSuccess = async ({ data }) => {
-        await storage.setMapAsync('user', data);
+        // await storage.setMapAsync('user', data);
+        // storage.setString('success', data?.message)
+       
         navigation.dispatch(CommonActions.reset(
             {
                 index: 0,
@@ -52,13 +54,6 @@ const Login = ({ navigation }) => {
         navigation.navigate('Forget')
     }, [navigation])
 
-
-    const onSubmit = useCallback((data) => {
-        mutate({
-            ...data,
-            role: 'customer'
-        })
-    }, [])
 
     return (
         <Background
@@ -91,7 +86,7 @@ const Login = ({ navigation }) => {
                 <Text style={styles.link}>{'Forget Password?'}</Text>
             </TouchableOpacity>
 
-            <CommonButton text={'Login'} onPress={handleSubmit(onSubmit)} />
+            <CommonButton text={'Login'} onPress={handleSubmit(mutate)} />
 
 
         </Background>
