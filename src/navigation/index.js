@@ -18,12 +18,14 @@ import Cart from '../screens/cart';
 import { FadeIn } from 'react-native-reanimated';
 import Search from '../screens/search';
 import SingleProduct from '../screens/AllProducts/SingleProduct';
+import { useMMKVStorage } from 'react-native-mmkv-storage';
+import { storage } from '../../App';
 
 
 const Stack = createNativeStackNavigator();
 const Navigation = () => {
 
-  const [initialScreen, setInitialScreen] = useState("null")
+  const [user] = useMMKVStorage('user', storage);
 
   const onReady = useCallback(() => {
     SplashScreen.hide()
@@ -33,7 +35,7 @@ const Navigation = () => {
   return (
     
     <NavigationContainer ref={navigationRef} onReady={onReady}>
-      <Stack.Navigator initialRouteName={initialScreen ?  'HomeNavigator' : 'Register'} screenOptions={{ headerShown: false}}>
+      <Stack.Navigator initialRouteName={user ?  'HomeNavigator' : 'Login'} screenOptions={{ headerShown: false}}>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen name="Forget" component={Forget} />

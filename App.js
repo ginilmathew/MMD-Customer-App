@@ -8,6 +8,7 @@ import { QueryClientProvider, QueryClient } from 'react-query'
 import NetInfo from '@react-native-community/netinfo';
 import { onlineManager } from '@tanstack/react-query';
 import { focusManager } from '@tanstack/react-query';
+import LocationContext from './src/context/location/locationContext'
 
 import CartProvider from './src/context/cart/cartContext'
 
@@ -40,9 +41,11 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <SafeAreaView style={styles.safeArea}>
-        <CartProvider>
+        <LocationContext>
+          <CartProvider>
           <Navigation />
-        </CartProvider>
+          </CartProvider>
+        </LocationContext>
       </SafeAreaView>
     </QueryClientProvider>
   )

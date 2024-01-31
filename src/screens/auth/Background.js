@@ -7,7 +7,7 @@ const Background = ({ headline, subhead, children, onPress, link, description })
 
     return (
         <ImageBackground source={require('../../images/login.png')} resizeMode="cover" style={styles.bg}>
-            <ScrollView style={{ flex: 1 }}>
+            <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps='always'>
 
                 <View style={styles.img}>
                     <Image source={require('../../images/LogoMain.png')} style={styles.image} />

@@ -4,6 +4,7 @@ import { COLORS } from '../../constants/COLORS'
 import CommonHeader from '../../components/CommonHeader'
 import ProfileButton from '../../components/ProfileButton'
 import IonIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import { queryClient, storage } from '../../../App'
 
 
 const Profile = ({ navigation }) => {
@@ -20,6 +21,19 @@ const Profile = ({ navigation }) => {
     navigation.navigate('ChangePasswd')
   }, [navigation])
 
+
+  const logout = () => {
+    queryClient.resetQueries();
+    storage.clearStore();
+
+    navigation.reset({
+      index: 0,
+      routes: [
+        { name: 'Login' }
+      ]
+    })
+  }
+
   const handleLogout = useCallback(() => {
     Alert.alert('Logout', 'Are you sure you want to logout?', [
       {
@@ -27,14 +41,7 @@ const Profile = ({ navigation }) => {
         style: 'cancel',
       },
       {
-        text: 'logout', onPress: () => {
-          navigation.reset({
-            index: 0,
-            routes: [
-              { name: 'Login' }
-            ]
-          })
-        }
+        text: 'logout', onPress: logout
       },
     ]);
   }, [navigation])

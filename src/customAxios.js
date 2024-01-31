@@ -6,7 +6,7 @@ import navRef from "./navigation/RootNavigation";
 
 
 const customAxios = axios.create({
-    baseURL: `${BASE_URL}/api/customer/`,
+    baseURL: BASE_URL,
     timeout: 5000
 });
 
@@ -21,7 +21,7 @@ customAxios.interceptors.request.use(async function (config) {
 
         const user = storage.getMap('user')
 
-        if (user) config.headers['Authorization'] = `Bearer ${user?.accessToken}`;
+        if (user) config.headers['Authorization'] = `Bearer ${user?.access_token}`;
 
         return Promise.resolve(config);
 

@@ -10,6 +10,9 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutation } from 'react-query';
 import { loginApi } from '../../api/auth';
+import { useMMKVStorage } from 'react-native-mmkv-storage';
+import { storage } from '../../../App';
+import { CommonActions } from '@react-navigation/native';
 
 
 const Login = ({ navigation }) => {
@@ -17,14 +20,22 @@ const Login = ({ navigation }) => {
 
     const schema = yup.object({
         email: yup.string().email('Please enter valid email address').required('Email is required'),
-        passwd: yup.string().required('Password is required')
+        password: yup.string().required('Password is required')
     })
 
     const { control, handleSubmit } = useForm({
         resolver: yupResolver(schema)
     })
 
-    // const on
+    const onSuccess = async ({ data }) => {
+        await storage.setMapAsync('user', data);
+        navigation.dispatch(CommonActions.reset(
+            {
+                index: 0,
+                routes: [{ name: 'HomeNavigator' }]
+            }
+        ));
+    }
 
     const { mutate } = useMutation({
         mutationKey: ['login-query'],
@@ -43,7 +54,10 @@ const Login = ({ navigation }) => {
 
 
     const onSubmit = useCallback((data) => {
-        console.log(data);
+        mutate({
+            ...data,
+            role: 'customer'
+        })
     }, [])
 
     return (
@@ -66,7 +80,7 @@ const Login = ({ navigation }) => {
 
             <CustomInput
                 control={control}
-                name={'passwd'}
+                name={'password'}
                 placeholder='Password'
                 left={'lock-closed'}
                 color={COLORS.blue}

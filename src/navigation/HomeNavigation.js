@@ -10,13 +10,13 @@ import Header from '../components/Header';
 import EditProfile from '../screens/Profile/EditProfile';
 import AddAddress from '../screens/Profile/AddAddress';
 import ProfileNavigator from './ProfileNavigator';
-import LocationContext from '../context/location/locationContext';
 import SingleCategory from '../screens/Category/singleCategory';
 import AllProducts from '../screens/AllProducts';
 import Category from '../screens/Category';
 import SingleOrder from '../screens/orders/SingleOrder';
 import Animated, { useSharedValue, withSpring, withTiming, useAnimatedStyle, FadeInDown, BounceIn, BounceOut, FadeInUp } from 'react-native-reanimated';
 import { useFocusEffect } from '@react-navigation/native';
+import { storage } from '../../App';
 
 
 
@@ -81,8 +81,10 @@ function HomeNavigation({ navigation }) {
 //     }, [animatedValue])
 //   );
 
+    // storage.removeItem('user')
+
     return (
-        <LocationContext>
+        <>
 
             <Header toCart={toCart} toNotification={toNotification} />
 
@@ -126,7 +128,7 @@ function HomeNavigation({ navigation }) {
                 <Tab.Screen name="ProfileNavigator" component={ProfileNavigator} />
 
             </Tab.Navigator>
-        </LocationContext>
+        </>
     );
 }
 
