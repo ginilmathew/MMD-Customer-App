@@ -4,22 +4,36 @@ import CategoryCard from '../../components/CategoryCard';
 import Header from '../../components/Header';
 import CommonHeader from '../../components/CommonHeader';
 import Animated, { batch, FadeInDown } from 'react-native-reanimated';
+import { getCategory } from '../../api/category';
+import useRefreshOnFocus from '../../hooks/useRefetch';
+import { useQuery } from 'react-query';
 
 const Category = () => {
   
+    const { data, isLoading, refetch } = useQuery({
+        queryKey: ['category'],
+        queryFn: getCategory,
+        enabled: true
+    })
 
-    const DATA2 = [1, 2, 3, 4, 5, 6, 7, 8];
+
+    useRefreshOnFocus(refetch)
+
+    const AnimatedStyle = useCallback((index)=>{
+        return FadeInDown.delay(index * 100).duration(200).springify().damping(12);
+    },[])
+ 
 
     const renderSectionHeader = useCallback(({ item, index }) => {
-        const animatedStyle = FadeInDown.delay(index * 100).duration(200).springify().damping(12);
+       
         return (
-            <Animated.View entering={animatedStyle}>
+            <Animated.View entering={AnimatedStyle(index)}>
                 <View style={styles.itemContainer}>
-                    <CategoryCard key={index} />
+                    <CategoryCard key={item?._id} item={item}/>
                 </View>
             </Animated.View>
         );
-    },[]);
+    },[data?.data?.data]);
 
 
     const ListHeaderComponent = memo(() => {
@@ -32,12 +46,10 @@ const Category = () => {
     })
 
     return (
-
-
         <FlatList
             StickyHeaderComponent={[0]}
             ListHeaderComponent={ListHeaderComponent}
-            data={DATA2}
+            data={data?.data?.data}
             numColumns={4}
             renderItem={renderSectionHeader}
             keyExtractor={(item, index) => index.toString()}

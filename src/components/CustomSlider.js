@@ -2,7 +2,7 @@ import React, { memo, useCallback } from 'react';
 import { StyleSheet, View, TouchableOpacity, useWindowDimensions, Image } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 
-const CustomSlider = memo(({ slider }) => {
+const CustomSlider = memo(({ item }) => {
   const { width, height } = useWindowDimensions();
 
   const IMG_URL = 'YOUR_IMAGE_BASE_URL'; // Replace with your image base URL
@@ -16,7 +16,7 @@ const CustomSlider = memo(({ slider }) => {
       >
         <Image
         //   source={{ uri: `${IMG_URL}${item?.original_image}` }}
-        source={require('../images/spinach.jpg')}
+          source={{uri:item?.image}}
           style={{ height: '100%', width: '95%', borderRadius: 20 }}
           resizeMode="cover"
         />
@@ -35,9 +35,9 @@ const CustomSlider = memo(({ slider }) => {
       <Carousel
         loop
         width={width/1 - 18}
-        height={height / 5}
+        height={height / 4 - 22}
         autoPlay={false}
-        data={IMAGE_ARRAY}
+        data={item}
         renderItem={CarouselCardItem}
         lazy
       />
