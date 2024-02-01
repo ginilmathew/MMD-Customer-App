@@ -29,53 +29,65 @@ const CustomItemCard = ({ onPress, item, key }) => {
     const NavigateToSingleProduct = useCallback(() => {
         navigation.navigate('SingleProduct')
     }, [navigation])
-
+    // TouchableOpacity onPress={NavigateToSingleProduct}
 
     return (
         <Animated.View entering={FadeInDown.easing().delay(300)} key={key}>
-            <TouchableOpacity onPress={NavigateToSingleProduct}>
-                <View style={styles.container}>
-                    {/* Left Side */}
-                    <View style={styles.leftContainer}>
-                        <Image
-                            source={require('../images/spinach.jpg')}
-                            style={styles.leftImage}
-                        />
-                    </View>
+            <TouchableOpacity onPress={NavigateToSingleProduct} style={styles.container}>
+                {/* Left Side */}
+                <View style={styles.leftContainer}>
+                    <Image
+                        source={require('../images/spinach.jpg')}
+                        style={styles.leftImage}
+                    />
+                </View>
 
-                    {/* Center Content */}
-                    <View style={styles.centerContainer}>
-                        <Text style={styles.heading}>Elite Premium Rice puttupodi 1kg </Text>
-                        <Text style={styles.subHeading}>Category: Grocery</Text>
-                        <View style={styles.offerBox}>
-                            <Text style={styles.offerText}>Up to 10% off!</Text>
-                        </View>
-                    </View>
-
-                    {/* Right Side */}
-                    <View style={styles.rightContainer}>
-                        <Text style={styles.topPrice}>₹200</Text>
-                        {isCartAdded ? (
-                            <View style={styles.buttonContainer}>
-                                <TouchableOpacity style={styles.incrementButton} onPress={handleDecrement}>
-                                    <Text style={styles.buttonText}>-</Text>
-                                </TouchableOpacity>
-                                <Text style={styles.countText}>{cartItem.count}</Text>
-                                <TouchableOpacity style={[styles.incrementButton, { marginLeft: 5 }]} onPress={handleIncrement}>
-                                    <Text style={styles.buttonText}>+</Text>
-                                </TouchableOpacity>
-                            </View>
-                        ) : (
-                            <TouchableOpacity style={styles.button} onPress={handleAddToCart}>
-                                <Text style={styles.buttonText}>Add To Cart</Text>
-                            </TouchableOpacity>
-                        )}
+                {/* Center Content */}
+                <View style={styles.centerContainer}>
+                    <Text style={styles.heading}>Elite Premium Rice puttupodi 1kg </Text>
+                    <Text style={styles.subHeading}>Category: Grocery</Text>
+                    <View style={styles.offerBox}>
+                        <Text style={styles.offerText}>Up to 10% off!</Text>
                     </View>
                 </View>
+
+                {/* Right Side */}
+                <View style={styles.rightContainer}>
+                    <Text style={styles.topPrice}>₹200</Text>
+                    <AddToCart
+                        isCartAdded={isCartAdded}
+                        handleAddToCart={handleAddToCart}
+                        handleDecrement={handleDecrement}
+                        handleIncrement={handleIncrement}
+                        cartItem={cartItem} />
+                </View>
             </TouchableOpacity>
+
         </Animated.View>
     );
 };
+
+
+
+const AddToCart = memo(({ isCartAdded, handleDecrement, handleAddToCart, handleIncrement, cartItem }) => (
+    <>
+        {isCartAdded ? (
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity style={[styles.incrementButton, { paddingHorizontal: 12 }]} onPress={handleDecrement}>
+                    <Text style={styles.buttonText}>-</Text>
+                </TouchableOpacity>
+                <Text style={styles.countText}>{cartItem.count}</Text>
+                <TouchableOpacity style={[styles.incrementButton, { marginLeft: 5 }]} onPress={handleIncrement}>
+                    <Text style={styles.buttonText}>+</Text>
+                </TouchableOpacity>
+            </View>
+        ) : (
+            <TouchableOpacity style={styles.button} onPress={handleAddToCart}>
+                <Text style={styles.buttonText}>Add To Cart</Text>
+            </TouchableOpacity>
+        )}
+    </>
+))
 
 const styles = StyleSheet.create({
     container: {
@@ -141,12 +153,12 @@ const styles = StyleSheet.create({
         borderRadius: 6,
     },
     buttonText: {
-
         color: 'white',
         fontWeight: 'bold',
         fontFamily: 'Poppins-Regular',
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: 'bold',
+        letterSpacing: .5,
 
     },
     buttonContainer: {
@@ -163,6 +175,9 @@ const styles = StyleSheet.create({
         marginRight: 2,
     },
     countText: {
+        justifyContent: 'center',
+        textAlign: 'center',
+        minWidth: 25,
         fontFamily: 'Poppins-Regular',
         fontSize: 14,
         fontWeight: 'bold',

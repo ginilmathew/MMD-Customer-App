@@ -18,7 +18,7 @@ const Home = ({ navigation }) => {
 
     const { getLocation, location } = useContext(locationContext)
 
-
+  console.log({location})
 
 
     const DATA = 
