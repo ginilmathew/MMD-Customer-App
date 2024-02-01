@@ -33,12 +33,7 @@ const Login = ({ navigation }) => {
         await storage.setMapAsync('user', data);
         storage.setString('success', 'Login successful')
 
-        navigation.dispatch(CommonActions.reset(
-            {
-                index: 0,
-                routes: [{ name: 'HomeNavigator' }]
-            }
-        ));
+        navigation.navigate('LocationPage');
     }
 
     const { mutate } = useMutation({

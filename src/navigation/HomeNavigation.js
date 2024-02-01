@@ -93,7 +93,7 @@ function HomeNavigation({ navigation }) {
     return (
         <>
 
-            { user?.user?.address && <Header toCart={toCart} toNotification={toNotification} /> }
+            <Header toCart={toCart} toNotification={toNotification} />
 
             <Tab.Navigator
                 initialRouteName={user?.user?.address ? 'Home' : 'LocationPage'}
@@ -105,9 +105,9 @@ function HomeNavigation({ navigation }) {
                         headerShown: false,
                         tabBarItemStyle: { display: !nav ? 'none' : 'flex' },
                         tabBarHideOnKeyboard: true,
-                        tabBarStyle: {
-                            height: user?.user?.address ? 50 : 0
-                        },
+                        // tabBarStyle: {
+                        //     height: user?.user?.address ? 50 : 0
+                        // },
                         tabBarLabel: () => '',
                         tabBarIcon: ({ focused }) => nav && (
                               <Animated.View entering={FadeInUp.delay(200).duration(200).springify().damping(12)}>
@@ -133,7 +133,6 @@ function HomeNavigation({ navigation }) {
                 }}
 
             >
-                <Tab.Screen name='LocationPage' component={LocationPage} />
                 <Tab.Screen name="Home" component={Home} />
                 <Tab.Screen name="Orders" component={Orders} />
                 <Tab.Screen name="ProfileNavigator" component={ProfileNavigator} />
