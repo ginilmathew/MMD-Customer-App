@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, FlatList, RefreshControl, TouchableOpacity } from 'react-native'
-import React, { useCallback } from 'react'
+import React, { memo, useCallback, useState } from 'react'
 import CustomInput from '../../components/CustomInput'
 import CommonButton from '../../components/CommonButton'
 import { useForm } from 'react-hook-form'
@@ -9,10 +9,32 @@ import { COLORS } from '../../constants/COLORS'
 import CommonHeader from '../../components/CommonHeader'
 import NoData from '../../components/NoData'
 import IonIcons from 'react-native-vector-icons/Ionicons'
+import { useMutation, useQuery } from 'react-query'
+import { addressList, deletAddrss } from '../../api/Profile'
+import useRefetch from '../../hooks/useRefetch'
 
 
 const AddAddress = ({ navigation }) => {
 
+
+  const [refresh, setRefresh] = useState(false);
+
+  const { refetch, data } = useQuery({
+    queryKey: ['address-query'],
+    
+    queryFn: addressList,
+    initialData: [],
+    onSettled() {
+      setRefresh(false)
+    },
+  })
+
+  const { mutate } = useMutation({
+    mutationKey: ['address-delet'],
+    mutationFn: deletAddrss,
+  })
+
+  useRefetch(refetch)
 
   const schema = yup.object({
     passwd: yup.string().required('Password is required'),
@@ -28,34 +50,53 @@ const AddAddress = ({ navigation }) => {
     navigation.navigate('GoogleLocation')
   }, [navigation])
 
-  const keyExtractor = useCallback(({ id }) => String(id), [])
+  const keyExtractor = useCallback((item) => item?._id, [])
 
   const onRefresh = useCallback(() => {
+    setRefresh(true)
+    refetch()
+  }, [])
+
+  const handleDlt = useCallback(() => {
 
   }, [])
 
+  const renderItem = useCallback(({ item }) => {
 
-  const renderItem = ({ item }) => {
+    const descLeng = item?.area?.address > 45;
 
     return (
       <TouchableOpacity onPress={() => { }} style={styles.renderItem}>
-        <View style={styles.end}>
+        <View style={[styles.end, { width: '15%' }]}>
           <IonIcons name='location' size={25} color={COLORS.blue} />
         </View>
 
         <View style={styles.box_text}>
-          <Text style={styles.text}>{'sdfsasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf'}</Text>
+          <Text style={styles.text}>{
+            item?.area?.address
+              ?.slice(...descLeng ? [0, 45] : [0])
+              ?.concat(descLeng ? ' ...' : '')
+          }</Text>
         </View>
 
         <View style={styles.end}>
-          <Text style={[styles.end_text, { color: true ? COLORS.primary : COLORS.light }]}>{true ? 'DEFAULT' : 'SET AS DEFAULT'}</Text>
-          <IonIcons name={true ? 'radio-button-on' : `radio-button-off`} size={20} color={COLORS.primary} />
+          <View style={{ alignItems: 'center', justifyContent: 'space-between' }}>
+            {/* <Text style={[styles.end_text, { color: item?.default ? COLORS.primary : COLORS.light }]}>{item?.default ? 'DEFAULT' : 'SET AS DEFAULT'}</Text> */}
+            <IonIcons name={item?.default ? 'radio-button-on' : `radio-button-off`} size={20} color={COLORS.primary} />
+          </View>
+
+          <TouchableOpacity style={{
+            marginTop: 16
+          }} onPress={handleDlt}>
+            <IonIcons name='trash' size={18} color={COLORS.red} />
+          </TouchableOpacity>
         </View>
 
       </TouchableOpacity>
     )
-  }
+  }, [])
 
+  
   return (
     <>
       <CommonHeader heading={'Address'} backBtn />
@@ -63,11 +104,11 @@ const AddAddress = ({ navigation }) => {
       <View style={styles.container}>
 
         <FlatList
-          className='px-2 w-full md:w-5/6 self-center'
+          showsVerticalScrollIndicator={false}
           keyExtractor={keyExtractor}
           ListHeaderComponent={<View style={styles.header} />}
-          refreshControl={<RefreshControl refreshing={false} onRefresh={onRefresh} />}
-          data={['sdf']}
+          refreshControl={<RefreshControl refreshing={refresh} onRefresh={onRefresh} />}
+          data={data?.data?.data}
           renderItem={renderItem}
           ListEmptyComponent={<NoData />}
         />
@@ -89,10 +130,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderBottomWidth: 1,
     borderBottomColor: COLORS.gray,
-    paddingVertical: 18
+    paddingVertical: 14
   },
   box_text: {
-    width: '70%',
+    width: '65%',
     padding: 2
   },
   text: {
@@ -106,10 +147,10 @@ const styles = StyleSheet.create({
   end: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: '15%',
+    width: '20%',
   },
   end_text: {
-    fontSize: 9,
+    fontSize: 7,
     fontFamily: 'Poppins-Medium'
   }
 })

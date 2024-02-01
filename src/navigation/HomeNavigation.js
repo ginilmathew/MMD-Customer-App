@@ -20,6 +20,7 @@ import { storage } from '../../App';
 import LocationPage from '../screens/auth/LocationPage';
 import { useMMKVStorage } from 'react-native-mmkv-storage';
 import locationContext from '../context/location';
+import { navigationRef } from './RootNavigation';
 
 
 
@@ -96,20 +97,13 @@ function HomeNavigation({ navigation }) {
             <Header toCart={toCart} toNotification={toNotification} />
 
             <Tab.Navigator
-                initialRouteName={user?.user?.address ? 'Home' : 'LocationPage'}
                 screenOptions={({ route }) => {
-
-                    const nav = ['Home', 'ProfileNavigator', 'Orders'].includes(route?.name);
 
                     return ({
                         headerShown: false,
-                        tabBarItemStyle: { display: !nav ? 'none' : 'flex' },
                         tabBarHideOnKeyboard: true,
-                        // tabBarStyle: {
-                        //     height: user?.user?.address ? 50 : 0
-                        // },
                         tabBarLabel: () => '',
-                        tabBarIcon: ({ focused }) => nav && (
+                        tabBarIcon: ({ focused }) => (
                               <Animated.View entering={FadeInUp.delay(200).duration(200).springify().damping(12)}>
                                 <TouchableOpacity onPress={route?.name === 'Home' ? navToHome : route?.name === "Orders" ? navToOrder : navToProfile} style={[{
                                     width: Math.floor(width / 3),

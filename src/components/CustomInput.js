@@ -5,7 +5,7 @@ import IonIcons from 'react-native-vector-icons/Ionicons'
 import { Controller } from 'react-hook-form'
 
 
-const CustomInput = ({ left, right, color, passwd, control, name, placeholder, type, autoFocus }) => {
+const CustomInput = ({ left, right, color, passwd, control, name, placeholder, type, autoFocus, multi }) => {
 
   const [hidePasswd, setShowPasswd] = useState(passwd);
 
@@ -14,7 +14,7 @@ const CustomInput = ({ left, right, color, passwd, control, name, placeholder, t
     setShowPasswd(!hidePasswd);
   }, [hidePasswd])
 
-
+  const styles = style(passwd, right, left, multi)
 
   return (
 
@@ -39,14 +39,17 @@ const CustomInput = ({ left, right, color, passwd, control, name, placeholder, t
 
             <TextInput
               value={value}
-              style={[styles.textInput, passwd && { borderRadius: 0 }, { paddingHorizontal: !left && !right && 20 || 0 }]}
+              style={styles.textInput}
               secureTextEntry={hidePasswd}
               onChangeText={onChange}
+              multiline={multi}
+              numberOfLines={23}
               placeholder={placeholder}
               placeholderTextColor={COLORS.text}
               keyboardType={type}
               autoFocus={autoFocus}
-              maxLength={name === 'mobile' && 10 || null}
+              textAlignVertical={name === 'comments' ? 'top' : 'center'}
+              maxLength={name === 'mobile' ? 10 : null}
             />
 
             {passwd && (
@@ -63,7 +66,7 @@ const CustomInput = ({ left, right, color, passwd, control, name, placeholder, t
 }
 
 
-const styles = StyleSheet.create({
+const style = (passwd, right, left, multi) => StyleSheet.create({
   input: {
     height: 56,
     width: '100%',
@@ -71,7 +74,8 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: 'center',
     flexDirection: 'row',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    minHeight: multi ? 120 : 55
   },
   icon: {
     justifyContent: 'center',
@@ -82,12 +86,14 @@ const styles = StyleSheet.create({
   },
   textInput: {
     flex: 1,
-    borderRadius: 23,
     borderTopLeftRadius: 0,
     borderBottomLeftRadius: 0,
     backgroundColor: COLORS.gray,
     color: COLORS.light,
     fontFamily: 'Poppins-Italic',
+    borderRadius: passwd ? 0 : 23, 
+    paddingHorizontal: !left && !right ? 20 : 0,
+    minHeight: multi ? 120 : 55
   },
   error: {
     fontSize: 14,

@@ -18,8 +18,10 @@ export const changePasswd = async ({ password, user_id }) => customAxios.post('p
     password
 })
 
-export const addAddress = async (data) => customAxios.post('public/api/customer/add-customer-address', { 
-    user_id: id,
-    default: 'false',
-    address: 'somethingg...'
-})
+export const addAddress = async (data) => customAxios.post('public/api/customer/add-customer-address-new', data)
+
+export const addressList = async (data) => customAxios.get('public/api/customer/addresslist')
+
+export const defaultAddrss = async (data) => customAxios.get('public/api/customer/change-customer-defaultaddress')
+
+export const deletAddrss = async (data) => customAxios.get('public/api/customer/addresslist')

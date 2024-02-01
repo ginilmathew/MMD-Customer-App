@@ -10,6 +10,7 @@ import locationContext from '../../context/location/index'
 import { GOOGLE_API } from '../../constants/API'
 import { useMMKVStorage } from 'react-native-mmkv-storage'
 import { storage } from '../../../App'
+import { navigationRef } from '../../navigation/RootNavigation'
 
 
 const GoogleLocation = ({ navigation, route }) => {
@@ -30,7 +31,7 @@ const GoogleLocation = ({ navigation, route }) => {
       }
     })
 
-    navigation.navigate("MapPage")
+    navigationRef.navigate('HomeNavigator', { screen: 'ProfileNavigator', params: { screen: 'MapPage' } })
   }
 
 

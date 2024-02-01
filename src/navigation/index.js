@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Modal, useWindowDimensions } from 'react-native'
+import { StyleSheet, Text, View, Modal, useWindowDimensions, Image } from 'react-native'
 import React, { useCallback, useState } from 'react'
 import { navigationRef } from './RootNavigation';
 import SplashScreen from 'react-native-splash-screen'
@@ -33,7 +33,9 @@ const Navigation = () => {
   const { isConnected } = useNetInfo();
   const [user] = useMMKVStorage('user', storage);
   const [error] = useMMKVStorage('error', storage)
-  const [success] = useMMKVStorage('success', storage)
+  const [success] = useMMKVStorage('success', storage);
+
+  const { height, width } = useWindowDimensions()
 
 
   const onReady = useCallback(() => {
@@ -63,6 +65,17 @@ const Navigation = () => {
         </Stack.Navigator>
       </NavigationContainer>
 
+      {
+        isConnected !== null && !isConnected && (
+          <Modal visible transparent>
+            <Image
+              style={{ height, width }}
+              source={require('../images/no_internet.jpg')}
+            />
+          </Modal>
+
+        )
+      }
 
       <Modal visible={!!error || !!success} transparent>
         <View style={{ backgroundColor: 'rgba(0,0,0,.1)', flex: 1 }}>

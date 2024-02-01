@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, Image, Text, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native'
+import { View, TouchableOpacity, Image, Text, StyleSheet, KeyboardAvoidingView, ScrollView } from 'react-native'
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
@@ -22,6 +22,7 @@ const MapAddress = ({ navigation, route }) => {
     const mapRef = useRef(null);
     const [mode, setMode] = useState('map');
     const [item, setItem] = useState(0);
+    const [defaultVal, setDefaultVal] = useState(false)
     const [user] = useMMKVStorage('user', storage)
 
     const { location, setLocation, changeLocation } = useContext(locationContext)
@@ -29,21 +30,24 @@ const MapAddress = ({ navigation, route }) => {
 
     const { mutate } = useMutation({
         mutationKey: 'add-address',
-        mutationFn: addAddress
+        mutationFn: addAddress,
+        onSuccess() {
+            navigation.navigate('Address')
+        }
     })
 
 
     const schema = yup.object({
-        name: yup.string().required("Name is required"),
+        pincode: yup.string().matches(/\d{6,}/, 'Please enter a valid value with at least 6 digits.').required('Pincode required'),
         address: yup.string().required("Address is required"),
         mobile: yup.number().positive().required("Phone is required").typeError('Enter valid Phone number'),
-        landmark: yup.string().required("Land mark is required")
+        landmark: yup.string().required("Land mark is required"),
+        comments: yup.string().nullable()
     });
 
 
     const { control, handleSubmit } = useForm({
         resolver: yupResolver(schema), defaultValues: {
-            name: user?.user?.name,
             address: location?.address?.secondary,
             mobile: user?.user?.mobile,
             landmark: ""
@@ -65,10 +69,13 @@ const MapAddress = ({ navigation, route }) => {
 
 
 
-    const changeMode = () => {
-        // setMode("address");
+    const changeMode = useCallback(() => {
+        setMode("address");
+    }, [])
 
-    }
+    const handleToggle = useCallback(() => {
+        setDefaultVal(!defaultVal)
+    }, [defaultVal])
 
     const checkBox = (num) => (
         <TouchableOpacity onPress={() => setItem(num)}>
@@ -77,16 +84,26 @@ const MapAddress = ({ navigation, route }) => {
     )
 
 
-    const onSubmit = useCallback(({ name, address, mobile, landmark }) => {
-
-    }, [])
+    const onSubmit = useCallback(({ comments, address, mobile, landmark, pincode }) => {
+        mutate({
+            comments, mobile, pincode,
+            default: defaultVal,
+            "address_type": item ? "office" : "home",
+            "area": {
+                address,
+                "latitude": location?.location?.latitude,
+                "longitude": location?.location?.longitude,
+                "location": landmark
+            }
+        })
+    }, [location, defaultVal, item])
 
 
     return (
         <>
             <CommonHeader heading={'Add Address'} backBtn />
 
-            <KeyboardAvoidingView style={[styles.container]} behavior={Platform.OS === 'android' ? 'padding' : 'height'}>
+            <ScrollView contentContainerStyle={mode === 'map' && { flex: 1 }} style={styles.container} keyboardShouldPersistTaps='always'>
 
                 {
                     mode === "map" ? (
@@ -188,13 +205,34 @@ const MapAddress = ({ navigation, route }) => {
                     ) : (
                         <View style={{ padding: 20 }}>
 
-                            <CustomInput
-                                control={control}
-                                name={'name'}
-                                left={'person'}
-                                color={COLORS.blue}
-                                placeholder='Name'
-                            />
+                            <View style={{
+                                alignSelf: 'flex-end',
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                height: 27,
+                                marginBottom: 20,
+                            }}>
+                                <Text style={{
+                                    fontFamily: 'Poppins-Light',
+                                    fontSize: 11,
+                                    color: COLORS.light,
+                                    marginRight: 10
+                                }}>DEFAULT</Text>
+                                <TouchableOpacity activeOpacity={.8} onPress={handleToggle} style={{
+                                    width: 45, height: '100%', backgroundColor: defaultVal ? COLORS.primary : COLORS.text, borderRadius: 50,
+                                    justifyContent: 'center',
+                                    paddingHorizontal: 5
+                                }}>
+                                    <View style={{
+                                        height: 20,
+                                        width: 20,
+                                        borderRadius: 30,
+                                        marginVertical: -2.5,
+                                        backgroundColor: COLORS.white,
+                                        ...(defaultVal ? { marginLeft: 'auto' } : { marginRight: 'auto' })
+                                    }} />
+                                </TouchableOpacity>
+                            </View>
 
                             <CustomInput
                                 control={control}
@@ -222,6 +260,21 @@ const MapAddress = ({ navigation, route }) => {
                                 left={'map'}
                             />
 
+                            <CustomInput
+                                control={control}
+                                name={'pincode'}
+                                color={COLORS.blue}
+                                placeholder='Pincode'
+                                left={'pin'}
+                                type={'number-pad'}
+                            />
+
+                            <CustomInput
+                                control={control}
+                                name={'comments'}
+                                multi
+                                placeholder='Comments'
+                            />
 
                             <View style={{
                                 flexDirection: 'row',
@@ -229,7 +282,8 @@ const MapAddress = ({ navigation, route }) => {
                                 marginVertical: 4
                             }}>
                                 <View style={{
-                                    flexDirection: 'row'
+                                    flexDirection: 'row',
+                                    justifyContent: 'center'
                                 }}>
                                     {checkBox(0)}
                                     <Text style={{
@@ -251,10 +305,9 @@ const MapAddress = ({ navigation, route }) => {
                 }
 
 
-                {/* <CommonButton w='85%' onPress={mode === "map" ? changeMode : handleSubmit(onSubmit)} text={`CONFIRM ${mode === "map" ? "LOCATION" : ""}`} /> */}
-                <CommonButton w='85%' onPress={mutate} text={`CONFIRM ${mode === "map" ? "LOCATION" : ""}`} />
+                <CommonButton w='85%' mt={mode === 'address' && 60} onPress={mode === "map" ? changeMode : handleSubmit(onSubmit)} text={`CONFIRM ${mode === "map" ? "LOCATION" : ""}`} />
 
-            </KeyboardAvoidingView>
+            </ScrollView>
 
         </>
     )
