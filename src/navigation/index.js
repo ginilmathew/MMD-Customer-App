@@ -22,11 +22,8 @@ import { useMMKVStorage } from 'react-native-mmkv-storage';
 import { storage } from '../../App';
 import { useNetInfo } from '@react-native-community/netinfo';
 import Toast from '../components/Toast';
-<<<<<<< HEAD
 import FeaturedProduct from '../screens/featuredProducts';
-=======
 import Checkout from '../screens/checkout';
->>>>>>> dipin
 
 
 const Stack = createNativeStackNavigator();
