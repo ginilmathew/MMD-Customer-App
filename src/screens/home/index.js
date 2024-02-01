@@ -20,8 +20,6 @@ import HomeLoader from '../../components/Loading/Home/HomeLoader'
 const Home = ({ navigation }) => {
 
 
-    const { getLocation, location } = useContext(locationContext);
-
     let payload = {
         "coordinates": [
             8.5204866, 76.9371447
@@ -56,12 +54,6 @@ const Home = ({ navigation }) => {
     const NavigateToFeatured = useCallback((res) => {
         navigation.navigate('FeaturedProduct', { id: res._id, name: res.name })
     }, [navigation])
-
-
-    useEffect(() => {
-        getLocation()
-    }, [])
-
 
 
     const HeaderComponents = useCallback(() => {

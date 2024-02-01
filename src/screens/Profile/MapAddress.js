@@ -11,6 +11,10 @@ import CustomInput from '../../components/CustomInput'
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import { COLORS } from '../../constants/COLORS'
 import CommonHeader from '../../components/CommonHeader'
+import { useMMKVStorage } from 'react-native-mmkv-storage'
+import { storage } from '../../../App'
+import { useMutation, useQuery } from 'react-query'
+import { addAddress } from '../../api/Profile'
 
 
 const MapAddress = ({ navigation, route }) => {
@@ -18,8 +22,15 @@ const MapAddress = ({ navigation, route }) => {
     const mapRef = useRef(null);
     const [mode, setMode] = useState('map');
     const [item, setItem] = useState(0);
+    const [user] = useMMKVStorage('user', storage)
 
     const { location, setLocation, changeLocation } = useContext(locationContext)
+
+
+    const { mutate } = useMutation({
+        mutationKey: 'add-address',
+        mutationFn: addAddress
+    })
 
 
     const schema = yup.object({
@@ -32,9 +43,9 @@ const MapAddress = ({ navigation, route }) => {
 
     const { control, handleSubmit } = useForm({
         resolver: yupResolver(schema), defaultValues: {
-            name: 'asdfasdf',
-            address: '2323232',
-            mobile: '9283922323',
+            name: user?.user?.name,
+            address: location?.address?.secondary,
+            mobile: user?.user?.mobile,
             landmark: ""
         }
     });
@@ -55,7 +66,8 @@ const MapAddress = ({ navigation, route }) => {
 
 
     const changeMode = () => {
-        setMode("address");
+        // setMode("address");
+
     }
 
     const checkBox = (num) => (
@@ -239,7 +251,8 @@ const MapAddress = ({ navigation, route }) => {
                 }
 
 
-                <CommonButton w='85%' onPress={mode === "map" ? changeMode : handleSubmit(onSubmit)} text={`CONFIRM ${mode === "map" ? "LOCATION" : ""}`} />
+                {/* <CommonButton w='85%' onPress={mode === "map" ? changeMode : handleSubmit(onSubmit)} text={`CONFIRM ${mode === "map" ? "LOCATION" : ""}`} /> */}
+                <CommonButton w='85%' onPress={mutate} text={`CONFIRM ${mode === "map" ? "LOCATION" : ""}`} />
 
             </KeyboardAvoidingView>
 
