@@ -39,7 +39,7 @@ const CustomInput = ({ left, right, color, passwd, control, name, placeholder, t
 
             <TextInput
               value={value}
-              style={[styles.textInput, passwd && { borderRadius: 0 }, { paddingHorizontal: !left && !right && 20 }]}
+              style={[styles.textInput, passwd && { borderRadius: 0 }, { paddingHorizontal: !left && !right && 20 || 0 }]}
               secureTextEntry={hidePasswd}
               onChangeText={onChange}
               placeholder={placeholder}

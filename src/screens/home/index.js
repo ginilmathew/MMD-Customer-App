@@ -16,11 +16,6 @@ import locationContext from '../../context/location'
 
 const Home = ({ navigation }) => {
 
-    const { getLocation, location } = useContext(locationContext)
-
-
-
-
     const DATA = 
         [
             { id: 1 },
@@ -46,12 +41,6 @@ const Home = ({ navigation }) => {
         navigation.navigate('Search')
     }, [navigation])
 
-
-
-
-    useEffect(() => {
-        getLocation()
-    }, [])
 
 
     const HeaderComponents = useCallback(() => {
