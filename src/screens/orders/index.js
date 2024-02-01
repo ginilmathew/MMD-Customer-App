@@ -10,7 +10,7 @@ import { useQuery } from 'react-query'
 import { getOrders } from '../../api/Orders'
 import useRefetch from '../../hooks/useRefetch'
 
-const Orders = ({ navigation }) => {
+const Orders = () => {
 
     const [user] = useMMKVStorage('user', storage)
 
@@ -22,31 +22,25 @@ const Orders = ({ navigation }) => {
 
     useRefetch(refetch)
 
-
-    // const orderPage = useCallback(() => {
-    //     navigation.navigate('SingleOrder')
-    // }, [navigation])
-
-    const renderItem = ({ item }) => {
+    const renderItem = ({ item, index }) => {
         return (
-            <OrderCard item={item} />
+            <OrderCard key={index} item={item} />
         )
     }
 
     return (
         <View style={styles.mainStyle}>
             <CommonHeader heading={"My Orders"} />
-            <View style={styles.innerContainer}>
                 <FlatList
                     data={data?.data?.data || []}
                     keyExtractor={(item) => item._id}
                     renderItem={renderItem}
-                    // refreshing={isLoading}
-                    // onRefresh={onRefresh}
+                    refreshing={isLoading}
+                    onRefresh={refetch}
                     //ListEmptyComponent={EmptyComp}
                     showsVerticalScrollIndicator={false}
+                    contentContainerStyle={styles.flatList}
                 />
-            </View>
         </View>
     )
 }
@@ -58,7 +52,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         flex: 1
     },
-    innerContainer: {
+    flatList: {
         padding: 12
     }
 })
