@@ -100,7 +100,7 @@ function HomeNavigation({ navigation }) {
                         tabBarHideOnKeyboard: true,
                         tabBarLabel: () => '',
                         tabBarIcon: ({ focused }) => nav && (
-                              <Animated.View entering={FadeInUp.delay(100).duration(100).springify().damping(12)}>
+                              <Animated.View entering={FadeInUp.delay(200).duration(200).springify().damping(12)}>
                                 <TouchableOpacity onPress={route?.name === 'Home' ? navToHome : route?.name === "Orders" ? navToOrder : navToProfile} style={[{
                                     width: Math.floor(width / 3),
                                     height: '100%',

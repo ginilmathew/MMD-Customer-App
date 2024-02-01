@@ -8,7 +8,8 @@
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
-    "release": "adb reverse tcp:9090 tcp:9090 && npx react-native run-android --mode=release"
+    "release": "adb reverse tcp:9090 tcp:9090 && npx react-native run-android --mode=release",
+    "apk": "cd android && ./gradlew assembleRelease"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",

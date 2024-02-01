@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { memo, useCallback } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { COLORS } from '../constants/COLORS';
 
 const CategoryCard = ({ key }) => {
 
@@ -40,5 +41,6 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 12,
         fontWeight: 'bold',
+        color:COLORS.light
     },
 });

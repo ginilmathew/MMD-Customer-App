@@ -29,6 +29,7 @@ const SingleCategory = () => {
 
 
     const ListHeaderComponents = useCallback(({ item, index }) => {
+        
         return (
             <View style={{ padding: 8, backgroundColor: COLORS.white }}>
                 <ScrollView

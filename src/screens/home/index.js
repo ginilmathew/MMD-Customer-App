@@ -46,9 +46,7 @@ const Home = ({ navigation }) => {
         navigation.navigate('Search')
     }, [navigation])
 
-    const NavigateToSingleProduct = useCallback(() => {
-        navigation.navigate('SingleProduct')
-    }, [navigation])
+
 
 
     useEffect(() => {
@@ -91,7 +89,7 @@ const Home = ({ navigation }) => {
         return (
             <>
                 <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
-                    <ItemCard key={index} onPress={NavigateToSingleProduct} item={item}/>
+                    <ItemCard key={index}  item={item}/>
                 </View>
             </>
         )

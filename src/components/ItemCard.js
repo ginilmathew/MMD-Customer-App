@@ -3,9 +3,12 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { COLORS } from '../constants/COLORS';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import CartContext from '../context/cart';
+import { useNavigation } from '@react-navigation/core';
 
 const CustomItemCard = ({ onPress, item, key }) => {
-   
+
+    const navigation = useNavigation()
+
     const { cartItems, addToCart, incrementItem, decrementItem } = useContext(CartContext);
 
     const isCartAdded = cartItems.some(cartItem => cartItem.id === item.id);
@@ -23,12 +26,14 @@ const CustomItemCard = ({ onPress, item, key }) => {
         decrementItem(item.id);
     }, [decrementItem, item.id]);
 
+    const NavigateToSingleProduct = useCallback(() => {
+        navigation.navigate('SingleProduct')
+    }, [navigation])
 
-  
 
     return (
         <Animated.View entering={FadeInDown.easing().delay(300)} key={key}>
-            <TouchableOpacity onPress={onPress}>
+            <TouchableOpacity onPress={NavigateToSingleProduct}>
                 <View style={styles.container}>
                     {/* Left Side */}
                     <View style={styles.leftContainer}>
@@ -56,7 +61,7 @@ const CustomItemCard = ({ onPress, item, key }) => {
                                     <Text style={styles.buttonText}>-</Text>
                                 </TouchableOpacity>
                                 <Text style={styles.countText}>{cartItem.count}</Text>
-                                <TouchableOpacity style={[styles.incrementButton,{marginLeft:5}]} onPress={handleIncrement}>
+                                <TouchableOpacity style={[styles.incrementButton, { marginLeft: 5 }]} onPress={handleIncrement}>
                                     <Text style={styles.buttonText}>+</Text>
                                 </TouchableOpacity>
                             </View>
@@ -98,6 +103,7 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: 'bold',
         marginBottom: 4,
+        color: COLORS.dark,
     },
     subHeading: {
         fontFamily: 'Poppins-Regular',
@@ -122,6 +128,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end',
     },
     topPrice: {
+        color: COLORS.dark,
         fontFamily: 'Poppins-Regular',
         fontSize: 16,
         fontWeight: 'bold',
@@ -129,31 +136,38 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: COLORS.primary,
-        padding: 6,
-        borderRadius: 8,
+        paddingHorizontal: 4,
+        paddingVertical: 5,
+        borderRadius: 6,
     },
     buttonText: {
-        fontFamily: 'Poppins-Regular',
-        fontSize: 12,
+
         color: 'white',
         fontWeight: 'bold',
+        fontFamily: 'Poppins-Regular',
+        fontSize: 14,
+        fontWeight: 'bold',
+
     },
     buttonContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between', // Center the count between the buttons
-        gap:5
+        gap: 4
     },
     incrementButton: {
         backgroundColor: COLORS.primary,
-        padding: 6,
-        borderRadius: 8,
-        marginRight: 5,
+        paddingHorizontal: 11,
+        paddingVertical: 8,
+        borderRadius: 6,
+        marginRight: 2,
     },
     countText: {
         fontFamily: 'Poppins-Regular',
         fontSize: 14,
-       
+        fontWeight: 'bold',
+        color: COLORS.dark
+
 
     },
 });
