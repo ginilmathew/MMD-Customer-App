@@ -1,7 +1,7 @@
 import React from 'react'
 import { useFocusEffect } from '@react-navigation/native'
 
-export function useRefreshOnFocus(refetch) {
+export default function useRefreshOnFocus(refetch) {
     const firstTimeRef = React.useRef(true)
 
     useFocusEffect(

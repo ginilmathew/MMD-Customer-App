@@ -5,8 +5,9 @@ import { useMutation } from 'react-query';
 import { useNavigation } from '@react-navigation/native';
 import { getLocation as locationApi } from '../../api/Profile';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
-import Context from '.'
+import LocationContext from './index'
 import { navigationRef } from '../../navigation/RootNavigation';
+
 
 
 
@@ -21,7 +22,6 @@ const locationContext = ({ children }) => {
 
 
     const onSuccess = ({ data }) => {
-
 
         setLocation(location => ({
             ...location,
@@ -53,12 +53,15 @@ const locationContext = ({ children }) => {
                     {
                         title: 'Location Access Required',
                         message: 'This App needs to Access your location',
+                        buttonPositive: 'Allow'
                     },
                 );
                 if (granted === PermissionsAndroid.RESULTS.GRANTED) {
                     //To Check, If Permission is granted
                     getOneTimeLocation();
                     subscribeLocationLocation();
+                } else {
+
                 }
             } catch (err) {
                 console.warn(err);
@@ -70,7 +73,7 @@ const locationContext = ({ children }) => {
         Geolocation.getCurrentPosition(
             //Will give you the current location
             (position) => {
-                const { latitude, longitude } = position.coords
+                const { latitude, longitude } = position.coords;
 
                 setLocation({
                     location: { latitude, longitude }
@@ -119,7 +122,7 @@ const locationContext = ({ children }) => {
     };
 
     return (
-        <Context.Provider
+        <LocationContext.Provider
             value={{
                 location,
                 setLocation,
@@ -128,7 +131,7 @@ const locationContext = ({ children }) => {
             }}
         >
             {children}
-        </Context.Provider>
+        </LocationContext.Provider>
     )
 }
 

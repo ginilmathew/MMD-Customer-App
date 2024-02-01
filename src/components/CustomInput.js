@@ -46,11 +46,12 @@ const CustomInput = ({ left, right, color, passwd, control, name, placeholder, t
               placeholderTextColor={COLORS.text}
               keyboardType={type}
               autoFocus={autoFocus}
+              maxLength={name === 'mobile' && 10 || null}
             />
 
             {passwd && (
               <TouchableOpacity onPress={handlePasswd} style={styles.icon}>
-                <IonIcons name={hidePasswd ? 'eye-off' : 'eye'} size={23} color={COLORS.dark_gray} />
+                <IonIcons name={hidePasswd ? 'eye-off' : 'eye'} size={23} color={COLORS.text} />
               </TouchableOpacity>
             )}
           </View>

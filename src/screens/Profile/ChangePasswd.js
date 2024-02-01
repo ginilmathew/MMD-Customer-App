@@ -7,14 +7,25 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import { COLORS } from '../../constants/COLORS'
 import CommonHeader from '../../components/CommonHeader'
+import { useMutation } from 'react-query'
+import { changePasswd } from '../../api/Profile'
+import { storage } from '../../../App'
 
 
-const ChangePasswd = () => {
+const ChangePasswd = ({ navigation }) => {
 
+  const { mutate } = useMutation({
+    mutationKey: 'change-query',
+    mutationFn: changePasswd,
+    onSuccess({ data }) {
+      storage.setString('success', data?.message)
+      navigation?.goBack()
+    }
+  })
 
   const schema = yup.object({
-    passwd: yup.string().required('Password is required'),
-    confPasswd: yup.string().oneOf([yup.ref('passwd'), null], 'Password must match').required('Confirm Password required.')
+    password: yup.string().required('Password is required'),
+    confPasswd: yup.string().oneOf([yup.ref('password'), null], 'Password must match').required('Confirm Password required.')
   });
 
 
@@ -22,9 +33,6 @@ const ChangePasswd = () => {
     resolver: yupResolver(schema)
   });
 
-  const onSubmit = useCallback(() => {
-
-  }, [])
 
   return (
     <>
@@ -32,7 +40,7 @@ const ChangePasswd = () => {
       <View style={styles.container}>
       
         <CustomInput
-          name='passwd'
+          name='password'
           control={control}
           placeholder={'Password'}
           passwd
@@ -45,7 +53,7 @@ const ChangePasswd = () => {
           passwd
         />
 
-        <CommonButton text={'update'} mt='auto' onPress={handleSubmit(onSubmit)} />
+        <CommonButton text={'update'} mt='auto' onPress={handleSubmit(mutate)} />
       </View>
     </>
   )

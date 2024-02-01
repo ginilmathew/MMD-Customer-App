@@ -1,5 +1,5 @@
 import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useCallback } from 'react'
+import React, { useCallback, useContext, useEffect } from 'react'
 import Header from '../../components/Header'
 import CustomSearch from '../../components/CustomSearch'
 import CustomSlider from '../../components/CustomSlider'
@@ -11,7 +11,15 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import DummySearch from '../../components/DummySearch'
 import ItemBox from '../../components/ItemBox'
 import Animated from 'react-native-reanimated'
+import locationContext from '../../context/location'
+
+
 const Home = ({ navigation }) => {
+
+    const { getLocation, location } = useContext(locationContext)
+
+
+
 
     const DATA = 
         [
@@ -40,6 +48,10 @@ const Home = ({ navigation }) => {
 
 
 
+
+    useEffect(() => {
+        getLocation()
+    }, [])
 
 
     const HeaderComponents = useCallback(() => {

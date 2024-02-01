@@ -7,6 +7,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import CustomInput from '../../components/CustomInput'
 import { COLORS } from '../../constants/COLORS'
 import CommonButton from '../../components/CommonButton'
+import { useMutation } from 'react-query'
+import { registerApi } from '../../api/auth'
+import { storage } from '../../../App'
 
 
 const Register = ({ navigation }) => {
@@ -15,22 +18,28 @@ const Register = ({ navigation }) => {
     const schema = yup.object({
         name: yup.string().required('Name is required'),
         email: yup.string().email('Please enter valid email address').required('Email is required'),
-        passwd: yup.string().required('Password is required'),
-        phone: yup.string().required('Contact number required')
+        password: yup.string().required('Password is required'),
+        mobile: yup.string().required('Contact number required')
     })
 
     const { control, handleSubmit } = useForm({
         resolver: yupResolver(schema)
     })
 
+    const onSuccess = ({ data }) => {
+        storage.setString('success', data?.message)
+        navigation.navigate('Login')
+    }
+
+    const { mutate } = useMutation({
+        mutationKey: ['register-query'],
+        mutationFn: registerApi,
+        onSuccess
+    })
+
     const goBack = useCallback(() => {
         navigation?.goBack()
     }, [navigation]);
-
-
-    const onSubmit = useCallback((data) => {
-        
-    }, [])
 
 
     return (
@@ -58,7 +67,7 @@ const Register = ({ navigation }) => {
             />
             <CustomInput
                 control={control}
-                name={'passwd'}
+                name={'password'}
                 placeholder='Password'
                 left={'lock-closed'}
                 passwd
@@ -66,14 +75,14 @@ const Register = ({ navigation }) => {
             />
             <CustomInput
                 control={control}
-                name={'phone'}
+                name={'mobile'}
                 placeholder='Contact Number'
                 left={'call'}
                 color={COLORS.blue}
                 type='number-pad'
             />
 
-            <CommonButton text={'Register'} mt={23} onPress={handleSubmit(onSubmit)} />
+            <CommonButton text={'Register'} mt={23} onPress={handleSubmit(mutate)} />
 
         </Background>
     )

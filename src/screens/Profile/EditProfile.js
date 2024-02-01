@@ -7,16 +7,25 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import CommonButton from '../../components/CommonButton'
+import { useMMKVStorage } from 'react-native-mmkv-storage'
+import { storage } from '../../../App'
+import { useMutation } from 'react-query'
+import { updateProfile } from '../../api/Profile'
 
 
-const EditProfile = () => {
+const EditProfile = ({ navigation }) => {
 
-    // change the value 
-    const user = {
-        email: 'hello@gmail.com',
-        mobile: '982392837',
-        name: 'nazim'
-    }
+    const [user] = useMMKVStorage('user', storage);
+
+    const { mutate } = useMutation({
+        mutationKey: 'update-query', 
+        mutationFn: updateProfile,
+        onSuccess({ data }) {
+            storage.setString('success', data?.message)
+            navigation?.goBack()
+        }
+    })
+
 
     const schema = yup.object({
         email: yup.string().email('Please type valid Email').required('Email required'),
@@ -26,16 +35,12 @@ const EditProfile = () => {
 
     const { control, handleSubmit } = useForm({
         resolver: yupResolver(schema), defaultValues: {
-            email: user?.email,
-            mobile: user?.mobile,
-            name: user?.name
+            email: user?.user?.email || null,
+            mobile: user?.user?.mobile || null,
+            name: user?.user?.name || null
         }
     });
 
-
-    const onSubmit = useCallback((data) => {
-        
-    }, [])
 
     return (
         <>
@@ -61,7 +66,7 @@ const EditProfile = () => {
                     type={'number-pad'}
                 />
 
-                <CommonButton text={'update'} mt='auto' onPress={handleSubmit(onSubmit)} />
+                <CommonButton text={'update'} mt='auto' onPress={handleSubmit(mutate)} />
             </View >
         </>
 
