@@ -72,13 +72,8 @@ const SingleCategory = () => {
 
 
     return (
-<<<<<<< HEAD
-        <>
-            {/* <Header /> */}
-=======
         <View style={{ backgroundColor: '#fff' }}>
             <Header />
->>>>>>> main
             <CommonHeader heading={'Spinach'} backBtn />
             <FlatList
                 stickyHeaderIndices={[0]}

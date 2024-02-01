@@ -1,27 +1,32 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { memo } from 'react'
 import { COLORS } from '../../constants/COLORS'
+import reactotron from 'reactotron-react-native'
+import moment from 'moment'
 
-const OrderCard = ({onPress}) => {
+const OrderCard = ({onPress , item}) => {
+
+reactotron.log(item, "ITEM")
+
     return (
         <TouchableOpacity style={styles.container} onPress={onPress}>
             <View style={styles.orderStyle}>
                 <View style={styles.orderTwoStyle}>
                     <Text style={styles.subText}>Order ID : </Text>
-                    <Text style={styles.mainText}>65321</Text>
+                    <Text style={styles.mainText}>{item?.order_id}</Text>
                 </View>
-                <Text style={styles.timeStyle}>22/05/2024 10:30am</Text>
+                <Text style={styles.timeStyle}>{moment(item?.updated_at).format("DD-MM-YYYY hh:mm A")}</Text>
             </View>
             <View style={styles.borderStyle} />
             <View style={styles.secondContainer}>
                 <View>
                     <View style={styles.orderTwoStyle}>
                         <Text style={styles.subText}>No. of Items : </Text>
-                        <Text style={styles.mainText}>1</Text>
+                        <Text style={styles.mainText}>{item?.itemDetails?.length}</Text>
                     </View>
                     <View style={styles.orderTwoStyle}>
                         <Text style={styles.subText}>Total Amount : </Text>
-                        <Text style={styles.mainText}>₹ 140.50</Text>
+                        <Text style={styles.mainText}>₹ {item?.total}</Text>
                     </View>
                 </View>
                 <View style={styles.statusContainer}>
