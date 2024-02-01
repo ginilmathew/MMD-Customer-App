@@ -143,6 +143,7 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.Offer_box,
         padding: 2,
         borderRadius: 6,
+        alignItems: "center"
     },
     offerText: {
         fontFamily: 'Poppins-Regular',
