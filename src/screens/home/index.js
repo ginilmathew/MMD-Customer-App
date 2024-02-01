@@ -1,7 +1,5 @@
 import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
-import Header from '../../components/Header'
-import CustomSearch from '../../components/CustomSearch'
 import CustomSlider from '../../components/CustomSlider'
 import CustomHeading from '../../components/CustomHeading'
 import CategoryCard from '../../components/CategoryCard'
@@ -10,14 +8,11 @@ import { COLORS } from '../../constants/COLORS'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import DummySearch from '../../components/DummySearch'
 import ItemBox from '../../components/ItemBox'
-import Animated, { useAnimatedStyle, useSharedValue, withDecay, withDelay, withRepeat, withSequence, withTiming } from 'react-native-reanimated'
 import locationContext from '../../context/location'
 import { useQuery } from 'react-query'
-import customAxios from '../../customAxios'
 import useRefetch from '../../hooks/useRefetch'
 import { HomeApi } from '../../api/home'
 import HomeLoader from '../../components/Loading/Home/HomeLoader'
-import useOpacityAnimation from '../../hooks/animationHook'
 
 
 
@@ -58,7 +53,9 @@ const Home = ({ navigation }) => {
         navigation.navigate('Search')
     }, [navigation])
 
-
+    const NavigateToFeatured = useCallback((res) => {
+        navigation.navigate('FeaturedProduct', { id: res._id, name: res.name })
+    }, [navigation])
 
 
     useEffect(() => {
@@ -120,7 +117,7 @@ const Home = ({ navigation }) => {
                 </View>
                 <View style={[styles.boxItem, styles.footerBox]}>
                     {data?.data?.data?.allFeatures?.map((res, index) => (
-                        <ItemBox onPress={NavigateToAllPages} key={res?._id} item={res} index={index} />
+                        <ItemBox onPress={() => NavigateToFeatured(res)} key={res?._id} item={res} index={index} />
                     ))}
                 </View>
                 <View style={{ marginBottom: 80 }}>
