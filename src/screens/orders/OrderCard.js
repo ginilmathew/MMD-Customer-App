@@ -1,32 +1,68 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { memo } from 'react'
+import React, { memo, useCallback } from 'react'
 import { COLORS } from '../../constants/COLORS'
+import reactotron from 'reactotron-react-native'
+import moment from 'moment'
+import { useNavigation } from '@react-navigation/native'
 
-const OrderCard = ({onPress}) => {
+const OrderCard = ({ item }) => {
+
+    const navigation = useNavigation();
+
+    reactotron.log(item, "ITEM")
+
+    const statusColor = () => {
+        if (item?.orderStatus === "created") {
+            return (
+                <Text style={[styles.statusText, { color: COLORS.status_created }]}>{item?.orderStatus}</Text>
+            )
+        } else if (item?.orderStatus === "Accept") {
+            return (
+                <Text style={[styles.statusText, { color: COLORS.status_accepted }]}>{item?.orderStatus}</Text>
+            )
+        } else if (item?.orderStatus === "Out for delivery") {
+            return (
+                <Text style={[styles.statusText, { color: COLORS.status_out }]}>{item?.orderStatus}</Text>
+            )
+        } else if (item?.orderStatus === "Delivered") {
+            return (
+                <Text style={[styles.statusText, { color: COLORS.status_completed }]}>{item?.orderStatus}</Text>
+            )
+        } else if (item?.orderStatus === "Cancelled") {
+            return (
+                <Text style={[styles.statusText, { color: COLORS.status_cancelled }]}>{item?.orderStatus}</Text>
+            )
+        }
+    }
+
+    const orderPage = useCallback(() => {
+        navigation.navigate('SingleOrder', {item : item })
+    }, [navigation])
+
     return (
-        <TouchableOpacity style={styles.container} onPress={onPress}>
+        <TouchableOpacity style={styles.container} onPress={orderPage}>
             <View style={styles.orderStyle}>
                 <View style={styles.orderTwoStyle}>
                     <Text style={styles.subText}>Order ID : </Text>
-                    <Text style={styles.mainText}>65321</Text>
+                    <Text style={styles.mainText}>{item?.order_id}</Text>
                 </View>
-                <Text style={styles.timeStyle}>22/05/2024 10:30am</Text>
+                <Text style={styles.timeStyle}>{moment(item?.created_at).format("DD-MM-YYYY hh:mm a")}</Text>
             </View>
             <View style={styles.borderStyle} />
             <View style={styles.secondContainer}>
                 <View>
                     <View style={styles.orderTwoStyle}>
                         <Text style={styles.subText}>No. of Items : </Text>
-                        <Text style={styles.mainText}>1</Text>
+                        <Text style={styles.mainText}>{item?.itemDetails?.length}</Text>
                     </View>
                     <View style={styles.orderTwoStyle}>
                         <Text style={styles.subText}>Total Amount : </Text>
-                        <Text style={styles.mainText}>₹ 140.50</Text>
+                        <Text style={styles.mainText}>₹ {item?.total}</Text>
                     </View>
                 </View>
                 <View style={styles.statusContainer}>
                     <Text style={styles.statusSub}>Status</Text>
-                    <Text style={styles.statusText}>Processing</Text>
+                    {statusColor()}
                 </View>
             </View>
 
@@ -40,6 +76,7 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: "#F5F5F5",
         borderRadius: 12,
+        marginBottom: 12
     },
     subText: {
         fontFamily: "Poppins-Medium",
@@ -89,7 +126,6 @@ const styles = StyleSheet.create({
     statusText: {
         fontFamily: "Poppins-SemiBold",
         fontSize: 12,
-        color: COLORS.status_processing
     },
     statusContainer: {
         gap: -5,

@@ -4,7 +4,8 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { COLORS } from '../constants/COLORS';
 
-const CategoryCard = ({ key }) => {
+const CategoryCard = ({ key,item }) => {
+   
 
     const navigation = useNavigation()
 
@@ -13,10 +14,10 @@ const CategoryCard = ({ key }) => {
     }, [navigation])
 
     return (
-        <Animated.View entering={FadeInDown.easing().delay(200)}>
+        <Animated.View entering={FadeInDown.easing().delay(200)} key={key}>
             <TouchableOpacity style={styles.container} key={key} onPress={NavigateToSingle}>
-                <Image source={require('../images/spinach.jpg')} style={styles.image} />
-                <Text style={styles.text}>Spinach</Text>
+                <Image source={{uri:item?.image}} style={styles.image} />
+                <Text style={styles.text}>{item?.name}</Text>
             </TouchableOpacity>
         </Animated.View>
     );

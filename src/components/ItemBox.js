@@ -2,12 +2,12 @@ import React from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import { COLORS } from '../constants/COLORS';
 import Animated, { FadeIn, FadeInDown, FadeOut } from 'react-native-reanimated';
-const ItemBox = ({ onPress, index }) => {
+const ItemBox = ({ onPress, key, item, index }) => {
     return (
-        <Animated.View entering={FadeInDown.delay(index * 300).duration(400).springify().damping(12)}>
+        <Animated.View key={key} entering={FadeInDown.delay(index * 300).duration(400).springify().damping(12)}>
             <TouchableOpacity style={styles.container} onPress={onPress}>
                 <View style={styles.box}>
-                    <Text style={styles.text}>Offer Products</Text>
+                    <Text style={styles.text}>{item?.name}</Text>
                 </View>
             </TouchableOpacity>
         </Animated.View>
