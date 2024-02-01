@@ -10,7 +10,7 @@ const Category = () => {
 
     const DATA2 = [1, 2, 3, 4, 5, 6, 7, 8];
 
-    const renderSectionHeader = ({ item, index }) => {
+    const renderSectionHeader = useCallback(({ item, index }) => {
         const animatedStyle = FadeInDown.delay(index * 100).duration(200).springify().damping(12);
         return (
             <Animated.View entering={animatedStyle}>
@@ -19,7 +19,7 @@ const Category = () => {
                 </View>
             </Animated.View>
         );
-    };
+    },[]);
 
 
     const ListHeaderComponent = memo(() => {
