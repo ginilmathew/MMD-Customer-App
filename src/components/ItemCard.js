@@ -6,7 +6,7 @@ import CartContext from '../context/cart';
 import { useNavigation } from '@react-navigation/core';
 
 const CustomItemCard = ({ onPress, item, key }) => {
-    
+
     const navigation = useNavigation()
 
     const { cartItems, addToCart, incrementItem, decrementItem } = useContext(CartContext);
@@ -31,12 +31,14 @@ const CustomItemCard = ({ onPress, item, key }) => {
     }, [navigation])
     // TouchableOpacity onPress={NavigateToSingleProduct}
 
-    
-    const AnimatedStyle =  FadeInDown.easing().delay(300);
-        
-     const BASEPATH = item?.products?.[0]?.imageBasePath;
 
-  
+    const AnimatedStyle = FadeInDown.easing().delay(300);
+
+    const BASEPATHPRODCT = item?.products ? item?.products?.[0]?.imageBasePath : item?.imageBasePath ?? null;
+    const BASEPATHP = item?.imageBasePath ?? null;
+
+
+
 
 
     return (
@@ -44,16 +46,20 @@ const CustomItemCard = ({ onPress, item, key }) => {
             <TouchableOpacity onPress={NavigateToSingleProduct} style={styles.container}>
                 {/* Left Side */}
                 <View style={styles.leftContainer}>
-                    <Image
-                        source={{uri :BASEPATH + item?.products?.[0]?.image?.[0]}}
+                    {/* {item?.product && <Image
+                        source={{ uri: BASEPATHPRODCT + item?.products?.[0]?.image?.[0] }}
                         style={styles.leftImage}
-                    />
+                    />}
+                    {!item?.product && <Image
+                        source={{ uri: BASEPATHP + item?.image?.[0] }}
+                        style={styles.leftImage}
+                    />} */}
                 </View>
 
                 {/* Center Content */}
                 <View style={styles.centerContainer}>
-                    <Text style={styles.heading}>{item?.products?.[0]?.name}</Text>
-                    <Text style={styles.subHeading}>Category: {item?.products?.[0]?.category?.name}</Text>
+                    <Text style={styles.heading}>{item?.products ? item?.products?.[0]?.name : item?.name}</Text>
+                    <Text style={styles.subHeading}>Category: {item?.products ? item?.products?.[0]?.category?.name : item?.category?.name}</Text>
                     <View style={styles.offerBox}>
                         <Text style={styles.offerText}>Up to 10% off!</Text>
                     </View>
