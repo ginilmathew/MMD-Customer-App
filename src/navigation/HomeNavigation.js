@@ -7,12 +7,16 @@ import { useCallback, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, View, useWindowDimensions } from 'react-native';
 import { COLORS } from '../constants/COLORS';
 import Header from '../components/Header';
+import EditProfile from '../screens/Profile/EditProfile';
+import AddAddress from '../screens/Profile/AddAddress';
+import ProfileNavigator from './ProfileNavigator';
 import SingleCategory from '../screens/Category/singleCategory';
 import AllProducts from '../screens/AllProducts';
 import Category from '../screens/Category';
 import SingleOrder from '../screens/orders/SingleOrder';
 import Animated, { useSharedValue, withSpring, withTiming, useAnimatedStyle, FadeInDown, BounceIn, BounceOut, FadeInUp } from 'react-native-reanimated';
 import { useFocusEffect } from '@react-navigation/native';
+import { storage } from '../../App';
 
 
 
@@ -31,7 +35,7 @@ function HomeNavigation({ navigation }) {
     }, [navigation]);
 
     const navToProfile = useCallback(() => {
-        navigation.navigate("Profile")
+        navigation.navigate("ProfileNavigator")
     }, [navigation]);
 
     const FixedComponent = () => {
@@ -45,7 +49,7 @@ function HomeNavigation({ navigation }) {
 
 
     const toCart = useCallback(() => {
-        navigation.navigate('Cart')
+        navigation.navigate('ProfileNavigator')
     }, [navigation])
 
     const toNotification = useCallback(() => {
@@ -77,14 +81,18 @@ function HomeNavigation({ navigation }) {
 //     }, [animatedValue])
 //   );
 
+    // storage.removeItem('user')
+
     return (
         <>
+
             <Header toCart={toCart} toNotification={toNotification} />
 
             <Tab.Navigator
+                initialRouteName='profileNavigator'
                 screenOptions={({ route }) => {
 
-                    const nav = ['Home', 'Profile', 'Orders'].includes(route?.name);
+                    const nav = ['Home', 'ProfileNavigator', 'Orders'].includes(route?.name);
 
                     return ({
                         headerShown: false,
@@ -92,7 +100,7 @@ function HomeNavigation({ navigation }) {
                         tabBarHideOnKeyboard: true,
                         tabBarLabel: () => '',
                         tabBarIcon: ({ focused }) => nav && (
-                              <Animated.View entering={FadeInUp.delay(100).duration(100).springify().damping(12)}>
+                              <Animated.View entering={FadeInUp.delay(200).duration(200).springify().damping(12)}>
                                 <TouchableOpacity onPress={route?.name === 'Home' ? navToHome : route?.name === "Orders" ? navToOrder : navToProfile} style={[{
                                     width: Math.floor(width / 3),
                                     height: '100%',
@@ -117,11 +125,8 @@ function HomeNavigation({ navigation }) {
             >
                 <Tab.Screen name="Home" component={Home} />
                 <Tab.Screen name="Orders" component={Orders} />
-                <Tab.Screen name="Profile" component={Profile} />
-                <Tab.Screen name="Category" component={Category} />
-                <Tab.Screen name="AllProducts" component={AllProducts} />
-                <Tab.Screen name="SingleCategory" component={SingleCategory} />
-                
+                <Tab.Screen name="ProfileNavigator" component={ProfileNavigator} />
+
             </Tab.Navigator>
         </>
     );

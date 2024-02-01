@@ -1,5 +1,5 @@
 import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useCallback } from 'react'
+import React, { useCallback, useContext, useEffect } from 'react'
 import Header from '../../components/Header'
 import CustomSearch from '../../components/CustomSearch'
 import CustomSlider from '../../components/CustomSlider'
@@ -11,22 +11,23 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import DummySearch from '../../components/DummySearch'
 import ItemBox from '../../components/ItemBox'
 import Animated from 'react-native-reanimated'
+import locationContext from '../../context/location'
+
+
 const Home = ({ navigation }) => {
 
-    const DATA = [
-        {
-            id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-            title: 'First Item',
-        },
-        {
-            id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-            title: 'Second Item',
-        },
-        {
-            id: '58694a0f-3da1-471f-bd96-145571e29d72',
-            title: 'Third Item',
-        },
-    ];
+    const { getLocation, location } = useContext(locationContext)
+
+
+
+
+    const DATA = 
+        [
+            { id: 1 },
+            { id: 2 },
+            { id: 3 }
+          ]
+    
 
 
     const DATA2 = [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -45,15 +46,17 @@ const Home = ({ navigation }) => {
         navigation.navigate('Search')
     }, [navigation])
 
-    const NavigateToSingleProduct = useCallback(() => {
-        navigation.navigate('SingleProduct')
-    }, [navigation])
 
+
+
+    useEffect(() => {
+        getLocation()
+    }, [])
 
 
     const HeaderComponents = useCallback(() => {
         return (
-            <>
+            <View style={{ backgroundColor: '#fff' }}>
                 <View style={{ marginVertical: 4 }}>
                     <CustomSlider />
                 </View>
@@ -77,7 +80,7 @@ const Home = ({ navigation }) => {
                 <View style={{ marginTop: 3 }}>
                     <CustomHeading label={'Popular Products'} hide={true} onPress={NavigateToAllPages} />
                 </View>
-            </>
+            </View>
 
         )
     }, [])
@@ -85,9 +88,9 @@ const Home = ({ navigation }) => {
     const renderItem = useCallback(({ item, index }) => {
         return (
             <>
-                <Animated.View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
-                    <ItemCard key={index} onPress={NavigateToSingleProduct} />
-                </Animated.View>
+                <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
+                    <ItemCard key={index}  item={item}/>
+                </View>
             </>
         )
     }, [])
@@ -99,7 +102,7 @@ const Home = ({ navigation }) => {
                 <View style={{ marginBottom: 20 }}>
                     <CustomSlider />
                 </View>
-                <View style={{ marginTop: 3 }}>
+                <View style={{ marginTop: 2 }}>
                     <CustomHeading label={'HighLights'} hide={false} />
                 </View>
                 <View style={[styles.boxItem, styles.footerBox]}>
@@ -107,7 +110,7 @@ const Home = ({ navigation }) => {
                         <ItemBox onPress={NavigateToAllPages} index={index} />
                     ))}
                 </View>
-                <View style={{ marginBottom: 30 }}>
+                <View style={{ marginBottom: 80 }}>
                 </View>
             </Animated.View>
         )
@@ -118,7 +121,7 @@ const Home = ({ navigation }) => {
 
     return (
 
-        <>
+        <View style={{ backgroundColor: '#fff' }}>
             <DummySearch press={NavigateToSearch} />
             <FlatList
                 data={DATA}
@@ -128,8 +131,7 @@ const Home = ({ navigation }) => {
                 showsVerticalScrollIndicator={false}
                 ListFooterComponent={ListFooterComponent}
             />
-        </>
-
+        </View>
     )
 }
 
@@ -150,7 +152,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         flexDirection: 'row',
         gap: 2
-
     },
     footerBox: {
         paddingHorizontal: 18
@@ -160,7 +161,7 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         gap: 15,
         justifyContent: 'space-between',
-        marginTop: 5
+        marginTop: 3
     }
 
 })

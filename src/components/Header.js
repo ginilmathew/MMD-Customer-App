@@ -3,6 +3,8 @@ import React, { memo, useCallback } from 'react'
 import IonIcons from 'react-native-vector-icons/Ionicons'
 import { useNavigation } from '@react-navigation/native'
 
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { COLORS } from '../constants/COLORS';
 const Header = memo(({ onPress }) => {
 
     const navigation = useNavigation()
@@ -41,7 +43,7 @@ const styles = StyleSheet.create({
         alignItems: 'center', // Align items in the center vertically
         paddingHorizontal: 22,
         height: 60,
-        backgroundColor: "#fff"
+        backgroundColor: COLORS.white 
     },
     imageContainer: {
         marginRight:10, // Margin to separate the image from the icon

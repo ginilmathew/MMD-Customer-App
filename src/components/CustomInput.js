@@ -5,7 +5,7 @@ import IonIcons from 'react-native-vector-icons/Ionicons'
 import { Controller } from 'react-hook-form'
 
 
-const CustomInput = ({ left, right, color, passwd, control, name, placeholder, type }) => {
+const CustomInput = ({ left, right, color, passwd, control, name, placeholder, type, autoFocus }) => {
 
   const [hidePasswd, setShowPasswd] = useState(passwd);
 
@@ -38,17 +38,20 @@ const CustomInput = ({ left, right, color, passwd, control, name, placeholder, t
             }
 
             <TextInput
-              style={[styles.textInput, passwd && { borderRadius: 0 }]}
+              value={value}
+              style={[styles.textInput, passwd && { borderRadius: 0 }, { paddingHorizontal: !left && !right && 20 }]}
               secureTextEntry={hidePasswd}
               onChangeText={onChange}
               placeholder={placeholder}
               placeholderTextColor={COLORS.text}
               keyboardType={type}
+              autoFocus={autoFocus}
+              maxLength={name === 'mobile' && 10 || null}
             />
 
             {passwd && (
               <TouchableOpacity onPress={handlePasswd} style={styles.icon}>
-                <IonIcons name={hidePasswd ? 'eye-off' : 'eye'} size={23} color={COLORS.dark_gray} />
+                <IonIcons name={hidePasswd ? 'eye-off' : 'eye'} size={23} color={COLORS.text} />
               </TouchableOpacity>
             )}
           </View>
@@ -84,7 +87,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 0,
     backgroundColor: COLORS.gray,
     color: COLORS.light,
-    fontFamily: 'Poppins-Italic'
+    fontFamily: 'Poppins-Italic',
   },
   error: {
     fontSize: 14,

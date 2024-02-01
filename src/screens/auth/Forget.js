@@ -8,11 +8,14 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup';
 import { COLORS } from '../../constants/COLORS'
 import OTPInput from 'react-native-otp-textinput'
+import { useMutation } from 'react-query'
+import { forgetApi, otpApi } from '../../api/auth'
+import { storage } from '../../../App'
 
 
 const Forget = ({ navigation }) => {
 
-  const [forget, setForget] = useState(true);
+  const [forget, setForget] = useState(!true);
 
   const schema = yup.object(forget ? {
     email: yup.string().email('Please enter valid email address').required('Email is required'),
@@ -23,20 +26,33 @@ const Forget = ({ navigation }) => {
   })
 
 
+  const onSuccessForget = () => {
+    storage.setString('success', 'OTP has been successfully sent')
+    setForget(false)
+  }
+
+  const onSuccessOtp = () => {
+    storage.setString('success', 'OTP has been successfully sent')
+    // navigation.navigate('Login')
+  }
+
+  const { mutate } = useMutation({
+    mutationKey: ['forget-query'],
+    mutationFn: forgetApi,
+    onSuccess: onSuccessForget
+  })
+
+  const { mutate: mutateOtp } = useMutation({
+    mutationKey: ['forget-query'],
+    mutationFn: otpApi,
+    onSuccess: onSuccessOtp
+  })
+
 
   const goBack = useCallback(() => {
     navigation?.goBack()
   }, [navigation]);
-
-
-  const forgetSubmit = useCallback((data) => {
-    setForget(false)
-  }, []);
-
-  const otpSubmit = useCallback((data) => {
-    console.log(data);
-  }, []);
-
+  
 
   return (
     <Background headline={forget ? 'FORGET' : 'OTP'}
@@ -84,7 +100,7 @@ const Forget = ({ navigation }) => {
         )
       }
 
-      <CommonButton text={forget ? 'Confirm' : 'Proceed'} mt={!forget && 30} onPress={handleSubmit(forget ? forgetSubmit : otpSubmit)} />
+      <CommonButton text={forget ? 'Confirm' : 'Proceed'} mt={!forget && 30} onPress={handleSubmit(forget ? mutate : mutateOtp)} />
 
     </Background>
   )

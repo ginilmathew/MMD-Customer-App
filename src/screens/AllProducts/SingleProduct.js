@@ -7,13 +7,21 @@ import {
     Text,
     TouchableOpacity,
     View,
+    useWindowDimensions,
 } from 'react-native';
 import Header from '../../components/Header';
 import CommonHeader from '../../components/CommonHeader';
 import { COLORS } from '../../constants/COLORS';
+import CommonSelectDropdown from '../../components/CustomDropDown';
+import CustomDropdown from '../../components/CommonDropDown';
 
 const SingleProduct = () => {
+    const { height } = useWindowDimensions()
     const [mainImage, setMainImage] = useState(require('../../images/spinach.jpg'));
+    const [select, setSelect] = useState(null)
+    const color = [
+        1, 2, 3, 4, 5, 6
+    ];
     const smallImages = [
         require('../../images/spinach.jpg'),
         require('../../images/spinach.jpg'),
@@ -25,10 +33,13 @@ const SingleProduct = () => {
     }, []);
 
     return (
-        <>
+        <View style={{ backgroundColor: '#fff', height: height, paddingBottom: 60 }}>
             <Header />
             <CommonHeader heading={'Spinach....'} backBtn />
-            <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+            <ScrollView
+                contentContainerStyle={[styles.container]}
+                scrollEnabled={true}
+                showsVerticalScrollIndicator={false}>
                 <Image source={mainImage} style={styles.mainImage} resizeMode="cover" />
                 <ScrollView
                     horizontal
@@ -40,21 +51,28 @@ const SingleProduct = () => {
                     ))}
                 </ScrollView>
                 <ProductData />
+                <View style={styles.dropdownContainer}>
+                    <CommonSelectDropdown topLabel={'weight'} value={select} setValue={setSelect} />
+                </View>
                 <AboutSection />
-              
                 <DescriptionSection />
-             
             </ScrollView>
-            <BuyButton />
-        </>
+            <View>
+                <BuyButton />
+            </View>
+        </View>
     );
 };
+
+
 
 const SmallImage = React.memo(({ image, onPress }) => (
     <TouchableOpacity onPress={() => onPress(image)}>
         <Image source={image} style={styles.smallImage} resizeMode="cover" />
     </TouchableOpacity>
 ));
+
+
 
 const ProductData = React.memo(() => {
     return (
@@ -72,8 +90,9 @@ const ProductData = React.memo(() => {
 });
 
 
+
 const AboutSection = React.memo(() => (
-    <View style={styles.aboutContainer}>
+    <View style={[styles.aboutContainer, { marginTop: 10 }]}>
         <Text style={styles.containerHeading}>About Product</Text>
         <Text style={styles.descriptionText}>
             {/* Your long description goes here. It will be scrollable */}
@@ -83,6 +102,8 @@ const AboutSection = React.memo(() => (
         </Text>
     </View>
 ));
+
+
 
 const DescriptionSection = React.memo(() => (
     <View style={styles.descriptionContainer}>
@@ -96,6 +117,8 @@ const DescriptionSection = React.memo(() => (
     </View>
 ));
 
+
+
 const BuyButton = React.memo(() => (
     <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button}>
@@ -104,7 +127,7 @@ const BuyButton = React.memo(() => (
     </View>
 ));
 
-const { width, height } = Dimensions.get('window');
+
 const styles = StyleSheet.create({
     container: {
         paddingHorizontal: 20,
@@ -113,7 +136,7 @@ const styles = StyleSheet.create({
     mainImage: {
         borderRadius: 6,
         width: '100%',
-        height: height / 4,
+        height: 150,
         marginBottom: 10,
     },
     smallImagesContainer: {
@@ -129,11 +152,23 @@ const styles = StyleSheet.create({
     containerProduct: {
         flexDirection: 'row',
         justifyContent: 'space-between',
- 
+
         paddingVertical: 10,
         // borderBottomWidth: 1,
         // borderBottomColor: '#ccc',
     },
+
+
+    dropdownContainer: {
+        borderTopWidth: 2,
+        borderTopStyle: 'dashed',
+        borderBottomWidth: 2,
+        borderBottomStyle: 'dashed',
+        borderColor: 'grey',
+        borderRadius: 2,
+        paddingVertical: 20
+    },
+
     leftSide: {
         flex: 1,
         marginRight: 10,
@@ -142,24 +177,28 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     heading: {
-      fontFamily: 'Poppins-Regular',
+        fontFamily: 'Poppins-Regular',
         fontSize: 18,
         fontWeight: 'bold',
+        color: COLORS.light,
     },
     subheading: {
-      fontFamily: 'Poppins-Regular',
-        fontStyle:'italic',
+        fontFamily: 'Poppins-Regular',
+        fontStyle: 'italic',
         fontSize: 14,
         color: COLORS.text,
     },
     price: {
-      fontFamily: 'Poppins-Regular',
+        fontFamily: 'Poppins-Regular',
         fontSize: 18,
         fontWeight: 'bold',
         textAlign: 'right',
     },
     stock: {
+        fontFamily: 'Poppins-bold',
+        fontWeight:'bold',
         fontSize: 16,
+        letterSpacing:1,
         color: COLORS.red,
         textAlign: 'right',
     },
@@ -171,16 +210,17 @@ const styles = StyleSheet.create({
 
     },
     containerHeading: {
-      fontFamily: 'Poppins-Regular',
+        fontFamily: 'Poppins-Regular',
         fontWeight: 'bold',
-        color: '#000',
+        color:COLORS.dark,
         letterSpacing: 1,
         fontSize: 16
     },
     descriptionText: {
-      fontFamily: 'Poppins-Regular',
+        fontFamily: 'Poppins-Regular',
         fontSize: 14,
         lineHeight: 24,
+        color:COLORS.text
     },
     buttonContainer: {
         alignItems: 'center',

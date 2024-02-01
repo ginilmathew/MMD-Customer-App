@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity } from 'react-native'
-import React, { useCallback } from 'react'
+import React, { useCallback, useContext } from 'react'
 import Background from './Background';
 import IonIcons from 'react-native-vector-icons/Ionicons'
 import CommonButton from '../../components/CommonButton';
@@ -8,18 +8,43 @@ import { COLORS } from '../../constants/COLORS';
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useMutation } from 'react-query';
+import { loginApi } from '../../api/auth';
+import { useMMKVStorage } from 'react-native-mmkv-storage';
+import { storage } from '../../../App';
+import { CommonActions } from '@react-navigation/native';
+import locationContext from '../../context/location';
 
 
 const Login = ({ navigation }) => {
 
+    const { getLocation } = useContext(locationContext)
 
     const schema = yup.object({
         email: yup.string().email('Please enter valid email address').required('Email is required'),
-        passwd: yup.string().required('Password is required')
+        password: yup.string().required('Password is required')
     })
 
     const { control, handleSubmit } = useForm({
         resolver: yupResolver(schema)
+    })
+
+    const onSuccess = async ({ data }) => {
+        await storage.setMapAsync('user', data);
+        storage.setString('success', 'Login successful')
+       
+        navigation.dispatch(CommonActions.reset(
+            {
+                index: 0,
+                routes: [{ name: 'HomeNavigator' }]
+            }
+        ));
+    }
+
+    const { mutate } = useMutation({
+        mutationKey: ['login-query'],
+        mutationFn: loginApi,
+        onSuccess
     })
 
     const navToRegister = useCallback(() => {
@@ -31,10 +56,6 @@ const Login = ({ navigation }) => {
         navigation.navigate('Forget')
     }, [navigation])
 
-
-    const onSubmit = useCallback((data) => {
-
-    }, [])
 
     return (
         <Background
@@ -56,7 +77,7 @@ const Login = ({ navigation }) => {
 
             <CustomInput
                 control={control}
-                name={'passwd'}
+                name={'password'}
                 placeholder='Password'
                 left={'lock-closed'}
                 color={COLORS.blue}
@@ -67,7 +88,7 @@ const Login = ({ navigation }) => {
                 <Text style={styles.link}>{'Forget Password?'}</Text>
             </TouchableOpacity>
 
-            <CommonButton text={'Login'} onPress={handleSubmit(onSubmit)} />
+            <CommonButton text={'Login'} onPress={handleSubmit(mutate)} />
 
 
         </Background>

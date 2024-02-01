@@ -2,10 +2,10 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import React from 'react'
 import { COLORS } from '../constants/COLORS'
 
-const CommonButton = ({ text, mb, mt, onPress }) => {
+const CommonButton = ({ text, mb, mt, onPress, w }) => {
 
     return (
-        <View style={[styles.container, { marginTop: mt, marginBottom: mb }]}>
+        <View style={[styles.container, { marginTop: mt, marginBottom: mb, width: w || '100%', alignSelf: 'center' }]}>
             <TouchableOpacity style={styles.button} onPress={onPress}>
                 <Text style={styles.text}>{text}</Text>
             </TouchableOpacity>

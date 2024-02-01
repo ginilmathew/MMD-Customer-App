@@ -9,28 +9,36 @@ import CustomTab from '../../components/CustomTab'
 import { COLORS } from '../../constants/COLORS'
 
 const SingleCategory = () => {
-    const DATA2 = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+    const DATA2 =
+        [
+            { id: 1 },
+            { id: 2 },
+            { id: 3 },
+            { id: 4 },
+            { id: 5 },
+            { id: 6 },
+            { id: 7 },
+            { id: 8 },
+
+        ]
+
 
 
     const LIST = [{ id: 1, name: 'All' }, { id: 2, name: 'fruits' }, { id: 3, name: 'nuts' }, { id: 4, name: 'seed' }, { id: 5, name: 'vitamins' }]
 
 
-
-
-
- 
-
-
     const ListHeaderComponents = useCallback(({ item, index }) => {
+        
         return (
-            <View style={{ padding: 8,backgroundColor:COLORS.white }}>
+            <View style={{ padding: 8, backgroundColor: COLORS.white }}>
                 <ScrollView
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}
                 >
                     {LIST.map((res, index) => (
-                        
+
                         <Animated.View entering={FadeInDown.delay(index * 50).duration(200).springify().damping(12)} key={index} style={{ marginRight: 10 }}>
                             <CustomTab label={res?.name} />
                         </Animated.View>
@@ -45,7 +53,10 @@ const SingleCategory = () => {
         return (
             <>
                 <Animated.View entering={FadeInDown.delay(index * 200).duration(200).springify().damping(12)} >
-                    <ItemCard />
+                    <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
+                        <ItemCard item={item} />
+                    </View>
+
                 </Animated.View>
             </>
         )
@@ -54,15 +65,20 @@ const SingleCategory = () => {
     const ListFooterComponent = useCallback(() => {
         return (
             <>
-                <View style={{ marginBottom: 30 }}></View>
+                <View style={{ marginBottom: 130 }}></View>
             </>
         )
     }, [])
 
 
     return (
+<<<<<<< HEAD
         <>
             {/* <Header /> */}
+=======
+        <View style={{ backgroundColor: '#fff' }}>
+            <Header />
+>>>>>>> main
             <CommonHeader heading={'Spinach'} backBtn />
             <FlatList
                 stickyHeaderIndices={[0]}
@@ -72,10 +88,10 @@ const SingleCategory = () => {
                 keyExtractor={item => item.id}
                 showsVerticalScrollIndicator={false}
                 ListFooterComponent={ListFooterComponent}
-             
+
             />
 
-        </>
+        </View>
     )
 }
 

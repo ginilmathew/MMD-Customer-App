@@ -29,11 +29,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   text: {
+    fontFamily: 'Poppins-bold',
     letterSpacing: 1,
+    color: COLORS.light,
     fontSize: 16, // Adjust the font size as needed
     fontWeight: 'bold', // Optional: Apply bold styling
   },
   text2: {
+    fontFamily: 'Poppins-bold',
     letterSpacing: 1,
     fontSize: 13, // Adjust the font size as needed
     fontWeight: 'bold',
