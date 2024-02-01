@@ -120,7 +120,6 @@ const Home = ({ navigation }) => {
                 ListFooterComponent={ListFooterComponent}
             />
         </View>
-
     )
 }
 
