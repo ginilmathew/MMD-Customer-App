@@ -12,11 +12,13 @@ import useRefetch from '../../hooks/useRefetch'
 
 const Orders = ({ navigation }) => {
 
-    const { data , refetch, isLoading } = useQuery('order-query', {
-        queryFn: getOrders,
+    const [user] = useMMKVStorage('user', storage)
+
+    const { data, isLoading, refetch } = useQuery({
+        queryKey: ['order-query'],
+        queryFn: () => getOrders(user?.user?._id),
+        enabled: true
     })
-
-
 
     useRefetch(refetch)
 
