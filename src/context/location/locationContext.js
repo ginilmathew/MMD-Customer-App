@@ -73,8 +73,7 @@ const locationContext = ({ children }) => {
         Geolocation.getCurrentPosition(
             //Will give you the current location
             (position) => {
-                const { latitude, longitude } = position.coords
-
+                const { latitude, longitude } = position.coords;
 
                 setLocation({
                     location: { latitude, longitude }
