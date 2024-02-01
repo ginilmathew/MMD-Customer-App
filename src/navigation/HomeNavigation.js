@@ -3,7 +3,7 @@ import Home from '../screens/home';
 import Orders from '../screens/orders';
 import Profile from '../screens/Profile';
 import IonIcons from 'react-native-vector-icons/Ionicons'
-import { useCallback, useEffect } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, View, useWindowDimensions } from 'react-native';
 import { COLORS } from '../constants/COLORS';
 import Header from '../components/Header';
@@ -17,6 +17,9 @@ import SingleOrder from '../screens/orders/SingleOrder';
 import Animated, { useSharedValue, withSpring, withTiming, useAnimatedStyle, FadeInDown, BounceIn, BounceOut, FadeInUp } from 'react-native-reanimated';
 import { useFocusEffect } from '@react-navigation/native';
 import { storage } from '../../App';
+import LocationPage from '../screens/auth/LocationPage';
+import { useMMKVStorage } from 'react-native-mmkv-storage';
+import locationContext from '../context/location';
 
 
 
@@ -25,6 +28,9 @@ const Tab = createBottomTabNavigator();
 function HomeNavigation({ navigation }) {
 
     const { width } = useWindowDimensions()
+    const [user] = useMMKVStorage('user', storage)
+
+
 
     const navToHome = useCallback(() => {
         navigation.navigate("Home")
@@ -83,13 +89,14 @@ function HomeNavigation({ navigation }) {
 
     // storage.removeItem('user')
 
+
     return (
         <>
 
             <Header toCart={toCart} toNotification={toNotification} />
 
             <Tab.Navigator
-                initialRouteName='profileNavigator'
+                initialRouteName={user?.user?.address ? 'Home' : 'LocationPage'}
                 screenOptions={({ route }) => {
 
                     const nav = ['Home', 'ProfileNavigator', 'Orders'].includes(route?.name);
@@ -98,9 +105,12 @@ function HomeNavigation({ navigation }) {
                         headerShown: false,
                         tabBarItemStyle: { display: !nav ? 'none' : 'flex' },
                         tabBarHideOnKeyboard: true,
+                        // tabBarStyle: {
+                        //     height: user?.user?.address ? 50 : 0
+                        // },
                         tabBarLabel: () => '',
                         tabBarIcon: ({ focused }) => nav && (
-                              <Animated.View entering={FadeInUp.delay(100).duration(100).springify().damping(12)}>
+                              <Animated.View entering={FadeInUp.delay(200).duration(200).springify().damping(12)}>
                                 <TouchableOpacity onPress={route?.name === 'Home' ? navToHome : route?.name === "Orders" ? navToOrder : navToProfile} style={[{
                                     width: Math.floor(width / 3),
                                     height: '100%',

@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, FlatList, ScrollView } from 'react-native'
-import React, { useCallback } from 'react'
+import React, { memo, useCallback } from 'react'
 import Header from '../../components/Header'
 import CommonHeader from '../../components/CommonHeader'
 
@@ -27,6 +27,10 @@ const SingleCategory = () => {
 
     const LIST = [{ id: 1, name: 'All' }, { id: 2, name: 'fruits' }, { id: 3, name: 'nuts' }, { id: 4, name: 'seed' }, { id: 5, name: 'vitamins' }]
 
+    const AnimatedStyles = useCallback((index, count) => {
+        return FadeInDown.delay(index * count).duration(200).springify().damping(12);
+    }, []);
+
 
     const ListHeaderComponents = useCallback(({ item, index }) => {
         return (
@@ -36,36 +40,26 @@ const SingleCategory = () => {
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}
                 >
-                    {LIST.map((res, index) => (
-
-                        <Animated.View entering={FadeInDown.delay(index * 50).duration(200).springify().damping(12)} key={index} style={{ marginRight: 10 }}>
-                            <CustomTab label={res?.name} />
-                        </Animated.View>
-                    ))}
+                    <RenderHeaderMemo LIST={LIST} AnimatedStyle={AnimatedStyles} />
                 </ScrollView>
             </View>
         )
 
-    }, [])
+    }, [AnimatedStyles])
 
     const renderItem = useCallback(({ item, index }) => {
         return (
             <>
-                <Animated.View entering={FadeInDown.delay(index * 200).duration(200).springify().damping(12)} >
-                    <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
-                        <ItemCard item={item} />
-                    </View>
-
-                </Animated.View>
+                <MainRenderMemo AnimatedStyle={AnimatedStyles} item={item} index={index} />
             </>
         )
-    }, [])
+    }, [AnimatedStyles])
 
     const ListFooterComponent = useCallback(() => {
         return (
-            <>
-                <View style={{ marginBottom: 130 }}></View>
-            </>
+            <View style={{ marginBottom: 130 }}>
+
+            </View>
         )
     }, [])
 
@@ -82,14 +76,10 @@ const SingleCategory = () => {
                 keyExtractor={item => item.id}
                 showsVerticalScrollIndicator={false}
                 ListFooterComponent={ListFooterComponent}
-
             />
-
         </View>
     )
 }
-
-export default SingleCategory
 
 const styles = StyleSheet.create({
     tabConatiner: {
@@ -100,3 +90,32 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     }
 })
+
+const RenderHeaderMemo = memo(({ LIST, AnimatedStyle }) => {
+    return (
+        <>
+            {LIST.map((res, index) => (
+                <Animated.View entering={AnimatedStyle(index, 100)} style={{ marginRight: 10 }}>
+                    <CustomTab label={res?.name} />
+                </Animated.View>
+            ))}
+        </>
+
+    )
+})
+
+const MainRenderMemo = memo(({ item, AnimatedStyle, index }) => {
+    return (
+        <Animated.View entering={AnimatedStyle(index, 200)} >
+            <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
+                <ItemCard item={item} />
+            </View>
+        </Animated.View>
+
+    )
+})
+
+
+
+
+export default SingleCategory

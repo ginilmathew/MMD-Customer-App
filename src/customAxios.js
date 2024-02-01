@@ -7,7 +7,6 @@ import navRef from "./navigation/RootNavigation";
 
 const customAxios = axios.create({
     baseURL: BASE_URL,
-    timeout: 5000
 });
 
 
@@ -19,7 +18,7 @@ customAxios.interceptors.request.use(async function (config) {
 
         if (!state?.isConnected) return;
 
-        const user = storage.getMap('user')
+        const user = await storage.getMapAsync('user')
 
         if (user) config.headers['Authorization'] = `Bearer ${user?.access_token}`;
 
@@ -30,16 +29,15 @@ customAxios.interceptors.request.use(async function (config) {
     }
 }, (err) => {
     storage.setBool('loading', false);
-
     return Promise.reject(err)
 })
 
 
 customAxios.interceptors.response.use(function (res) {
+
     storage.setBool('loading', false);
     return Promise.resolve(res);
 }, (err) => {
-    console.log(err.response.data);
     if (err?.response?.data?.message) {
 
         if ((err?.response?.status === 403 || err?.response?.status === 401) && err?.response?.data?.message === "Unauthenticated.") {

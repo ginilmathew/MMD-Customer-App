@@ -15,13 +15,13 @@ import { storage } from '../../../App'
 
 const Forget = ({ navigation }) => {
 
-  const [forget, setForget] = useState(!true);
+  const [forget, setForget] = useState(true);
 
   const schema = yup.object(forget ? {
     email: yup.string().email('Please enter valid email address').required('Email is required'),
-  } : { otp: yup.string().matches(/\d{4}/, 'OTP must be 4 digits').required("OTP required").typeError("OTP required") })
+  } : { otp: yup.string().matches(/\d{6}/, 'OTP must be 6 digits').required("OTP required").typeError("OTP required") })
 
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, getValues } = useForm({
     resolver: yupResolver(schema)
   })
 
@@ -31,9 +31,10 @@ const Forget = ({ navigation }) => {
     setForget(false)
   }
 
-  const onSuccessOtp = () => {
-    storage.setString('success', 'OTP has been successfully sent')
-    // navigation.navigate('Login')
+  const onSuccessOtp = ({ data }) => {
+    storage.setString('success', 'Verification Successful')
+  
+    navigation.navigate('HomeNavigator', { screen: 'ProfileNavigator', params: { screen: 'ChangePasswd', params: { user: data?.data } }})
   }
 
   const { mutate } = useMutation({
@@ -43,7 +44,7 @@ const Forget = ({ navigation }) => {
   })
 
   const { mutate: mutateOtp } = useMutation({
-    mutationKey: ['forget-query'],
+    mutationKey: ['otp-query'],
     mutationFn: otpApi,
     onSuccess: onSuccessOtp
   })
@@ -52,7 +53,11 @@ const Forget = ({ navigation }) => {
   const goBack = useCallback(() => {
     navigation?.goBack()
   }, [navigation]);
-  
+
+
+  const otpSubmit = ({ otp }) => {
+    mutateOtp({ email: getValues()?.email, otp })
+  }
 
   return (
     <Background headline={forget ? 'FORGET' : 'OTP'}
@@ -80,7 +85,7 @@ const Forget = ({ navigation }) => {
             render={({ field: { onChange }, fieldState: { error } }) => (
               <View style={styles.container}>
                 <OTPInput
-                  inputCount={4}
+                  inputCount={6}
                   containerStyle={{
                     justifyContent: 'center',
                   }}
@@ -100,7 +105,7 @@ const Forget = ({ navigation }) => {
         )
       }
 
-      <CommonButton text={forget ? 'Confirm' : 'Proceed'} mt={!forget && 30} onPress={handleSubmit(forget ? mutate : mutateOtp)} />
+      <CommonButton text={forget ? 'Confirm' : 'Proceed'} mt={!forget && 30} onPress={handleSubmit(forget ? mutate : otpSubmit)} />
 
     </Background>
   )
@@ -110,10 +115,10 @@ export default Forget
 
 const styles = StyleSheet.create({
   container: {
-    width: '65%',
     alignSelf: 'center'
   },
   error: {
+    marginLeft: 10,
     fontSize: 14,
     color: COLORS.red,
     textAlign: 'left',

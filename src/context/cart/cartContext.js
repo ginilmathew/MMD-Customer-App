@@ -4,7 +4,7 @@ import CartContext from './index';
 
 const CartProvider = ({ children }) => {
     const [cartItems, setCartItems] = useState([]);
-    console.log({ cartItems });
+
 
     const addToCart = (itemId) => {
         setCartItems((prevItems) => {

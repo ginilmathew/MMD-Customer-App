@@ -180,6 +180,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins-Regular',
         fontSize: 18,
         fontWeight: 'bold',
+        color: COLORS.light,
     },
     subheading: {
         fontFamily: 'Poppins-Regular',
@@ -194,7 +195,10 @@ const styles = StyleSheet.create({
         textAlign: 'right',
     },
     stock: {
+        fontFamily: 'Poppins-bold',
+        fontWeight:'bold',
         fontSize: 16,
+        letterSpacing:1,
         color: COLORS.red,
         textAlign: 'right',
     },
@@ -208,7 +212,7 @@ const styles = StyleSheet.create({
     containerHeading: {
         fontFamily: 'Poppins-Regular',
         fontWeight: 'bold',
-        color: '#000',
+        color:COLORS.dark,
         letterSpacing: 1,
         fontSize: 16
     },
@@ -216,6 +220,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins-Regular',
         fontSize: 14,
         lineHeight: 24,
+        color:COLORS.text
     },
     buttonContainer: {
         alignItems: 'center',

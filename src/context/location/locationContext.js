@@ -31,7 +31,8 @@ const locationContext = ({ children }) => {
             },
         }));
 
-        navigationRef.navigate('MapPage');
+        // navigationRef.navigate('HomeNavigator', { screen: 'ProfileNavigator', params: { screen: 'MapPage' } })
+        navigationRef.navigate('HomeNavigator', { screen: 'Home' })
     }
 
 
@@ -43,6 +44,7 @@ const locationContext = ({ children }) => {
 
 
     const requestLocationPermisson = async () => {
+
         if (Platform.OS === 'ios') {
             getOneTimeLocation();
             subscribeLocationLocation();
@@ -61,7 +63,7 @@ const locationContext = ({ children }) => {
                     getOneTimeLocation();
                     subscribeLocationLocation();
                 } else {
-
+                    navigationRef.navigate('HomeNavigator', { screen: 'ProfileNavigator', params: { screen: 'GoogleLocation', params: { mode: 'no_place' } } })
                 }
             } catch (err) {
                 console.warn(err);
@@ -73,12 +75,13 @@ const locationContext = ({ children }) => {
         Geolocation.getCurrentPosition(
             //Will give you the current location
             (position) => {
-                const { latitude, longitude } = position.coords
 
+                const { latitude, longitude } = position.coords;
 
                 setLocation({
                     location: { latitude, longitude }
                 })
+
                 mutate(position.coords)
             },
             (error) => {

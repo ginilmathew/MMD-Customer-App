@@ -1,17 +1,22 @@
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native'
-import React, { useCallback, useContext } from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Linking, Modal, PermissionsAndroid } from 'react-native'
+import React, { useCallback, useContext, useState } from 'react'
 import { COLORS } from '../../constants/COLORS'
 import CommonHeader from '../../components/CommonHeader'
 import ProfileButton from '../../components/ProfileButton'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
-import IonIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import Entypo from 'react-native-vector-icons/Entypo'
 import locationContext from '../../context/location/index'
 import { GOOGLE_API } from '../../constants/API'
+import { useMMKVStorage } from 'react-native-mmkv-storage'
+import { storage } from '../../../App'
 
 
-const GoogleLocation = ({ navigation }) => {
+const GoogleLocation = ({ navigation, route }) => {
 
+  const [modal, setModal] = useState(false)
   const { setLocation, getLocation } = useContext(locationContext)
+
 
   const addLoc = (_, data) => {
     setLocation({
@@ -28,9 +33,30 @@ const GoogleLocation = ({ navigation }) => {
     navigation.navigate("MapPage")
   }
 
+
+  const openSettings = () => {
+    Linking.openSettings()
+    handleModal()
+  }
+
+  const handleModal = useCallback(async () => {
+    try {
+      const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        handleModal();
+        getLocation();
+      } else {
+        setModal(!modal);
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  }, [modal])
+
+
   const renderRow = (data) => (
     <View style={{ pointerEvents: 'none', flexDirection: 'row', alignItems: 'center' }}>
-      <IonIcon name='navigation-variant' size={23} color={COLORS.primary} />
+      <MaterialCommunityIcons name='navigation-variant' size={23} color={COLORS.primary} />
 
       <TouchableOpacity style={{ marginLeft: 6 }}>
         <Text style={styles.HeadText}>{data?.structured_formatting?.main_text}</Text>
@@ -42,7 +68,7 @@ const GoogleLocation = ({ navigation }) => {
 
   return (
     <>
-      <CommonHeader heading={'Place'} backBtn />
+      {!route?.params?.mode && <CommonHeader heading={'Place'} backBtn />}
 
       <View style={styles.container}>
 
@@ -85,11 +111,33 @@ const GoogleLocation = ({ navigation }) => {
           }}
         />
 
-        <TouchableOpacity style={{ flexDirection: 'row' }} onPress={getLocation}>
-          <IonIcon name='navigation-variant' size={23} color={COLORS.blue} />
+        <TouchableOpacity style={{ flexDirection: 'row' }} onPress={route?.params?.mode ? handleModal : getLocation}>
+          <MaterialCommunityIcons name='navigation-variant' size={23} color={COLORS.blue} />
           <Text style={{ color: COLORS.blue, fontFamily: 'Poppins-Medium' }}>Use my current location</Text>
         </TouchableOpacity>
-        
+
+        <Modal visible={modal} transparent>
+          <View style={styles.modal}>
+            <View style={styles.box}>
+              <View style={styles.box__header}>
+                <Text style={styles.header__main}>Turn On Location permission</Text>
+                <TouchableOpacity style={{ alignSelf: 'flex-start' }} onPress={handleModal}>
+                  <Entypo name='circle-with-cross' size={23} color={COLORS.light} />
+                </TouchableOpacity>
+              </View>
+              <Text style={styles.box__description}>Please go to Settings - Location to turn on Location permission</Text>
+
+              <View style={styles.box__container}>
+                <TouchableOpacity style={[styles.box__btn, { backgroundColor: COLORS.primary_light }]} onPress={handleModal}>
+                  <Text style={[styles.btn__text, { color: COLORS.primary }]}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.box__btn, { backgroundColor: COLORS.primary }]} onPress={openSettings}>
+                  <Text style={[styles.btn__text, { color: COLORS.white }]}>Settings</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </View>
     </>
   )
@@ -143,6 +191,45 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: COLORS.dark,
     fontFamily: 'Poppins-Bold'
+  },
+  modal: { backgroundColor: 'rgba(0,0,0,.5)', flex: 1, justifyContent: 'center', alignItems: 'center' },
+  box: {
+    backgroundColor: COLORS.white,
+    width: '80%',
+    padding: 20,
+    borderRadius: 10
+  },
+  box__container: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 12
+  },
+  box__btn: {
+    width: '45%',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 4
+  },
+  box__header: {
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: 'row'
+  },
+  header__main: {
+    fontSize: 18,
+    fontFamily: 'Poppins-Bold',
+    color: COLORS.dark,
+    width: '60%'
+  },
+  box__description: {
+    color: COLORS.light,
+    fontFamily: 'Poppins-Medium',
+    marginVertical: 3
+  },
+  btn__text: {
+    fontFamily: 'Poppins-Medium',
+    fontSize: 16
   }
 })
 
