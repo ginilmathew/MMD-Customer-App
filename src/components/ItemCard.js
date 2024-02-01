@@ -6,46 +6,54 @@ import CartContext from '../context/cart';
 import { useNavigation } from '@react-navigation/core';
 
 const CustomItemCard = ({ onPress, item, key }) => {
-
+    
     const navigation = useNavigation()
 
     const { cartItems, addToCart, incrementItem, decrementItem } = useContext(CartContext);
 
-    const isCartAdded = cartItems.some(cartItem => cartItem.id === item.id);
-    const cartItem = cartItems.find(cartItem => cartItem.id === item.id);
+    const isCartAdded = cartItems.some(cartItem => cartItem.id === item._id);
+    const cartItem = cartItems.find(cartItem => cartItem.id === item._id);
 
     const handleAddToCart = useCallback(() => {
-        addToCart(item.id);
-    }, [addToCart, item.id]);
+        addToCart(item._id);
+    }, [addToCart, item._id]);
 
     const handleIncrement = useCallback(() => {
-        incrementItem(item.id);
-    }, [incrementItem, item.id]);
+        incrementItem(item._id);
+    }, [incrementItem, item._id]);
 
     const handleDecrement = useCallback(() => {
-        decrementItem(item.id);
-    }, [decrementItem, item.id]);
+        decrementItem(item._id);
+    }, [decrementItem, item._id]);
 
     const NavigateToSingleProduct = useCallback(() => {
         navigation.navigate('SingleProduct')
     }, [navigation])
     // TouchableOpacity onPress={NavigateToSingleProduct}
 
+    
+    const AnimatedStyle =  FadeInDown.easing().delay(300);
+        
+     const BASEPATH = item?.products?.[0]?.imageBasePath;
+
+  
+
+
     return (
-        <Animated.View entering={FadeInDown.easing().delay(300)} key={key}>
+        <Animated.View entering={AnimatedStyle} key={key}>
             <TouchableOpacity onPress={NavigateToSingleProduct} style={styles.container}>
                 {/* Left Side */}
                 <View style={styles.leftContainer}>
                     <Image
-                        source={require('../images/spinach.jpg')}
+                        source={{uri :BASEPATH + item?.products?.[0]?.image?.[0]}}
                         style={styles.leftImage}
                     />
                 </View>
 
                 {/* Center Content */}
                 <View style={styles.centerContainer}>
-                    <Text style={styles.heading}>Elite Premium Rice puttupodi 1kg </Text>
-                    <Text style={styles.subHeading}>Category: Grocery</Text>
+                    <Text style={styles.heading}>{item?.products?.[0]?.name}</Text>
+                    <Text style={styles.subHeading}>Category: {item?.products?.[0]?.category?.name}</Text>
                     <View style={styles.offerBox}>
                         <Text style={styles.offerText}>Up to 10% off!</Text>
                     </View>
@@ -69,25 +77,31 @@ const CustomItemCard = ({ onPress, item, key }) => {
 
 
 
-const AddToCart = memo(({ isCartAdded, handleDecrement, handleAddToCart, handleIncrement, cartItem }) => (
-    <>
-        {isCartAdded ? (
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity style={[styles.incrementButton, { paddingHorizontal: 12 }]} onPress={handleDecrement}>
-                    <Text style={styles.buttonText}>-</Text>
+const AddToCart = memo(({ isCartAdded, handleDecrement, handleAddToCart, handleIncrement, cartItem }) => {
+    const memoizedDecrement = useCallback(handleDecrement, [handleDecrement]);
+    const memoizedIncrement = useCallback(handleIncrement, [handleIncrement]);
+    const memoizedAddToCart = useCallback(handleAddToCart, [handleAddToCart]);
+
+    return (
+        <>
+            {isCartAdded ? (
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity style={[styles.incrementButton, { paddingHorizontal: 12 }]} onPress={memoizedDecrement}>
+                        <Text style={styles.buttonText}>-</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.countText}>{cartItem.count}</Text>
+                    <TouchableOpacity style={[styles.incrementButton, { marginLeft: 5 }]} onPress={memoizedIncrement}>
+                        <Text style={styles.buttonText}>+</Text>
+                    </TouchableOpacity>
+                </View>
+            ) : (
+                <TouchableOpacity style={styles.button} onPress={memoizedAddToCart}>
+                    <Text style={styles.buttonText}>Add To Cart</Text>
                 </TouchableOpacity>
-                <Text style={styles.countText}>{cartItem.count}</Text>
-                <TouchableOpacity style={[styles.incrementButton, { marginLeft: 5 }]} onPress={handleIncrement}>
-                    <Text style={styles.buttonText}>+</Text>
-                </TouchableOpacity>
-            </View>
-        ) : (
-            <TouchableOpacity style={styles.button} onPress={handleAddToCart}>
-                <Text style={styles.buttonText}>Add To Cart</Text>
-            </TouchableOpacity>
-        )}
-    </>
-))
+            )}
+        </>
+    );
+});
 
 const styles = StyleSheet.create({
     container: {

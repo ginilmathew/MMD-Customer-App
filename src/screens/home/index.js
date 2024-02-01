@@ -1,5 +1,5 @@
 import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useCallback, useContext, useEffect } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import Header from '../../components/Header'
 import CustomSearch from '../../components/CustomSearch'
 import CustomSlider from '../../components/CustomSlider'
@@ -10,27 +10,39 @@ import { COLORS } from '../../constants/COLORS'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import DummySearch from '../../components/DummySearch'
 import ItemBox from '../../components/ItemBox'
-import Animated from 'react-native-reanimated'
+import Animated, { useAnimatedStyle, useSharedValue, withDecay, withDelay, withRepeat, withSequence, withTiming } from 'react-native-reanimated'
 import locationContext from '../../context/location'
+import { useQuery } from 'react-query'
+import customAxios from '../../customAxios'
+import useRefetch from '../../hooks/useRefetch'
+import { HomeApi } from '../../api/home'
+import HomeLoader from '../../components/Loading/Home/HomeLoader'
+import useOpacityAnimation from '../../hooks/animationHook'
+
+
 
 
 const Home = ({ navigation }) => {
 
-    const { getLocation, location } = useContext(locationContext)
 
-  console.log({location})
+    const { getLocation, location } = useContext(locationContext);
+
+    let payload = {
+        "coordinates": [
+            8.5204866, 76.9371447
+        ]
+    }
+
+    const { data, isLoading, refetch } = useQuery({
+        queryKey: ['Home'],
+        queryFn: () => HomeApi(payload),
+        enabled: true
+    })
 
 
-    const DATA = 
-        [
-            { id: 1 },
-            { id: 2 },
-            { id: 3 }
-          ]
-    
 
 
-    const DATA2 = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    useRefetch(refetch)
 
 
     const NavigateToCategory = useCallback(() => {
@@ -54,21 +66,22 @@ const Home = ({ navigation }) => {
     }, [])
 
 
+
     const HeaderComponents = useCallback(() => {
         return (
             <View style={{ backgroundColor: '#fff' }}>
                 <View style={{ marginVertical: 4 }}>
-                    <CustomSlider />
+                    <CustomSlider item={data?.data?.data?.sliders} />
                 </View>
-                <CustomHeading label={'Categories'} hide={false} />
+                <CustomHeading label={'Categories'} hide={false} marginH={20} />
                 <ScrollView
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={styles.scrollViewContent}
                 >
-                    {DATA2?.map((res, index) => (
+                    {data?.data?.data?.categories?.map((res, index) => (
                         <View style={{ marginRight: 8 }}>
-                            <CategoryCard key={index} />
+                            <CategoryCard key={res?._id} item={res} />
                         </View>
 
                     ))}
@@ -78,44 +91,55 @@ const Home = ({ navigation }) => {
                     </TouchableOpacity>
                 </ScrollView>
                 <View style={{ marginTop: 3 }}>
-                    <CustomHeading label={'Popular Products'} hide={true} onPress={NavigateToAllPages} />
+                    <CustomHeading label={'Popular Products'} hide={true} onPress={NavigateToAllPages} marginH={20} />
                 </View>
             </View>
 
         )
-    }, [])
+    }, [data?.data?.data])
 
     const renderItem = useCallback(({ item, index }) => {
         return (
             <>
                 <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
-                    <ItemCard key={index}  item={item}/>
+                    <ItemCard key={index} item={item} />
                 </View>
             </>
         )
-    }, [])
+    }, [data?.data?.data])
 
 
     const ListFooterComponent = useCallback(() => {
         return (
-            <Animated.View>
+            <>
                 <View style={{ marginBottom: 20 }}>
-                    <CustomSlider />
+                    <CustomSlider item={data?.data?.data?.sliders} />
                 </View>
                 <View style={{ marginTop: 2 }}>
-                    <CustomHeading label={'HighLights'} hide={false} />
+                    <CustomHeading label={'HighLights'} hide={false} marginH={20} />
                 </View>
                 <View style={[styles.boxItem, styles.footerBox]}>
-                    {DATA2?.map((res, index) => (
-                        <ItemBox onPress={NavigateToAllPages} index={index} />
+                    {data?.data?.data?.allFeatures?.map((res, index) => (
+                        <ItemBox onPress={NavigateToAllPages} key={res?._id} item={res} index={index} />
                     ))}
                 </View>
                 <View style={{ marginBottom: 80 }}>
                 </View>
-            </Animated.View>
+            </>
         )
-    }, [])
+    }, [data?.data?.data])
 
+
+    const keyExtractor = useCallback((item) => {
+        return item?._id;
+    }, [data?.data?.data]);
+
+
+    if (isLoading) {
+        return (
+            <HomeLoader />
+        )
+    }
 
 
 
@@ -124,12 +148,15 @@ const Home = ({ navigation }) => {
         <View style={{ backgroundColor: '#fff' }}>
             <DummySearch press={NavigateToSearch} />
             <FlatList
-                data={DATA}
+                data={data?.data?.data.featuredList?.[0]?.featured_list}
                 ListHeaderComponent={HeaderComponents}
                 renderItem={renderItem}
-                keyExtractor={item => item.id}
+                keyExtractor={keyExtractor}
                 showsVerticalScrollIndicator={false}
                 ListFooterComponent={ListFooterComponent}
+                initialNumToRender={10}
+                maxToRenderPerBatch={10}
+                windowSize={10}
             />
         </View>
     )
