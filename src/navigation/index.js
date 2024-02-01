@@ -22,7 +22,11 @@ import { useMMKVStorage } from 'react-native-mmkv-storage';
 import { storage } from '../../App';
 import { useNetInfo } from '@react-native-community/netinfo';
 import Toast from '../components/Toast';
+<<<<<<< HEAD
 import FeaturedProduct from '../screens/featuredProducts';
+=======
+import Checkout from '../screens/checkout';
+>>>>>>> dipin
 
 
 const Stack = createNativeStackNavigator();
@@ -50,6 +54,7 @@ const Navigation = () => {
           <Stack.Screen name="SingleOrder" component={SingleOrder} />
           <Stack.Screen name="Notification" component={NotificationPage} />
           <Stack.Screen name="Cart" component={Cart} />
+          <Stack.Screen name="Checkout" component={Checkout} />
           <Stack.Screen name="Category" component={Category} />
           <Stack.Screen name="AllProducts" component={AllProducts} />
           <Stack.Screen name="SingleCategory" component={SingleCategory} />

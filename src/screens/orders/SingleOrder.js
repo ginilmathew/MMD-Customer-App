@@ -4,65 +4,101 @@ import CommonHeader from '../../components/CommonHeader'
 import Header from '../../components/Header'
 import { COLORS } from '../../constants/COLORS'
 import SubHeading from '../../components/SubHeading'
+import reactotron from 'reactotron-react-native'
+import moment from 'moment'
 
-const SingleOrder = () => {
+const SingleOrder = ({route}) => {
+
+    const { item } = route.params;
+
+    reactotron.log(item, "SINGLE")
+
+    const statusColor = () => {
+        if (item?.orderStatus === "created") {
+            return (
+                <Text style={[styles.statusText, { color: COLORS.status_created }]}>{item?.orderStatus}</Text>
+            )
+        } else if (item?.orderStatus === "Accept") {
+            return (
+                <Text style={[styles.statusText, { color: COLORS.status_accepted }]}>{item?.orderStatus}</Text>
+            )
+        } else if (item?.orderStatus === "Out for delivery") {
+            return (
+                <Text style={[styles.statusText, { color: COLORS.status_out }]}>{item?.orderStatus}</Text>
+            )
+        } else if (item?.orderStatus === "Delivered") {
+            return (
+                <Text style={[styles.statusText, { color: COLORS.status_completed }]}>{item?.orderStatus}</Text>
+            )
+        } else if (item?.orderStatus === "Cancelled") {
+            return (
+                <Text style={[styles.statusText, { color: COLORS.status_cancelled }]}>{item?.orderStatus}</Text>
+            )
+        }
+    }
+
     return (
         <View style={styles.mainStyle}>
             <Header />
-            <CommonHeader heading={"Order ID : 65321"} backBtn />
+            <CommonHeader heading={`Order ID : ${item?.order_id}`} backBtn />
             <ScrollView contentContainerStyle={styles.innerContainer}>
 
                 <View style={styles.secondContainer}>
                     <View style={styles.statusContainer}>
                         <Text style={styles.subText}>Ordered Date</Text>
-                        <Text style={styles.mainText}>22/05/2024 10:30am</Text>
+                        <Text style={styles.mainText}>{moment(item?.created_at).format("DD-MM-YYYY hh:mm a")}</Text>
                     </View>
                     <View style={styles.statusContainer}>
                         <Text style={styles.statusSub}>Status</Text>
-                        <Text style={styles.statusText}>Processing</Text>
+                        <Text style={styles.statusText}>{statusColor()}</Text>
                     </View>
                 </View>
 
                 <View style={styles.singleContainer}>
                     <SubHeading label={"Products & Bill"} />
-
-                    <View style={styles.imgContainer}>
+                    {item?.itemDetails.map(item => (
+                   <View style={styles.imgContainer} key={item?._id}>
                         <View style={styles.boxStyle}>
-                            <Image source={require('../../images/propic.jpg')} style={styles.imgStyle} />
+                            <Image source={{uri: `${item?.image}`}} style={styles.imgStyle} />
                             <View style={styles.imgSection}>
-                                <Text style={styles.productName}>Elite Premium Rice Puttupodi 1Kg Pouch</Text>
-                                <Text style={styles.categoryName}>Category : Grocery</Text>
+                                <Text style={styles.productName}>{item?.name}</Text>
+                                <Text style={styles.categoryName}>Category : {item?.category?.name}</Text>
                             </View>
                         </View>
                         <View style={styles.qtyBox}>
-                            <Text style={styles.price}>₹100.50</Text>
-                            <Text style={styles.qty}>Qty x 1</Text>
+                            <Text style={styles.price}>₹ {item?.costPrice}</Text>
+                            <Text style={styles.qty}>Qty x {item?.qty}</Text>
                         </View>
                     </View>
+                    ))}
 
                     <View style={styles.totalContainer}>
                         <View style={styles.textBox}>
                             <Text style={styles.subBox}>Sub-Total</Text>
-                            <Text style={styles.priceBox}>₹100.50</Text>
+                            <Text style={styles.priceBox}>₹ {item?.subTotal}</Text>
                         </View>
                         <View style={styles.textBox}>
                             <Text style={styles.subBox}>GST</Text>
-                            <Text style={styles.priceBox}>₹10.00</Text>
+                            <Text style={styles.priceBox}>₹ {item?.tax}</Text>
                         </View>
-                        <View style={styles.textBox}>
+                        {item?.discount ? <View style={styles.textBox}>
+                            <Text style={styles.subBox}>Discount</Text>
+                            <Text style={styles.priceBox}>- ₹ {item?.discount}</Text>
+                        </View> : null}
+                        {/* <View style={styles.textBox}>
                             <Text style={styles.subBox}>Delivery Charge</Text>
                             <Text style={styles.priceBox}>₹30.00</Text>
-                        </View>
+                        </View> */}
                         <View style={styles.containerTwo}>
                             <Text style={styles.textStyle}>Grand Total</Text>
-                            <Text style={styles.priceBox}>₹140.50</Text>
+                            <Text style={[styles.priceBox, {fontFamily: "Poppins-Bold"}]}>₹ {item?.total}</Text>
                         </View>
                     </View>
                 </View>
 
                 <View style={styles.singleContainer}>
                     <SubHeading label={"Payment Method"} />
-                    <Text style={styles.paymentMethod}>Cash On Delivery</Text>
+                    <Text style={styles.paymentMethod}>{item?.paymentType}</Text>
                 </View>
 
             </ScrollView>
