@@ -95,6 +95,12 @@ const SingleCategory = ({ route }) => {
         )
     }
 
+    const mainRefetch = () => {
+        setListItem([])
+        setSubList('')
+        refetch()
+    }
+
 
     return (
         <View style={{ backgroundColor: '#fff', flex: 1 }}>
@@ -108,7 +114,7 @@ const SingleCategory = ({ route }) => {
                 keyExtractor={item => item._id}
                 initialNumToRender={10}
                 refreshing={isLoading}
-                onRefresh={refetch}
+                onRefresh={mainRefetch}
                 showsVerticalScrollIndicator={false}
                 ListFooterComponent={ListFooterComponent}
                 ListEmptyComponent={emptyScreen}
