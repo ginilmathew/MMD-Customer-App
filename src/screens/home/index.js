@@ -1,5 +1,5 @@
 import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { memo, useCallback, useContext, useEffect, useState } from 'react'
 import CustomSlider from '../../components/CustomSlider'
 import CustomHeading from '../../components/CustomHeading'
 import CategoryCard from '../../components/CategoryCard'
@@ -57,7 +57,7 @@ const Home = ({ navigation }) => {
     }, [navigation])
 
 
-    const HeaderComponents = useCallback(() => {
+    const HeaderComponents = memo(({ data, NavigateToCategory }) => {
         return (
             <Animated.View style={{ backgroundColor: '#fff' }}>
                 <View style={{ marginVertical: 4 }}>
@@ -70,7 +70,7 @@ const Home = ({ navigation }) => {
                     contentContainerStyle={styles.scrollViewContent}
                 >
                     {data?.data?.data?.categories?.map((res, index) => (
-                        <Animated.View  entering={FadeInDown.easing().delay(200)} style={{ marginRight: 8 }}>
+                        <Animated.View  style={{ marginRight: 8 }}>
                             <CategoryCard key={res?._id} item={res} />
                         </Animated.View>
                     ))}
@@ -85,7 +85,7 @@ const Home = ({ navigation }) => {
             </Animated.View>
 
         )
-    }, [data?.data?.data])
+    })
 
     const renderItem = useCallback(({ item, index }) => {
         return (
@@ -138,7 +138,7 @@ const Home = ({ navigation }) => {
             <DummySearch press={NavigateToSearch} />
             <FlatList
                 data={data?.data?.data.featuredList?.[0]?.featured_list}
-                ListHeaderComponent={HeaderComponents}
+                ListHeaderComponent={<HeaderComponents data={data} NavigateToCategory={NavigateToCategory} />}
                 renderItem={renderItem}
                 keyExtractor={keyExtractor}
                 showsVerticalScrollIndicator={false}
@@ -146,6 +146,7 @@ const Home = ({ navigation }) => {
                 initialNumToRender={10}
                 maxToRenderPerBatch={10}
                 windowSize={10}
+                getItemLayout={(data, index) => ({ length: 80, offset: 80 * index, index })}
             />
         </View>
     )

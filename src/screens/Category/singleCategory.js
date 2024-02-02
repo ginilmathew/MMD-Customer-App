@@ -1,35 +1,49 @@
 import { StyleSheet, Text, View, FlatList, ScrollView } from 'react-native'
-import React, { memo, useCallback } from 'react'
+import React, { memo, useCallback, useState } from 'react'
 import Header from '../../components/Header'
 import CommonHeader from '../../components/CommonHeader'
-
 import Animated, { FadeInDown } from 'react-native-reanimated'
 import ItemCard from '../../components/ItemCard'
 import CustomTab from '../../components/CustomTab'
 import { COLORS } from '../../constants/COLORS'
+import reactotron from 'reactotron-react-native'
+import { useQuery } from 'react-query'
+import useRefetch from '../../hooks/useRefetch'
+import { getCatProducts } from '../../api/IndividualCategory'
 
-const SingleCategory = () => {
+const SingleCategory = ({ route }) => {
 
-    const DATA2 =
-        [
-            { id: 1 },
-            { id: 2 },
-            { id: 3 },
-            { id: 4 },
-            { id: 5 },
-            { id: 6 },
-            { id: 7 },
-            { id: 8 },
+    const item = route?.params;
 
-        ]
+    const [subList, setSubList] = useState("")
+    const [listItem, setListItem] = useState([])
+    const [subCategoryList, setSubCategoryList] = useState([]);
 
 
 
-    const LIST = [{ id: 1, name: 'All' }, { id: 2, name: 'fruits' }, { id: 3, name: 'nuts' }, { id: 4, name: 'seed' }, { id: 5, name: 'vitamins' }]
+    const { data, isLoading, refetch } = useQuery({
+        queryKey: ['catProducts-query'],
+        queryFn: () => getCatProducts(item?.item),
+        enabled: true,
+        onSuccess: (data) => {
+            setListItem(data?.data?.data?.products);
+            setSubCategoryList(data?.data?.data?.SubCategory)
+
+        }
+    })
+
+    useRefetch(refetch)
+
+
+
 
     const AnimatedStyles = useCallback((index, count) => {
         return FadeInDown.delay(index * count).duration(200).springify().damping(12);
     }, []);
+
+    const onChangeSub = useCallback((value) => {
+        setSubList(value)
+    }, [])
 
 
     const ListHeaderComponents = useCallback(({ item, index }) => {
@@ -40,12 +54,12 @@ const SingleCategory = () => {
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}
                 >
-                    <RenderHeaderMemo LIST={LIST} AnimatedStyle={AnimatedStyles} />
+                    <RenderHeaderMemo subList={subList} LIST={subCategoryList} AnimatedStyle={AnimatedStyles} key={index} onPress={onChangeSub} />
                 </ScrollView>
             </View>
         )
 
-    }, [AnimatedStyles])
+    }, [AnimatedStyles, data?.data?.data, subList])
 
     const renderItem = useCallback(({ item, index }) => {
         return (
@@ -53,11 +67,11 @@ const SingleCategory = () => {
                 <MainRenderMemo AnimatedStyle={AnimatedStyles} item={item} index={index} />
             </>
         )
-    }, [AnimatedStyles])
+    }, [AnimatedStyles, data?.data?.data])
 
     const ListFooterComponent = useCallback(() => {
         return (
-            <View style={{ marginBottom: 130 }}>
+            <View style={{ marginBottom: 60 }}>
 
             </View>
         )
@@ -65,15 +79,16 @@ const SingleCategory = () => {
 
 
     return (
-        <View style={{ backgroundColor: '#fff' }}>
+        <View style={{ backgroundColor: '#fff', flex: 1 }}>
             <Header />
-            <CommonHeader heading={'Spinach'} backBtn />
+            <CommonHeader heading={data?.data?.data?.category?.name || []} backBtn />
             <FlatList
                 stickyHeaderIndices={[0]}
-                data={DATA2}
+                data={listItem}
                 ListHeaderComponent={ListHeaderComponents}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
+                initialNumToRender={10}
                 showsVerticalScrollIndicator={false}
                 ListFooterComponent={ListFooterComponent}
             />
@@ -91,12 +106,13 @@ const styles = StyleSheet.create({
     }
 })
 
-const RenderHeaderMemo = memo(({ LIST, AnimatedStyle }) => {
+const RenderHeaderMemo = memo(({ LIST, AnimatedStyle, onPress, subList }) => {
     return (
         <>
-            {LIST.map((res, index) => (
+            {LIST?.map((res, index) => (
                 <Animated.View entering={AnimatedStyle(index, 100)} style={{ marginRight: 10 }}>
-                    <CustomTab label={res?.name} />
+
+                    <CustomTab label={res?.name} onPress={() => onPress(res)} subList={subList} />
                 </Animated.View>
             ))}
         </>

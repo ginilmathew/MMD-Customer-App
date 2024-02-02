@@ -53,7 +53,8 @@ const Navigation = () => {
   return (
     <>
       <NavigationContainer ref={navigationRef} onReady={onReady}>
-        <Stack.Navigator initialRouteName={user && userLoc ? 'HomeNavigator' : user ? 'LocationPage' : 'Login'} screenOptions={{ headerShown: false }}>
+        {/* <Stack.Navigator initialRouteName={user && userLoc ? 'HomeNavigator' : user ? 'LocationPage' : 'Login'} screenOptions={{ headerShown: false }}> */}
+        <Stack.Navigator initialRouteName={ 'HomeNavigator' } screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Register" component={Register} />
           <Stack.Screen name="Forget" component={Forget} />

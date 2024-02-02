@@ -38,15 +38,8 @@ const SingleProduct = ({ route }) => {
     const { height } = useWindowDimensions()
     const [mainImage, setMainImage] = useState(require('../../images/spinach.jpg'));
     const [price, setPrice] = useState(0)
-    const [select, setSelect] = useState(null)
+
     const [state, dispatch] = useReducer(reducer, {});
-
-
-    const smallImages = [
-        require('../../images/spinach.jpg'),
-        require('../../images/spinach.jpg'),
-        require('../../images/spinach.jpg'),
-    ];
 
     const handleImagePress = useCallback((image) => {
         setMainImage(image);
