@@ -91,7 +91,6 @@ const AllProducts = ({ navigation }) => {
                 renderItem={renderItem}
                 keyExtractor={item => item._id}
                 showsVerticalScrollIndicator={false}
-                removeClippedSubviews={true}
                 initialNumToRender={15}
                 onEndReached={onEndReach}
                 refreshing={isLoading}
