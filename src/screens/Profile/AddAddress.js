@@ -110,7 +110,7 @@ const AddAddress = ({ navigation }) => {
           <View style={styles.end}>
             <View style={{ alignItems: 'center', justifyContent: 'space-between' }}>
               {/* <Text style={[styles.end_text, { color: item?.default ? COLORS.primary : COLORS.light }]}>{item?.default ? 'DEFAULT' : 'SET AS DEFAULT'}</Text> */}
-              <IonIcons name={(item?.default || data?.data?.data?.length === 1) ? 'radio-button-on' : `radio-button-off`} size={20} color={COLORS.primary} />
+              <IonIcons name={(item?.default) ? 'radio-button-on' : `radio-button-off`} size={20} color={COLORS.primary} />
             </View>
 
             {

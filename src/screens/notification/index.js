@@ -8,6 +8,7 @@ import { getNotifications } from '../../api/NotificationList'
 import reactotron from 'reactotron-react-native'
 import { useQuery } from 'react-query'
 import useRefetch from '../../hooks/useRefetch'
+import NoData from '../../components/NoData'
 
 const NotificationPage = () => {
 
@@ -27,6 +28,12 @@ const NotificationPage = () => {
         )
     }
 
+    const emptyScreen = () => {
+        return (
+            <NoData />
+        )
+    }
+
     return (
         <View style={styles.container}>
             <Header />
@@ -38,7 +45,7 @@ const NotificationPage = () => {
                     renderItem={renderItem}
                     refreshing={isLoading}
                     onRefresh={refetch}
-                    //ListEmptyComponent={EmptyComp}
+                    ListEmptyComponent={emptyScreen}
                     showsVerticalScrollIndicator={false}
                 />
             </View>

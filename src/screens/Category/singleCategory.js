@@ -11,6 +11,7 @@ import { useMutation, useQuery } from 'react-query'
 import useRefetch from '../../hooks/useRefetch'
 import { getCatProducts } from '../../api/IndividualCategory'
 import { postcategorybySub } from '../../api/category'
+import NoData from '../../components/NoData'
 
 const SingleCategory = ({ route }) => {
 
@@ -88,6 +89,18 @@ const SingleCategory = ({ route }) => {
         )
     }, [])
 
+    const emptyScreen = () => {
+        return (
+            <NoData />
+        )
+    }
+
+    const mainRefetch = () => {
+        setListItem([])
+        setSubList('')
+        refetch()
+    }
+
 
     return (
         <View style={{ backgroundColor: '#fff', flex: 1 }}>
@@ -101,9 +114,10 @@ const SingleCategory = ({ route }) => {
                 keyExtractor={item => item._id}
                 initialNumToRender={10}
                 refreshing={isLoading}
-                onRefresh={refetch}
+                onRefresh={mainRefetch}
                 showsVerticalScrollIndicator={false}
                 ListFooterComponent={ListFooterComponent}
+                ListEmptyComponent={emptyScreen}
             />
         </View>
     )

@@ -5,8 +5,9 @@ import Header from '../../components/Header';
 import CommonHeader from '../../components/CommonHeader';
 import Animated, { batch, FadeInDown } from 'react-native-reanimated';
 import { getCategory } from '../../api/category';
-import useRefreshOnFocus from '../../hooks/useRefetch';
+import useRefetch from '../../hooks/useRefetch'
 import { useQuery } from 'react-query';
+import NoData from '../../components/NoData';
 
 const Category = () => {
 
@@ -17,7 +18,7 @@ const Category = () => {
     })
 
 
-    useRefreshOnFocus(refetch)
+    useRefetch(refetch)
 
     const AnimatedStyle = useCallback((index) => {
         return FadeInDown.delay(index * 100).duration(200).springify().damping(12);
@@ -33,7 +34,7 @@ const Category = () => {
                 </View>
             </Animated.View>
         );
-    }, [data?.data?.data]);
+    }, [data?.data?.data, AnimatedStyle]);
 
 
     const ListHeaderComponent = memo(() => {
@@ -44,6 +45,12 @@ const Category = () => {
             </View>
         )
     })
+
+    const emptyScreen = () => {
+        return (
+            <NoData />
+        )
+    }
 
     return (
         <FlatList
@@ -56,6 +63,7 @@ const Category = () => {
             onRefresh={refetch}
             keyExtractor={(item, index) => index.toString()}
             contentContainerStyle={styles.flatListContent}
+            ListEmptyComponent={emptyScreen}
         />
 
     );

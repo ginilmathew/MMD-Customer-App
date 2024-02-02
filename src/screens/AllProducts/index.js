@@ -9,6 +9,7 @@ import { useInfiniteQuery, useQuery } from 'react-query'
 import useRefreshOnFocus from '../../hooks/useRefetch'
 import reactotron from 'reactotron-react-native'
 import { COLORS } from '../../constants/COLORS'
+import NoData from '../../components/NoData'
 
 const AllProducts = ({ navigation }) => {
 
@@ -74,7 +75,11 @@ const AllProducts = ({ navigation }) => {
         )
     },)
 
-
+    const emptyScreen = () => {
+        return (
+            <NoData />
+        )
+    }
 
     return (
         <View style={{ backgroundColor: '#fff' }}>
@@ -86,12 +91,12 @@ const AllProducts = ({ navigation }) => {
                 renderItem={renderItem}
                 keyExtractor={item => item._id}
                 showsVerticalScrollIndicator={false}
-                removeClippedSubviews={true}
                 initialNumToRender={15}
                 onEndReached={onEndReach}
                 refreshing={isLoading}
                 onRefresh={refetch}
                 onEndReachedThreshold={.5}
+                ListEmptyComponent={emptyScreen}
             />
        
 

@@ -11,12 +11,12 @@ const Cart = () => {
     <View style={styles.container}>
       <Header />
       <CommonHeader heading={"Cart"} backBtn />
-      {/* <View style={styles.emptyContainer}>
+      <View style={styles.emptyContainer}>
         <Image source={require('../../images/cart.png')} style={styles.emptyCart}/>
-      </View> */}
+      </View>
       <View style={styles.innerContainer}>
         {/* <ItemCard /> */}
-        <CommonButton text={"Checkout"} mt={30}/>
+        {/* <CommonButton text={"Checkout"} mt={30}/> */}
       </View>
     </View>
   )

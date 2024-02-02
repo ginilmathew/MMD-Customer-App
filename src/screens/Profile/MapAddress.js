@@ -34,8 +34,7 @@ const MapAddress = ({ navigation, route }) => {
         mutationKey: 'add-address',
         mutationFn: addAddress,
         onSuccess({ data }) {
-            
-            if(data?.data?.count > 0) {
+            if (data?.address) {
                 if (!userLoc) {
                     setUserLoc(true)
                     navigation.reset({
