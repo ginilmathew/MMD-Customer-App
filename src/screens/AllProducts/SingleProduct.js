@@ -38,11 +38,12 @@ const SingleProduct = ({ route }) => {
     const { height } = useWindowDimensions()
     const [mainImage, setMainImage] = useState(require('../../images/spinach.jpg'));
     const [price, setPrice] = useState(0)
- 
- 
-    // const handleImagePress = useCallback((image) => {
-    //     setMainImage(image);
-    // }, []);
+
+    const [state, dispatch] = useReducer(reducer, {});
+
+    const handleImagePress = useCallback((image) => {
+        setMainImage(image);
+    }, []);
 
     const BASEPATHPRODCT = item?.imageBasePath;
 
