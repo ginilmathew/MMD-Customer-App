@@ -1,5 +1,5 @@
 import { StyleSheet, TextInput, Image, View, TouchableOpacity } from 'react-native'
-import React, { useCallback, useRef, useState } from 'react'
+import React, { memo, useCallback, useRef, useState } from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { COLORS } from '../constants/COLORS'
 import { useFocusEffect } from '@react-navigation/native'
@@ -71,7 +71,7 @@ const CustomSearch = ({ placeholder, placeHoldeColor, keyboardType, onPress, onC
     )
 }
 
-export default CustomSearch
+export default memo(CustomSearch)
 
 
 const styles = StyleSheet.create({

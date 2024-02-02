@@ -1,5 +1,5 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native'
-import React, { memo, useCallback } from 'react'
+import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native'
+import React, { memo, useCallback, useState } from 'react'
 import Header from '../../components/Header'
 import CommonHeader from '../../components/CommonHeader'
 import ItemCard from '../../components/ItemCard'
@@ -8,9 +8,9 @@ import { getAllProducts } from '../../api/allProducts'
 import { useInfiniteQuery, useQuery } from 'react-query'
 import useRefreshOnFocus from '../../hooks/useRefetch'
 import reactotron from 'reactotron-react-native'
+import { COLORS } from '../../constants/COLORS'
 
 const AllProducts = ({ navigation }) => {
-  
 
     const {
         data,
@@ -27,38 +27,37 @@ const AllProducts = ({ navigation }) => {
         queryKey: ['allProducts'],
         queryFn: getAllProducts,
         getNextPageParam: (lastPage, pages) => {
-            if(lastPage.length === 0) return undefined;
+            if (lastPage.length === 0) return undefined;
             return pages?.length + 1
         },
     })
 
-  
 
-      useRefreshOnFocus(refetch)
- 
-const onEndReach = ()=>{
-    if(hasNextPage && !isLoading){
-        fetchNextPage()
+
+
+
+    const onEndReach = () => {
+        if (hasNextPage && !isLoading) {
+            fetchNextPage()
+        }
     }
-}
 
     const renderItem = useCallback(({ item, index }) => {
-        reactotron.log({item})
+    
         const animatedStyle = FadeInDown.delay(index * 200).duration(200).springify().damping(12);
 
         return (
             <Animated.View entering={animatedStyle}>
                 <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
-                    <ItemCard item={item}/>
-                
+                    <ItemCard item={item} key={item?._id} />
                 </View>
-            </Animated.View> 
+            </Animated.View>
         )
     }, [])
 
     const ListFooterComponents = memo(() => {
         return (
-            <View style={{ marginBottom: 130 }}>
+            <View style={{ marginBottom: 100 }}>
             </View>
         )
     },)
@@ -73,14 +72,14 @@ const onEndReach = ()=>{
                 data={data?.pages?.map(page => page?.data?.data?.data)?.flat()}
                 ListFooterComponent={ListFooterComponents}
                 renderItem={renderItem}
-                keyExtractor={item => item.id}
+                keyExtractor={item => item._id}
                 showsVerticalScrollIndicator={false}
-                removeClippedSubviews={true} 
-                initialNumToRender={6} 
-                maxToRenderPerBatch={6}
+                removeClippedSubviews={true}
+                initialNumToRender={10}
                 onEndReached={onEndReach}
-                onEndReachedThreshold={5}
-                 />
+                onEndReachedThreshold={.5}
+            />
+            {isFetchingNextPage && <ActivityIndicator size="large" color={COLORS.primary} />}
 
         </View>
     )
