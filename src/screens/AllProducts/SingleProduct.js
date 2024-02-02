@@ -28,9 +28,9 @@ const SingleProduct = ({ route }) => {
     const [price, setPrice] = useState(0)
  
  
-    const handleImagePress = useCallback((image) => {
-        setMainImage(image);
-    }, []);
+    // const handleImagePress = useCallback((image) => {
+    //     setMainImage(image);
+    // }, []);
 
     const BASEPATHPRODCT = item?.imageBasePath;
 
