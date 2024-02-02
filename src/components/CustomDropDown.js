@@ -3,11 +3,10 @@ import React, { useContext, useState } from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { Dropdown } from 'react-native-element-dropdown';
 import { COLORS } from '../constants/COLORS';
+import reactotron from 'reactotron-react-native';
 
 
-const CommonSelectDropdown = ({topLabel, placeholder, value, setValue, search,}) => {
-
-
+const CommonSelectDropdown = ({ topLabel, placeholder, value, setValue, changeValue, search, datas }) => {
 
     const [isFocus, setIsFocus] = useState(false);
 
@@ -19,16 +18,11 @@ const CommonSelectDropdown = ({topLabel, placeholder, value, setValue, search,})
     //     }
     // }) 
 
-    const datas = [
-        { label: 'Item 1', value: '1' },
-        { label: 'Item 2', value: '2' },
-        { label: 'Item 3', value: '3' },
-        { label: 'Item 4', value: '4' },
-        { label: 'Item 5', value: '5' },
-        { label: 'Item 6', value: '6' },
-        { label: 'Item 7', value: '7' },
-        { label: 'Item 8', value: '8' },
-      ];
+    // const datas = item?.variants?.map(item => (
+    //     { label: item?.name, value: item?.sellingPrice }
+    // ));
+
+    //reactotron.log(datas, "datas")
 
     // const renderLabel = () => {
     //     if (values || isFocus) {
@@ -49,62 +43,62 @@ const CommonSelectDropdown = ({topLabel, placeholder, value, setValue, search,})
         setIsFocus(false)
     }
 
-    const changeValue = (item) => {
+    // const changeValue = (item) => {
 
-        console.log({item})
-        setValue(item.label);
-        setIsFocus(false);
-    }
+    //     console.log({ item })
+    //     setValue(item.label);
+    //     setIsFocus(false);
+    // }
 
     const rightIcon = () => (
-        <Ionicons name={ isFocus ? 'arrow-down-circle-sharp' : 'arrow-down-circle-sharp'} size={25} color={COLORS.blue } />
+        <Ionicons name={isFocus ? 'arrow-down-circle-sharp' : 'arrow-down-circle-sharp'} size={25} color={COLORS.blue} />
     )
-    
 
-  return (
-    <View>
-        {/* {renderLabel()} */}
-        <Text
-            style={{
-                fontFamily: 'Poppins-Regular',
-                color: '#000',
-                fontSize: 11,
-                marginLeft:5
-            }}
-        >{topLabel}</Text>
-        <Dropdown
-            style={{
-                height: 40,
-                borderColor: 'gray',
-                borderRadius: 10,
-                paddingHorizontal: 8,
-                backgroundColor:  '#F2F2F2',
-                shadowOpacity: 0,
-                shadowRadius: 5,
-                elevation: 2,
-                shadowOffset: { width: 1, height: 5 },
-                marginTop:3,
-            }}
-            placeholderStyle={styles.placeholderStyle}
-            selectedTextStyle={styles.selectedTextStyle}
-            inputSearchStyle={styles.inputSearchStyle}
-            iconStyle={styles.iconStyle}
-            data={datas}
-            search = {search ? search : null} 
-            maxHeight={300}
-            labelField="label"
-            valueField="label"
-            placeholder={!isFocus ? placeholder ? placeholder : '' : '...'}
-            searchPlaceholder="Search..."
-            value={value}
-            onFocus={setFocus}
-            onBlur={offFocus}
-            onChange={changeValue}
-            renderRightIcon={rightIcon}
-            itemTextStyle={styles.dropdownText}
-        />    
-    </View>
-  )
+
+    return (
+        <View>
+            {/* {renderLabel()} */}
+            <Text
+                style={{
+                    fontFamily: 'Poppins-Medium',
+                    color: COLORS.light,
+                    fontSize: 14,
+                    marginLeft: 3
+                }}
+            >{topLabel}</Text>
+            <Dropdown
+                style={{
+                    height: 40,
+                    borderColor: 'gray',
+                    borderRadius: 10,
+                    paddingHorizontal: 8,
+                    backgroundColor: '#F2F2F2',
+                    shadowOpacity: 0,
+                    shadowRadius: 5,
+                    elevation: 2,
+                    shadowOffset: { width: 1, height: 5 },
+                    marginTop: 3,
+                }}
+                placeholderStyle={styles.placeholderStyle}
+                selectedTextStyle={styles.selectedTextStyle}
+                inputSearchStyle={styles.inputSearchStyle}
+                iconStyle={styles.iconStyle}
+                data={datas}
+                search={search ? search : null}
+                maxHeight={300}
+                labelField="label"
+                valueField="label"
+                placeholder={!isFocus ? placeholder ? placeholder : '' : '...'}
+                searchPlaceholder="Search..."
+                value={value}
+                onFocus={setFocus}
+                onBlur={offFocus}
+                onChange={changeValue}
+                renderRightIcon={rightIcon}
+                itemTextStyle={styles.dropdownText}
+            />
+        </View>
+    )
 }
 
 export default CommonSelectDropdown
@@ -115,12 +109,12 @@ const styles = StyleSheet.create({
         borderColor: 'gray',
         borderRadius: 8,
         paddingHorizontal: 8,
-        backgroundColor:'#F2F2F2',
+        backgroundColor: '#F2F2F2',
         shadowOpacity: 0.1,
         shadowRadius: 5,
         elevation: 2,
         shadowOffset: { width: 1, height: 5 },
-        marginTop:3,
+        marginTop: 3,
     },
     label: {
         position: 'absolute',
@@ -130,27 +124,27 @@ const styles = StyleSheet.create({
         zIndex: 999,
         paddingHorizontal: 8,
         fontSize: 13,
-        color:'#23233C'
+        color: '#23233C'
     },
     placeholderStyle: {
         fontSize: 13,
-        color:'#23233C',
-        fontFamily:'Poppins-LightItalic'
+        color: '#23233C',
+        fontFamily: 'Poppins-LightItalic'
     },
     selectedTextStyle: {
         fontSize: 13,
-        fontFamily:'Poppins-Regular',
-        color:'#23233C',
+        fontFamily: 'Poppins-Regular',
+        color: '#23233C',
     },
- 
+
     inputSearchStyle: {
         height: 40,
         fontSize: 13,
-        color:COLORS.text
+        color: COLORS.text
     },
     dropdownText: {
         fontSize: 13,
-        fontFamily:'Poppins-Regular',
-        color:COLORS.text,
+        fontFamily: 'Poppins-Regular',
+        color: COLORS.text,
     },
 })
