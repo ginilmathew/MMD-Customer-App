@@ -27,7 +27,7 @@ const CustomItemCard = ({ onPress, item, key }) => {
     }, [decrementItem, item._id]);
 
     const NavigateToSingleProduct = useCallback(() => {
-        navigation.navigate('SingleProduct')
+        navigation.navigate('SingleProduct', {item : item?.products?.[0] })
     }, [navigation])
     // TouchableOpacity onPress={NavigateToSingleProduct}
 

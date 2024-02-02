@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
     Dimensions,
     Image,
@@ -14,11 +14,17 @@ import CommonHeader from '../../components/CommonHeader';
 import { COLORS } from '../../constants/COLORS';
 import CommonSelectDropdown from '../../components/CustomDropDown';
 import CustomDropdown from '../../components/CommonDropDown';
+import reactotron from 'reactotron-react-native';
 
-const SingleProduct = () => {
+const SingleProduct = ({ route }) => {
+
+    const { item } = route.params;
+
+    reactotron.log(item, "SINGLEPRODUCT")
     const { height } = useWindowDimensions()
     const [mainImage, setMainImage] = useState(require('../../images/spinach.jpg'));
     const [select, setSelect] = useState(null)
+    const [price, setPrice] = useState(0)
     const color = [
         1, 2, 3, 4, 5, 6
     ];
@@ -32,16 +38,43 @@ const SingleProduct = () => {
         setMainImage(image);
     }, []);
 
+    const BASEPATHPRODCT = item?.imageBasePath;
+
+    const items = item?.units?.[0]?.variants?.map(item => (
+        { label: item?.name, value: item?.sellingPrice }
+    ));
+
+
+    useEffect(() => {
+        if (item) {
+            let total = item?.units?.[0]?.variants?.map(item => (
+                item.sellingPrice ?? 0
+            ))
+            let lowestPrice = Math.min(...total);
+            setPrice(lowestPrice)
+        }
+    }, [item])
+
+    const changeValue = (items) => {
+
+        const find = item?.units?.[0]?.variants?.find((res) => res?.name === items?.label)
+        //console.log({find})
+        setPrice(find.sellingPrice)
+        setSelect(items.label);
+        // setIsFocus(false);
+    }
+
+
     return (
         <View style={{ backgroundColor: '#fff', height: height, paddingBottom: 60 }}>
             <Header />
-            <CommonHeader heading={'Spinach....'} backBtn />
+            <CommonHeader heading={item?.name.length > 18 ? item?.name?.slice(0, 18) + "..." : item?.name} backBtn />
             <ScrollView
                 contentContainerStyle={[styles.container]}
                 scrollEnabled={true}
                 showsVerticalScrollIndicator={false}>
-                <Image source={mainImage} style={styles.mainImage} resizeMode="cover" />
-                <ScrollView
+                <Image source={{ uri: BASEPATHPRODCT + item?.image?.[0] }} style={styles.mainImage} resizeMode="contain" />
+                {/* <ScrollView
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={styles.smallImagesContainer}
@@ -49,13 +82,14 @@ const SingleProduct = () => {
                     {smallImages.map((image, index) => (
                         <SmallImage key={index} image={image} onPress={handleImagePress} />
                     ))}
-                </ScrollView>
-                <ProductData />
+                </ScrollView> */}
+                <ProductData item={item} price={price} />
                 <View style={styles.dropdownContainer}>
-                    <CommonSelectDropdown topLabel={'weight'} value={select} setValue={setSelect} />
+
+                    {item?.units.map(item => (<CommonSelectDropdown changeValue={changeValue} topLabel={item?.name} key={item?.id} value={select} setValue={setSelect} datas={items} />))}
                 </View>
-                <AboutSection />
-                <DescriptionSection />
+                {item?.details ? <AboutSection item={item} /> : null}
+                {item?.description ? <DescriptionSection item={item} /> : null}
             </ScrollView>
             <View>
                 <BuyButton />
@@ -74,16 +108,16 @@ const SmallImage = React.memo(({ image, onPress }) => (
 
 
 
-const ProductData = React.memo(() => {
+const ProductData = React.memo(({ item, price }) => {
     return (
         <View style={styles.containerProduct}>
             <View style={styles.leftSide}>
-                <Text style={styles.heading}>Product Name</Text>
-                <Text style={styles.subheading}>Category : vegitable</Text>
+                <Text style={styles.heading}>{item?.name}</Text>
+                <Text style={styles.subheading}>Category : {item?.category?.name}</Text>
             </View>
             <View style={styles.rightSide}>
-                <Text style={styles.price}>₹ 99.99</Text>
-                <Text style={styles.stock}>Stock</Text>
+                <Text style={styles.price}>₹ {price}</Text>
+                {/* <Text style={styles.stock}>Stock</Text> */}
             </View>
         </View>
     );
@@ -91,28 +125,22 @@ const ProductData = React.memo(() => {
 
 
 
-const AboutSection = React.memo(() => (
+const AboutSection = React.memo(({ item }) => (
     <View style={[styles.aboutContainer, { marginTop: 10 }]}>
         <Text style={styles.containerHeading}>About Product</Text>
         <Text style={styles.descriptionText}>
-            {/* Your long description goes here. It will be scrollable */}
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur aliquet justo et
-            lacus tincidunt, nec ultrices dolor luctus. Sed auctor scelerisque nisl, vel malesuada
-            ligula congue a.
+            {item?.details}
         </Text>
     </View>
 ));
 
 
 
-const DescriptionSection = React.memo(() => (
+const DescriptionSection = React.memo(({ item }) => (
     <View style={styles.descriptionContainer}>
         <Text style={styles.containerHeading}>Description</Text>
         <Text style={styles.descriptionText}>
-            {/* Your long description goes here. It will be scrollable */}
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur aliquet justo et
-            lacus tincidunt, nec ultrices dolor luctus. Sed auctor scelerisque nisl, vel malesuada
-            ligula congue a.
+            {item?.description}
         </Text>
     </View>
 ));
@@ -152,41 +180,38 @@ const styles = StyleSheet.create({
     containerProduct: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-
-        paddingVertical: 10,
+        paddingBottom: 10,
         // borderBottomWidth: 1,
         // borderBottomColor: '#ccc',
     },
 
 
     dropdownContainer: {
-        borderTopWidth: 2,
-        borderTopStyle: 'dashed',
-        borderBottomWidth: 2,
-        borderBottomStyle: 'dashed',
-        borderColor: 'grey',
+        borderTopWidth: 1,
+        borderBottomWidth: 1,
+        borderColor: '#F2F2F2',
         borderRadius: 2,
-        paddingVertical: 20
+        borderStyle: "dashed",
+        paddingVertical: 20,
     },
 
     leftSide: {
-        flex: 1,
+        flex: 0.8,
         marginRight: 10,
     },
     rightSide: {
-        flex: 1,
+        flex: 0.2,
     },
     heading: {
-        fontFamily: 'Poppins-Regular',
-        fontSize: 18,
-        fontWeight: 'bold',
+        fontFamily: 'Poppins-Medium',
+        fontSize: 16,
         color: COLORS.light,
     },
     subheading: {
-        fontFamily: 'Poppins-Regular',
-        fontStyle: 'italic',
-        fontSize: 14,
-        color: COLORS.text,
+        fontFamily: 'Poppins-Italic',
+        fontSize: 12,
+        color: COLORS.light,
+        opacity: 0.5
     },
     price: {
         fontFamily: 'Poppins-Regular',
@@ -196,9 +221,9 @@ const styles = StyleSheet.create({
     },
     stock: {
         fontFamily: 'Poppins-bold',
-        fontWeight:'bold',
+        fontWeight: 'bold',
         fontSize: 16,
-        letterSpacing:1,
+        letterSpacing: 1,
         color: COLORS.red,
         textAlign: 'right',
     },
@@ -210,17 +235,17 @@ const styles = StyleSheet.create({
 
     },
     containerHeading: {
-        fontFamily: 'Poppins-Regular',
-        fontWeight: 'bold',
-        color:COLORS.dark,
+        fontFamily: 'Poppins-Medium',
+        color: COLORS.light,
         letterSpacing: 1,
-        fontSize: 16
+        fontSize: 14
     },
     descriptionText: {
-        fontFamily: 'Poppins-Regular',
-        fontSize: 14,
+        fontFamily: 'Poppins-Light',
+        fontSize: 12,
         lineHeight: 24,
-        color:COLORS.text
+        color: COLORS.light,
+        marginTop: 2
     },
     buttonContainer: {
         alignItems: 'center',
