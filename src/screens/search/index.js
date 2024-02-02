@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import { FlatList, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
 import React, { useCallback, useState } from 'react'
 import Header from '../../components/Header'
 import CommonHeader from '../../components/CommonHeader'
@@ -15,6 +15,8 @@ const Search = () => {
 
     const DATA2 = [1, 2, 3, 4, 5, 6]
     const [value, setValue] = useState('')
+
+    const { height } = useWindowDimensions()
 
     const { mutate, data, refetch } = useMutation({
         mutationKey: 'search',
@@ -39,19 +41,6 @@ const Search = () => {
     }, [value]);
 
 
-    const ListHeaderComponent = () => {
-        return (
-            <View style={{ backgroundColor: COLORS.white }}>
-                <Header />
-                <CommonHeader heading={'Search'} backBtn />
-                <View>
-                    <CustomSearch
-                        values={value}
-                        onChangeText={onChangeProduct} />
-                </View>
-            </View>
-        )
-    }
 
 
     const renderItem = useCallback(({ item, index }) => {
@@ -64,17 +53,34 @@ const Search = () => {
         )
     }, [data?.data?.data])
 
+
+    const ListFooter = () => {
+        return (
+            <View style={{ marginBottom: 50 }}>
+
+            </View>
+        )
+    }
+
     return (
 
-        <FlatList
-            StickyHeaderComponent={[0]}
-            ListHeaderComponent={ListHeaderComponent}
-            data={data?.data?.data}
-            renderItem={renderItem}
-            keyExtractor={(item, index) => index.toString()}
-            contentContainerStyle={{ backgroundColor: COLORS.white, flex: 1 }}
+        <View style={{ flex: 1, backgroundColor: COLORS.white }}>
+            <Header />
+            <CommonHeader heading={'Search'} backBtn />
+            <View>
+                <CustomSearch values={value} onChangeText={onChangeProduct} />
+            </View>
+            <FlatList
+                ListFooterComponent={ListFooter}
+                StickyHeaderComponent={[0]}
+                data={data?.data?.data}
+                renderItem={renderItem}
+                keyExtractor={(item, index) => index.toString()}
+                contentContainerStyle={{ flexGrow: 1, marginHorizontal: 10 }}
+            />
+        </View>
 
-        />
+
 
 
     )

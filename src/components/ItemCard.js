@@ -8,12 +8,12 @@ import reactotron from 'reactotron-react-native';
 
 const CustomItemCard = ({ onPress, item, key }) => {
 
-    reactotron.log({item},'ITEM CARD')
+    reactotron.log({ item }, 'ITEM CARD')
 
     const navigation = useNavigation()
 
-    const [price, setPrice] = useState({sellingPrice:null,offerPrice:null,costPrice:null})
-    reactotron.log({price},'GOT PRICE')
+    const [price, setPrice] = useState({ sellingPrice: null, offerPrice: null, costPrice: null })
+    reactotron.log({ price }, 'GOT PRICE')
 
     const { cartItems, addToCart, incrementItem, decrementItem } = useContext(CartContext);
 
@@ -44,47 +44,47 @@ const CustomItemCard = ({ onPress, item, key }) => {
             )) : item?.units?.[0]?.variants?.map(item => (
                 item
             ));
-       
+
             let productsWithOffer = products.filter(product => product.offerPrice !== null);
 
             // If there are products with offer prices, find the one with the lowest offer price
             if (productsWithOffer.length > 0) {
-              let lowestOfferProduct = productsWithOffer.reduce((prev, current) => {
-                return parseFloat(prev.offerPrice) < parseFloat(current.offerPrice) ? prev : current;
-              });
-              setPrice({
-                sellingPrice: lowestOfferProduct?.sellingPrice,
-                offerPrice: lowestOfferProduct?.offerPrice === "" ? null : lowestOfferProduct?.offerPrice ,
-                costPrice: lowestOfferProduct?.costPrice
-              });
-              reactotron.log("Lowest offer price object:", lowestOfferProduct);
+                let lowestOfferProduct = productsWithOffer.reduce((prev, current) => {
+                    return parseFloat(prev.offerPrice) < parseFloat(current.offerPrice) ? prev : current;
+                });
+                setPrice({
+                    sellingPrice: lowestOfferProduct?.sellingPrice,
+                    offerPrice: lowestOfferProduct?.offerPrice === "" ? null : lowestOfferProduct?.offerPrice,
+                    costPrice: lowestOfferProduct?.costPrice
+                });
+                reactotron.log("Lowest offer price object:", lowestOfferProduct);
             } else {
-              // If there are no products with offer prices, find the one with the lowest selling price
-              let lowestSellingProduct = products.reduce((prev, current) => {
-                return parseFloat(prev.sellingPrice) < parseFloat(current.sellingPrice) ? prev : current;
-              });
-              setPrice({
-                sellingPrice: lowestSellingProduct?.sellingPrice,
-                offerPrice: lowestSellingProduct?.offerPrice === "" ? null : lowestSellingProduct?.offerPrice ,
-                costPrice: lowestSellingProduct?.costPrice
-              });
-              reactotron.log("Lowest selling price object:", lowestSellingProduct);
+                // If there are no products with offer prices, find the one with the lowest selling price
+                let lowestSellingProduct = products.reduce((prev, current) => {
+                    return parseFloat(prev.sellingPrice) < parseFloat(current.sellingPrice) ? prev : current;
+                });
+                setPrice({
+                    sellingPrice: lowestSellingProduct?.sellingPrice,
+                    offerPrice: lowestSellingProduct?.offerPrice === "" ? null : lowestSellingProduct?.offerPrice,
+                    costPrice: lowestSellingProduct?.costPrice
+                });
+                reactotron.log("Lowest selling price object:", lowestSellingProduct);
             }
         }
     }, [item])
-    
+
 
     let variantMap = item?.products?.[0]?.units?.[0]?.variants?.map(item => (
         item
     ))
 
-    reactotron.log(variantMap,"Variatn")
+    reactotron.log(variantMap, "Variatn")
 
     const AnimatedStyle = FadeInDown.easing().delay(300);
 
     const BASEPATHPRODCT = item?.products?.[0]?.imageBasePath;
     const BASEPATHP = item?.imageBasePath ?? null;
-    
+
 
     return (
         <Animated.View entering={AnimatedStyle} key={key}>
@@ -97,7 +97,7 @@ const CustomItemCard = ({ onPress, item, key }) => {
                         sharedTransitionTag={item?.product_id}
                     />}
                     {item?.image && <Animated.Image
-
+                        sharedTransitionTag={item?._id}
                         source={{ uri: BASEPATHP + item?.image?.[0] }}
                         style={styles.leftImage}
                     />}
@@ -116,7 +116,7 @@ const CustomItemCard = ({ onPress, item, key }) => {
                 <View style={styles.rightContainer}>
                     <Text style={styles.topPrice}>₹ {price?.offerPrice ? price?.offerPrice : price.sellingPrice ?? 0}</Text>
                     {price?.offerPrice &&
-                    <Text style={styles.strikePrice}>₹ {price.sellingPrice ?? 0}</Text> }
+                        <Text style={styles.strikePrice}>₹ {price.sellingPrice ?? 0}</Text>}
                     <AddToCart
                         isCartAdded={isCartAdded}
                         handleAddToCart={handleAddToCart}
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
     button: {
         backgroundColor: COLORS.primary,
         paddingHorizontal: 4,
-        paddingVertical: 5,
+        paddingVertical: 7,
         borderRadius: 6,
     },
     buttonText: {
