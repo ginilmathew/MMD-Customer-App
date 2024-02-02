@@ -89,6 +89,8 @@ const AllProducts = ({ navigation }) => {
                 removeClippedSubviews={true}
                 initialNumToRender={15}
                 onEndReached={onEndReach}
+                refreshing={isLoading}
+                onRefresh={refetch}
                 onEndReachedThreshold={.5}
             />
        

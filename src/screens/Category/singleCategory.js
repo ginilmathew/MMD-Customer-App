@@ -89,6 +89,8 @@ const SingleCategory = ({ route }) => {
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
                 initialNumToRender={10}
+                refreshing={isLoading}
+                onRefresh={refetch}
                 showsVerticalScrollIndicator={false}
                 ListFooterComponent={ListFooterComponent}
             />
