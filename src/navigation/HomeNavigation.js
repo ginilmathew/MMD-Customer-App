@@ -9,7 +9,6 @@ import { COLORS } from '../constants/COLORS';
 import Header from '../components/Header';
 import EditProfile from '../screens/Profile/EditProfile';
 import AddAddress from '../screens/Profile/AddAddress';
-import ProfileNavigator from './ProfileNavigator';
 import SingleCategory from '../screens/Category/singleCategory';
 import AllProducts from '../screens/AllProducts';
 import Category from '../screens/Category';
@@ -42,7 +41,7 @@ function HomeNavigation({ navigation }) {
     }, [navigation]);
 
     const navToProfile = useCallback(() => {
-        navigation.navigate("ProfileNavigator")
+        navigation.navigate("Profile")
     }, [navigation]);
 
     const FixedComponent = () => {
@@ -56,7 +55,7 @@ function HomeNavigation({ navigation }) {
 
 
     const toCart = useCallback(() => {
-        navigation.navigate('ProfileNavigator')
+        navigation.navigate('Profile')
     }, [navigation])
 
     const toNotification = useCallback(() => {
@@ -129,7 +128,7 @@ function HomeNavigation({ navigation }) {
             >
                 <Tab.Screen name="Home" component={Home} />
                 <Tab.Screen name="Orders" component={Orders} />
-                <Tab.Screen name="ProfileNavigator" component={ProfileNavigator} />
+                <Tab.Screen name='Profile' component={Profile} />
 
             </Tab.Navigator>
         </>

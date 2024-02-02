@@ -15,6 +15,7 @@ import { useMMKVStorage } from 'react-native-mmkv-storage'
 import { storage } from '../../../App'
 import { useMutation, useQuery } from 'react-query'
 import { addAddress } from '../../api/Profile'
+import Header from '../../components/Header'
 
 
 const MapAddress = ({ navigation, route }) => {
@@ -101,7 +102,15 @@ const MapAddress = ({ navigation, route }) => {
 
     return (
         <>
-            <CommonHeader heading={'Add Address'} backBtn />
+            {
+                !route?.params?.mode && (
+                    <>
+                        <Header />
+                        <CommonHeader heading={'Add Address'} backBtn />
+                    </>
+
+                )
+            }
 
             <ScrollView contentContainerStyle={mode === 'map' && { flex: 1 }} style={styles.container} keyboardShouldPersistTaps='always'>
 

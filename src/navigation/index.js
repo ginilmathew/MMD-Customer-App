@@ -25,6 +25,12 @@ import Toast from '../components/Toast';
 import FeaturedProduct from '../screens/featuredProducts';
 import Checkout from '../screens/checkout';
 import LocationPage from '../screens/auth/LocationPage';
+import { COLORS } from '../constants/COLORS';
+import EditProfile from '../screens/Profile/EditProfile';
+import AddAddress from '../screens/Profile/AddAddress';
+import ChangePasswd from '../screens/Profile/ChangePasswd';
+import GoogleLocation from '../screens/Profile/GoogleLocation';
+import MapAddress from '../screens/Profile/MapAddress';
 
 
 const Stack = createNativeStackNavigator();
@@ -61,17 +67,24 @@ const Navigation = () => {
           <Stack.Screen name="Search" component={Search} />
           <Stack.Screen name="SingleProduct" component={SingleProduct} />
           <Stack.Screen name="FeaturedProduct" component={FeaturedProduct} />
-          <Stack.Screen name='LocationPage' component={LocationPage} />
+          <Stack.Screen name='LocationPage' component={LocationPage} />            
+          <Stack.Screen name='EditProfile' component={EditProfile} />
+          <Stack.Screen name='Address' component={AddAddress} />
+          <Stack.Screen name='ChangePasswd' component={ChangePasswd} />
+          <Stack.Screen name='GoogleLocation' component={GoogleLocation} />
+          <Stack.Screen name='MapPage' component={MapAddress} />
         </Stack.Navigator>
       </NavigationContainer>
 
       {
         isConnected !== null && !isConnected && (
           <Modal visible transparent>
-            <Image
-              style={{ height, width }}
-              source={require('../images/no_internet.jpg')}
-            />
+            <View style={{ height, width, flex: 1, backgroundColor: COLORS.white }}>
+              <Image
+                style={{ height: 23, width: 45 }}
+                source={require('../images/no-internet.png')}
+              />
+            </View>
           </Modal>
 
         )

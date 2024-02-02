@@ -11,6 +11,7 @@ import { GOOGLE_API } from '../../constants/API'
 import { useMMKVStorage } from 'react-native-mmkv-storage'
 import { storage } from '../../../App'
 import { navigationRef } from '../../navigation/RootNavigation'
+import Header from '../../components/Header'
 
 
 const GoogleLocation = ({ navigation, route }) => {
@@ -31,7 +32,7 @@ const GoogleLocation = ({ navigation, route }) => {
       }
     })
 
-    navigationRef.navigate('HomeNavigator', { screen: 'ProfileNavigator', params: { screen: 'MapPage' } })
+    navigationRef.navigate('MapPage', route?.params?.mode && { mode: route?.params?.mode })
   }
 
 
@@ -69,7 +70,11 @@ const GoogleLocation = ({ navigation, route }) => {
 
   return (
     <>
-      {!route?.params?.mode && <CommonHeader heading={'Place'} backBtn />}
+
+      {!route?.params?.mode && (<>
+        <Header />
+        <CommonHeader heading={'Place'} backBtn />
+      </>)}
 
       <View style={styles.container}>
 

@@ -12,6 +12,7 @@ import IonIcons from 'react-native-vector-icons/Ionicons'
 import { useMutation, useQuery } from 'react-query'
 import { addressList, deletAddrss } from '../../api/Profile'
 import useRefetch from '../../hooks/useRefetch'
+import Header from '../../components/Header'
 
 
 const AddAddress = ({ navigation }) => {
@@ -99,6 +100,8 @@ const AddAddress = ({ navigation }) => {
   
   return (
     <>
+
+      <Header />
       <CommonHeader heading={'Address'} backBtn />
 
       <View style={styles.container}>

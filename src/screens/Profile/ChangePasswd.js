@@ -11,6 +11,7 @@ import { useMutation } from 'react-query'
 import { changePasswd } from '../../api/Profile'
 import { storage } from '../../../App'
 import { navigationRef } from '../../navigation/RootNavigation'
+import Header from '../../components/Header'
 
 
 const ChangePasswd = ({ navigation, route }) => {
@@ -49,6 +50,8 @@ const ChangePasswd = ({ navigation, route }) => {
 
   return (
     <>
+      <Header />
+
       <CommonHeader heading={route?.params?.user ? 'Reset Password' : 'Change Password'} backBtn onPress={route?.params?.user ? navToLogin : null} />
       <View style={styles.container}>
       
