@@ -48,7 +48,7 @@ const SingleProduct = ({ route }) => {
     useEffect(() => {
         if (item) {
             let total = item?.units?.[0]?.variants?.map(item => (
-                item.sellingPrice ?? 0
+                item.offerPrice ? item.offerPrice ?? 0 : item.sellingPrice ?? 0
             ))
             let lowestPrice = Math.min(...total);
             setPrice(lowestPrice)

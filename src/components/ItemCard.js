@@ -1,13 +1,19 @@
-import React, { memo, useCallback, useContext, useState } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { COLORS } from '../constants/COLORS';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import CartContext from '../context/cart';
 import { useNavigation } from '@react-navigation/core';
+import reactotron from 'reactotron-react-native';
 
 const CustomItemCard = ({ onPress, item, key }) => {
 
+    reactotron.log({item},'ITEM CARD')
+
     const navigation = useNavigation()
+
+    const [price, setPrice] = useState({sellingPrice:null,offerPrice:null,costPrice:null})
+    reactotron.log({price},'GOT PRICE')
 
     const { cartItems, addToCart, incrementItem, decrementItem } = useContext(CartContext);
 
@@ -27,14 +33,56 @@ const CustomItemCard = ({ onPress, item, key }) => {
     }, [decrementItem, item._id]);
 
     const NavigateToSingleProduct = useCallback(() => {
-        navigation.navigate('SingleProduct', {item : item?.products?.[0] })
+        navigation.navigate('SingleProduct', { item: item.products ? item?.products?.[0] : item })
     }, [navigation])
     // TouchableOpacity onPress={NavigateToSingleProduct}
 
+    useEffect(() => {
+        if (item) {
+            let products = item.products ? item.products[0].units[0].variants.map(item => (
+                item
+            )) : item?.units?.[0]?.variants?.map(item => (
+                item
+            ));
+       
+            let productsWithOffer = products.filter(product => product.offerPrice !== null);
+
+            // If there are products with offer prices, find the one with the lowest offer price
+            if (productsWithOffer.length > 0) {
+              let lowestOfferProduct = productsWithOffer.reduce((prev, current) => {
+                return parseFloat(prev.offerPrice) < parseFloat(current.offerPrice) ? prev : current;
+              });
+              setPrice({
+                sellingPrice: lowestOfferProduct?.sellingPrice,
+                offerPrice: lowestOfferProduct?.offerPrice === "" ? null : lowestOfferProduct?.offerPrice ,
+                costPrice: lowestOfferProduct?.costPrice
+              });
+              reactotron.log("Lowest offer price object:", lowestOfferProduct);
+            } else {
+              // If there are no products with offer prices, find the one with the lowest selling price
+              let lowestSellingProduct = products.reduce((prev, current) => {
+                return parseFloat(prev.sellingPrice) < parseFloat(current.sellingPrice) ? prev : current;
+              });
+              setPrice({
+                sellingPrice: lowestSellingProduct?.sellingPrice,
+                offerPrice: lowestSellingProduct?.offerPrice === "" ? null : lowestSellingProduct?.offerPrice ,
+                costPrice: lowestSellingProduct?.costPrice
+              });
+              reactotron.log("Lowest selling price object:", lowestSellingProduct);
+            }
+        }
+    }, [item])
+    
+
+    let variantMap = item?.products?.[0]?.units?.[0]?.variants?.map(item => (
+        item
+    ))
+
+    reactotron.log(variantMap,"Variatn")
 
     const AnimatedStyle = FadeInDown.easing().delay(300);
 
-    const BASEPATHPRODCT =  item?.products?.[0]?.imageBasePath;
+    const BASEPATHPRODCT = item?.products?.[0]?.imageBasePath;
     const BASEPATHP = item?.imageBasePath ?? null;
 
     return (
@@ -56,14 +104,16 @@ const CustomItemCard = ({ onPress, item, key }) => {
                 <View style={styles.centerContainer}>
                     <Text style={styles.heading}>{item?.products ? item?.products?.[0]?.name : item?.name}</Text>
                     <Text style={styles.subHeading}>Category: {item?.products ? item?.products?.[0]?.category?.name : item?.category?.name}</Text>
-                    <View style={styles.offerBox}>
+                    {variantMap?.[0]?.offerPrice > 0 ? (<View style={styles.offerBox}>
                         <Text style={styles.offerText}>Up to 10% off!</Text>
-                    </View>
+                    </View>) : null}
                 </View>
 
                 {/* Right Side */}
                 <View style={styles.rightContainer}>
-                    <Text style={styles.topPrice}>₹200</Text>
+                    <Text style={styles.topPrice}>₹ {price?.offerPrice ? price?.offerPrice : price.sellingPrice ?? 0}</Text>
+                    {price?.offerPrice &&
+                    <Text style={styles.strikePrice}>₹ {price.sellingPrice ?? 0}</Text> }
                     <AddToCart
                         isCartAdded={isCartAdded}
                         handleAddToCart={handleAddToCart}
@@ -157,11 +207,9 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end',
     },
     topPrice: {
-        color: COLORS.dark,
-        fontFamily: 'Poppins-Regular',
+        color: COLORS.light,
+        fontFamily: 'Poppins-SemiBold',
         fontSize: 16,
-        fontWeight: 'bold',
-        marginBottom: 8,
     },
     button: {
         backgroundColor: COLORS.primary,
@@ -199,9 +247,15 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: 'bold',
         color: COLORS.dark
-
-
     },
+    strikePrice: {
+        fontFamily: "Poppins-SemiBold",
+        fontSize: 12,
+        color: COLORS.light,
+        opacity: 0.5,
+        marginTop: -5,
+        textDecorationLine: 'line-through',
+    }
 });
 
 export default memo(CustomItemCard);
