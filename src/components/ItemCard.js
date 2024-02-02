@@ -34,26 +34,22 @@ const CustomItemCard = ({ onPress, item, key }) => {
 
     const AnimatedStyle = FadeInDown.easing().delay(300);
 
-    const BASEPATHPRODCT = item?.products ? item?.products?.[0]?.imageBasePath : item?.imageBasePath ?? null;
+    const BASEPATHPRODCT =  item?.products?.[0]?.imageBasePath;
     const BASEPATHP = item?.imageBasePath ?? null;
-
-
-
-
 
     return (
         <Animated.View entering={AnimatedStyle} key={key}>
             <TouchableOpacity onPress={NavigateToSingleProduct} style={styles.container}>
                 {/* Left Side */}
                 <View style={styles.leftContainer}>
-                    {/* {item?.product && <Image
+                    {item?.products && <Image
                         source={{ uri: BASEPATHPRODCT + item?.products?.[0]?.image?.[0] }}
                         style={styles.leftImage}
                     />}
-                    {!item?.product && <Image
+                    {item?.image && <Image
                         source={{ uri: BASEPATHP + item?.image?.[0] }}
                         style={styles.leftImage}
-                    />} */}
+                    />}
                 </View>
 
                 {/* Center Content */}
@@ -197,7 +193,7 @@ const styles = StyleSheet.create({
     countText: {
         justifyContent: 'center',
         textAlign: 'center',
-        minWidth: 25,
+        minWidth: 20,
         fontFamily: 'Poppins-Regular',
         fontSize: 14,
         fontWeight: 'bold',

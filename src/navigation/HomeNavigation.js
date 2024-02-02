@@ -93,7 +93,7 @@ function HomeNavigation({ navigation }) {
     return (
         <>
 
-            { user?.user?.address && <Header toCart={toCart} toNotification={toNotification} /> }
+             <Header toCart={toCart} toNotification={toNotification} /> 
 
             <Tab.Navigator
                 initialRouteName={user?.user?.address ? 'Home' : 'LocationPage'}

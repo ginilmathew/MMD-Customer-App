@@ -27,17 +27,20 @@ const AllProducts = ({ navigation }) => {
         queryKey: ['allProducts'],
         queryFn: getAllProducts,
         getNextPageParam: (lastPage, pages) => {
+            if(lastPage.length === 0) return undefined;
             return pages?.length + 1
         },
-        enabled: false
-
     })
 
   
 
       useRefreshOnFocus(refetch)
  
-
+const onEndReach = ()=>{
+    if(hasNextPage && !isLoading){
+        fetchNextPage()
+    }
+}
 
     const renderItem = useCallback(({ item, index }) => {
         reactotron.log({item})
@@ -49,10 +52,7 @@ const AllProducts = ({ navigation }) => {
                     <ItemCard item={item}/>
                 
                 </View>
-            </Animated.View>
-         
-           
-            
+            </Animated.View> 
         )
     }, [])
 
@@ -77,7 +77,10 @@ const AllProducts = ({ navigation }) => {
                 showsVerticalScrollIndicator={false}
                 removeClippedSubviews={true} 
                 initialNumToRender={6} 
-                maxToRenderPerBatch={6} />
+                maxToRenderPerBatch={6}
+                onEndReached={onEndReach}
+                onEndReachedThreshold={5}
+                 />
 
         </View>
     )

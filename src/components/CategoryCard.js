@@ -12,9 +12,9 @@ const CategoryCard = ({ key,item }) => {
     const NavigateToSingle = useCallback(() => {
         navigation.navigate('SingleCategory')
     }, [navigation])
-
+//   const animationStyle= FadeInDown.easing().delay(200)
     return (
-        <Animated.View entering={FadeInDown.easing().delay(200)} key={key}>
+        <Animated.View key={key}>
             <TouchableOpacity style={styles.container} key={key} onPress={NavigateToSingle}>
                 <Image source={{uri:item?.image}} style={styles.image} />
                 <Text style={styles.text}>{item?.name}</Text>
