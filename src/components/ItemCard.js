@@ -144,7 +144,7 @@ const AddToCart = memo(({ isCartAdded, handleDecrement, handleAddToCart, handleI
                     <TouchableOpacity style={[styles.incrementButton, { paddingHorizontal: 12 }]} onPress={memoizedDecrement}>
                         <Text style={styles.buttonText}>-</Text>
                     </TouchableOpacity>
-                    <Text style={styles.countText}>{cartItem.count}</Text>
+                    <Text style={styles.countText}>{cartItem.qty}</Text>
                     <TouchableOpacity style={[styles.incrementButton, { marginLeft: 5 }]} onPress={memoizedIncrement}>
                         <Text style={styles.buttonText}>+</Text>
                     </TouchableOpacity>

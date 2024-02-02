@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useReducer } from 'react';
 import {
     Dimensions,
     Image,
@@ -21,10 +21,22 @@ const SingleProduct = ({ route }) => {
 
     const { item } = route.params;
 
-  
+    const reducer = (state, action) => {
+        for (let i = 0; i < item?.units?.length; i++) {
+            switch (action?.type) {
+                case item?.units[i]?.name: {
+                    return {
+                        ...state,
+                        [`${item?.units[i]?.name}`]: action?.value
+                    }
+                }
+            }
+        }
+    }
+
+
     const { height } = useWindowDimensions()
     const [mainImage, setMainImage] = useState(require('../../images/spinach.jpg'));
-    const [select, setSelect] = useState(null)
     const [price, setPrice] = useState(0)
  
  
@@ -34,9 +46,11 @@ const SingleProduct = ({ route }) => {
 
     const BASEPATHPRODCT = item?.imageBasePath;
 
-    const items = item?.units?.[0]?.variants?.map(item => (
-        { label: item?.name, value: item?.sellingPrice }
-    ));
+    const items = item?.units?.[0]?.variants?.map((value) => {
+        return (
+            { label: value?.name, value: value?.sellingPrice }
+        )
+    });
 
 
     useEffect(() => {
@@ -50,11 +64,12 @@ const SingleProduct = ({ route }) => {
     }, [item])
 
     const changeValue = (items) => {
-
         const find = item?.units?.[0]?.variants?.find((res) => res?.name === items?.label)
         //console.log({find})
         setPrice(find.sellingPrice)
-        setSelect(items.label);
+        // setSelect(items.label);
+        // dispatch({ type: "KG", value: items?.label })
+
         // setIsFocus(false);
     }
 
@@ -80,7 +95,11 @@ const SingleProduct = ({ route }) => {
                 <ProductData item={item} price={price} />
                 <View style={styles.dropdownContainer}>
 
-                    {item?.units.map(item => (<CommonSelectDropdown changeValue={changeValue} topLabel={item?.name} key={item?.id} value={select} setValue={setSelect} datas={items} />))}
+                    {item?.units.map((item) => (<CommonSelectDropdown changeValue={(props) => {
+                        dispatch({ type: item?.name, value: props?.label })
+                        return changeValue(props)
+                    }} topLabel={item?.name} key={item?.id} value={state[item?.name]} datas={items} />))}
+
                 </View>
                 {item?.details ? <AboutSection item={item} /> : null}
                 {item?.description ? <DescriptionSection item={item} /> : null}

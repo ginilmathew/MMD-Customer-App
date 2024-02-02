@@ -13,11 +13,11 @@ const CartProvider = ({ children }) => {
             if (existingItem) {
                 // If item is already in the cart, update the count
                 return prevItems.map((item) =>
-                    item.id === itemId ? { ...item, count: item.count + 1 } : item
+                    item.id === itemId ? { ...item, qty: item.qty + 1 } : item
                 );
             } else {
                 // If item is not in the cart, add it
-                return [...prevItems, { id: itemId, count: 1 }];
+                return [...prevItems, { id: itemId, qty: 1 }];
             }
         });
     };
@@ -25,7 +25,7 @@ const CartProvider = ({ children }) => {
     const incrementItem = (itemId) => {
         setCartItems((prevItems) =>
             prevItems.map((item) =>
-                item.id === itemId ? { ...item, count: item.count + 1 } : item
+                item.id === itemId ? { ...item, qty: item.qty + 1 } : item
             )
         );
     };
@@ -33,11 +33,11 @@ const CartProvider = ({ children }) => {
     const decrementItem = (itemId) => {
         setCartItems((prevItems) => {
             const updatedItems = prevItems.map((item) =>
-                item.id === itemId ? { ...item, count: Math.max(item.count - 1, 0) } : item
+                item.id === itemId ? { ...item, qty: Math.max(item.qty - 1, 0) } : item
             );
 
             // Filter out items with count > 0
-            return updatedItems.filter((item) => item.count > 0);
+            return updatedItems.filter((item) => item.qty > 0);
         });
     };
 

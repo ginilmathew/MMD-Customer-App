@@ -15,7 +15,7 @@ const Cart = () => {
         <Image source={require('../../images/cart.png')} style={styles.emptyCart}/>
       </View> */}
       <View style={styles.innerContainer}>
-        <ItemCard />
+        {/* <ItemCard /> */}
         <CommonButton text={"Checkout"} mt={30}/>
       </View>
     </View>
