@@ -1,7 +1,5 @@
 import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
-import Header from '../../components/Header'
-import CustomSearch from '../../components/CustomSearch'
 import CustomSlider from '../../components/CustomSlider'
 import CustomHeading from '../../components/CustomHeading'
 import CategoryCard from '../../components/CategoryCard'
@@ -10,22 +8,19 @@ import { COLORS } from '../../constants/COLORS'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import DummySearch from '../../components/DummySearch'
 import ItemBox from '../../components/ItemBox'
-import Animated, { useAnimatedStyle, useSharedValue, withDecay, withDelay, withRepeat, withSequence, withTiming } from 'react-native-reanimated'
 import locationContext from '../../context/location'
 import { useQuery } from 'react-query'
-import customAxios from '../../customAxios'
 import useRefetch from '../../hooks/useRefetch'
 import { HomeApi } from '../../api/home'
 import HomeLoader from '../../components/Loading/Home/HomeLoader'
-import useOpacityAnimation from '../../hooks/animationHook'
+import { AnimatedView } from 'react-native-reanimated/lib/typescript/reanimated2/component/View'
+import Animated, { FadeInDown } from 'react-native-reanimated'
 
 
 
 
 const Home = ({ navigation }) => {
 
-
-    const { getLocation, location } = useContext(locationContext);
 
     let payload = {
         "coordinates": [
@@ -58,18 +53,14 @@ const Home = ({ navigation }) => {
         navigation.navigate('Search')
     }, [navigation])
 
-
-
-
-    useEffect(() => {
-        getLocation()
-    }, [])
-
+    const NavigateToFeatured = useCallback((res) => {
+        navigation.navigate('FeaturedProduct', { id: res._id, name: res.name })
+    }, [navigation])
 
 
     const HeaderComponents = useCallback(() => {
         return (
-            <View style={{ backgroundColor: '#fff' }}>
+            <Animated.View style={{ backgroundColor: '#fff' }}>
                 <View style={{ marginVertical: 4 }}>
                     <CustomSlider item={data?.data?.data?.sliders} />
                 </View>
@@ -80,10 +71,9 @@ const Home = ({ navigation }) => {
                     contentContainerStyle={styles.scrollViewContent}
                 >
                     {data?.data?.data?.categories?.map((res, index) => (
-                        <View style={{ marginRight: 8 }}>
+                        <Animated.View  entering={FadeInDown.easing().delay(200)} style={{ marginRight: 8 }}>
                             <CategoryCard key={res?._id} item={res} />
-                        </View>
-
+                        </Animated.View>
                     ))}
                     <TouchableOpacity style={styles.iconConatiner} onPress={NavigateToCategory}>
                         <Text style={styles.text2}>{'View All'}</Text>
@@ -93,7 +83,7 @@ const Home = ({ navigation }) => {
                 <View style={{ marginTop: 3 }}>
                     <CustomHeading label={'Popular Products'} hide={true} onPress={NavigateToAllPages} marginH={20} />
                 </View>
-            </View>
+            </Animated.View>
 
         )
     }, [data?.data?.data])
@@ -120,7 +110,7 @@ const Home = ({ navigation }) => {
                 </View>
                 <View style={[styles.boxItem, styles.footerBox]}>
                     {data?.data?.data?.allFeatures?.map((res, index) => (
-                        <ItemBox onPress={NavigateToAllPages} key={res?._id} item={res} index={index} />
+                        <ItemBox onPress={() => NavigateToFeatured(res)} key={res?._id} item={res} index={index} />
                     ))}
                 </View>
                 <View style={{ marginBottom: 80 }}>

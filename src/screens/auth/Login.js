@@ -32,7 +32,7 @@ const Login = ({ navigation }) => {
     const onSuccess = async ({ data }) => {
         await storage.setMapAsync('user', data);
         storage.setString('success', 'Login successful')
-       
+
         navigation.dispatch(CommonActions.reset(
             {
                 index: 0,
@@ -42,10 +42,11 @@ const Login = ({ navigation }) => {
     }
 
     const { mutate } = useMutation({
-        mutationKey: ['login-query'],
+        mutationKey: 'login-query',
         mutationFn: loginApi,
         onSuccess
     })
+
 
     const navToRegister = useCallback(() => {
         navigation.navigate('Register')
