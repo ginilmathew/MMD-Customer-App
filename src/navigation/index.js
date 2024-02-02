@@ -80,10 +80,10 @@ const Navigation = () => {
       {
         isConnected !== null && !isConnected && (
           <Modal visible transparent>
-            <View style={{ height, width, flex: 1, backgroundColor: COLORS.white }}>
+            <View style={{ height, width, flex: 1, backgroundColor: COLORS.white, justifyContent: 'center', alignItems: 'center' }}>
               <Image
-                style={{ height: 23, width: 45 }}
-                source={require('../images/no-internet.png')}
+                style={{ height: 293, width: 250, resizeMode: 'contain' }}
+                source={require('../images/no_internet.jpg')}
               />
             </View>
           </Modal>
