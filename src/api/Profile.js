@@ -22,6 +22,6 @@ export const addAddress = async (data) => customAxios.post('public/api/customer/
 
 export const addressList = async (data) => customAxios.get('public/api/customer/addresslist')
 
-export const defaultAddrss = async (data) => customAxios.get('public/api/customer/change-customer-defaultaddress')
+export const defaultAddrss = async (data) => customAxios.post('public/api/customer/set-default', { id: data })
 
-export const deletAddrss = async (data) => customAxios.get('public/api/customer/addresslist')
+export const deletAddrss = async (data) => customAxios.delete('public/api/customer/delete-address/' + data)

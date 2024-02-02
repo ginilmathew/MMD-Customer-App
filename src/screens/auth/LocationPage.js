@@ -1,5 +1,5 @@
 import { View, Text, Image, StyleSheet } from 'react-native'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { COLORS } from '../../constants/COLORS'
 import CommonButton from '../../components/CommonButton'
 import locationContext from '../../context/location'

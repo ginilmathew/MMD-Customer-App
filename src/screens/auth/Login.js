@@ -19,6 +19,7 @@ import locationContext from '../../context/location';
 const Login = ({ navigation }) => {
 
     const { getLocation } = useContext(locationContext)
+    const [userLoc, setUserLoc] = useMMKVStorage('userLoc', storage)
 
     const schema = yup.object({
         email: yup.string().email('Please enter valid email address').required('Email is required'),
@@ -32,8 +33,9 @@ const Login = ({ navigation }) => {
     const onSuccess = async ({ data }) => {
         await storage.setMapAsync('user', data);
         storage.setString('success', 'Login successful')
+        setUserLoc(data?.defaultAddress)
 
-        navigation.navigate('LocationPage');
+        navigation.navigate(data?.defaultAddress ? 'HomeNavigator' : 'LocationPage');
     }
 
     const { mutate } = useMutation({

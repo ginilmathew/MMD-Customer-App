@@ -40,6 +40,7 @@ const Navigation = () => {
   const [user] = useMMKVStorage('user', storage);
   const [error] = useMMKVStorage('error', storage)
   const [success] = useMMKVStorage('success', storage);
+  const [userLoc] = useMMKVStorage('userLoc', storage)
 
   const { height, width } = useWindowDimensions()
 
@@ -52,7 +53,7 @@ const Navigation = () => {
   return (
     <>
       <NavigationContainer ref={navigationRef} onReady={onReady}>
-        <Stack.Navigator initialRouteName={user ? 'HomeNavigator' : 'Login'} screenOptions={{ headerShown: false }}>
+        <Stack.Navigator initialRouteName={user && userLoc ? 'HomeNavigator' : user ? 'LocationPage' : 'Login'} screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Register" component={Register} />
           <Stack.Screen name="Forget" component={Forget} />

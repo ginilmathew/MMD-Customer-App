@@ -7,20 +7,10 @@ import Animated, { FadeInDown } from 'react-native-reanimated'
 import { getAllProducts } from '../../api/allProducts'
 import { useInfiniteQuery, useQuery } from 'react-query'
 import useRefreshOnFocus from '../../hooks/useRefetch'
+import reactotron from 'reactotron-react-native'
 
 const AllProducts = ({ navigation }) => {
-    const DATA2 =
-    [
-        { id: 1 },
-        { id: 2 },
-        { id: 3 },
-        { id: 4 },
-        { id: 5 },
-        { id: 6 },
-        { id: 7 },
-        { id: 8 },
-
-    ]
+  
 
     const {
         data,
@@ -37,47 +27,32 @@ const AllProducts = ({ navigation }) => {
         queryKey: ['allProducts'],
         queryFn: getAllProducts,
         getNextPageParam: (lastPage, pages) => {
+            if(lastPage.length === 0) return undefined;
             return pages?.length + 1
         },
-        enabled: false
-
     })
 
   
-    // const [page, setPage] = React.useState(1)
-    // const {
-    //     isLoading,
-    //     isError,
-    //     error,
-    //     data,
-    //     refetch,
-    //     isFetching,
-    //     isPreviousData,
-        
-    //   } = useQuery({
-    //     queryKey: ['allProducts', page],
-    //     queryFn: () => getAllProducts(page),
-    //     keepPreviousData : true
-    //   })
-
 
       useRefreshOnFocus(refetch)
-    console.log({data:data?.pages?.map(page => page?.data)?.flat()})
-
+ 
+const onEndReach = ()=>{
+    if(hasNextPage && !isLoading){
+        fetchNextPage()
+    }
+}
 
     const renderItem = useCallback(({ item, index }) => {
+        reactotron.log({item})
         const animatedStyle = FadeInDown.delay(index * 200).duration(200).springify().damping(12);
-     console.log({item:item?.data?.data})
+
         return (
             <Animated.View entering={animatedStyle}>
                 <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
-                    {/* <ItemCard item={item?.data?.data}/> */}
-                    <Text>hello</Text>
+                    <ItemCard item={item}/>
+                
                 </View>
-            </Animated.View>
-         
-           
-            
+            </Animated.View> 
         )
     }, [])
 
@@ -95,14 +70,17 @@ const AllProducts = ({ navigation }) => {
             <Header />
             <CommonHeader heading={"Products"} backBtn={true} />
             <FlatList
-                data={data?.pages?.map(page => page?.data)?.flat()}
+                data={data?.pages?.map(page => page?.data?.data?.data)?.flat()}
                 ListFooterComponent={ListFooterComponents}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
                 showsVerticalScrollIndicator={false}
                 removeClippedSubviews={true} 
                 initialNumToRender={6} 
-                maxToRenderPerBatch={6} />
+                maxToRenderPerBatch={6}
+                onEndReached={onEndReach}
+                onEndReachedThreshold={5}
+                 />
 
         </View>
     )

@@ -13,6 +13,8 @@ import { useQuery } from 'react-query'
 import useRefetch from '../../hooks/useRefetch'
 import { HomeApi } from '../../api/home'
 import HomeLoader from '../../components/Loading/Home/HomeLoader'
+import { AnimatedView } from 'react-native-reanimated/lib/typescript/reanimated2/component/View'
+import Animated, { FadeInDown } from 'react-native-reanimated'
 
 
 
@@ -58,7 +60,7 @@ const Home = ({ navigation }) => {
 
     const HeaderComponents = useCallback(() => {
         return (
-            <View style={{ backgroundColor: '#fff' }}>
+            <Animated.View style={{ backgroundColor: '#fff' }}>
                 <View style={{ marginVertical: 4 }}>
                     <CustomSlider item={data?.data?.data?.sliders} />
                 </View>
@@ -69,10 +71,9 @@ const Home = ({ navigation }) => {
                     contentContainerStyle={styles.scrollViewContent}
                 >
                     {data?.data?.data?.categories?.map((res, index) => (
-                        <View style={{ marginRight: 8 }}>
+                        <Animated.View  entering={FadeInDown.easing().delay(200)} style={{ marginRight: 8 }}>
                             <CategoryCard key={res?._id} item={res} />
-                        </View>
-
+                        </Animated.View>
                     ))}
                     <TouchableOpacity style={styles.iconConatiner} onPress={NavigateToCategory}>
                         <Text style={styles.text2}>{'View All'}</Text>
@@ -82,7 +83,7 @@ const Home = ({ navigation }) => {
                 <View style={{ marginTop: 3 }}>
                     <CustomHeading label={'Popular Products'} hide={true} onPress={NavigateToAllPages} marginH={20} />
                 </View>
-            </View>
+            </Animated.View>
 
         )
     }, [data?.data?.data])

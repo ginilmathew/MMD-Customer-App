@@ -93,7 +93,7 @@ function HomeNavigation({ navigation }) {
     return (
         <>
 
-            <Header toCart={toCart} toNotification={toNotification} />
+             <Header toCart={toCart} toNotification={toNotification} /> 
 
             <Tab.Navigator
                 screenOptions={({ route }) => {
