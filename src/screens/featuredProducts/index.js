@@ -5,6 +5,7 @@ import CommonHeader from '../../components/CommonHeader';
 import { getfeaturedProduct } from '../../api/featuredProducts';
 import { useQuery } from 'react-query';
 import ItemCard from '../../components/ItemCard';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 
 
 const FeaturedProduct = ({ route }) => {
@@ -17,7 +18,7 @@ const FeaturedProduct = ({ route }) => {
     })
 
 
-    console.log({ DAT: data?.data?.data?.[0]?.featured_list })
+ 
 
 
     const ListHeaderComponents = useCallback(() => {
@@ -30,16 +31,21 @@ const FeaturedProduct = ({ route }) => {
     }, [])
 
 
+    const AnimatedStyle = useCallback((index)=>{
+        return FadeInDown.delay(index * 200).duration(200).springify().damping(12);
+      },[])
+    
+
     const renderItem = useCallback(({ item, index }) => {
         return (
-            <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
+            <Animated.View entering={AnimatedStyle(index)} style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
                 <ItemCard key={index} item={item} />
-            </View>
+            </Animated.View>
         )
 
     }, [])
 
-    const ListFooterComponent=()=>{
+    const ListFooterComponent = () => {
         return (
             <View style={styles.footer}></View>
         )
@@ -47,16 +53,16 @@ const FeaturedProduct = ({ route }) => {
 
     return (
         <FlatList
-        data={data?.data?.data?.[0]?.featured_list}
-        stickyHeaderIndices={[0]}
-        ListHeaderComponent={ListHeaderComponents}
-        renderItem={renderItem}
-        showsVerticalScrollIndicator={false}
-        ListFooterComponent={ListFooterComponent}
-        initialNumToRender={10}
-        maxToRenderPerBatch={10}
-        windowSize={10}
-        contentContainerStyle={styles.flatlistContainer}
+            data={data?.data?.data?.[0]?.featured_list}
+            stickyHeaderIndices={[0]}
+            ListHeaderComponent={ListHeaderComponents}
+            renderItem={renderItem}
+            showsVerticalScrollIndicator={false}
+            ListFooterComponent={ListFooterComponent}
+            initialNumToRender={10}
+            maxToRenderPerBatch={10}
+            windowSize={10}
+            contentContainerStyle={styles.flatlistContainer}
         />
     )
 }
@@ -64,10 +70,11 @@ const FeaturedProduct = ({ route }) => {
 export default FeaturedProduct
 
 const styles = StyleSheet.create({
-    footer:{
-        marginBottom:60
+    footer: {
+        marginBottom: 50
     },
-    flatlistContainer:{
-        backgroundColor:'#fff'
+    flatlistContainer: {
+        backgroundColor: '#fff',
+       flexGrow:1,
     }
 })

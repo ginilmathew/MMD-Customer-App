@@ -26,7 +26,7 @@ const CustomSlider = memo(({ item }) => {
 
   const CarouselSelect = (selectedItem) => {
     // Handle selection logic
-    console.log('Selected Item:', selectedItem);
+  
   };
 
   const IMAGE_ARRAY = [{id:1}]

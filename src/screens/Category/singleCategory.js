@@ -16,34 +16,34 @@ const SingleCategory = ({ route }) => {
     const item = route?.params;
 
     const [subList, setSubList] = useState("")
-    const [listItem,setListItem]=useState([])
-    const [subCategoryList,setSubCategoryList]=useState([])
+    const [listItem, setListItem] = useState([])
+    const [subCategoryList, setSubCategoryList] = useState([]);
+
+
 
     const { data, isLoading, refetch } = useQuery({
         queryKey: ['catProducts-query'],
         queryFn: () => getCatProducts(item?.item),
         enabled: true,
-        onSuccess:(data)=>{
+        onSuccess: (data) => {
             setListItem(data?.data?.data?.products);
             setSubCategoryList(data?.data?.data?.SubCategory)
-            reactotron.log({data},'ONSUCCESS')
 
         }
     })
 
     useRefetch(refetch)
 
-    
-reactotron.log({subList})
+
 
 
     const AnimatedStyles = useCallback((index, count) => {
         return FadeInDown.delay(index * count).duration(200).springify().damping(12);
     }, []);
 
-    const onChangeSub = useCallback((value)=>{
+    const onChangeSub = useCallback((value) => {
         setSubList(value)
-    },[])
+    }, [])
 
 
     const ListHeaderComponents = useCallback(({ item, index }) => {
@@ -54,12 +54,12 @@ reactotron.log({subList})
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}
                 >
-                    <RenderHeaderMemo LIST={subCategoryList} AnimatedStyle={AnimatedStyles} key={index} onPress= {onChangeSub} />
+                    <RenderHeaderMemo subList={subList} LIST={subCategoryList} AnimatedStyle={AnimatedStyles} key={index} onPress={onChangeSub} />
                 </ScrollView>
             </View>
         )
 
-    }, [AnimatedStyles, data?.data?.data])
+    }, [AnimatedStyles, data?.data?.data, subList])
 
     const renderItem = useCallback(({ item, index }) => {
         return (
@@ -71,7 +71,7 @@ reactotron.log({subList})
 
     const ListFooterComponent = useCallback(() => {
         return (
-            <View style={{ marginBottom: 100 }}>
+            <View style={{ marginBottom: 60 }}>
 
             </View>
         )
@@ -106,12 +106,13 @@ const styles = StyleSheet.create({
     }
 })
 
-const RenderHeaderMemo = memo(({ LIST, AnimatedStyle ,onPress}) => {
+const RenderHeaderMemo = memo(({ LIST, AnimatedStyle, onPress, subList }) => {
     return (
         <>
             {LIST?.map((res, index) => (
                 <Animated.View entering={AnimatedStyle(index, 100)} style={{ marginRight: 10 }}>
-                    <CustomTab label={res?.name} onPress={()=>onPress(res)} />
+
+                    <CustomTab label={res?.name} onPress={() => onPress(res)} subList={subList} />
                 </Animated.View>
             ))}
         </>

@@ -89,7 +89,7 @@ const App = () => {
 
     return notifee.onForegroundEvent(({ type, detail }) => {
 
-      console.log(detail.notification.data);
+      // console.log(detail.notification.data);
 
       switch (type) {
         case EventType.DISMISSED:

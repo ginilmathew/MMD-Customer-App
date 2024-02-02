@@ -1,5 +1,5 @@
-import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native'
-import React, { memo, useCallback, useState } from 'react'
+import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { memo, useCallback, useRef, useState } from 'react'
 import Header from '../../components/Header'
 import CommonHeader from '../../components/CommonHeader'
 import ItemCard from '../../components/ItemCard'
@@ -34,7 +34,7 @@ const AllProducts = ({ navigation }) => {
 
 
 
-
+    const flatListRef = useRef(null);
 
     const onEndReach = () => {
         if (hasNextPage && !isLoading) {
@@ -42,12 +42,23 @@ const AllProducts = ({ navigation }) => {
         }
     }
 
+    // const scrollToTop = () => {
+    //     if (flatListRef.current) {
+    //         flatListRef.current.scrollToOffset({ offset: 0, animated: true });
+    //     }
+    // };
+
+
+    const AnimatedStyle = useCallback((index) => {
+        return FadeInDown.delay(index * 200).duration(200).springify().damping(12);
+    }, [])
+
     const renderItem = useCallback(({ item, index }) => {
-    
-        const animatedStyle = FadeInDown.delay(index * 200).duration(200).springify().damping(12);
+
+
 
         return (
-            <Animated.View entering={animatedStyle}>
+            <Animated.View entering={AnimatedStyle(index)}>
                 <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
                     <ItemCard item={item} key={item?._id} />
                 </View>
@@ -58,6 +69,7 @@ const AllProducts = ({ navigation }) => {
     const ListFooterComponents = memo(() => {
         return (
             <View style={{ marginBottom: 100 }}>
+                {isFetchingNextPage && <ActivityIndicator size="large" color={COLORS.primary} />}
             </View>
         )
     },)
@@ -75,11 +87,11 @@ const AllProducts = ({ navigation }) => {
                 keyExtractor={item => item._id}
                 showsVerticalScrollIndicator={false}
                 removeClippedSubviews={true}
-                initialNumToRender={10}
+                initialNumToRender={15}
                 onEndReached={onEndReach}
                 onEndReachedThreshold={.5}
             />
-            {isFetchingNextPage && <ActivityIndicator size="large" color={COLORS.primary} />}
+       
 
         </View>
     )
@@ -87,4 +99,19 @@ const AllProducts = ({ navigation }) => {
 
 export default AllProducts
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    scrollToTopButton: {
+      
+        bottom: 20,
+        right: 20,
+        backgroundColor: COLORS.primary,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+        elevation: 5,
+    },
+    scrollToTopButtonText: {
+        color: COLORS.white,
+        fontWeight: 'bold',
+    },
+})

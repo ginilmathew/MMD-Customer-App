@@ -27,12 +27,7 @@ const SingleProduct = ({ route }) => {
     const [select, setSelect] = useState(null)
     const [price, setPrice] = useState(0)
  
-    const smallImages = [
-        require('../../images/spinach.jpg'),
-        require('../../images/spinach.jpg'),
-        require('../../images/spinach.jpg'),
-    ];
-
+ 
     const handleImagePress = useCallback((image) => {
         setMainImage(image);
     }, []);
