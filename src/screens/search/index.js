@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
+import { ActivityIndicator, FlatList, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
 import React, { useCallback, useState } from 'react'
 import Header from '../../components/Header'
 import CommonHeader from '../../components/CommonHeader'
@@ -8,7 +8,7 @@ import { useMutation, useQuery } from 'react-query'
 import { getSearchList } from '../../api/Search'
 import useRefetch from '../../hooks/useRefetch'
 import reactotron from 'reactotron-react-native'
-import Animated from 'react-native-reanimated'
+import Animated, { FadeInDown } from 'react-native-reanimated'
 import ItemCard from '../../components/ItemCard'
 
 const Search = () => {
@@ -18,7 +18,7 @@ const Search = () => {
 
     const { height } = useWindowDimensions()
 
-    const { mutate, data, refetch } = useMutation({
+    const { mutate, data, refetch, isLoading } = useMutation({
         mutationKey: 'search',
         mutationFn: getSearchList,
 
@@ -29,11 +29,12 @@ const Search = () => {
 
 
 
-    reactotron.log({ data: data?.data?.data })
+
     let timeoutId;
 
     const onChangeProduct = useCallback((data) => {
         setValue(data)
+     
         clearTimeout(timeoutId);
         timeoutId = setTimeout(() => {
             mutate(data)
@@ -41,14 +42,17 @@ const Search = () => {
     }, [value]);
 
 
+    const AnimatedStyle = useCallback((index)=>{
+        return FadeInDown.delay(index * 300).duration(200).springify().damping(12);
+      },[])
 
 
     const renderItem = useCallback(({ item, index }) => {
         return (
             <>
-                <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
+                <Animated.View entering={AnimatedStyle(index)} style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
                     <ItemCard key={index} item={item} />
-                </View>
+                </Animated.View>
             </>
         )
     }, [data?.data?.data])
@@ -62,20 +66,58 @@ const Search = () => {
         )
     }
 
+    // Conditionally render loading indicator if data is still being fetched
+    if (isLoading) {
+        return (
+            <View style={{ flex: 1, backgroundColor: COLORS.white }}>
+                <Header />
+                <CommonHeader heading={'Search'} backBtn />
+                <View>
+                    <CustomSearch values={value} onChangeText={onChangeProduct} />
+                </View>
+                <ActivityIndicator size="large" color={COLORS.primary} />
+            </View>
+        );
+    }
+
+    // Conditionally render a message if no data is found
+    if (!data?.data?.data || data?.data?.data.length === 0) {
+        return (
+            <View style={{ flex: 1, backgroundColor: COLORS.white }}>
+                <Header />
+                <CommonHeader heading={'Search'} backBtn />
+                <View>
+                    <CustomSearch values={value} onChangeText={onChangeProduct} />
+                </View>
+                <Text style={{ textAlign: 'center', marginTop: 20, fontSize: 18, color: COLORS.primary }}>
+                    No data found.
+                </Text>
+            </View>
+        );
+    }
+
+    const commonKeyExtractor = (item, index) => {
+        // Replace 'id' with the actual identifier in your data
+        return item._id ;
+      };
+      
+
     return (
 
         <View style={{ flex: 1, backgroundColor: COLORS.white }}>
             <Header />
             <CommonHeader heading={'Search'} backBtn />
-            <View>
+            <View style={styles.searchcontainer}>
                 <CustomSearch values={value} onChangeText={onChangeProduct} />
             </View>
             <FlatList
+
                 ListFooterComponent={ListFooter}
                 StickyHeaderComponent={[0]}
                 data={data?.data?.data}
+                initialNumToRender={10}
                 renderItem={renderItem}
-                keyExtractor={(item, index) => index.toString()}
+                keyExtractor={commonKeyExtractor}
                 contentContainerStyle={{ flexGrow: 1, marginHorizontal: 10 }}
             />
         </View>
@@ -88,4 +130,8 @@ const Search = () => {
 
 export default Search
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    searchcontainer:{
+        marginBottom:10
+    }
+})
