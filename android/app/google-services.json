@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "718331392984",
+    "project_id": "dgcart-ae937",
+    "storage_bucket": "dgcart-ae937.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:718331392984:android:e273bb7e8a433a0c8bb8ad",
+        "android_client_info": {
+          "package_name": "com.dgvendor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdJlx7CbHgYFj1zeCIjj_lyxcySbEPC9U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:718331392984:android:08c65148835abc9a8bb8ad",
+        "android_client_info": {
+          "package_name": "com.mmdcustomerapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdJlx7CbHgYFj1zeCIjj_lyxcySbEPC9U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

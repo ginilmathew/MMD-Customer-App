@@ -7,20 +7,19 @@ import { getLocation as locationApi } from '../../api/Profile';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 import LocationContext from './index'
 import { navigationRef } from '../../navigation/RootNavigation';
+import { useMMKVStorage } from 'react-native-mmkv-storage';
+import { storage } from '../../../App';
 
 
 
 
 const locationContext = ({ children }) => {
 
-    const [location, setLocation] = useState({
-        location: {
-            latitude: -19.502842,
-            longitude: 20.294303
-        }
-    })
+    const [userLoc] = useMMKVStorage('userLoc', storage)
 
+    const [location, setLocation] = useState({})
 
+    
     const onSuccess = ({ data }) => {
 
         setLocation(location => ({
@@ -31,8 +30,8 @@ const locationContext = ({ children }) => {
             },
         }));
 
-        // navigationRef.navigate('HomeNavigator', { screen: 'ProfileNavigator', params: { screen: 'MapPage' } })
-        navigationRef.navigate('HomeNavigator', { screen: 'Home' })
+        navigationRef.navigate('MapPage', !userLoc && { mode: true })
+        // navigationRef.navigate('HomeNavigator', { screen: 'Home' })
     }
 
 
@@ -78,9 +77,10 @@ const locationContext = ({ children }) => {
 
                 const { latitude, longitude } = position.coords;
 
-                setLocation({
-                    location: { latitude, longitude }
-                })
+                setLocation(({address}) => ({
+                    location: { latitude, longitude },
+                    address
+                }))
 
                 mutate(position.coords)
             },
@@ -109,9 +109,10 @@ const locationContext = ({ children }) => {
 
                 const { latitude, longitude } = position.coords
 
-                setLocation({
-                    location: { latitude, longitude }
-                })
+                setLocation(({ address }) => ({
+                    location: { latitude, longitude },
+                    address
+                }))
             },
             (error) => {
                 if (error?.message === "No location provider available.") {

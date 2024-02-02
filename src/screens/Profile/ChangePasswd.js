@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from 'react-native'
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import CustomInput from '../../components/CustomInput'
 import CommonButton from '../../components/CommonButton'
 import { useForm } from 'react-hook-form'
@@ -11,6 +11,7 @@ import { useMutation } from 'react-query'
 import { changePasswd } from '../../api/Profile'
 import { storage } from '../../../App'
 import { navigationRef } from '../../navigation/RootNavigation'
+import Header from '../../components/Header'
 
 
 const ChangePasswd = ({ navigation, route }) => {
@@ -49,7 +50,9 @@ const ChangePasswd = ({ navigation, route }) => {
 
   return (
     <>
-      <CommonHeader heading={'Change Password'} backBtn onPress={route?.params?.user ? navToLogin : null} />
+      <Header />
+
+      <CommonHeader heading={route?.params?.user ? 'Reset Password' : 'Change Password'} backBtn onPress={route?.params?.user ? navToLogin : null} />
       <View style={styles.container}>
       
         <CustomInput

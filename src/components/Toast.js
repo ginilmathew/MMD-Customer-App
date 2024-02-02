@@ -40,8 +40,8 @@ const styles = StyleSheet.create({
         alignSelf: 'center'
     },
     message: {
-        padding: 2,
-        paddingHorizontal: 6,
+        padding: 4,
+        paddingHorizontal: 8,
         borderRadius: 10,
     },
     messageText: {

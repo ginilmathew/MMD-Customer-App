@@ -11,6 +11,7 @@ import { useMMKVStorage } from 'react-native-mmkv-storage'
 import { storage } from '../../../App'
 import { useMutation } from 'react-query'
 import { updateProfile } from '../../api/Profile'
+import Header from '../../components/Header'
 
 
 const EditProfile = ({ navigation }) => {
@@ -43,7 +44,8 @@ const EditProfile = ({ navigation }) => {
 
 
     return (
-        <>
+        <>  
+            <Header />
             <CommonHeader heading={'Edit Profile'} backBtn />
 
             <View style={styles.container}>

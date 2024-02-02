@@ -33,6 +33,7 @@ const Forget = ({ navigation }) => {
 
   const onSuccessOtp = ({ data }) => {
     storage.setString('success', 'Verification Successful')
+  
     navigation.navigate('HomeNavigator', { screen: 'ProfileNavigator', params: { screen: 'ChangePasswd', params: { user: data?.data } }})
   }
 
@@ -52,7 +53,7 @@ const Forget = ({ navigation }) => {
   const goBack = useCallback(() => {
     navigation?.goBack()
   }, [navigation]);
-  
+
 
   const otpSubmit = ({ otp }) => {
     mutateOtp({ email: getValues()?.email, otp })

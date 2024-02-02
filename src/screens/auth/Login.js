@@ -9,16 +9,24 @@ import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutation } from 'react-query';
-import { loginApi } from '../../api/auth';
+import { loginApi, tokenApi } from '../../api/auth';
 import { useMMKVStorage } from 'react-native-mmkv-storage';
 import { storage } from '../../../App';
 import { CommonActions } from '@react-navigation/native';
 import locationContext from '../../context/location';
+import messaging from '@react-native-firebase/messaging';
+import customAxios from '../../customAxios';
 
 
 const Login = ({ navigation }) => {
 
     const { getLocation } = useContext(locationContext)
+    const [userLoc, setUserLoc] = useMMKVStorage('userLoc', storage)
+    const { mutate: tokenMutate } = useMutation({
+        mutationKey: 'token-key',
+        mutationFn: tokenApi
+    })
+    
 
     const schema = yup.object({
         email: yup.string().email('Please enter valid email address').required('Email is required'),
@@ -31,14 +39,14 @@ const Login = ({ navigation }) => {
 
     const onSuccess = async ({ data }) => {
         await storage.setMapAsync('user', data);
+        const token = await messaging().getToken();
+        tokenMutate(token)
+        
+        
         storage.setString('success', 'Login successful')
+        setUserLoc(data?.defaultAddress)
 
-        navigation.dispatch(CommonActions.reset(
-            {
-                index: 0,
-                routes: [{ name: 'HomeNavigator' }]
-            }
-        ));
+        navigation.navigate(data?.defaultAddress ? 'HomeNavigator' : 'LocationPage');
     }
 
     const { mutate } = useMutation({

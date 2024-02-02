@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Modal, useWindowDimensions } from 'react-native'
+import { StyleSheet, Text, View, Modal, useWindowDimensions, Image } from 'react-native'
 import React, { useCallback, useState } from 'react'
 import { navigationRef } from './RootNavigation';
 import SplashScreen from 'react-native-splash-screen'
@@ -24,6 +24,13 @@ import { useNetInfo } from '@react-native-community/netinfo';
 import Toast from '../components/Toast';
 import FeaturedProduct from '../screens/featuredProducts';
 import Checkout from '../screens/checkout';
+import LocationPage from '../screens/auth/LocationPage';
+import { COLORS } from '../constants/COLORS';
+import EditProfile from '../screens/Profile/EditProfile';
+import AddAddress from '../screens/Profile/AddAddress';
+import ChangePasswd from '../screens/Profile/ChangePasswd';
+import GoogleLocation from '../screens/Profile/GoogleLocation';
+import MapAddress from '../screens/Profile/MapAddress';
 
 
 const Stack = createNativeStackNavigator();
@@ -32,7 +39,10 @@ const Navigation = () => {
   const { isConnected } = useNetInfo();
   const [user] = useMMKVStorage('user', storage);
   const [error] = useMMKVStorage('error', storage)
-  const [success] = useMMKVStorage('success', storage)
+  const [success] = useMMKVStorage('success', storage);
+  const [userLoc] = useMMKVStorage('userLoc', storage)
+
+  const { height, width } = useWindowDimensions()
 
 
   const onReady = useCallback(() => {
@@ -43,7 +53,7 @@ const Navigation = () => {
   return (
     <>
       <NavigationContainer ref={navigationRef} onReady={onReady}>
-        <Stack.Navigator initialRouteName={user ? 'HomeNavigator' : 'Login'} screenOptions={{ headerShown: false }}>
+        <Stack.Navigator initialRouteName={user && userLoc ? 'HomeNavigator' : user ? 'LocationPage' : 'Login'} screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Register" component={Register} />
           <Stack.Screen name="Forget" component={Forget} />
@@ -58,9 +68,28 @@ const Navigation = () => {
           <Stack.Screen name="Search" component={Search} />
           <Stack.Screen name="SingleProduct" component={SingleProduct} />
           <Stack.Screen name="FeaturedProduct" component={FeaturedProduct} />
+          <Stack.Screen name='LocationPage' component={LocationPage} />            
+          <Stack.Screen name='EditProfile' component={EditProfile} />
+          <Stack.Screen name='Address' component={AddAddress} />
+          <Stack.Screen name='ChangePasswd' component={ChangePasswd} />
+          <Stack.Screen name='GoogleLocation' component={GoogleLocation} />
+          <Stack.Screen name='MapPage' component={MapAddress} />
         </Stack.Navigator>
       </NavigationContainer>
 
+      {
+        isConnected !== null && !isConnected && (
+          <Modal visible transparent>
+            <View style={{ height, width, flex: 1, backgroundColor: COLORS.white }}>
+              <Image
+                style={{ height: 23, width: 45 }}
+                source={require('../images/no-internet.png')}
+              />
+            </View>
+          </Modal>
+
+        )
+      }
 
       <Modal visible={!!error || !!success} transparent>
         <View style={{ backgroundColor: 'rgba(0,0,0,.1)', flex: 1 }}>
