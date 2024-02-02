@@ -23,6 +23,7 @@ const MapAddress = ({ navigation, route }) => {
     const mapRef = useRef(null);
     const [mode, setMode] = useState('map');
     const [item, setItem] = useState(0);
+    const [userLoc, setUserLoc] = useMMKVStorage('userLoc', storage);
     const [defaultVal, setDefaultVal] = useState(false)
     const [user] = useMMKVStorage('user', storage)
 
@@ -32,7 +33,21 @@ const MapAddress = ({ navigation, route }) => {
     const { mutate } = useMutation({
         mutationKey: 'add-address',
         mutationFn: addAddress,
-        onSuccess() {
+        onSuccess({ data }) {
+            
+            if(data?.data?.count > 0) {
+                if (!userLoc) {
+                    setUserLoc(true)
+                    navigation.reset({
+                        index: 0,
+                        routes: [
+                            { name: 'HomeNavigator' }
+                        ]
+                    })
+                }
+
+                return;
+            }
             navigation.navigate('Address')
         }
     })
@@ -123,12 +138,14 @@ const MapAddress = ({ navigation, route }) => {
                                 ref={mapRef}
                                 onPress={(e) => {
                                     if (location)
-                                        setLocation(location => {
+                                        setLocation((location) => {
                                             if (location.location.latitude !== e.nativeEvent.coordinate.latitude) {
                                                 changeLocation(e.nativeEvent.coordinate)
                                             }
+
+                                            return { ...location, location: { ...e.nativeEvent.coordinate } }
                                         })
-                                                                          mapRef.current.animateToRegion({
+                                mapRef.current.animateToRegion({
                                         ...e.nativeEvent.coordinate,
                                         latitudeDelta: 0.02,
                                         longitudeDelta: 0.02

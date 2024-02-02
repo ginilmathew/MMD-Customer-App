@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
   box__container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 12
+    marginTop: 12,
   },
   box__btn: {
     width: '45%',

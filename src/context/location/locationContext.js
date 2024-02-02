@@ -17,12 +17,7 @@ const locationContext = ({ children }) => {
 
     const [userLoc] = useMMKVStorage('userLoc', storage)
 
-    const [location, setLocation] = useState({
-        location: {
-            latitude: -19.502842,
-            longitude: 20.294303
-        }
-    })
+    const [location, setLocation] = useState({})
 
     
     const onSuccess = ({ data }) => {
@@ -82,9 +77,10 @@ const locationContext = ({ children }) => {
 
                 const { latitude, longitude } = position.coords;
 
-                setLocation({
-                    location: { latitude, longitude }
-                })
+                setLocation(({address}) => ({
+                    location: { latitude, longitude },
+                    address
+                }))
 
                 mutate(position.coords)
             },
@@ -113,9 +109,10 @@ const locationContext = ({ children }) => {
 
                 const { latitude, longitude } = position.coords
 
-                setLocation({
-                    location: { latitude, longitude }
-                })
+                setLocation(({ address }) => ({
+                    location: { latitude, longitude },
+                    address
+                }))
             },
             (error) => {
                 if (error?.message === "No location provider available.") {
