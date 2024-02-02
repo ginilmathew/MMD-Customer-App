@@ -7,9 +7,11 @@ import ItemCard from '../../components/ItemCard'
 import CustomTab from '../../components/CustomTab'
 import { COLORS } from '../../constants/COLORS'
 import reactotron from 'reactotron-react-native'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import useRefetch from '../../hooks/useRefetch'
 import { getCatProducts } from '../../api/IndividualCategory'
+import { postcategorybySub } from '../../api/category'
+import NoData from '../../components/NoData'
 
 const SingleCategory = ({ route }) => {
 
@@ -28,8 +30,17 @@ const SingleCategory = ({ route }) => {
         onSuccess: (data) => {
             setListItem(data?.data?.data?.products);
             setSubCategoryList(data?.data?.data?.SubCategory)
-
         }
+    })
+
+
+    const { mutate, refetch: postsubrefetch } = useMutation({
+        mutationKey: 'subcategory',
+        mutationFn: postcategorybySub,
+        onSuccess: (data) => {
+            setListItem(data?.data?.data?.products);
+        }
+
     })
 
     useRefetch(refetch)
@@ -43,6 +54,7 @@ const SingleCategory = ({ route }) => {
 
     const onChangeSub = useCallback((value) => {
         setSubList(value)
+        mutate(value?.slug)
     }, [])
 
 
@@ -77,6 +89,18 @@ const SingleCategory = ({ route }) => {
         )
     }, [])
 
+    const emptyScreen = () => {
+        return (
+            <NoData />
+        )
+    }
+
+    const mainRefetch = () => {
+        setListItem([])
+        setSubList('')
+        refetch()
+    }
+
 
     return (
         <View style={{ backgroundColor: '#fff', flex: 1 }}>
@@ -87,10 +111,13 @@ const SingleCategory = ({ route }) => {
                 data={listItem}
                 ListHeaderComponent={ListHeaderComponents}
                 renderItem={renderItem}
-                keyExtractor={item => item.id}
+                keyExtractor={item => item._id}
                 initialNumToRender={10}
+                refreshing={isLoading}
+                onRefresh={mainRefetch}
                 showsVerticalScrollIndicator={false}
                 ListFooterComponent={ListFooterComponent}
+                ListEmptyComponent={emptyScreen}
             />
         </View>
     )

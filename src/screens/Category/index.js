@@ -5,11 +5,12 @@ import Header from '../../components/Header';
 import CommonHeader from '../../components/CommonHeader';
 import Animated, { batch, FadeInDown } from 'react-native-reanimated';
 import { getCategory } from '../../api/category';
-import useRefreshOnFocus from '../../hooks/useRefetch';
+import useRefetch from '../../hooks/useRefetch'
 import { useQuery } from 'react-query';
+import NoData from '../../components/NoData';
 
 const Category = () => {
-  
+
     const { data, isLoading, refetch } = useQuery({
         queryKey: ['category'],
         queryFn: getCategory,
@@ -17,23 +18,23 @@ const Category = () => {
     })
 
 
-    useRefreshOnFocus(refetch)
+    useRefetch(refetch)
 
-    const AnimatedStyle = useCallback((index)=>{
+    const AnimatedStyle = useCallback((index) => {
         return FadeInDown.delay(index * 100).duration(200).springify().damping(12);
-    },[])
- 
+    }, [])
+
 
     const renderSectionHeader = useCallback(({ item, index }) => {
-       
+
         return (
             <Animated.View entering={AnimatedStyle(index)}>
                 <View style={styles.itemContainer}>
-                    <CategoryCard key={item?._id} item={item}/>
+                    <CategoryCard key={item?._id} item={item} />
                 </View>
             </Animated.View>
         );
-    },[data?.data?.data]);
+    }, [data?.data?.data, AnimatedStyle]);
 
 
     const ListHeaderComponent = memo(() => {
@@ -45,6 +46,12 @@ const Category = () => {
         )
     })
 
+    const emptyScreen = () => {
+        return (
+            <NoData />
+        )
+    }
+
     return (
         <FlatList
             StickyHeaderComponent={[0]}
@@ -52,20 +59,23 @@ const Category = () => {
             data={data?.data?.data}
             numColumns={4}
             renderItem={renderSectionHeader}
+            refreshing={isLoading}
+            onRefresh={refetch}
             keyExtractor={(item, index) => index.toString()}
             contentContainerStyle={styles.flatListContent}
+            ListEmptyComponent={emptyScreen}
         />
 
     );
 };
 
 const { width } = Dimensions.get('window');
-const itemWidth = width / 4; 
+const itemWidth = width / 4;
 const styles = StyleSheet.create({
     flatListContent: {
-        paddingHorizontal: 2, 
-        backgroundColor:'#fff',
-        flex:1
+        paddingHorizontal: 2,
+        backgroundColor: '#fff',
+        flex: 1
     },
     itemContainer: {
         width: itemWidth,

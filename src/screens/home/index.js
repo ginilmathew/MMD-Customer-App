@@ -101,9 +101,9 @@ const Home = ({ navigation }) => {
     const ListFooterComponent = useCallback(() => {
         return (
             <>
-                <View style={{ marginBottom: 20 }}>
+                {/* <View style={{ marginBottom: 20 }}>
                     <CustomSlider item={data?.data?.data?.sliders} />
-                </View>
+                </View> */}
                 <View style={{ marginTop: 2 }}>
                     <CustomHeading label={'HighLights'} hide={false} marginH={20} />
                 </View>
@@ -144,6 +144,8 @@ const Home = ({ navigation }) => {
                 showsVerticalScrollIndicator={false}
                 ListFooterComponent={ListFooterComponent}
                 initialNumToRender={10}
+                refreshing={isLoading}
+                onRefresh={refetch}
                 maxToRenderPerBatch={10}
                 windowSize={10}
                 getItemLayout={(data, index) => ({ length: 80, offset: 80 * index, index })}

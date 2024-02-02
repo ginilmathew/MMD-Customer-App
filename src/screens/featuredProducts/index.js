@@ -6,6 +6,7 @@ import { getfeaturedProduct } from '../../api/featuredProducts';
 import { useQuery } from 'react-query';
 import ItemCard from '../../components/ItemCard';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import NoData from '../../components/NoData';
 
 
 const FeaturedProduct = ({ route }) => {
@@ -51,6 +52,12 @@ const FeaturedProduct = ({ route }) => {
         )
     }
 
+    const emptyScreen = () => {
+        return (
+            <NoData />
+        )
+    }
+
     return (
         <FlatList
             data={data?.data?.data?.[0]?.featured_list}
@@ -61,8 +68,11 @@ const FeaturedProduct = ({ route }) => {
             ListFooterComponent={ListFooterComponent}
             initialNumToRender={10}
             maxToRenderPerBatch={10}
+            refreshing={isLoading}
+            onRefresh={refetch}
             windowSize={10}
             contentContainerStyle={styles.flatlistContainer}
+            ListEmptyComponent={emptyScreen}
         />
     )
 }
