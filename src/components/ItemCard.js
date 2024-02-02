@@ -18,15 +18,15 @@ const CustomItemCard = ({ onPress, item, key }) => {
     const cartItem = cartItems.find(cartItem => cartItem.id === item._id);
 
     const handleAddToCart = useCallback(() => {
-        addToCart(item._id);
+        addToCart(item);
     }, [addToCart, item._id]);
 
     const handleIncrement = useCallback(() => {
-        incrementItem(item._id);
+        incrementItem(item);
     }, [incrementItem, item._id]);
 
     const handleDecrement = useCallback(() => {
-        decrementItem(item._id);
+        decrementItem(item);
     }, [decrementItem, item._id]);
 
     const NavigateToSingleProduct = useCallback(() => {

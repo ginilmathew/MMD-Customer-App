@@ -6,7 +6,9 @@ import reactotron from 'reactotron-react-native';
 const CartProvider = ({ children }) => {
     const [cartItems, setCartItems] = useState([]);
 
-    const addToCart = (itemId) => {
+
+    const addToCart = ({ _id: itemId, ...items }) => {
+
         setCartItems((prevItems) => {
             const existingItem = prevItems.find((item) => item.id === itemId);
 
@@ -17,20 +19,22 @@ const CartProvider = ({ children }) => {
                 );
             } else {
                 // If item is not in the cart, add it
-                return [...prevItems, { id: itemId, qty: 1 }];
+                // console.log(items.products[0].categories.image);
+                // console.log(items.products[0].units[0]?.variants);
+                return [...prevItems, { id: itemId, qty: 1, ...{ image: items.products[0].imageBasePath + items.products[0].image, ...items } }];
             }
         });
     };
 
-    const incrementItem = (itemId) => {
+    const incrementItem = ({ _id: itemId }) => {
         setCartItems((prevItems) =>
-            prevItems.map((item) =>
-                item.id === itemId ? { ...item, qty: item.qty + 1 } : item
-            )
+            prevItems.map((item) => {
+                return item.id === itemId ? { ...item, qty: item.qty + 1 } : item
+            })
         );
     };
 
-    const decrementItem = (itemId) => {
+    const decrementItem = ({ _id: itemId }) => {
         setCartItems((prevItems) => {
             const updatedItems = prevItems.map((item) =>
                 item.id === itemId ? { ...item, qty: Math.max(item.qty - 1, 0) } : item
