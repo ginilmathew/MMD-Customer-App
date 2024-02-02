@@ -84,21 +84,24 @@ const CustomItemCard = ({ onPress, item, key }) => {
 
     const BASEPATHPRODCT = item?.products?.[0]?.imageBasePath;
     const BASEPATHP = item?.imageBasePath ?? null;
+    
 
     return (
         <Animated.View entering={AnimatedStyle} key={key}>
             <TouchableOpacity onPress={NavigateToSingleProduct} style={styles.container}>
                 {/* Left Side */}
-                <View style={styles.leftContainer}>
-                    {item?.products && <Image
+                <Animated.View style={styles.leftContainer}>
+                    {item?.products && <Animated.Image
                         source={{ uri: BASEPATHPRODCT + item?.products?.[0]?.image?.[0] }}
                         style={styles.leftImage}
+                        sharedTransitionTag={item?.product_id}
                     />}
-                    {item?.image && <Image
+                    {item?.image && <Animated.Image
+
                         source={{ uri: BASEPATHP + item?.image?.[0] }}
                         style={styles.leftImage}
                     />}
-                </View>
+                </Animated.View>
 
                 {/* Center Content */}
                 <View style={styles.centerContainer}>

@@ -15,19 +15,18 @@ import { COLORS } from '../../constants/COLORS';
 import CommonSelectDropdown from '../../components/CustomDropDown';
 import CustomDropdown from '../../components/CommonDropDown';
 import reactotron from 'reactotron-react-native';
+import Animated from 'react-native-reanimated';
 
 const SingleProduct = ({ route }) => {
 
     const { item } = route.params;
 
-    reactotron.log(item, "SINGLEPRODUCT")
+  
     const { height } = useWindowDimensions()
     const [mainImage, setMainImage] = useState(require('../../images/spinach.jpg'));
     const [select, setSelect] = useState(null)
     const [price, setPrice] = useState(0)
-    const color = [
-        1, 2, 3, 4, 5, 6
-    ];
+ 
     const smallImages = [
         require('../../images/spinach.jpg'),
         require('../../images/spinach.jpg'),
@@ -73,7 +72,7 @@ const SingleProduct = ({ route }) => {
                 contentContainerStyle={[styles.container]}
                 scrollEnabled={true}
                 showsVerticalScrollIndicator={false}>
-                <Image source={{ uri: BASEPATHPRODCT + item?.image?.[0] }} style={styles.mainImage} resizeMode="contain" />
+                <Animated.Image source={{ uri: BASEPATHPRODCT + item?.image?.[0] }} style={styles.mainImage} resizeMode="contain" sharedTransitionTag={item?._id} />
                 {/* <ScrollView
                     horizontal
                     showsHorizontalScrollIndicator={false}
