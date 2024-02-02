@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Italic',
     letterSpacing:.5,
     fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: 12,
     
   }
 

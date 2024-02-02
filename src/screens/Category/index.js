@@ -9,7 +9,7 @@ import useRefreshOnFocus from '../../hooks/useRefetch';
 import { useQuery } from 'react-query';
 
 const Category = () => {
-  
+
     const { data, isLoading, refetch } = useQuery({
         queryKey: ['category'],
         queryFn: getCategory,
@@ -19,21 +19,21 @@ const Category = () => {
 
     useRefreshOnFocus(refetch)
 
-    const AnimatedStyle = useCallback((index)=>{
+    const AnimatedStyle = useCallback((index) => {
         return FadeInDown.delay(index * 100).duration(200).springify().damping(12);
-    },[])
- 
+    }, [])
+
 
     const renderSectionHeader = useCallback(({ item, index }) => {
-       
+
         return (
             <Animated.View entering={AnimatedStyle(index)}>
                 <View style={styles.itemContainer}>
-                    <CategoryCard key={item?._id} item={item}/>
+                    <CategoryCard key={item?._id} item={item} />
                 </View>
             </Animated.View>
         );
-    },[data?.data?.data]);
+    }, [data?.data?.data]);
 
 
     const ListHeaderComponent = memo(() => {
@@ -52,6 +52,8 @@ const Category = () => {
             data={data?.data?.data}
             numColumns={4}
             renderItem={renderSectionHeader}
+            refreshing={isLoading}
+            onRefresh={refetch}
             keyExtractor={(item, index) => index.toString()}
             contentContainerStyle={styles.flatListContent}
         />
@@ -60,12 +62,12 @@ const Category = () => {
 };
 
 const { width } = Dimensions.get('window');
-const itemWidth = width / 4; 
+const itemWidth = width / 4;
 const styles = StyleSheet.create({
     flatListContent: {
-        paddingHorizontal: 2, 
-        backgroundColor:'#fff',
-        flex:1
+        paddingHorizontal: 2,
+        backgroundColor: '#fff',
+        flex: 1
     },
     itemContainer: {
         width: itemWidth,

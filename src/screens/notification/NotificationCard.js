@@ -1,16 +1,21 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { COLORS } from '../../constants/COLORS'
+import reactotron from 'reactotron-react-native'
+import moment from 'moment'
 
-const NotificationCard = () => {
+const NotificationCard = ({data}) => {
+
+    reactotron.log(data, "NOT")
+
     return (
         <TouchableOpacity style={styles.container}>
             <View style={styles.heading}>
-                <Text style={styles.text1}>Order Status Changed</Text>
-                <Text style={styles.text2}>22/10/2024 10:30 pm</Text>
+                <Text style={styles.text1}>{data?.name}</Text>
+                <Text style={styles.text2}>{moment(data?.created_at).format("DD-MM-YYYY hh:mm a")}</Text>
             </View>
             <View style={styles.heading2}>
-                <Text style={styles.text3}>The status regarding your order 65452 has been updated to processing</Text>
+                <Text style={styles.text3}>{data?.description}</Text>
                 {/* <View style={styles.dotStyle}/> */}
             </View>
         </TouchableOpacity>

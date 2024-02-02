@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React, { useState, useMemo } from 'react';
 import CartContext from './index';
+import reactotron from 'reactotron-react-native';
 
 const CartProvider = ({ children }) => {
     const [cartItems, setCartItems] = useState([]);
-
 
     const addToCart = (itemId) => {
         setCartItems((prevItems) => {

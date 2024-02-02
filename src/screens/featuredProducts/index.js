@@ -61,6 +61,8 @@ const FeaturedProduct = ({ route }) => {
             ListFooterComponent={ListFooterComponent}
             initialNumToRender={10}
             maxToRenderPerBatch={10}
+            refreshing={isLoading}
+            onRefresh={refetch}
             windowSize={10}
             contentContainerStyle={styles.flatlistContainer}
         />
