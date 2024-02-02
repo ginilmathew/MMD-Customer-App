@@ -36,7 +36,6 @@ const Home = ({ navigation }) => {
 
 
 
-
     useRefetch(refetch)
 
 
