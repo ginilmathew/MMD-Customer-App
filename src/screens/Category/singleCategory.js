@@ -7,22 +7,24 @@ import Animated, { FadeInDown } from 'react-native-reanimated'
 import ItemCard from '../../components/ItemCard'
 import CustomTab from '../../components/CustomTab'
 import { COLORS } from '../../constants/COLORS'
+import reactotron from 'reactotron-react-native'
+import { useQuery } from 'react-query'
+import useRefetch from '../../hooks/useRefetch'
+import { getCatProducts } from '../../api/IndividualCategory'
 
-const SingleCategory = () => {
+const SingleCategory = ({route}) => {
 
-    const DATA2 =
-        [
-            { id: 1 },
-            { id: 2 },
-            { id: 3 },
-            { id: 4 },
-            { id: 5 },
-            { id: 6 },
-            { id: 7 },
-            { id: 8 },
+    const item = route?.params;
 
-        ]
+    const { data , isLoading, refetch } = useQuery({
+        queryKey: ['catProducts-query'],
+        queryFn: () => getCatProducts(item?.item),
+        enabled: true
+    })
 
+    useRefetch(refetch)
+
+    reactotron.log(data, "data")
 
 
     const LIST = [{ id: 1, name: 'All' }, { id: 2, name: 'fruits' }, { id: 3, name: 'nuts' }, { id: 4, name: 'seed' }, { id: 5, name: 'vitamins' }]
@@ -40,7 +42,7 @@ const SingleCategory = () => {
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}
                 >
-                    <RenderHeaderMemo LIST={LIST} AnimatedStyle={AnimatedStyles} />
+                    <RenderHeaderMemo LIST={data?.data?.data?.SubCategory} AnimatedStyle={AnimatedStyles} key={index}/>
                 </ScrollView>
             </View>
         )
@@ -65,12 +67,12 @@ const SingleCategory = () => {
 
 
     return (
-        <View style={{ backgroundColor: '#fff' }}>
+        <View style={{ backgroundColor: '#fff', flex: 1 }}>
             <Header />
-            <CommonHeader heading={'Spinach'} backBtn />
+            <CommonHeader heading={data?.data?.data?.category?.name || []} backBtn />
             <FlatList
                 stickyHeaderIndices={[0]}
-                data={DATA2}
+                data={data?.data?.data?.products}
                 ListHeaderComponent={ListHeaderComponents}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}

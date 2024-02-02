@@ -3,14 +3,15 @@ import React, { memo, useCallback } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { COLORS } from '../constants/COLORS';
+import reactotron from 'reactotron-react-native';
 
 const CategoryCard = ({ key,item }) => {
-   
+
 
     const navigation = useNavigation()
 
     const NavigateToSingle = useCallback(() => {
-        navigation.navigate('SingleCategory')
+        navigation.navigate('SingleCategory',{item: item?.slug})
     }, [navigation])
 //   const animationStyle= FadeInDown.easing().delay(200)
     return (

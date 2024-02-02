@@ -8,12 +8,9 @@ import reactotron from 'reactotron-react-native';
 
 const CustomItemCard = ({ onPress, item, key }) => {
 
-    reactotron.log({item},'ITEM CARD')
-
     const navigation = useNavigation()
 
     const [price, setPrice] = useState({sellingPrice:null,offerPrice:null,costPrice:null})
-    reactotron.log({price},'GOT PRICE')
 
     const { cartItems, addToCart, incrementItem, decrementItem } = useContext(CartContext);
 
@@ -57,7 +54,6 @@ const CustomItemCard = ({ onPress, item, key }) => {
                 offerPrice: lowestOfferProduct?.offerPrice === "" ? null : lowestOfferProduct?.offerPrice ,
                 costPrice: lowestOfferProduct?.costPrice
               });
-              reactotron.log("Lowest offer price object:", lowestOfferProduct);
             } else {
               // If there are no products with offer prices, find the one with the lowest selling price
               let lowestSellingProduct = products.reduce((prev, current) => {
@@ -68,7 +64,6 @@ const CustomItemCard = ({ onPress, item, key }) => {
                 offerPrice: lowestSellingProduct?.offerPrice === "" ? null : lowestSellingProduct?.offerPrice ,
                 costPrice: lowestSellingProduct?.costPrice
               });
-              reactotron.log("Lowest selling price object:", lowestSellingProduct);
             }
         }
     }, [item])
@@ -77,8 +72,6 @@ const CustomItemCard = ({ onPress, item, key }) => {
     let variantMap = item?.products?.[0]?.units?.[0]?.variants?.map(item => (
         item
     ))
-
-    reactotron.log(variantMap,"Variatn")
 
     const AnimatedStyle = FadeInDown.easing().delay(300);
 
@@ -107,7 +100,7 @@ const CustomItemCard = ({ onPress, item, key }) => {
                 <View style={styles.centerContainer}>
                     <Text style={styles.heading}>{item?.products ? item?.products?.[0]?.name : item?.name}</Text>
                     <Text style={styles.subHeading}>Category: {item?.products ? item?.products?.[0]?.category?.name : item?.category?.name}</Text>
-                    {variantMap?.[0]?.offerPrice > 0 ? (<View style={styles.offerBox}>
+                    {price?.offerPrice ? (<View style={styles.offerBox}>
                         <Text style={styles.offerText}>Up to 10% off!</Text>
                     </View>) : null}
                 </View>
