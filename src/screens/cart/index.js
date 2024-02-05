@@ -1,23 +1,82 @@
-import { StyleSheet, Text, View, Image } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, Image, FlatList } from 'react-native'
+import React, { useCallback, useContext, useEffect } from 'react'
 import Header from '../../components/Header'
 import CommonHeader from '../../components/CommonHeader'
 import { COLORS } from '../../constants/COLORS'
 import CommonButton from '../../components/CommonButton'
 import ItemCard from '../../components/ItemCard'
+import CartContext from '../../context/cart'
+import reactotron from 'reactotron-react-native'
+import { addToCart, getCartItems } from '../../api/cart'
+import { useMutation, useQuery } from 'react-query'
+import useRefetch from '../../hooks/useRefetch'
+import Animated from 'react-native-reanimated'
+import CartItemCard from '../../components/cartItemCard'
+const Cart = ({ navigation, route }) => {
 
-const Cart = () => {
+  const { cartItems, setCartItems, } = useContext(CartContext);
+
+  const { cart_id } = route.params;
+
+
+
+
+
+  const { mutate, refetch: postsubrefetch, data, isLoading, refetch } = useMutation({
+    mutationKey: 'cartItems',
+    mutationFn: getCartItems,
+    onSuccess: (data) => {
+      let myStructure = data?.data?.data?.product.map((res) => (
+        {
+          id: res?._id,
+          qty: res?.qty,
+          item: { ...res }
+        }
+      ))
+      setCartItems(myStructure)
+    }
+  })
+
+  useEffect(() => {
+    if (cart_id) {
+      mutate({ cartId: cart_id })
+    }
+  }, [cart_id])
+
+  const renderItem = useCallback(({ item, index }) => {
+    return (
+      <>
+        <Animated.View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
+          <CartItemCard key={index} item={item} />
+        </Animated.View>
+      </>
+    )
+  }, [data?.data?.data,cartItems])
+
   return (
     <View style={styles.container}>
       <Header />
       <CommonHeader heading={"Cart"} backBtn />
-      <View style={styles.emptyContainer}>
-        <Image source={require('../../images/cart.png')} style={styles.emptyCart}/>
-      </View>
-      <View style={styles.innerContainer}>
-        {/* <ItemCard /> */}
-        {/* <CommonButton text={"Checkout"} mt={30}/> */}
-      </View>
+      {/* <View style={styles.emptyContainer}>
+        <Image source={require('../../images/cart.png')} style={styles.emptyCart} />
+      </View> */}
+      {/* <View style={styles.innerContainer}>
+        <ItemCard /> 
+        <CommonButton text={"Checkout"} mt={30}/>
+      </View> */}
+      <FlatList
+        data={cartItems}
+        renderItem={renderItem}
+        keyExtractor={(item) => item?._id}
+        showsVerticalScrollIndicator={false}
+        initialNumToRender={10}
+        refreshing={isLoading}
+        onRefresh={refetch}
+        maxToRenderPerBatch={10}
+        windowSize={10}
+        getItemLayout={(data, index) => ({ length: 80, offset: 80 * index, index })}
+      />
+
     </View>
   )
 }

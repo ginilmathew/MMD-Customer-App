@@ -35,13 +35,20 @@ const AllProducts = ({ navigation }) => {
 
 
 
-    const flatListRef = useRef(null);
 
-    const onEndReach = () => {
-        if (hasNextPage && !isLoading) {
+
+
+    const last_Page = data?.pages[0]?.data?.data?.last_page;
+
+    const pageCount = data?.pages?.length;
+
+
+
+    const onEndReach = useCallback(() => {
+        if (!isFetching && !isFetchingNextPage && hasNextPage && (last_Page * 1 !== pageCount * 1)) {
             fetchNextPage()
         }
-    }
+    }, [!isFetching, !isFetchingNextPage, hasNextPage])
 
     // const scrollToTop = () => {
     //     if (flatListRef.current) {
@@ -55,17 +62,12 @@ const AllProducts = ({ navigation }) => {
     }, [])
 
     const renderItem = useCallback(({ item, index }) => {
-
-
-
         return (
-            <Animated.View entering={AnimatedStyle(index)}>
-                <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
-                    <ItemCard item={item} key={item?._id} />
-                </View>
+            <Animated.View entering={AnimatedStyle(index)} style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
+                <ItemCard item={item} key={item?._id} />
             </Animated.View>
         )
-    }, [])
+    }, [data])
 
     const ListFooterComponents = memo(() => {
         return (
@@ -95,10 +97,10 @@ const AllProducts = ({ navigation }) => {
                 onEndReached={onEndReach}
                 refreshing={isLoading}
                 onRefresh={refetch}
-                onEndReachedThreshold={.5}
+                onEndReachedThreshold={.1}
                 ListEmptyComponent={emptyScreen}
             />
-       
+
 
         </View>
     )
@@ -108,7 +110,7 @@ export default AllProducts
 
 const styles = StyleSheet.create({
     scrollToTopButton: {
-      
+
         bottom: 20,
         right: 20,
         backgroundColor: COLORS.primary,

@@ -6,18 +6,18 @@ import CartContext from '../context/cart';
 import { useNavigation } from '@react-navigation/core';
 import reactotron from 'reactotron-react-native';
 
-const CustomItemCard = ({ onPress, item, key }) => {
+const CartItemCard = ({ onPress, item, key }) => {
 
     const navigation = useNavigation()
     let products = item.products ? item.products[0] : item;
+     reactotron.log({products})
 
+    const { cartItems, addToCart, incrementItem, decrementItem ,DeleteItem} = useContext(CartContext);
 
-    // const [price, setPrice] = useState({ sellingPrice: null, offerPrice: null, costPrice: null })
+    reactotron.log({cartItems})
 
-    const { cartItems, addToCart, incrementItem, decrementItem } = useContext(CartContext);
-
-    const isCartAdded = cartItems.some(cartItem => cartItem.id === products._id);
-    const cartItem = cartItems.find(cartItem => cartItem.id === products._id);
+    const isCartAdded = cartItems?.some(cartItem => cartItem.id === products._id);
+    const cartItem = cartItems?.find(cartItem => cartItem.id === products._id);
 
     const handleAddToCart = useCallback(() => {
         addToCart(products);
@@ -28,7 +28,7 @@ const CustomItemCard = ({ onPress, item, key }) => {
     }, [incrementItem, products._id]);
 
     const handleDecrement = useCallback(() => {
-        decrementItem(products);
+        DeleteItem(products);
     }, [decrementItem, products._id]);
 
     const NavigateToSingleProduct = useCallback(() => {
@@ -78,6 +78,9 @@ const CustomItemCard = ({ onPress, item, key }) => {
     //     }
     // }, [item])
 
+    let cart  = cartItems
+    reactotron.log({cart})
+
 
  
 
@@ -92,28 +95,28 @@ const CustomItemCard = ({ onPress, item, key }) => {
             <TouchableOpacity onPress={NavigateToSingleProduct} style={styles.container}>
                 {/* Left Side */}
                 <Animated.View style={styles.leftContainer}>
-                <Animated.Image
-                        source={{ uri: products?.imageBasePath + products?.image?.[0] }}
+                {/* <Animated.Image
+                        source={{ uri: cartItems?.item?.imageBasePath + cartItems?.item?.image?.[0] }}
                         style={styles.leftImage}
                         sharedTransitionTag={item?.product_id}
                     />
-                    
+                     */}
                 </Animated.View>
 
                 {/* Center Content */}
                 <View style={styles.centerContainer}>
-                    <Text style={styles.heading}>{products?.name}</Text>
+                    <Text style={styles.heading}>{products?.item?.name}</Text>
                     <Text style={styles.subHeading}>Category: {products?.category?.name}</Text>
-                    {products?.units[0]?.variants[0]?.offerPrice !== "" ? (<View style={styles.offerBox}>
+                    {/* {products?.units[0]?.variants[0]?.offerPrice !== "" ? (<View style={styles.offerBox}>
                         <Text style={styles.offerText}>Up to 10% off!</Text>
-                    </View>) : null}
+                    </View>) : null} */}
                 </View>
 
                 {/* Right Side */}
                 <View style={styles.rightContainer}>
-                    <Text style={styles.topPrice}>₹ {products?.units[0]?.variants[0]?.offerPrice * 1 ? products?.units[0]?.variants[0]?.offerPrice : products?.units[0]?.variants[0]?.sellingPrice ?? 0}</Text>
+                    {/* <Text style={styles.topPrice}>₹ {products?.units[0]?.variants[0]?.offerPrice * 1 ? products?.units[0]?.variants[0]?.offerPrice : products?.units[0]?.variants[0]?.sellingPrice ?? 0}</Text>
                     {products?.units[0]?.variants[0]?.offerPrice  &&
-                        <Text style={styles.strikePrice}>₹ {products?.units[0]?.variants[0]?.sellingPrice ?? 0}</Text>}
+                        <Text style={styles.strikePrice}>₹ {products?.units[0]?.variants[0]?.sellingPrice ?? 0}</Text>} */}
                     <AddToCart
                         isCartAdded={isCartAdded}
                         handleAddToCart={handleAddToCart}
@@ -258,4 +261,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default memo(CustomItemCard);
+export default memo(CartItemCard);
