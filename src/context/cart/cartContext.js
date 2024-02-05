@@ -12,15 +12,16 @@ const CartProvider = ({ children }) => {
 
     const [cartItems, setCartItems] = useState([]);
 
-    reactotron.log({ cartItems })
-
-
+    reactotron.log({cartItems})
 
     const addToCart = ({ _id: itemId, ...items }) => {
+        reactotron.log({itemId},'GOT ITEM ID')
         setCartItems((prevItems) => {
             const existingItem = prevItems.find((item) => item.id === itemId);
             if (existingItem) {
                 // If item is already in the cart, update the count  
+
+                reactotron.log('EXISTING ITEM')
                 return prevItems.map((item) =>
                     item.id === itemId ? { item, qty: item.qty + 1 } : item
                 );
@@ -42,20 +43,23 @@ const CartProvider = ({ children }) => {
 
                 // If item is not in the cart, add it
 
-                return [...prevItems, { id: itemId, qty: 1, item }];
+                return [...prevItems, { _id: itemId, qty: 1, item }];
             }
         });
     };
 
-    const incrementItem = ({ _id: itemId }) => {
+    const incrementItem = ({ _id: itemId,}) => {
+        reactotron.log({itemId},'INCREMENT')
         setCartItems((prevItems) =>
+
+       
             prevItems.map((item) => {
                 let items = {
                     ...item,
                     item: { ...item?.item, qty: item.qty + 1 }
 
                 }
-                return item.id === itemId ? { ...items, qty: item.qty + 1 } : items
+                return item._id === itemId ? { ...items, qty: item.qty + 1 } : items
             })
         );
     };
@@ -67,7 +71,7 @@ const CartProvider = ({ children }) => {
                     ...item,
                     item: { ...item?.item, qty: Math.max(item.qty - 1, 0) }
                 }
-                return item.id === itemId ? { ...items, qty: Math.max(item.qty - 1, 0) } : items
+                return item._id === itemId ? { ...items, qty: Math.max(item.qty - 1, 0) } : items
             });
 
             // Filter out items with count > 0
@@ -82,13 +86,15 @@ const CartProvider = ({ children }) => {
                     ...item,
                     item: { ...item?.item, qty: Math.max(item.qty - 1, 0) }
                 }
-                return item.id === itemId ? { ...items, qty: Math.max(item.qty - 1, 0) } : items
+                return item._id === itemId ? { ...items, qty: Math.max(item.qty - 1, 0) } : items
             });
 
             let find = updatedItems.find((res) => res?.qty === 0);
-            let final = updatedItems.filter((res)=>res?.id !== find?.id)
+            let final = updatedItems.filter((res)=>res?._id !== find?._id)
 
-            reactotron.log({final})
+         reactotron.log({updatedItems})   
+        reactotron.log({find})
+        reactotron.log({final})
             //  setCartItems(final)
             //     // Filter out items with count > 0
             return final

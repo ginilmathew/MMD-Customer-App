@@ -16,8 +16,8 @@ const CustomItemCard = ({ onPress, item, key }) => {
 
     const { cartItems, addToCart, incrementItem, decrementItem } = useContext(CartContext);
 
-    const isCartAdded = cartItems.some(cartItem => cartItem.id === products._id);
-    const cartItem = cartItems.find(cartItem => cartItem.id === products._id);
+    const isCartAdded = cartItems.some(cartItem => cartItem._id === products._id);
+    const cartItem = cartItems.find(cartItem => cartItem._id === products._id);
 
     const handleAddToCart = useCallback(() => {
         addToCart(products);

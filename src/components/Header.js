@@ -20,7 +20,7 @@ const Header = memo(({ onPress }) => {
         onSuccess: (data) => {
             let myStructure = data?.data?.data?.product.map((res) => (
                 {
-                    id: res?._id,
+                    _id: res?._id,
                     qty: res?.qty,
                     item: { ...res }
                 }

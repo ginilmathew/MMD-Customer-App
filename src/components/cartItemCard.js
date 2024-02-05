@@ -10,14 +10,16 @@ const CartItemCard = ({ onPress, item, key }) => {
 
     const navigation = useNavigation()
     let products = item.products ? item.products[0] : item;
-     reactotron.log({products})
+ 
 
     const { cartItems, addToCart, incrementItem, decrementItem ,DeleteItem} = useContext(CartContext);
 
-    reactotron.log({cartItems})
+  
 
-    const isCartAdded = cartItems?.some(cartItem => cartItem.id === products._id);
-    const cartItem = cartItems?.find(cartItem => cartItem.id === products._id);
+    const isCartAdded = cartItems?.some(cartItem => cartItem._id === products._id);
+
+
+    const cartItem = cartItems?.find(cartItem => cartItem._id === products._id);
 
     const handleAddToCart = useCallback(() => {
         addToCart(products);
@@ -78,8 +80,7 @@ const CartItemCard = ({ onPress, item, key }) => {
     //     }
     // }, [item])
 
-    let cart  = cartItems
-    reactotron.log({cart})
+
 
 
  
@@ -95,28 +96,28 @@ const CartItemCard = ({ onPress, item, key }) => {
             <TouchableOpacity onPress={NavigateToSingleProduct} style={styles.container}>
                 {/* Left Side */}
                 <Animated.View style={styles.leftContainer}>
-                {/* <Animated.Image
-                        source={{ uri: cartItems?.item?.imageBasePath + cartItems?.item?.image?.[0] }}
+                <Animated.Image
+                        source={{ uri: products?.item?.imageBasePath + products?.item?.image?.[0] }}
                         style={styles.leftImage}
                         sharedTransitionTag={item?.product_id}
                     />
-                     */}
+                    
                 </Animated.View>
 
                 {/* Center Content */}
                 <View style={styles.centerContainer}>
                     <Text style={styles.heading}>{products?.item?.name}</Text>
-                    <Text style={styles.subHeading}>Category: {products?.category?.name}</Text>
-                    {/* {products?.units[0]?.variants[0]?.offerPrice !== "" ? (<View style={styles.offerBox}>
+                    <Text style={styles.subHeading}>Category: {products?.item?.category?.name}</Text>
+                    {products?.item?.units[0]?.variants[0]?.offerPrice !== "" ? (<View style={styles.offerBox}>
                         <Text style={styles.offerText}>Up to 10% off!</Text>
-                    </View>) : null} */}
+                    </View>) : null}
                 </View>
 
                 {/* Right Side */}
                 <View style={styles.rightContainer}>
-                    {/* <Text style={styles.topPrice}>₹ {products?.units[0]?.variants[0]?.offerPrice * 1 ? products?.units[0]?.variants[0]?.offerPrice : products?.units[0]?.variants[0]?.sellingPrice ?? 0}</Text>
-                    {products?.units[0]?.variants[0]?.offerPrice  &&
-                        <Text style={styles.strikePrice}>₹ {products?.units[0]?.variants[0]?.sellingPrice ?? 0}</Text>} */}
+                    <Text style={styles.topPrice}>₹ {products?.item?.units[0]?.variants[0]?.offerPrice * 1 ? products?.item?.units[0]?.variants[0]?.offerPrice : products?.item.units[0]?.variants[0]?.sellingPrice ?? 0}</Text>
+                    {products?.item?.units[0]?.variants[0]?.offerPrice  &&
+                        <Text style={styles.strikePrice}>₹ {products?.item?.units[0]?.variants[0]?.sellingPrice ?? 0}</Text>}
                     <AddToCart
                         isCartAdded={isCartAdded}
                         handleAddToCart={handleAddToCart}
