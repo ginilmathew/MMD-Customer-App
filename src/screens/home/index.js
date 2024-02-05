@@ -101,9 +101,9 @@ const Home = ({ navigation }) => {
     const ListFooterComponent = useCallback(() => {
         return (
             <>
-                {/* <View style={{ marginBottom: 20 }}>
+                <View style={{ marginBottom: 20 }}>
                     <CustomSlider item={data?.data?.data?.sliders} />
-                </View> */}
+                </View>
                 <View style={{ marginTop: 2 }}>
                     <CustomHeading label={'HighLights'} hide={false} marginH={20} />
                 </View>
