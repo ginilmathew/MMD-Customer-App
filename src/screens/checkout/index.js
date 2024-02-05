@@ -6,17 +6,30 @@ import Header from '../../components/Header'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import SubHeading from '../../components/SubHeading'
 import CommonButton from '../../components/CommonButton'
+import { useNavigation } from '@react-navigation/native'
 
 
 const Checkout = () => {
 
-  const [item, setItem] = useState(0);
+  const navigation = useNavigation();
+
+  const [radioBtnStatus, stRadioBtnStatus] = useState(0);
 
   const checkBox = (num) => (
-    <TouchableOpacity onPress={() => setItem(num)}>
-      <Ionicons name={item === num ? 'radio-button-on' : `radio-button-off`} size={20} color={COLORS.primary} />
+    <TouchableOpacity onPress={() => stRadioBtnStatus(num)}>
+      <Ionicons name={radioBtnStatus === num ? 'radio-button-on' : `radio-button-off`} size={20} color={COLORS.primary} />
     </TouchableOpacity>
   )
+
+  const placeOrder = () => {
+    if( radioBtnStatus === 0) {
+      navigation.navigate('OrderPlaced', {item : radioBtnStatus})
+    } else if ( radioBtnStatus === 1) {
+      //RazorPay//
+    }
+  }
+
+
 
   return (
     <View style={styles.container}>
@@ -41,9 +54,9 @@ const Checkout = () => {
           <View style={styles.locationBox}>
             <View style={styles.shipping}>
               <Text style={styles.heading}>Shipping Address</Text>
-              <TouchableOpacity>
+              {/* <TouchableOpacity>
                 <Text style={styles.edit}>EDIT</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
             <View style={styles.locationStyle}>
               <Ionicons name="location" size={30} color={COLORS.blue} />
@@ -85,7 +98,7 @@ const Checkout = () => {
         </View>
 
         <View style={{ paddingHorizontal: 22 }}>
-          <CommonButton text={"Place Order"} />
+          <CommonButton text={"Place Order"} onPress={placeOrder}/>
         </View>
 
       </View>

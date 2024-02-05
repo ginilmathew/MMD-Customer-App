@@ -3,13 +3,25 @@ import React from 'react'
 import { COLORS } from '../../constants/COLORS'
 import reactotron from 'reactotron-react-native'
 import moment from 'moment'
+import { useNavigation } from '@react-navigation/native'
 
 const NotificationCard = ({data}) => {
 
+    const navigation = useNavigation();
     reactotron.log(data, "NOT")
 
+    // const pressEffect = () => {
+    //     if(item?.type === "page") {
+    //         navigation.navigate('PAGENAME')
+    //     } else if (item?.type === "product") {
+    //         navigation.navigate('PRODUCTPAGE')
+    //     }
+    // }
+
     return (
-        <TouchableOpacity style={styles.container}>
+        <TouchableOpacity style={styles.container} 
+        //onPress={pressEffect}
+        >
             <View style={styles.heading}>
                 <Text style={styles.text1}>{data?.name}</Text>
                 <Text style={styles.text2}>{moment(data?.created_at).format("DD-MM-YYYY hh:mm a")}</Text>

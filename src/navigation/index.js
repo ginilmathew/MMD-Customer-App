@@ -31,6 +31,8 @@ import AddAddress from '../screens/Profile/AddAddress';
 import ChangePasswd from '../screens/Profile/ChangePasswd';
 import GoogleLocation from '../screens/Profile/GoogleLocation';
 import MapAddress from '../screens/Profile/MapAddress';
+import OrderPlaced from '../screens/checkout/OrderPlaced';
+import EditAddress from '../screens/checkout/EditAddress';
 
 
 const Stack = createNativeStackNavigator();
@@ -75,6 +77,8 @@ const Navigation = () => {
           <Stack.Screen name='ChangePasswd' component={ChangePasswd} />
           <Stack.Screen name='GoogleLocation' component={GoogleLocation} />
           <Stack.Screen name='MapPage' component={MapAddress} />
+          <Stack.Screen name='OrderPlaced' component={OrderPlaced} />
+          <Stack.Screen name='EditAddress' component={EditAddress} />
         </Stack.Navigator>
       </NavigationContainer>
 
