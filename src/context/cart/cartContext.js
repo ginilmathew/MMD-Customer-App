@@ -12,30 +12,24 @@ const CartProvider = ({ children }) => {
 
     const [cartItems, setCartItems] = useState([]);
 
-    reactotron.log({cartItems})
+
 
     const addToCart = ({ _id: itemId, ...items }) => {
-        reactotron.log({itemId},'GOT ITEM ID')
         setCartItems((prevItems) => {
-            const existingItem = prevItems.find((item) => item.id === itemId);
+            const existingItem = prevItems.find((item) => item._id === itemId);
             if (existingItem) {
                 // If item is already in the cart, update the count  
-
-                reactotron.log('EXISTING ITEM')
                 return prevItems.map((item) =>
-                    item.id === itemId ? { item, qty: item.qty + 1 } : item
+                    item._id === itemId ? { item, qty: item.qty + 1 } : item
                 );
             } else {
-
                 const { variants, ...unitWithoutVariants } = { ...items.units[0] };
-
                 // delete items.units
                 let item = {
                     _id: itemId,
                     qty: 1,
                     ...items,
                     image: Array.isArray(items?.image[0]) ? items?.image[0] : items?.image,
-
                     unit: unitWithoutVariants,
                     variant: variants[0]
                 };
@@ -49,20 +43,17 @@ const CartProvider = ({ children }) => {
     };
 
     const incrementItem = ({ _id: itemId,}) => {
-        reactotron.log({itemId},'INCREMENT')
         setCartItems((prevItems) =>
-
-       
             prevItems.map((item) => {
                 let items = {
                     ...item,
                     item: { ...item?.item, qty: item.qty + 1 }
-
                 }
                 return item._id === itemId ? { ...items, qty: item.qty + 1 } : items
             })
         );
     };
+
 
     const decrementItem = ({ _id: itemId }) => {
         setCartItems((prevItems) => {
@@ -88,15 +79,8 @@ const CartProvider = ({ children }) => {
                 }
                 return item._id === itemId ? { ...items, qty: Math.max(item.qty - 1, 0) } : items
             });
-
             let find = updatedItems.find((res) => res?.qty === 0);
             let final = updatedItems.filter((res)=>res?._id !== find?._id)
-
-         reactotron.log({updatedItems})   
-        reactotron.log({find})
-        reactotron.log({final})
-            //  setCartItems(final)
-            //     // Filter out items with count > 0
             return final
         });
     };

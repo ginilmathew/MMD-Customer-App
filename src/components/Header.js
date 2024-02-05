@@ -7,7 +7,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { COLORS } from '../constants/COLORS';
 import CartContext from '../context/cart';
 import reactotron from 'reactotron-react-native';
-import { addToCart } from '../api/cart';
+import { PostAddToCart } from '../api/cart';
 import { useMutation } from 'react-query';
 const Header = memo(({ onPress }) => {
     const navigation = useNavigation()
@@ -15,8 +15,8 @@ const Header = memo(({ onPress }) => {
     const { cartItems, setCartItems } = useContext(CartContext)
 
     const { mutate, refetch: postsubrefetch } = useMutation({
-        mutationKey: 'addtoCart',
-        mutationFn: addToCart,
+        mutationKey: 'addToCart_query',
+        mutationFn: PostAddToCart,
         onSuccess: (data) => {
             let myStructure = data?.data?.data?.product.map((res) => (
                 {
@@ -39,13 +39,19 @@ const Header = memo(({ onPress }) => {
     }, [navigation])
 
     const cartPage = useCallback(() => {
-        if(cartItems?.length > 0){
-            mutate({ product: cartItems?.map((res) => res?.item) })
-        }else{
-            navigation.navigate('Cart', { cart_id:  null })
+
+        if (cartItems?.length > 0) {
+            const updatedData = cartItems.map(item => ({
+                ...item.item,
+                qty: item.qty
+
+            }));
+            mutate({ product: updatedData })
+        } else {
+            navigation.navigate('Cart', { cart_id: null })
         }
-        
-    }, [navigation, cartItems])
+        navigation.navigate('Cart', { cart_id: null })
+    }, [navigation, cartItems, mutate])
 
 
 
