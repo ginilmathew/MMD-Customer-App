@@ -28,7 +28,7 @@ import Header from '../../components/Header'
 
 const Home = ({ navigation, route }) => {
 
-    const { currentLoc, setMode, getLocation, mode } = useContext(LocationContext)
+    const { currentLoc, setMode, getLocation, mode, setHomeFocus } = useContext(LocationContext)
     const checkLocRef = useRef(null)
 
     let payload = {
@@ -40,21 +40,30 @@ const Home = ({ navigation, route }) => {
     const { data, isLoading, refetch } = useQuery({
         queryKey: ['Home'],
         retry: false,
-        // queryFn: () => HomeApi({
-        //     coordinates: [currentLoc?.coord?.latitude, currentLoc?.coord?.longitude]
-        // }),
-        queryFn: () => HomeApi(payload),
+        queryFn: () => HomeApi({
+            coordinates: [currentLoc?.coord?.latitude, currentLoc?.coord?.longitude]
+        }),
         enabled: false
     })
 
 
 
     useFocusEffect(useCallback(() => {
+        setHomeFocus(true);
         if (currentLoc?.coord?.latitude !== checkLocRef?.current?.latitude) {
             checkLocRef.current = currentLoc?.coord;
             refetch()
         }
     }, [currentLoc]))
+
+
+    React.useEffect(() => {
+        const unsubscribe = navigation.addListener('blur', () => {
+            setHomeFocus(false);
+        });
+
+        return unsubscribe;
+    }, [navigation]);
 
 
     const NavigateToCategory = useCallback(() => {
@@ -159,7 +168,6 @@ const Home = ({ navigation, route }) => {
     if (isLoading) {
         return (
             <>
-                <Header toCart={toCart} toNotification={toNotification} />
                 <HomeLoader />
             </>
         )
@@ -202,7 +210,6 @@ const Home = ({ navigation, route }) => {
                 </TouchableOpacity>
             )
             } */}
-            <Header toCart={toCart} text={currentLoc?.address} toNotification={toNotification} />
             <DummySearch press={NavigateToSearch} />
             <FlatList
                 data={data?.data?.data.featuredList?.[0]?.featured_list}

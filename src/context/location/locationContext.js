@@ -22,10 +22,12 @@ const locationContext = ({ children }) => {
     const [currentLoc, setCurrentLoc] = useState('')
     const [homeAdd, setHomeAdd] = useMMKVStorage('homeAdd', storage);
     const [modal, setModal] = useState(false)
+    const [homeFocus, setHomeFocus] = useState(false)
 
     
     const onSuccess = async ({ data }) => {
 
+        console.log(mode);
         if(mode === 'map') {
             setLocation(location => ({
                 ...location,
@@ -36,7 +38,7 @@ const locationContext = ({ children }) => {
             }));
 
             navigationRef.navigate('MapPage')
-        } else if (mode === 'home') {
+        } else if (mode === 'home' || mode === 'homes') {
             if(!homeAdd) {
                 setHomeAdd(true);
             }
@@ -45,13 +47,14 @@ const locationContext = ({ children }) => {
                 coord: { ...location?.location },
                 address: data?.results[3]?.formatted_address
             })
-            console.log('sdfsdf');
-            // navigationRef.navigate('HomeNavigator')
-        } else if ('homes') {
+
+            navigationRef.navigate('HomeNavigator')
+        } else if (mode === 'homes') {
             setCurrentLoc({
                 coord: { ...location?.location },
                 address: data?.results[3]?.formatted_address
             })
+            navigationRef.navigate('HomeNavigator', { screen: 'Home' })
         }
         // navigationRef.navigate('HomeNavigator', { screen: 'Home' })
     }
@@ -60,7 +63,7 @@ const locationContext = ({ children }) => {
         try {
             const result = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
             if (result === RESULTS.GRANTED) {
-                handleModal(false);
+                setModal(false);
                 requestLocationPermisson();
             } else if (result === RESULTS.DENIED) {
                 setModal(true);
@@ -68,7 +71,7 @@ const locationContext = ({ children }) => {
         } catch (err) {
             console.warn(err);
         }
-    }, [modal])
+    }, [])
 
     const openSettings = useCallback(() => {
         Linking.openSettings()
@@ -83,7 +86,6 @@ const locationContext = ({ children }) => {
 
 
     const requestLocationPermisson = async () => {
-        console.log('hell');
 
 
             try {
@@ -170,7 +172,9 @@ const locationContext = ({ children }) => {
                 getLocation: requestLocationPermisson,
                 changeLocation: mutate,
                 openSettings,
-                setModal
+                setModal,
+                homeFocus,
+                setHomeFocus
             }}
         >
             {children}

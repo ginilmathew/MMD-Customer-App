@@ -44,7 +44,7 @@ const Navigation = () => {
   const [error] = useMMKVStorage('error', storage)
   const [success] = useMMKVStorage('success', storage);
   const [homeAdd] = useMMKVStorage('homeAdd', storage, false)
-  const { setMode, getLocation, setModal, modal, handleModal, openSettings } = useContext(LocationContext)
+  const { setMode, getLocation, setModal, modal, handleModal, openSettings, setReady } = useContext(LocationContext)
 
 
   const { height, width } = useWindowDimensions()
@@ -59,7 +59,7 @@ const Navigation = () => {
     if (result === RESULTS.DENIED) {
       navigationRef.navigate('GoogleLocation')
       
-      setModal(!modal);
+      setModal(false);
     }
   }, [modal])
 
@@ -69,7 +69,7 @@ const Navigation = () => {
       const result = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
 
       if (result === RESULTS.DENIED) {
-        return handleModal();
+        return setModal(true);
       } else if (result === RESULTS.GRANTED) {
         setModal(false);
       

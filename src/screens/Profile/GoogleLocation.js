@@ -64,6 +64,7 @@ const GoogleLocation = ({ navigation, route }) => {
     </View>
   )
 
+  console.log('kasdjflksadf');
 
   return (
     <>

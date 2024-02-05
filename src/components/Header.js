@@ -35,6 +35,8 @@ const Header = memo(({ onPress, text }) => {
         navigation.navigate('GoogleLocation')
     }
 
+    console.log(text);
+
     return (
         <View style={styles.container}>
             <View style={styles.imageContainer}>

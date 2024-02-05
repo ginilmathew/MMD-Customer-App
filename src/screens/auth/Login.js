@@ -42,7 +42,6 @@ const Login = ({ navigation }) => {
         const token = await messaging().getToken();
         tokenMutate(token)
         
-        console.log('hello');
         try {
 
             const result = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
