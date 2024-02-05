@@ -38,7 +38,7 @@ const locationContext = ({ children }) => {
             }));
 
             navigationRef.navigate('MapPage')
-        } else if (mode === 'home' || mode === 'homes') {
+        } else if (mode === 'home') {
             if(!homeAdd) {
                 setHomeAdd(true);
             }
@@ -48,14 +48,13 @@ const locationContext = ({ children }) => {
                 address: data?.results[3]?.formatted_address
             })
 
-            navigationRef.navigate('HomeNavigator')
-        } else if (mode === 'homes') {
-            setCurrentLoc({
-                coord: { ...location?.location },
-                address: data?.results[3]?.formatted_address
+            navigationRef.reset({
+                index: 0,
+                routes: [
+                    { name: 'HomeNavigator' }
+                ]
             })
-            navigationRef.navigate('HomeNavigator', { screen: 'Home' })
-        }
+        } 
         // navigationRef.navigate('HomeNavigator', { screen: 'Home' })
     }
 

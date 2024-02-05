@@ -30,11 +30,10 @@ const MapAddress = ({ navigation, route }) => {
     const { location, setLocation, changeLocation } = useContext(locationContext)
 
 
-    const { mutate } = useMutation({
+    const { mutate, isLoading } = useMutation({
         mutationKey: 'add-address',
         mutationFn: addAddress,
         onSuccess({ data }) {
-            console.log(data);
             // if (data?.address) {
             //     if (!userLoc) {
             //         setUserLoc(true)
@@ -224,18 +223,6 @@ const MapAddress = ({ navigation, route }) => {
                     ) : (
                         <View style={{ padding: 20 }}>
 
-
-                            <View style={{
-                                height: 193,
-                                width: '100%',
-                                marginTop: -50
-                            }}>
-                                <Image source={require('../../images/DG.png')} style={{
-                                    height: '100%',
-                                    width: '100%',
-                                }} />
-                            </View>
-
                             <View style={{
                                 alignSelf: 'flex-end',
                                 flexDirection: 'row',
@@ -335,7 +322,13 @@ const MapAddress = ({ navigation, route }) => {
                     )
                 }
 
-                <CommonButton w='85%' mt={mode === 'address' && 60} onPress={mode === "map" ? changeMode : handleSubmit(onSubmit)} text={`CONFIRM ${mode === "map" ? "LOCATION" : ""}`} />
+                <CommonButton 
+                    w='85%' 
+                    mt={mode === 'address' && 60} 
+                    onPress={mode === "map" ? changeMode : handleSubmit(onSubmit)} 
+                    text={`CONFIRM ${mode === "map" ? "LOCATION" : ""}`} 
+                    loading={isLoading}
+                />
 
 
             </ScrollView>

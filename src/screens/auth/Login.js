@@ -26,7 +26,7 @@ const Login = ({ navigation }) => {
         mutationKey: 'token-key',
         mutationFn: tokenApi
     })
-    
+
 
     const schema = yup.object({
         email: yup.string().email('Please enter valid email address').required('Email is required'),
@@ -41,7 +41,7 @@ const Login = ({ navigation }) => {
         await storage.setMapAsync('user', data);
         const token = await messaging().getToken();
         tokenMutate(token)
-        
+
         try {
 
             const result = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
@@ -50,7 +50,10 @@ const Login = ({ navigation }) => {
                 setMode('home');
                 getLocation();
             } else {
-                navigation.navigate('LocationPage');
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'LocationPage' }]
+                });
             }
 
             storage.setString('success', 'Login successful')

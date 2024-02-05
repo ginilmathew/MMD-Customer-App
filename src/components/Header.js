@@ -35,7 +35,6 @@ const Header = memo(({ onPress, text }) => {
         navigation.navigate('GoogleLocation')
     }
 
-    console.log(text);
 
     return (
         <View style={styles.container}>
@@ -47,8 +46,9 @@ const Header = memo(({ onPress, text }) => {
                 <TouchableOpacity style={{
                     flexDirection: 'row',
                     gap: 3,
+                    flex: 1,
                     marginLeft: -20,
-                    alignItems: 'center'
+                    justifyContent: 'center'
                 }} onPress={changeLoc}>
                     <IonIcon name='location' size={20} color={COLORS.primary} />
                     <Text style={{

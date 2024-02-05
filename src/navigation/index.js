@@ -44,7 +44,7 @@ const Navigation = () => {
   const [error] = useMMKVStorage('error', storage)
   const [success] = useMMKVStorage('success', storage);
   const [homeAdd] = useMMKVStorage('homeAdd', storage, false)
-  const { setMode, getLocation, setModal, modal, handleModal, openSettings, setReady } = useContext(LocationContext)
+  const { setMode, getLocation, setModal, modal, handleModal, openSettings, setReady, mode } = useContext(LocationContext)
 
 
   const { height, width } = useWindowDimensions()
@@ -65,6 +65,7 @@ const Navigation = () => {
 
   async function onAppStateChange(status) {
 
+    const user = await storage.getMapAsync('user');
     if (status === 'active' && user) {
       const result = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
 
@@ -73,12 +74,13 @@ const Navigation = () => {
       } else if (result === RESULTS.GRANTED) {
         setModal(false);
       
-        setMode('homes')
+        setMode('home')
         getLocation()
       }
 
     }
   }
+
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', onAppStateChange);

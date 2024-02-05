@@ -64,7 +64,6 @@ const GoogleLocation = ({ navigation, route }) => {
     </View>
   )
 
-  console.log('kasdjflksadf');
 
   return (
     <>
@@ -75,6 +74,11 @@ const GoogleLocation = ({ navigation, route }) => {
       </>)}
 
       <View style={styles.container}>
+
+        <TouchableOpacity style={styles.current__btn} onPress={handleModal}>
+          <MaterialCommunityIcons name='navigation-variant' size={23} color={COLORS.blue} />
+          <Text style={{ color: COLORS.blue, fontFamily: 'Poppins-Medium' }}>Use my current location</Text>
+        </TouchableOpacity>
 
         <GooglePlacesAutocomplete
           isRowScrollable
@@ -114,11 +118,6 @@ const GoogleLocation = ({ navigation, route }) => {
             language: 'en'
           }}
         />
-
-        <TouchableOpacity style={{ flexDirection: 'row' }} onPress={handleModal}>
-          <MaterialCommunityIcons name='navigation-variant' size={23} color={COLORS.blue} />
-          <Text style={{ color: COLORS.blue, fontFamily: 'Poppins-Medium' }}>Use my current location</Text>
-        </TouchableOpacity>
       </View>
     </>
   )
@@ -131,6 +130,12 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     padding: 30,
     paddingTop: 15
+  },
+  current__btn: {
+    flexDirection: 'row',
+    position: 'absolute',
+    top: 73,
+    left: 27
   },
   HeadText: {
     color: COLORS.dark,

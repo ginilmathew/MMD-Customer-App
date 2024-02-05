@@ -31,8 +31,6 @@ function HomeNavigation({ navigation }) {
     const { width } = useWindowDimensions()
     const { homeFocus, currentLoc  } = useContext(LocationContext)
 
-    console.log(homeFocus);
-
 
     const navToHome = useCallback(() => {
         navigation.navigate("Home")
