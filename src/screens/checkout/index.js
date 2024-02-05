@@ -1,5 +1,5 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { COLORS } from '../../constants/COLORS'
 import CommonHeader from '../../components/CommonHeader'
 import Header from '../../components/Header'
@@ -7,9 +7,17 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import SubHeading from '../../components/SubHeading'
 import CommonButton from '../../components/CommonButton'
 import { useNavigation } from '@react-navigation/native'
+import reactotron from 'reactotron-react-native'
+import CartContext from '../../context/cart'
 
 
-const Checkout = () => {
+const Checkout = ({ route }) => {
+
+  const item = route?.params;
+
+  const { cartItems } = useContext(CartContext);
+
+  reactotron.log(cartItems, "cartItems")
 
   const navigation = useNavigation();
 
@@ -22,9 +30,9 @@ const Checkout = () => {
   )
 
   const placeOrder = () => {
-    if( radioBtnStatus === 0) {
-      navigation.navigate('OrderPlaced', {item : radioBtnStatus})
-    } else if ( radioBtnStatus === 1) {
+    if (radioBtnStatus === 0) {
+      navigation.navigate('OrderPlaced', { item: radioBtnStatus })
+    } else if (radioBtnStatus === 1) {
       //RazorPay//
     }
   }
@@ -38,18 +46,19 @@ const Checkout = () => {
       <View style={styles.innerContainer}>
 
         <View>
-          <View style={styles.imgContainer}>
+          {cartItems?.map(item => (<View style={styles.imgContainer} key={item?._id}>
             <View style={styles.boxStyle}>
-              <Image source={require('../../images/propic.jpg')} style={styles.imgStyle} />
+              <Image    source={{ uri: item?.item?.imageBasePath + item?.item?.image?.[0] }} style={styles.imgStyle} />
               <View style={styles.imgSection}>
-                <Text style={styles.productName}>Elite Premium Rice Puttupodi 1Kg Pouch</Text>
-                <Text style={styles.categoryName}>Category : Grocery</Text>
+                <Text style={styles.productName}>{item?.item?.name}</Text>
+                <Text style={styles.categoryName}>Category : {item?.item?.category?.name}</Text>
               </View>
             </View>
             <View style={styles.qtyBox}>
-              <Text style={styles.price}>₹100.50</Text>
+              <Text style={styles.price}>₹ {item?.item?.variant?.sellingPrice}</Text>
             </View>
           </View>
+          ))}
 
           <View style={styles.locationBox}>
             <View style={styles.shipping}>
@@ -98,7 +107,7 @@ const Checkout = () => {
         </View>
 
         <View style={{ paddingHorizontal: 22 }}>
-          <CommonButton text={"Place Order"} onPress={placeOrder}/>
+          <CommonButton text={"Place Order"} onPress={placeOrder} />
         </View>
 
       </View>
@@ -237,8 +246,8 @@ const styles = StyleSheet.create({
     color: COLORS.primary
   },
   shipping: {
-    flexDirection: "row", 
-    justifyContent: "space-between", 
+    flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center"
   }
 })

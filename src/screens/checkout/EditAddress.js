@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, FlatList, RefreshControl, TouchableOpacity, Alert } from 'react-native'
-import React, { memo, useCallback, useState } from 'react'
+import React, { memo, useCallback, useContext, useState } from 'react'
 import CustomInput from '../../components/CustomInput'
 import CommonButton from '../../components/CommonButton'
 import { useForm } from 'react-hook-form'
@@ -16,13 +16,13 @@ import Header from '../../components/Header'
 import { storage } from '../../../App'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useMMKVStorage } from 'react-native-mmkv-storage'
+import locationContext from '../../context/location/locationContext'
+import reactotron from 'reactotron-react-native'
 
 
 const EditAddress = ({ navigation }) => {
 
-
     const [refresh, setRefresh] = useState(false);
-
 
     const { refetch, data } = useQuery({
         queryKey: ['address-query'],
@@ -37,7 +37,7 @@ const EditAddress = ({ navigation }) => {
     const { mutate: mutateDefault } = useMutation({
         mutationKey: ['address-delet'],
         mutationFn: defaultAddrss,
-        onSuccess() {
+        onSuccess(data) {
             storage.setString('success', 'Success')
             refetch()
         }
