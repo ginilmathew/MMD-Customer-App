@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, FlatList, RefreshControl, TouchableOpacity, Alert } from 'react-native'
-import React, { memo, useCallback, useContext, useState } from 'react'
+import React, { memo, useCallback, useContext, useState, useEffect } from 'react'
 import CustomInput from '../../components/CustomInput'
 import CommonButton from '../../components/CommonButton'
 import { useForm } from 'react-hook-form'
@@ -23,6 +23,7 @@ import reactotron from 'reactotron-react-native'
 const EditAddress = ({ navigation }) => {
 
     const [refresh, setRefresh] = useState(false);
+    const [defaultAddress, setDefaultAddress] = useState("");
 
     const { refetch, data } = useQuery({
         queryKey: ['address-query'],
@@ -33,6 +34,14 @@ const EditAddress = ({ navigation }) => {
             setRefresh(false)
         },
     })
+    reactotron.log(data?.data?.data?.find((item) => item?.default === true), "HHHH")
+
+    reactotron.log(defaultAddress, "defaultAddress")
+
+    useEffect(() => {
+        const defaultAddressData = data?.data?.data?.find((item) => item?.default === true);
+        setDefaultAddress(defaultAddressData);
+    }, [defaultAddress, data]);
 
     const { mutate: mutateDefault } = useMutation({
         mutationKey: ['address-delet'],
@@ -54,6 +63,8 @@ const EditAddress = ({ navigation }) => {
 
     useRefetch(refetch)
 
+
+
     const schema = yup.object({
         passwd: yup.string().required('Password is required'),
         confPasswd: yup.string().oneOf([yup.ref('passwd'), null], 'Password must match').required('Confirm Password required.')
@@ -69,8 +80,8 @@ const EditAddress = ({ navigation }) => {
     }, [navigation])
 
     const goToCheckout = useCallback(() => {
-        navigation.navigate('Checkout')
-    }, [navigation])
+        navigation.navigate('Checkout', {item: defaultAddress})
+    }, [navigation, defaultAddress])
 
 
     const keyExtractor = useCallback((item) => item?._id, [])
@@ -100,7 +111,7 @@ const EditAddress = ({ navigation }) => {
 
         return (
             <View>
-                <TouchableOpacity onPress={() => mutateDefault(item?._id)} style={styles.renderItem}>
+                <TouchableOpacity onPress={() => {mutateDefault(item?._id);setDefaultAddress(item);}} style={styles.renderItem}>
                     <View style={[styles.end, { width: '10%' }]}>
                         <IonIcons name='location' size={25} color={COLORS.blue} />
                     </View>
@@ -153,7 +164,7 @@ const EditAddress = ({ navigation }) => {
                     renderItem={renderItem}
                     ListEmptyComponent={<NoData />}
                 />
-                <View style={{alignItems: "flex-end", marginBottom: 10}}>
+                <View style={{ alignItems: "flex-end", marginBottom: 10 }}>
                     <TouchableOpacity style={styles.addBTN} onPress={addAddress}>
                         <Ionicons name="add" size={40} color={COLORS.white} />
                     </TouchableOpacity>

@@ -17,7 +17,7 @@ const Checkout = ({ route }) => {
 
   const { cartItems } = useContext(CartContext);
 
-  reactotron.log(cartItems, "cartItems")
+  reactotron.log(item, "item")
 
   const navigation = useNavigation();
 
@@ -69,7 +69,7 @@ const Checkout = ({ route }) => {
             </View>
             <View style={styles.locationStyle}>
               <Ionicons name="location" size={30} color={COLORS.blue} />
-              <Text style={styles.description}>Technopark Trivandrum, Nila Building, Module 011, Ground floor, Kazhakkoottam, Kerala 695581</Text>
+              <Text style={styles.description}>{item?.item?.area?.address}</Text>
             </View>
           </View>
 

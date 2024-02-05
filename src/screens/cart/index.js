@@ -18,6 +18,8 @@ const Cart = ({ navigation, route }) => {
 
   const { cart_id } = route.params;
 
+  reactotron.log({ cartItems },'IN CART PAGE')
+
   const { mutate, refetch: postsubrefetch, data, isLoading, refetch } = useMutation({
     mutationKey: 'cartItems',
     mutationFn: getCartItems,
@@ -60,6 +62,15 @@ const Cart = ({ navigation, route }) => {
       </>
     )
   }, [data?.data?.data, cartItems])
+
+const ListEmptyCompont = useCallback(()=>{
+  return (
+ <View style={styles.emptyContainer}>
+        <Image source={require('../../images/cart.png')} style={styles.emptyCart} />
+      </View> 
+  )
+},[])
+
 
   return (
     <View style={styles.container}>
