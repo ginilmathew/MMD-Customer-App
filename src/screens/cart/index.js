@@ -28,7 +28,7 @@ const Cart = ({ navigation, route }) => {
     onSuccess: (data) => {
       let myStructure = data?.data?.data?.product.map((res) => (
         {
-          id: res?._id,
+          _id: res?._id,
           qty: res?.qty,
           item: { ...res }
         }
@@ -46,12 +46,12 @@ const Cart = ({ navigation, route }) => {
   const renderItem = useCallback(({ item, index }) => {
     return (
       <>
-        <Animated.View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
+        <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
           <CartItemCard key={index} item={item} />
-        </Animated.View>
+        </View>
       </>
     )
-  }, [data?.data?.data,cartItems])
+  }, [data?.data?.data, cartItems])
 
   return (
     <View style={styles.container}>
