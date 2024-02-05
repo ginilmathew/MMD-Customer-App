@@ -58,7 +58,7 @@ const AllProducts = ({ navigation }) => {
 
 
     const AnimatedStyle = useCallback((index) => {
-        return FadeInDown.delay(index * 200).duration(200).springify().damping(12);
+        return FadeInDown.delay(index * 100).duration(100).springify().damping(12);
     }, [])
 
     const renderItem = useCallback(({ item, index }) => {
@@ -93,7 +93,6 @@ const AllProducts = ({ navigation }) => {
                 renderItem={renderItem}
                 keyExtractor={item => item._id}
                 showsVerticalScrollIndicator={false}
-                initialNumToRender={15}
                 onEndReached={onEndReach}
                 refreshing={isLoading}
                 onRefresh={refetch}
