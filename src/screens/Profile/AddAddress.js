@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, FlatList, RefreshControl, TouchableOpacity, Alert } from 'react-native'
-import React, { memo, useCallback, useState } from 'react'
+import React, { memo, useCallback, useContext, useState } from 'react'
 import CustomInput from '../../components/CustomInput'
 import CommonButton from '../../components/CommonButton'
 import { useForm } from 'react-hook-form'
@@ -15,12 +15,14 @@ import useRefetch from '../../hooks/useRefetch'
 import Header from '../../components/Header'
 import { storage } from '../../../App'
 import { useMMKVStorage } from 'react-native-mmkv-storage'
+import LocationContext from '../../context/location'
 
 
 const AddAddress = ({ navigation }) => {
 
 
   const [refresh, setRefresh] = useState(false);
+  const { setMode } = useContext(LocationContext)
 
 
   const { refetch, data } = useQuery({
@@ -64,6 +66,7 @@ const AddAddress = ({ navigation }) => {
   });
 
   const addAddress = useCallback(() => {
+    setMode('map');
     navigation.navigate('GoogleLocation')
   }, [navigation])
 

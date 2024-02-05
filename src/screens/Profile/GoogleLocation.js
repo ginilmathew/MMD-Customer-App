@@ -5,55 +5,52 @@ import CommonHeader from '../../components/CommonHeader'
 import ProfileButton from '../../components/ProfileButton'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import Entypo from 'react-native-vector-icons/Entypo'
 import locationContext from '../../context/location/index'
 import { GOOGLE_API } from '../../constants/API'
 import { useMMKVStorage } from 'react-native-mmkv-storage'
 import { storage } from '../../../App'
 import { navigationRef } from '../../navigation/RootNavigation'
 import Header from '../../components/Header'
+import LocationContext from '../../context/location/index'
 
 
 const GoogleLocation = ({ navigation, route }) => {
 
-  const [modal, setModal] = useState(false)
-  const { setLocation, getLocation } = useContext(locationContext)
+  const { setLocation, getLocation, mode, setCurrentLoc, setModal, handleModal } = useContext(locationContext)
+  const [homeAdd, setHomeAdd] = useMMKVStorage('homeAdd', storage);
 
 
   const addLoc = (_, data) => {
-    setLocation({
-      location: {
-        latitude: data?.geometry?.location?.lat,
-        longitude: data?.geometry?.location?.lng,
-      },
-      address: {
-        main: data?.formatted_address.split(',')[0],
-        secondary: data?.formatted_address
+
+    if (mode === 'home') {
+      if (!homeAdd) {
+        setHomeAdd(true);
       }
-    })
 
-    navigationRef.navigate('MapPage', route?.params?.mode && { mode: route?.params?.mode })
-  }
+      setCurrentLoc({
+        coord: {
+          latitude: data?.geometry?.location?.lat,
+          longitude: data?.geometry?.location?.lng,
+        },
+        address: data?.formatted_address
+      })
+      navigationRef.navigate('HomeNavigator');
 
-
-  const openSettings = () => {
-    Linking.openSettings()
-    handleModal()
-  }
-
-  const handleModal = useCallback(async () => {
-    try {
-      const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        handleModal();
-        getLocation();
-      } else {
-        setModal(!modal);
-      }
-    } catch (err) {
-      console.warn(err);
+    } else if (mode === 'map') {
+      setLocation({
+        location: {
+          latitude: data?.geometry?.location?.lat,
+          longitude: data?.geometry?.location?.lng,
+        },
+        address: {
+          main: data?.formatted_address.split(',')[0],
+          secondary: data?.formatted_address
+        }
+      })
+      navigationRef.navigate('MapPage')
     }
-  }, [modal])
+  }
+
 
 
   const renderRow = (data) => (
@@ -71,7 +68,7 @@ const GoogleLocation = ({ navigation, route }) => {
   return (
     <>
 
-      {!route?.params?.mode && (<>
+      {homeAdd && (<>
         <Header />
         <CommonHeader heading={'Place'} backBtn />
       </>)}
@@ -117,33 +114,10 @@ const GoogleLocation = ({ navigation, route }) => {
           }}
         />
 
-        <TouchableOpacity style={{ flexDirection: 'row' }} onPress={route?.params?.mode ? handleModal : getLocation}>
+        <TouchableOpacity style={{ flexDirection: 'row' }} onPress={handleModal}>
           <MaterialCommunityIcons name='navigation-variant' size={23} color={COLORS.blue} />
           <Text style={{ color: COLORS.blue, fontFamily: 'Poppins-Medium' }}>Use my current location</Text>
         </TouchableOpacity>
-
-        <Modal visible={modal} transparent>
-          <View style={styles.modal}>
-            <View style={styles.box}>
-              <View style={styles.box__header}>
-                <Text style={styles.header__main}>Turn On Location permission</Text>
-                <TouchableOpacity style={{ alignSelf: 'flex-start' }} onPress={handleModal}>
-                  <Entypo name='circle-with-cross' size={23} color={COLORS.light} />
-                </TouchableOpacity>
-              </View>
-              <Text style={styles.box__description}>Please go to Settings - Location to turn on Location permission</Text>
-
-              <View style={styles.box__container}>
-                <TouchableOpacity style={[styles.box__btn, { backgroundColor: COLORS.primary_light }]} onPress={handleModal}>
-                  <Text style={[styles.btn__text, { color: COLORS.primary }]}>Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.box__btn, { backgroundColor: COLORS.primary }]} onPress={openSettings}>
-                  <Text style={[styles.btn__text, { color: COLORS.white }]}>Settings</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </Modal>
       </View>
     </>
   )

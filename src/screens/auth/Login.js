@@ -16,12 +16,12 @@ import { CommonActions } from '@react-navigation/native';
 import locationContext from '../../context/location';
 import messaging from '@react-native-firebase/messaging';
 import customAxios from '../../customAxios';
+import { PERMISSIONS, check, RESULTS } from 'react-native-permissions'
 
 
 const Login = ({ navigation }) => {
 
-    const { getLocation } = useContext(locationContext)
-    const [userLoc, setUserLoc] = useMMKVStorage('userLoc', storage)
+    const { getLocation, setMode } = useContext(locationContext)
     const { mutate: tokenMutate } = useMutation({
         mutationKey: 'token-key',
         mutationFn: tokenApi
@@ -42,11 +42,23 @@ const Login = ({ navigation }) => {
         const token = await messaging().getToken();
         tokenMutate(token)
         
-        
-        storage.setString('success', 'Login successful')
-        setUserLoc(data?.defaultAddress)
+        console.log('hello');
+        try {
 
-        navigation.navigate(data?.defaultAddress ? 'HomeNavigator' : 'LocationPage');
+            const result = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+
+            if (result === RESULTS.GRANTED) {
+                setMode('home');
+                getLocation();
+            } else {
+                navigation.navigate('LocationPage');
+            }
+
+            storage.setString('success', 'Login successful')
+        } catch (err) {
+            console.warn(err);
+        }
+        // navigation.navigate(data?.defaultAddress ? 'HomeNavigator' : 'LocationPage');
     }
 
     const { mutate } = useMutation({

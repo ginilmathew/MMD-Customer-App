@@ -20,7 +20,7 @@ export default memo(CustomHeading);
 const styles = StyleSheet.create({
   container: {
     borderBottomWidth: 1, // Add a border to the bottom
-    borderBottomColor: COLORS.dark_gray, // Set the border color
+    borderBottomColor: COLORS.gray, // Set the border color
     paddingBottom: 5,
    
     marginVertical:10,
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-bold',
     letterSpacing: 1,
     color: COLORS.light,
-    fontSize: 16, // Adjust the font size as needed
+    fontSize: 20, // Adjust the font size as needed
     fontWeight: 'bold', // Optional: Apply bold styling
   },
   text2: {

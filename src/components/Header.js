@@ -7,9 +7,14 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { COLORS } from '../constants/COLORS';
 import CartContext from '../context/cart';
 import reactotron from 'reactotron-react-native';
-const Header = memo(({ onPress }) => {
+import IonIcon from 'react-native-vector-icons/Ionicons'
+import LocationContext from '../context/location';
+
+
+const Header = memo(({ onPress, text }) => {
 
     const { cartItems } = useContext(CartContext)
+    const { setMode } = useContext(LocationContext)
 
     reactotron.log(cartItems, "CART")
 
@@ -23,11 +28,36 @@ const Header = memo(({ onPress }) => {
         navigation.navigate('Cart')
     }, [navigation])
 
+    const textLeng = text?.length;
+
+    const changeLoc = () => {
+        setMode('home');
+        navigation.navigate('GoogleLocation')
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.imageContainer}>
-                <Image source={require('../images/DG.png')} style={styles.logo} />
+                <Image source={require('../images/DG.png')} style={[styles.logo]} />
             </View>
+
+            {text && (
+                <TouchableOpacity style={{
+                    flexDirection: 'row',
+                    gap: 3,
+                    marginLeft: -20,
+                    alignItems: 'center'
+                }} onPress={changeLoc}>
+                    <IonIcon name='location' size={20} color={COLORS.primary} />
+                    <Text style={{
+                        fontSize: 11,
+                        color: COLORS.dark,
+                    }}>{text
+                        ?.slice(...textLeng ? [0, 24] : [0])
+                        ?.concat(textLeng ? ' ...' : '')}</Text>
+                </TouchableOpacity>
+            )}
+
             <View style={styles.iconContainer}>
                 <TouchableOpacity onPress={cartPage}>
                     <IonIcons name='cart' size={20} color="#000" />
@@ -64,12 +94,12 @@ const styles = StyleSheet.create({
     iconContainer: {
         display: 'flex',
         flexDirection: 'row',
-        gap: 10,
+        gap: 15,
         // Margin to separate the icon from the image
     },
     logo: {
-        width: 120, // Set the width of the image
-        height: 120, // Set the height of the image
+        width: 100, // Set the width of the image
+        height: 100, // Set the height of the image
         // resizeMode: 'contain', // Ensure the image maintains its aspect ratio
     },
     badgeStyle: {

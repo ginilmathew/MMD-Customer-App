@@ -34,19 +34,20 @@ const MapAddress = ({ navigation, route }) => {
         mutationKey: 'add-address',
         mutationFn: addAddress,
         onSuccess({ data }) {
-            if (data?.address) {
-                if (!userLoc) {
-                    setUserLoc(true)
-                    navigation.reset({
-                        index: 0,
-                        routes: [
-                            { name: 'HomeNavigator' }
-                        ]
-                    })
-                }
+            console.log(data);
+            // if (data?.address) {
+            //     if (!userLoc) {
+            //         setUserLoc(true)
+            //         navigation.reset({
+            //             index: 0,
+            //             routes: [
+            //                 { name: 'HomeNavigator' }
+            //             ]
+            //         })
+            //     }
 
-                return;
-            }
+            //     return;
+            // }
             navigation.navigate('Address')
         }
     })
@@ -116,14 +117,8 @@ const MapAddress = ({ navigation, route }) => {
 
     return (
         <>
-            {
-                !route?.params?.mode && (
-                    <>
-                        <Header />
-                        <CommonHeader heading={'Add Address'} backBtn />
-                    </>
-                )
-            }
+            <Header />
+            <CommonHeader heading={'Add Address'} backBtn />
 
             <ScrollView contentContainerStyle={mode === 'map' && { flex: 1 }} style={styles.container} keyboardShouldPersistTaps='always'>
 
@@ -144,7 +139,7 @@ const MapAddress = ({ navigation, route }) => {
 
                                             return { ...location, location: { ...e.nativeEvent.coordinate } }
                                         })
-                                mapRef.current.animateToRegion({
+                                    mapRef.current.animateToRegion({
                                         ...e.nativeEvent.coordinate,
                                         latitudeDelta: 0.02,
                                         longitudeDelta: 0.02
@@ -229,115 +224,112 @@ const MapAddress = ({ navigation, route }) => {
                     ) : (
                         <View style={{ padding: 20 }}>
 
-                                {
-                                    route?.params?.mode && (
-                                        <View style={{
-                                            height: 193,
-                                            width: '100%',
-                                            marginTop: -50
-                                        }}>
-                                            <Image source={require('../../images/DG.png')} style={{
-                                                height: '100%',
-                                                width: '100%',
-                                            }} />
-                                        </View>
-                                    )
-                                }
 
-                                <View style={{
-                                    alignSelf: 'flex-end',
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    height: 27,
-                                    marginBottom: 20,
+                            <View style={{
+                                height: 193,
+                                width: '100%',
+                                marginTop: -50
+                            }}>
+                                <Image source={require('../../images/DG.png')} style={{
+                                    height: '100%',
+                                    width: '100%',
+                                }} />
+                            </View>
+
+                            <View style={{
+                                alignSelf: 'flex-end',
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                height: 27,
+                                marginBottom: 20,
+                            }}>
+                                <Text style={{
+                                    fontFamily: 'Poppins-Light',
+                                    fontSize: 11,
+                                    color: COLORS.light,
+                                    marginRight: 10
+                                }}>DEFAULT</Text>
+                                <TouchableOpacity activeOpacity={.8} onPress={handleToggle} style={{
+                                    width: 45, height: '100%', backgroundColor: defaultVal ? COLORS.primary : COLORS.text, borderRadius: 50,
+                                    justifyContent: 'center',
+                                    paddingHorizontal: 5
                                 }}>
+                                    <View style={{
+                                        height: 20,
+                                        width: 20,
+                                        borderRadius: 30,
+                                        marginVertical: -2.5,
+                                        backgroundColor: COLORS.white,
+                                        ...(defaultVal ? { marginLeft: 'auto' } : { marginRight: 'auto' })
+                                    }} />
+                                </TouchableOpacity>
+                            </View>
+
+                            <CustomInput
+                                control={control}
+                                name={'address'}
+                                left={'location'}
+                                color={COLORS.blue}
+                                placeholder='Address'
+                            />
+
+                            <CustomInput
+                                control={control}
+                                name={'mobile'}
+                                type={"number-pad"}
+                                left={'call'}
+                                color={COLORS.blue}
+                                placeholder='Phone'
+                            />
+
+                            <CustomInput
+                                control={control}
+                                name={'landmark'}
+                                autoFocus
+                                color={COLORS.blue}
+                                placeholder='Landmark'
+                                left={'map'}
+                            />
+
+                            <CustomInput
+                                control={control}
+                                name={'pincode'}
+                                color={COLORS.blue}
+                                placeholder='Pincode'
+                                left={'pin'}
+                                type={'number-pad'}
+                            />
+
+                            <CustomInput
+                                control={control}
+                                name={'comments'}
+                                multi
+                                placeholder='Comments'
+                            />
+
+                            <View style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-evenly',
+                                marginVertical: 4
+                            }}>
+                                <View style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'center'
+                                }}>
+                                    {checkBox(0)}
                                     <Text style={{
-                                        fontFamily: 'Poppins-Light',
-                                        fontSize: 11,
-                                        color: COLORS.light,
-                                        marginRight: 10
-                                    }}>DEFAULT</Text>
-                                    <TouchableOpacity activeOpacity={.8} onPress={handleToggle} style={{
-                                        width: 45, height: '100%', backgroundColor: defaultVal ? COLORS.primary : COLORS.text, borderRadius: 50,
-                                        justifyContent: 'center',
-                                        paddingHorizontal: 5
-                                    }}>
-                                        <View style={{
-                                            height: 20,
-                                            width: 20,
-                                            borderRadius: 30,
-                                            marginVertical: -2.5,
-                                            backgroundColor: COLORS.white,
-                                            ...(defaultVal ? { marginLeft: 'auto' } : { marginRight: 'auto' })
-                                        }} />
-                                    </TouchableOpacity>
+                                        color: COLORS.light
+                                    }}>Home</Text>
                                 </View>
-
-                                <CustomInput
-                                    control={control}
-                                    name={'address'}
-                                    left={'location'}
-                                    color={COLORS.blue}
-                                    placeholder='Address'
-                                />
-
-                                <CustomInput
-                                    control={control}
-                                    name={'mobile'}
-                                    type={"number-pad"}
-                                    left={'call'}
-                                    color={COLORS.blue}
-                                    placeholder='Phone'
-                                />
-
-                                <CustomInput
-                                    control={control}
-                                    name={'landmark'}
-                                    autoFocus
-                                    color={COLORS.blue}
-                                    placeholder='Landmark'
-                                    left={'map'}
-                                />
-
-                                <CustomInput
-                                    control={control}
-                                    name={'pincode'}
-                                    color={COLORS.blue}
-                                    placeholder='Pincode'
-                                    left={'pin'}
-                                    type={'number-pad'}
-                                />
-
-                                <CustomInput
-                                    control={control}
-                                    name={'comments'}
-                                    multi
-                                    placeholder='Comments'
-                                />
-
                                 <View style={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-evenly',
-                                    marginVertical: 4
+                                    flexDirection: 'row'
                                 }}>
-                                    <View style={{
-                                        flexDirection: 'row',
-                                        justifyContent: 'center'
-                                    }}>
-                                        {checkBox(0)}
-                                        <Text style={{
-                                            color: COLORS.light
-                                        }}>Home</Text>
-                                    </View>
-                                    <View style={{
-                                        flexDirection: 'row'
-                                    }}>
-                                        {checkBox(1)}
-                                        <Text style={{
-                                            color: COLORS.light
-                                        }}>Office</Text>
-                                    </View>
+                                    {checkBox(1)}
+                                    <Text style={{
+                                        color: COLORS.light
+                                    }}>Office</Text>
                                 </View>
+                            </View>
                         </View>
 
                     )

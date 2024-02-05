@@ -1,39 +1,79 @@
-import { Alert, PermissionsAndroid } from 'react-native'
-import { useContext, useEffect, useState } from 'react'
+import { Alert, Linking, PermissionsAndroid } from 'react-native'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import Geolocation from '@react-native-community/geolocation';
 import { useMutation } from 'react-query';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { getLocation as locationApi } from '../../api/Profile';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 import LocationContext from './index'
 import { navigationRef } from '../../navigation/RootNavigation';
 import { useMMKVStorage } from 'react-native-mmkv-storage';
 import { storage } from '../../../App';
+import { PERMISSIONS, check, RESULTS } from 'react-native-permissions'
 
 
 
 
 const locationContext = ({ children }) => {
 
-    const [userLoc] = useMMKVStorage('userLoc', storage)
 
     const [location, setLocation] = useState({})
+    const [mode, setMode] = useState('')
+    const [currentLoc, setCurrentLoc] = useState('')
+    const [homeAdd, setHomeAdd] = useMMKVStorage('homeAdd', storage);
+    const [modal, setModal] = useState(false)
 
     
-    const onSuccess = ({ data }) => {
+    const onSuccess = async ({ data }) => {
 
-        setLocation(location => ({
-            ...location,
-            address: {
-                main: data?.results[3]?.address_components[0]?.short_name,
-                secondary: data?.results[3]?.formatted_address
-            },
-        }));
+        if(mode === 'map') {
+            setLocation(location => ({
+                ...location,
+                address: {
+                    main: data?.results[3]?.address_components[0]?.short_name,
+                    secondary: data?.results[3]?.formatted_address
+                },
+            }));
 
-        navigationRef.navigate('MapPage', !userLoc && { mode: true })
+            navigationRef.navigate('MapPage')
+        } else if (mode === 'home') {
+            if(!homeAdd) {
+                setHomeAdd(true);
+            }
+
+            setCurrentLoc({
+                coord: { ...location?.location },
+                address: data?.results[3]?.formatted_address
+            })
+            console.log('sdfsdf');
+            // navigationRef.navigate('HomeNavigator')
+        } else if ('homes') {
+            setCurrentLoc({
+                coord: { ...location?.location },
+                address: data?.results[3]?.formatted_address
+            })
+        }
         // navigationRef.navigate('HomeNavigator', { screen: 'Home' })
     }
 
+    const handleModal = useCallback(async () => {
+        try {
+            const result = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+            if (result === RESULTS.GRANTED) {
+                handleModal(false);
+                requestLocationPermisson();
+            } else if (result === RESULTS.DENIED) {
+                setModal(true);
+            }
+        } catch (err) {
+            console.warn(err);
+        }
+    }, [modal])
+
+    const openSettings = useCallback(() => {
+        Linking.openSettings()
+        setModal(true);
+    }, [])
 
     const { mutate } = useMutation({
         mutationFn: locationApi,
@@ -43,31 +83,21 @@ const locationContext = ({ children }) => {
 
 
     const requestLocationPermisson = async () => {
+        console.log('hell');
 
-        if (Platform.OS === 'ios') {
-            getOneTimeLocation();
-            subscribeLocationLocation();
-        } else {
+
             try {
-                const granted = await PermissionsAndroid.request(
-                    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-                    {
-                        title: 'Location Access Required',
-                        message: 'This App needs to Access your location',
-                        buttonPositive: 'Allow'
-                    },
-                );
+                const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
                 if (granted === PermissionsAndroid.RESULTS.GRANTED) {
                     //To Check, If Permission is granted
                     getOneTimeLocation();
                     subscribeLocationLocation();
                 } else {
-                    navigationRef.navigate('HomeNavigator', { screen: 'ProfileNavigator', params: { screen: 'GoogleLocation', params: { mode: 'no_place' } } })
+                    // setmo
                 }
             } catch (err) {
                 console.warn(err);
             }
-        }
     }
 
     const getOneTimeLocation = () => {
@@ -131,8 +161,16 @@ const locationContext = ({ children }) => {
             value={{
                 location,
                 setLocation,
+                currentLoc,
+                setCurrentLoc,
+                mode, 
+                setMode,
+                modal,
+                handleModal,
                 getLocation: requestLocationPermisson,
-                changeLocation: mutate
+                changeLocation: mutate,
+                openSettings,
+                setModal
             }}
         >
             {children}

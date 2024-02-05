@@ -21,6 +21,7 @@ const SingleProduct = ({ route }) => {
 
     const { item } = route.params;
 
+
     const reducer = (state, action) => {
         for (let i = 0; i < item?.units?.length; i++) {
             switch (action?.type) {

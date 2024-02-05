@@ -34,6 +34,8 @@ const CustomItemCard = ({ onPress, item, key }) => {
     }, [navigation])
     // TouchableOpacity onPress={NavigateToSingleProduct}
 
+    // console.log(price);
+
     useEffect(() => {
         if (item) {
             let products = item.products ? item.products[0].units[0].variants.map(item => (

@@ -89,11 +89,14 @@ function HomeNavigation({ navigation }) {
 
     // storage.removeItem('user')
 
+    const routeName = navigationRef?.getCurrentRoute()?.name;
 
     return (
         <>
 
-             <Header toCart={toCart} toNotification={toNotification} /> 
+            {
+                (!routeName || routeName === 'Home') ? null : <Header toCart={toCart} toNotification={toNotification} />
+            }
 
             <Tab.Navigator
                 screenOptions={({ route }) => {
