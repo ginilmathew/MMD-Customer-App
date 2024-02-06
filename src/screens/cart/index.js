@@ -76,26 +76,12 @@ const ListEmptyCompont = useCallback(()=>{
     <View style={styles.container}>
       <Header />
       <CommonHeader heading={"Cart"} backBtn />
-<<<<<<< HEAD
     
       {/* <View style={styles.innerContainer}>
         <ItemCard /> 
         <CommonButton text={"Checkout"} mt={30}/>
       </View> */}
-      <FlatList
-        data={cartItems}
-        ListEmptyComponent={ListEmptyCompont}
-        renderItem={renderItem}
-        keyExtractor={(item) => item?._id}
-        showsVerticalScrollIndicator={false}
-        initialNumToRender={10}
-        refreshing={isLoading}
-        onRefresh={refetch}
-        maxToRenderPerBatch={10}
-        windowSize={10}
-        getItemLayout={(data, index) => ({ length: 80, offset: 80 * index, index })}
-      />
-=======
+  
       <View style={{ paddingBottom: 200, marginTop: 10 }}>
         <FlatList
           data={cartItems}
@@ -110,7 +96,6 @@ const ListEmptyCompont = useCallback(()=>{
           getItemLayout={(data, index) => ({ length: 80, offset: 80 * index, index })}
           ListEmptyComponent={noProductsAdded}
         />
->>>>>>> dipin
 
         {cartItems?.length > 0 ? (<View style={styles.innerContainer}>
           <CommonButton text={"Checkout"} onPress={editAddress} />
@@ -132,11 +117,8 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   emptyContainer: {
-<<<<<<< HEAD
     flex: 1,
-=======
     marginTop: 130,
->>>>>>> dipin
     paddingHorizontal: 20,
     alignItems: "center",
     justifyContent: "center"

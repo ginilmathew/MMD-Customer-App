@@ -41,7 +41,8 @@ const Home = ({ navigation, route }) => {
         queryKey: ['Home'],
         retry: false,
         queryFn: () => HomeApi({
-            coordinates: [currentLoc?.coord?.latitude, currentLoc?.coord?.longitude]
+            // coordinates: [currentLoc?.coord?.latitude, currentLoc?.coord?.longitude]
+            ...payload
         }),
         enabled: false
     })

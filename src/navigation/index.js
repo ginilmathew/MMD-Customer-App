@@ -31,14 +31,11 @@ import AddAddress from '../screens/Profile/AddAddress';
 import ChangePasswd from '../screens/Profile/ChangePasswd';
 import GoogleLocation from '../screens/Profile/GoogleLocation';
 import MapAddress from '../screens/Profile/MapAddress';
-<<<<<<< HEAD
 import LocationContext from '../context/location';
 import Entypo from 'react-native-vector-icons/Entypo'
 import { PERMISSIONS, RESULTS, check } from 'react-native-permissions';
-=======
 import OrderPlaced from '../screens/checkout/OrderPlaced';
 import EditAddress from '../screens/checkout/EditAddress';
->>>>>>> dipin
 
 
 const Stack = createNativeStackNavigator();

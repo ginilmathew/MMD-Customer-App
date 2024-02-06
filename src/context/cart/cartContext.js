@@ -47,7 +47,7 @@ const CartProvider = ({ children }) => {
             prevItems.map((item) => {
                 let items = {
                     ...item,
-                    item: { ...item?.item, qty: item.qty + 1 }
+                    item: { ...item?.item }
                 }
                 return item._id === itemId ? { ...items, qty: item.qty + 1 } : items
             })
@@ -60,7 +60,7 @@ const CartProvider = ({ children }) => {
             const updatedItems = prevItems.map((item) => {
                 let items = {
                     ...item,
-                    item: { ...item?.item, qty: Math.max(item.qty - 1, 0) }
+                    item: { ...item?.item, }
                 }
                 return item._id === itemId ? { ...items, qty: Math.max(item.qty - 1, 0) } : items
             });
