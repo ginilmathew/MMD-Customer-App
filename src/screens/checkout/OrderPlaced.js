@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import LottieView from 'lottie-react-native';
 import { COLORS } from '../../constants/COLORS';
 import Header from '../../components/Header';
@@ -7,8 +7,10 @@ import CommonHeader from '../../components/CommonHeader';
 import { useNavigation } from '@react-navigation/native';
 import reactotron from 'reactotron-react-native';
 import moment from 'moment';
+import CartContext from '../../context/cart';
 
 const OrderPlaced = ({ route }) => {
+    const { cartItems, setCartItems } = useContext(CartContext);
 
     const item = route?.params
 
@@ -19,6 +21,7 @@ const OrderPlaced = ({ route }) => {
     useEffect(() => {
 
         setTimeout(() => {
+            setCartItems([])
             navigation.navigate('Orders')
         }, 2000);
 

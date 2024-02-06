@@ -23,6 +23,7 @@ import RazorpayCheckout from 'react-native-razorpay';
 const Checkout = ({ route }) => {
 
   const [user] = useMMKVStorage('user', storage);
+  const [cart_id] = useMMKVStorage('cart_id', storage);
 
   const { item, cart_ID } = route?.params;
 
@@ -61,12 +62,10 @@ const Checkout = ({ route }) => {
   const { mutate, refetch: postsubrefetch } = useMutation({
     mutationKey: 'placedOrder',
     mutationFn: PlaceOrder,
-    onSuccess: (data) => {
+    onSuccess:  (data) => {
       setCartItems([])
-      //navigation.navigate('Processing')
-        // navigation.navigate('OrderPlaced', { item: data?.data?.data })
-        navigation.reset
-      
+      //await storage.getBoolAsync('cart_id', null);
+      navigation.navigate('OrderPlaced', { item: data?.data?.data })
     }
   })
 
@@ -97,10 +96,11 @@ const Checkout = ({ route }) => {
       theme: { color: '#53a20e' }
     }
     RazorpayCheckout.open(options).then((data) => {
+      navigation.navigate('Processing')
         placeOrder()
       //alert(`Success: ${data.razorpay_payment_id}`);
     }).catch((error) => {
-      alert(`Error: ${error.code} | ${error.description}`);
+      //alert(`Error: ${error.code} | ${error.description}`);
     });
   }
 
@@ -116,7 +116,8 @@ const Checkout = ({ route }) => {
       total: data?.data?.data?.total,
       paymentType: radioBtnStatus === 0 ? "cod" : "online",
       paymentStatus: radioBtnStatus === 0 ? "pending" : "completed",
-      customer_id: user?.user?._id
+      customer_id: user?.user?._id,
+      cartId: cart_id
     })
   }
 
@@ -124,10 +125,7 @@ const Checkout = ({ route }) => {
     if (radioBtnStatus === 0) {
       placeOrder()
     } else if (radioBtnStatus === 1) {
-      navigation.navigate('Processing')
-      setTimeout(() => {
-        handlePayment()
-      }, 1500);
+      handlePayment()
     }
   }
 
