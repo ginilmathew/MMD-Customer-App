@@ -9,29 +9,67 @@ import { COLORS } from '../../constants/COLORS'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
+import CustomDropdown from '../../components/CommonDropDown'
 
 const ChooseDate = ({ }) => {
     const [date, setDate] = useState(new Date())
     const [open, setOpen] = useState(false)
+    const [chosenDate, setChosenDate] = useState(null)
 
-    reactotron.log(moment(`${moment(date).format("YYYY-MM-DD")} ${moment().format("HH:mm")}`, "YYYY-MM-DD HH:mm").format("YYYY-MM-DD HH:mm"), "dtae")
+    reactotron.log(chosenDate, "chosenDate")
 
+    const handleDateChange = (selectedDate) => {
+        const formattedDate = moment(`${moment(selectedDate).format("YYYY-MM-DD")} ${moment().format("HH:mm")}`, "YYYY-MM-DD HH:mm").format("YYYY-MM-DD HH:mm")
+        setDate(selectedDate)
+        setChosenDate(formattedDate)
+        setOpen(false)
+    }
+
+    const data = [
+        {
+            "_id": "65c1d6af7dab38aeda08f272",
+            "day": "Tuesday",
+            "fromTime": "15:00",
+            "toTime": "17:00",
+        },
+        {
+            "_id": "65c1d6af7dab38aeda08f272",
+            "day": "wed",
+            "fromTime": "15:00",
+            "toTime": "17:00",
+        },
+        // Add more data objects as needed
+    ];
+
+    const [visible, setVisible] = useState(false);
+    const [selectedValue, setSelectedValue] = useState(null);
+
+    const handleToggleDropdown = () => {
+        setVisible(!visible);
+    };
+
+    const handleSelectOption = (value) => {
+        setSelectedValue(value);
+        setVisible(false);
+    };
 
     return (
         <View style={{ width: "100%" }}>
             <TouchableOpacity title="Open" onPress={() => setOpen(true)} style={styles.input}>
                 <View>
-                    <Text style={styles.txtBtn}>Choose Delivery Date</Text>
+                    {chosenDate ? (
+                        <Text style={styles.txtBtn}>{moment(chosenDate).format("DD-MM-YYYY")}</Text>
+                    ) : (
+                        <Text style={styles.txtBtn}>Choose Delivery Date</Text>
+                    )}
+
 
                     <DatePicker
                         modal
                         open={open}
                         mode='date'
                         date={date}
-                        onConfirm={(date) => {
-                            setOpen(false)
-                            setDate(date)
-                        }}
+                        onConfirm={handleDateChange}
                         onCancel={() => {
                             setOpen(false)
                         }}
@@ -40,6 +78,26 @@ const ChooseDate = ({ }) => {
 
                 <Ionicons name="calendar" size={20} color="black" />
             </TouchableOpacity>
+
+            {chosenDate && (
+                <View style={styles.container}>
+                    <TouchableOpacity onPress={handleToggleDropdown} style={styles.button}>
+                        <Text style={styles.buttonText}>{selectedValue?.day ? selectedValue.day : 'Select an option'}</Text>
+                        <Ionicons name="chevron-down" size={20} color="black" />
+                    </TouchableOpacity>
+
+                    {visible && (
+                        <View style={styles.dropdown}>
+                            {data.map((item, index) => (
+                                <TouchableOpacity key={index} style={styles.option} onPress={() => handleSelectOption(item)}>
+                                    <Text>{item?.day}</Text>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    )}
+                </View>
+            )}
+
         </View>
     )
 }
@@ -60,5 +118,37 @@ const styles = StyleSheet.create({
     },
     txtBtn: {
         fontFamily: "Poppins-Italic"
-    }
+    },
+    container: {
+        position: 'relative',
+    },
+    button: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 10,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+    },
+    buttonText: {
+        flex: 1,
+        marginRight: 10,
+    },
+    dropdown: {
+        zIndex: 1000,
+        position: 'absolute',
+        top: 40, // Adjust the distance from the button
+        width: '100%',
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        backgroundColor: 'red',
+    },
+    option: {
+        zIndex: 100,
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+    },
 })
