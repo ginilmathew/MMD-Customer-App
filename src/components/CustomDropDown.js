@@ -94,6 +94,7 @@ const CommonSelectDropdown = ({ topLabel, placeholder, value, setValue, changeVa
                 onFocus={setFocus}
                 onBlur={offFocus}
                 onChange={changeValue}
+                
                 renderRightIcon={rightIcon}
                 itemTextStyle={styles.dropdownText}
             />

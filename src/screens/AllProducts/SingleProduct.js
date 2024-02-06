@@ -16,6 +16,11 @@ import CommonSelectDropdown from '../../components/CustomDropDown';
 import CustomDropdown from '../../components/CommonDropDown';
 import reactotron from 'reactotron-react-native';
 import Animated from 'react-native-reanimated';
+import { AddToCart } from '../../components/ItemCard';
+import CartButton from '../../components/CartButton';
+
+
+let status = true;
 
 const SingleProduct = ({ route }) => {
 
@@ -35,6 +40,12 @@ const SingleProduct = ({ route }) => {
         }
     }
 
+    useEffect(() => {
+        for (let i = 0; i < item?.units?.length; i++) {
+            dispatch({ type: item?.units[i]?.name, value: item?.units[i]?.variants[0]?.name })
+        }
+    }, [])
+
 
     const { height } = useWindowDimensions()
     const [mainImage, setMainImage] = useState(require('../../images/spinach.jpg'));
@@ -45,6 +56,7 @@ const SingleProduct = ({ route }) => {
     const handleImagePress = useCallback((image) => {
         setMainImage(image);
     }, []);
+
 
     const BASEPATHPRODCT = item?.imageBasePath;
 
@@ -95,13 +107,18 @@ const SingleProduct = ({ route }) => {
                     ))}
                 </ScrollView> */}
                 <ProductData item={item} price={price} />
+
+                <CartButton />
+
+                    
                 <View style={styles.dropdownContainer}>
 
-                    {item?.units.map((item) => (<CommonSelectDropdown changeValue={(props) => {
-                        dispatch({ type: item?.name, value: props?.label })
-                        return changeValue(props)
-                    }} topLabel={item?.name} key={item?.id} value={state[item?.name]} datas={items} />))}
-
+                    {item?.units.map((item, i) => {
+                        return (<CommonSelectDropdown changeValue={(props) => {
+                            dispatch({ type: item?.name, value: props?.label })
+                            return changeValue(props)
+                        }} topLabel={item?.name} key={item?.id} value={state[item?.name]} datas={items} />)
+                    })}
                 </View>
                 {item?.details ? <AboutSection item={item} /> : null}
                 {item?.description ? <DescriptionSection item={item} /> : null}

@@ -21,7 +21,7 @@ const CustomItemCard = ({ onPress, item, key }) => {
 
     const handleAddToCart = useCallback(() => {
         addToCart(products);
-    }, [addToCart,products]);
+    }, [addToCart, products]);
 
     const handleIncrement = useCallback(() => {
         incrementItem(products);
@@ -41,7 +41,7 @@ const CustomItemCard = ({ onPress, item, key }) => {
 
 
 
-  
+
     // TouchableOpacity onPress={NavigateToSingleProduct}
 
     // useEffect(() => {
@@ -79,7 +79,7 @@ const CustomItemCard = ({ onPress, item, key }) => {
     // }, [item])
 
 
- 
+
 
     const AnimatedStyle = FadeInDown.easing().delay(300);
 
@@ -92,12 +92,12 @@ const CustomItemCard = ({ onPress, item, key }) => {
             <TouchableOpacity onPress={NavigateToSingleProduct} style={styles.container}>
                 {/* Left Side */}
                 <Animated.View style={styles.leftContainer}>
-                <Animated.Image
+                    <Animated.Image
                         source={{ uri: products?.imageBasePath + products?.image?.[0] }}
                         style={styles.leftImage}
                         sharedTransitionTag={item?.product_id}
                     />
-                    
+
                 </Animated.View>
 
                 {/* Center Content */}
@@ -112,7 +112,7 @@ const CustomItemCard = ({ onPress, item, key }) => {
                 {/* Right Side */}
                 <View style={styles.rightContainer}>
                     <Text style={styles.topPrice}>₹ {products?.units[0]?.variants[0]?.offerPrice * 1 ? products?.units[0]?.variants[0]?.offerPrice : products?.units[0]?.variants[0]?.sellingPrice ?? 0}</Text>
-                    {products?.units[0]?.variants[0]?.offerPrice  &&
+                    {products?.units[0]?.variants[0]?.offerPrice &&
                         <Text style={styles.strikePrice}>₹ {products?.units[0]?.variants[0]?.sellingPrice ?? 0}</Text>}
                     <AddToCart
                         isCartAdded={isCartAdded}
