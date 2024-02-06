@@ -86,21 +86,26 @@ const SingleProduct = ({ route }) => {
     }
 
     const handleAddCart = useCallback(() => {
-        const updatedData = cartItems.map(product => {
-            if (item?._id === product?._id) {
-                return {
-                    ...product,
-                    qty,
-                    item: {
-                        ...product?.item,
-                        qty
-                    }
-                }
-            }
-            return product
-        });
-        mutate({ product: updatedData });
-    }, [qty, cartItems])
+
+        const unitId = data?.data?.data.product.units?.find(({ name }) => name === unit)
+        const variant = unitId?.variants?.find(({name}) => name === selectedValue);
+
+        const productDetails = {
+            ...data?.data?.data.product,
+            unit: { id: unitId?.id, name: unitId?.name },
+            variant,
+            qty
+        }
+
+        console.log(productDetails);
+
+        const updatedData = cartItems?.map(item => ({
+            ...item.item,
+            qty: item.qty
+
+        }));
+        mutate({ product: productDetails });
+    }, [qty, cartItems, unit, data, selectedValue])
 
     useEffect(() => {
         for (let i = 0; i < item?.units?.length; i++) {

@@ -1,6 +1,6 @@
 
 import { Platform, StyleSheet, Text, View, AppState, PermissionsAndroid } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import Navigation from './src/navigation'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage'
@@ -13,12 +13,15 @@ import messaging from '@react-native-firebase/messaging';
 import notifee, { AndroidImportance, EventType } from '@notifee/react-native'
 
 import CartProvider from './src/context/cart/cartContext'
+import { useAppState } from './src/hooks/appStateManagement'
+
 
 
 export const queryClient = new QueryClient();
 export const storage = new MMKVLoader().initialize()
 
 const App = () => {
+
 
 
   onlineManager.setEventListener(setOnline => {
@@ -120,12 +123,15 @@ const App = () => {
 
 
 
+
+
+
   return (
     <QueryClientProvider client={queryClient}>
       <SafeAreaView style={styles.safeArea}>
         <LocationContext>
           <CartProvider>
-          <Navigation />
+            <Navigation />
           </CartProvider>
         </LocationContext>
       </SafeAreaView>

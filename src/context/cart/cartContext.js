@@ -2,19 +2,16 @@ import { StyleSheet, Text, View } from 'react-native';
 import React, { useState, useMemo } from 'react';
 import CartContext from './index';
 import reactotron from 'reactotron-react-native';
-import { useNavigation } from '@react-navigation/native';
-import { getCurrentScreenPath } from '../../navigation/RootNavigation';
+
 const CartProvider = ({ children }) => {
-
-
-
 
 
     const [cartItems, setCartItems] = useState([]);
 
-    
+
+    reactotron.log({cartItems})
+
     const addToCart = ({ _id: itemId, ...items }) => {
-        console.log({ cartItems: cartItems[0].item.variant})
         setCartItems((prevItems) => {
             const existingItem = prevItems.find((item) => item._id === itemId);
             if (existingItem) {
@@ -25,7 +22,7 @@ const CartProvider = ({ children }) => {
             } else {
                 const { variants, ...unitWithoutVariants } = { ...items.units[0] };
                 // delete items.units
-                  reactotron.log('API CA::LLEDDD')
+
                 let item = {
                     _id: itemId,
                     qty: 1,
@@ -38,13 +35,15 @@ const CartProvider = ({ children }) => {
 
                 // If item is not in the cart, add it
 
-                return [...prevItems, { _id: itemId, qty: 1,unit_id :unitWithoutVariants?.id,
-                    varientname:variants[0]?.name, item }];
+                return [...prevItems, {
+                    _id: itemId, qty: 1, unit_id: unitWithoutVariants?.id,
+                    varientname: variants[0]?.name, item
+                }];
             }
         });
     };
 
-    const incrementItem = ({ _id: itemId,}) => {
+    const incrementItem = ({ _id: itemId, }) => {
         setCartItems((prevItems) =>
             prevItems.map((item) => {
                 let items = {
@@ -82,8 +81,8 @@ const CartProvider = ({ children }) => {
                 return item._id === itemId ? { ...items, qty: Math.max(item.qty - 1, 0) } : items
             });
             let find = updatedItems.find((res) => res?.qty === 0);
-            let final = updatedItems.filter((res)=>res?._id !== find?._id);
-            reactotron.log({find},'FINAL')
+            let final = updatedItems.filter((res) => res?._id !== find?._id);
+            reactotron.log({ find }, 'FINAL')
             return final
         });
     };
@@ -99,6 +98,7 @@ const CartProvider = ({ children }) => {
             incrementItem,
             decrementItem,
             DeleteItem,
+        
         };
     }, [cartItems]); // Re-create the context value only when cartItems change
 

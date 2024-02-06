@@ -22,6 +22,8 @@ import IonIcon from 'react-native-vector-icons/Ionicons'
 import { useFocusEffect } from '@react-navigation/native'
 import NoData from '../../components/NoData'
 import Header from '../../components/Header'
+import CartContext from '../../context/cart'
+import reactotron from 'reactotron-react-native'
 
 
 
@@ -30,11 +32,16 @@ const Home = ({ navigation, route }) => {
 
     const { currentLoc, setMode, getLocation, mode, setHomeFocus } = useContext(LocationContext)
     const checkLocRef = useRef(null)
+    const [cart_id] = useMMKVStorage('cart_id', storage);
+    const { cartItems, setCartItems } = useContext(CartContext);
+
 
     let payload = {
         "coordinates": [
             8.5204866, 76.9371447
-        ]
+        ],
+        cartId: cart_id,
+
     }
 
     const { data, isLoading, refetch } = useQuery({
@@ -83,6 +90,21 @@ const Home = ({ navigation, route }) => {
     const NavigateToFeatured = useCallback((res) => {
         navigation.navigate('FeaturedProduct', { id: res._id, name: res.name })
     }, [navigation])
+
+    useEffect(() => {
+        if (data?.data?.data?.cart?.product?.length > 0) {
+            let myStructure = data?.data?.data?.cart?.product?.map((res) => (
+                {
+                    _id: res?._id,
+                    qty: res?.qty,
+                    unit_id: res?.unit?.id,
+                    varientname: res?.variant?.name,
+                    item: { ...res }
+                }
+            ))
+            setCartItems(myStructure)
+        }
+    }, [data?.data?.data])
 
 
     const HeaderComponents = memo(({ data, NavigateToCategory }) => {
@@ -141,7 +163,7 @@ const Home = ({ navigation, route }) => {
     const ListFooterComponent = useCallback(() => {
         return data?.data?.data?.allFeatures?.length > 0 && (
             <View style={{
-                marginBottom: 50
+                marginBottom: 30
             }}>
                 <View style={{ marginBottom: 20 }}>
                     <CustomSlider item={data?.data?.data?.sliders} />
@@ -184,7 +206,7 @@ const Home = ({ navigation, route }) => {
 
 
     const changeAdd = () => {
-        
+
     }
 
 

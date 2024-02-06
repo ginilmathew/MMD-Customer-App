@@ -20,7 +20,11 @@ import locationContext from '../../context/location/locationContext'
 import reactotron from 'reactotron-react-native'
 
 
-const EditAddress = ({ navigation }) => {
+const EditAddress = ({ navigation, route }) => {
+
+    const { cartID } = route?.params;
+
+    reactotron.log(cartID, "ID")
 
     const [refresh, setRefresh] = useState(false);
     const [defaultAddress, setDefaultAddress] = useState("");
@@ -34,9 +38,8 @@ const EditAddress = ({ navigation }) => {
             setRefresh(false)
         },
     })
-    reactotron.log(data?.data?.data?.find((item) => item?.default === true), "HHHH")
 
-    reactotron.log(defaultAddress, "defaultAddress")
+
 
     useEffect(() => {
         const defaultAddressData = data?.data?.data?.find((item) => item?.default === true);
@@ -80,7 +83,7 @@ const EditAddress = ({ navigation }) => {
     }, [navigation])
 
     const goToCheckout = useCallback(() => {
-        navigation.navigate('Checkout', {item: defaultAddress})
+        navigation.navigate('Checkout', { item: defaultAddress, cart_ID: cartID })
     }, [navigation, defaultAddress])
 
 
@@ -111,7 +114,7 @@ const EditAddress = ({ navigation }) => {
 
         return (
             <View>
-                <TouchableOpacity onPress={() => {mutateDefault(item?._id);setDefaultAddress(item);}} style={styles.renderItem}>
+                <TouchableOpacity onPress={() => { mutateDefault(item?._id); setDefaultAddress(item); }} style={styles.renderItem}>
                     <View style={[styles.end, { width: '10%' }]}>
                         <IonIcons name='location' size={25} color={COLORS.blue} />
                     </View>

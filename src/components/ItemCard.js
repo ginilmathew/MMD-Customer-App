@@ -14,7 +14,7 @@ const CustomItemCard = ({ onPress, item, key }) => {
 
     const [price, setPrice] = useState(null)
 
-//  reactotron.log({price})
+
     
 
     const { cartItems, addToCart, incrementItem, decrementItem } = useContext(CartContext);
@@ -98,8 +98,8 @@ const CustomItemCard = ({ onPress, item, key }) => {
                 // For example, you could compare the dates with the current date
               
                 // Simple example assuming current date is 2024-02-06:
-                const currentDate = new Date("2024-02-06");
-                return fromDate > currentDate || toDate < currentDate;
+                const currentDateString = new Date().toISOString().slice(0, 10);
+                return fromDate > currentDateString || toDate < currentDateString;
               };
               
               const finalPriceProducts = getFinalPrices(products);
@@ -127,9 +127,6 @@ const CustomItemCard = ({ onPress, item, key }) => {
               } else {
                 console.log("There are no products in the finalPriceProducts array.");
               }
-              
-              
-              
         }
     }, [item])
 
@@ -156,16 +153,16 @@ const CustomItemCard = ({ onPress, item, key }) => {
                 <View style={styles.centerContainer}>
                     <Text style={styles.heading}>{products?.name}</Text>
                     <Text style={styles.subHeading}>Category: {products?.category?.name}</Text>
-                    {products?.units[0]?.variants[0]?.offerPrice !== "" ? (<View style={styles.offerBox}>
+                    {price?.hasOfferPrice ? (<View style={styles.offerBox}>
                         <Text style={styles.offerText}>Up to 10% off!</Text>
                     </View>) : null}
                 </View>
 
                 {/* Right Side */}
                 <View style={styles.rightContainer}>
-                    <Text style={styles.topPrice}>₹ {products?.units[0]?.variants[0]?.offerPrice * 1 ? products?.units[0]?.variants[0]?.offerPrice : products?.units[0]?.variants[0]?.sellingPrice ?? 0}</Text>
-                    {products?.units[0]?.variants[0]?.offerPrice &&
-                        <Text style={styles.strikePrice}>₹ {products?.units[0]?.variants[0]?.sellingPrice ?? 0}</Text>}
+                    <Text style={styles.topPrice}>₹ {price?.finalPrice}</Text>
+                    {price?.hasOfferPrice &&
+                        <Text style={styles.strikePrice}>₹ {price?.sellingPrice}</Text>}
                     <AddToCart
                         isCartAdded={isCartAdded}
                         handleAddToCart={handleAddToCart}

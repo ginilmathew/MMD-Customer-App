@@ -11,29 +11,36 @@ import IonIcon from 'react-native-vector-icons/Ionicons'
 import LocationContext from '../context/location';
 import { PostAddToCart } from '../api/cart';
 import { useMutation } from 'react-query';
+import { useMMKVStorage } from 'react-native-mmkv-storage';
+import { storage } from '../../App';
 
 
 const Header = memo(({ onPress, text }) => {
 
-    const { cartItems, setCartItems } = useContext(CartContext)
+    const { cartItems, setCartItems } = useContext(CartContext);
     const { setMode } = useContext(LocationContext)
+
+    const [cart_id] = useMMKVStorage('cart_id', storage);
 
     const navigation = useNavigation()
 
-    const { mutate, refetch: postsubrefetch } = useMutation({
+
+
+    const { mutate, refetch} = useMutation({
         mutationKey: 'addToCart_query',
         mutationFn: PostAddToCart,
-        onSuccess: (data) => {
+        onSuccess: async (data) => {
             let myStructure = data?.data?.data?.product.map((res) => (
                 {
                     _id: res?._id,
                     qty: res?.qty,
-                    unit_id :res?.unit?.id,
-                    varientname:res?.variant?.name, 
+                    unit_id: res?.unit?.id,
+                    varientname: res?.variant?.name,
                     item: { ...res }
                 }
             ))
             setCartItems(myStructure)
+            await storage.setStringAsync('cart_id', data?.data?.data?._id);
             navigation.navigate('Cart', { cart_id: data?.data?.data?._id ?? null })
         }
     })
@@ -48,18 +55,19 @@ const Header = memo(({ onPress, text }) => {
 
     const cartPage = useCallback(() => {
 
+        reactotron.log('API CSLLED')
         if (cartItems?.length > 0) {
-            const updatedData = cartItems.map(item => ({
+            const updatedData = cartItems?.map(item => ({
                 ...item.item,
                 qty: item.qty
 
             }));
-            mutate({ product: updatedData })
+            mutate({ product: updatedData, cartId: cart_id ? cart_id : null })
         } else {
             navigation.navigate('Cart', { cart_id: null })
         }
-        navigation.navigate('Cart', { cart_id: null })
-    }, [navigation, cartItems, mutate])
+        // navigation.navigate('Cart', { cart_id: null })
+    }, [navigation, cartItems,cart_id])
 
 
 
