@@ -12,7 +12,7 @@ const CartProvider = ({ children }) => {
 
     const [cartItems, setCartItems] = useState([]);
 
-
+reactotron.log({cartItems})
 
     const addToCart = ({ _id: itemId, ...items }) => {
         setCartItems((prevItems) => {
@@ -25,6 +25,7 @@ const CartProvider = ({ children }) => {
             } else {
                 const { variants, ...unitWithoutVariants } = { ...items.units[0] };
                 // delete items.units
+                  reactotron.log('API CA::LLEDDD')
                 let item = {
                     _id: itemId,
                     qty: 1,
@@ -37,7 +38,8 @@ const CartProvider = ({ children }) => {
 
                 // If item is not in the cart, add it
 
-                return [...prevItems, { _id: itemId, qty: 1, item }];
+                return [...prevItems, { _id: itemId, qty: 1,unit_id :unitWithoutVariants?.id,
+                    varientname:variants[0]?.name, item }];
             }
         });
     };
@@ -80,7 +82,8 @@ const CartProvider = ({ children }) => {
                 return item._id === itemId ? { ...items, qty: Math.max(item.qty - 1, 0) } : items
             });
             let find = updatedItems.find((res) => res?.qty === 0);
-            let final = updatedItems.filter((res)=>res?._id !== find?._id)
+            let final = updatedItems.filter((res)=>res?._id !== find?._id);
+            reactotron.log({find},'FINAL')
             return final
         });
     };

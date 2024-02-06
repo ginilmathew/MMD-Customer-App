@@ -15,6 +15,11 @@ const CustomItemCard = ({ onPress, item, key }) => {
     // const [price, setPrice] = useState({ sellingPrice: null, offerPrice: null, costPrice: null })
 
     const { cartItems, addToCart, incrementItem, decrementItem } = useContext(CartContext);
+    let unitID = products?.units[0]?.id;
+    let varient = products?.units[0]?.variants?.[0];
+
+        // reactotron.log({unitID})
+        // reactotron.log({varient})
 
     const isCartAdded = cartItems.some(cartItem => cartItem._id === products._id);
     const cartItem = cartItems.find(cartItem => cartItem._id === products._id);
@@ -34,11 +39,6 @@ const CustomItemCard = ({ onPress, item, key }) => {
     const NavigateToSingleProduct = useCallback(() => {
         navigation.navigate('SingleProduct', { item: item.products ? item?.products?.[0] : item })
     }, [navigation])
-
-
-
-
-
 
 
   
@@ -82,9 +82,6 @@ const CustomItemCard = ({ onPress, item, key }) => {
  
 
     const AnimatedStyle = FadeInDown.easing().delay(300);
-
-
-
 
 
     return (
