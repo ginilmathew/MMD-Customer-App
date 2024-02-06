@@ -25,11 +25,12 @@ const Checkout = ({ route }) => {
   const [user] = useMMKVStorage('user', storage);
   const [cart_id] = useMMKVStorage('cart_id', storage);
 
+
+
   const { item, cart_ID } = route?.params;
 
-  reactotron.log(RAZORPAY_KEY, "RAZORPAY_KEY")
 
-  reactotron.log(user?.user, "user")
+
   // reactotron.log(cart_ID, "cart_ID")
 
   const { cartItems, setCartItems } = useContext(CartContext);
@@ -62,15 +63,26 @@ const Checkout = ({ route }) => {
   const { mutate, refetch: postsubrefetch } = useMutation({
     mutationKey: 'placedOrder',
     mutationFn: PlaceOrder,
-    onSuccess:  (data) => {
+    onSuccess: async (data) => {
       setCartItems([])
-      //await storage.getBoolAsync('cart_id', null);
+      await storage.getStringAsync('cart_id', 'null');
+
+    },
+    onError: () => {
+
+    },
+    onSettled: () => {
+      reactotron.log('CART CALLED')
+      setCartItems([])
       navigation.navigate('OrderPlaced', { item: data?.data?.data })
+   
     }
+
+
   })
 
 
-  reactotron.log(data, "CHKOUT")
+
 
 
   const checkBox = (num) => (
@@ -97,7 +109,7 @@ const Checkout = ({ route }) => {
     }
     RazorpayCheckout.open(options).then((data) => {
       navigation.navigate('Processing')
-        placeOrder()
+      placeOrder()
       //alert(`Success: ${data.razorpay_payment_id}`);
     }).catch((error) => {
       //alert(`Error: ${error.code} | ${error.description}`);
@@ -105,6 +117,7 @@ const Checkout = ({ route }) => {
   }
 
   const placeOrder = () => {
+
     mutate({
       itemDetails: cartItems,
       billingAddress: item?.area?.address,

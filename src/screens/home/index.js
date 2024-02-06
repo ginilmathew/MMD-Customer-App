@@ -35,7 +35,6 @@ const Home = ({ navigation, route }) => {
     const [cart_id] = useMMKVStorage('cart_id', storage);
     const { cartItems, setCartItems } = useContext(CartContext);
 
-    reactotron.log(cart_id, "df")
 
     let payload = {
         "coordinates": [

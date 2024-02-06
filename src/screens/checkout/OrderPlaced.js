@@ -14,7 +14,7 @@ const OrderPlaced = ({ route }) => {
 
     const item = route?.params
 
-    reactotron.log(item, "DA2")
+
 
     const navigation = useNavigation();
 

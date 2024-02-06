@@ -17,15 +17,16 @@ import { storage } from '../../App';
 
 const Header = memo(({ onPress, text }) => {
 
+    const { cartItems, setCartItems } = useContext(CartContext);
     const { setMode } = useContext(LocationContext)
 
     const [cart_id] = useMMKVStorage('cart_id', storage);
 
     const navigation = useNavigation()
 
-    const { cartItems, setCartItems } = useContext(CartContext)
 
-    const { mutate, refetch: postsubrefetch } = useMutation({
+
+    const { mutate, refetch} = useMutation({
         mutationKey: 'addToCart_query',
         mutationFn: PostAddToCart,
         onSuccess: async (data) => {
@@ -54,8 +55,9 @@ const Header = memo(({ onPress, text }) => {
 
     const cartPage = useCallback(() => {
 
+        reactotron.log('API CSLLED')
         if (cartItems?.length > 0) {
-            const updatedData = cartItems.map(item => ({
+            const updatedData = cartItems?.map(item => ({
                 ...item.item,
                 qty: item.qty
 
@@ -64,8 +66,8 @@ const Header = memo(({ onPress, text }) => {
         } else {
             navigation.navigate('Cart', { cart_id: null })
         }
-        navigation.navigate('Cart', { cart_id: null })
-    }, [navigation, cartItems, mutate])
+        // navigation.navigate('Cart', { cart_id: null })
+    }, [navigation, cartItems,cart_id])
 
 
 
