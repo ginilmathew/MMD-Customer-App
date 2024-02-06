@@ -1,12 +1,21 @@
-import { View, Text, Image, StyleSheet } from 'react-native'
-import React, { useContext, useEffect } from 'react'
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native'
+import React, { useCallback, useContext, useEffect } from 'react'
 import { COLORS } from '../../constants/COLORS'
 import CommonButton from '../../components/CommonButton'
 import locationContext from '../../context/location'
+import { navigate } from '../../navigation/RootNavigation'
 
-const LocationPage = () => {
+const LocationPage = ({ navigation }) => {
 
-    const { location, getLocation } = useContext(locationContext)
+    const { location, getLocation, setMode } = useContext(locationContext)
+
+    useEffect(() => {
+        setMode('home');
+    }, [])
+
+    const onPress = useCallback(() => {
+        navigation.navigate('GoogleLocation')
+    }, [])
 
     return (
         <View style={styles.container}>
@@ -20,6 +29,18 @@ const LocationPage = () => {
 
             <View style={styles.header}>
                 <CommonButton text={'Allow location access'} onPress={getLocation} />
+
+                <TouchableOpacity 
+                style={{
+                    marginTop: 23,
+                }}
+                onPress={onPress}>
+                    <Text style={{
+                        color: COLORS.primary,
+                        textAlign: 'center',
+                        fontSize: 20
+                    }}>Enter Location Manually</Text>
+                </TouchableOpacity>
             </View>
         </View>
     )

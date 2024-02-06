@@ -9,7 +9,16 @@ import CartContext from '../context/cart';
 import reactotron from 'reactotron-react-native';
 import { PostAddToCart } from '../api/cart';
 import { useMutation } from 'react-query';
-const Header = memo(({ onPress }) => {
+import IonIcon from 'react-native-vector-icons/Ionicons'
+import LocationContext from '../context/location';
+
+
+const Header = memo(({ onPress, text }) => {
+
+    const { setMode } = useContext(LocationContext)
+
+  
+
     const navigation = useNavigation()
 
     const { cartItems, setCartItems } = useContext(CartContext)
@@ -56,11 +65,38 @@ const Header = memo(({ onPress }) => {
 
 
 
+    const textLeng = text?.length;
+
+    const changeLoc = () => {
+        setMode('home');
+        navigation.navigate('GoogleLocation')
+    }
+
+
     return (
         <View style={styles.container}>
             <View style={styles.imageContainer}>
-                <Image source={require('../images/DG.png')} style={styles.logo} />
+                <Image source={require('../images/DG.png')} style={[styles.logo]} />
             </View>
+
+            {text && (
+                <TouchableOpacity style={{
+                    flexDirection: 'row',
+                    gap: 3,
+                    flex: 1,
+                    marginLeft: -20,
+                    justifyContent: 'center'
+                }} onPress={changeLoc}>
+                    <IonIcon name='location' size={20} color={COLORS.primary} />
+                    <Text style={{
+                        fontSize: 11,
+                        color: COLORS.dark,
+                    }}>{text
+                        ?.slice(...textLeng ? [0, 24] : [0])
+                        ?.concat(textLeng ? ' ...' : '')}</Text>
+                </TouchableOpacity>
+            )}
+
             <View style={styles.iconContainer}>
                 <TouchableOpacity onPress={cartPage}>
                     <IonIcons name='cart' size={20} color="#000" />
@@ -97,12 +133,12 @@ const styles = StyleSheet.create({
     iconContainer: {
         display: 'flex',
         flexDirection: 'row',
-        gap: 10,
+        gap: 15,
         // Margin to separate the icon from the image
     },
     logo: {
-        width: 120, // Set the width of the image
-        height: 120, // Set the height of the image
+        width: 100, // Set the width of the image
+        height: 100, // Set the height of the image
         // resizeMode: 'contain', // Ensure the image maintains its aspect ratio
     },
     badgeStyle: {

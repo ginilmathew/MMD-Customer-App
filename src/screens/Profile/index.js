@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native'
-import React, { useCallback } from 'react'
+import React, { useCallback, useContext } from 'react'
 import { COLORS } from '../../constants/COLORS'
 import CommonHeader from '../../components/CommonHeader'
 import ProfileButton from '../../components/ProfileButton'
@@ -9,11 +9,14 @@ import { useMMKVStorage } from 'react-native-mmkv-storage'
 import { useQuery } from 'react-query'
 import { getProfile } from '../../api/Profile'
 import useRefetch from '../../hooks/useRefetch'
+import LocationContext from '../../context/location'
+import { navigationRef } from '../../navigation/RootNavigation'
 
 
 const Profile = ({ navigation }) => {
 
   const [user, setUser] = useMMKVStorage('user', storage)
+  const { setMode } = useContext(LocationContext)
 
 
   const { data, refetch } = useQuery('profile-query', {
@@ -41,6 +44,8 @@ const Profile = ({ navigation }) => {
   const logout = () => {
     queryClient.resetQueries();
     storage.clearStore();
+    setMode('');
+
 
     navigation.reset({
       index: 0,

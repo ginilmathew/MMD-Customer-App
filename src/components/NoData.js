@@ -8,6 +8,7 @@ const NoData = () => {
  
   return (
     <View style={{
+      height,
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: COLORS.white
@@ -17,7 +18,10 @@ const NoData = () => {
         width: 780,
         resizeMode: 'contain'
       }} />
-      <Text>No data Found ...</Text>
+      <Text style={{
+        color: '#000',
+        marginBottom: height * .4
+      }}>No data Found ...</Text>
     </View>
   )
 }

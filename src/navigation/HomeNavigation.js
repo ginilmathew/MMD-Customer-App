@@ -3,7 +3,7 @@ import Home from '../screens/home';
 import Orders from '../screens/orders';
 import Profile from '../screens/Profile';
 import IonIcons from 'react-native-vector-icons/Ionicons'
-import { useCallback, useContext, useEffect } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View, useWindowDimensions } from 'react-native';
 import { COLORS } from '../constants/COLORS';
 import Header from '../components/Header';
@@ -20,6 +20,7 @@ import LocationPage from '../screens/auth/LocationPage';
 import { useMMKVStorage } from 'react-native-mmkv-storage';
 import locationContext from '../context/location';
 import { navigationRef } from './RootNavigation';
+import LocationContext from '../context/location';
 
 
 
@@ -28,8 +29,7 @@ const Tab = createBottomTabNavigator();
 function HomeNavigation({ navigation }) {
 
     const { width } = useWindowDimensions()
-    const [user] = useMMKVStorage('user', storage)
-
+    const { homeFocus, currentLoc  } = useContext(LocationContext)
 
 
     const navToHome = useCallback(() => {
@@ -90,10 +90,11 @@ function HomeNavigation({ navigation }) {
     // storage.removeItem('user')
 
 
+
     return (
         <>
 
-             <Header toCart={toCart} toNotification={toNotification} /> 
+            <Header toCart={toCart} text={homeFocus ? currentLoc?.address : null}  toNotification={toNotification} />
 
             <Tab.Navigator
                 screenOptions={({ route }) => {

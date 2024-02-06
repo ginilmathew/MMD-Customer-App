@@ -1,5 +1,5 @@
-import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { memo, useCallback, useContext, useEffect, useState } from 'react'
+import { AppState, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { memo, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import CustomSlider from '../../components/CustomSlider'
 import CustomHeading from '../../components/CustomHeading'
 import CategoryCard from '../../components/CategoryCard'
@@ -15,12 +15,21 @@ import { HomeApi } from '../../api/home'
 import HomeLoader from '../../components/Loading/Home/HomeLoader'
 import { AnimatedView } from 'react-native-reanimated/lib/typescript/reanimated2/component/View'
 import Animated, { FadeInDown } from 'react-native-reanimated'
+import LocationContext from '../../context/location'
+import { useMMKVStorage } from 'react-native-mmkv-storage'
+import { storage } from '../../../App'
+import IonIcon from 'react-native-vector-icons/Ionicons'
+import { useFocusEffect } from '@react-navigation/native'
+import NoData from '../../components/NoData'
+import Header from '../../components/Header'
 
 
 
 
-const Home = ({ navigation }) => {
+const Home = ({ navigation, route }) => {
 
+    const { currentLoc, setMode, getLocation, mode, setHomeFocus } = useContext(LocationContext)
+    const checkLocRef = useRef(null)
 
     let payload = {
         "coordinates": [
@@ -30,13 +39,31 @@ const Home = ({ navigation }) => {
 
     const { data, isLoading, refetch } = useQuery({
         queryKey: ['Home'],
-        queryFn: () => HomeApi(payload),
-        enabled: true
+        retry: false,
+        queryFn: () => HomeApi({
+            coordinates: [currentLoc?.coord?.latitude, currentLoc?.coord?.longitude]
+        }),
+        enabled: false
     })
 
 
 
-    useRefetch(refetch)
+    useFocusEffect(useCallback(() => {
+        setHomeFocus(true);
+        if (currentLoc?.coord?.latitude !== checkLocRef?.current?.latitude) {
+            checkLocRef.current = currentLoc?.coord;
+            refetch()
+        }
+    }, [currentLoc]))
+
+
+    React.useEffect(() => {
+        const unsubscribe = navigation.addListener('blur', () => {
+            setHomeFocus(false);
+        });
+
+        return unsubscribe;
+    }, [navigation]);
 
 
     const NavigateToCategory = useCallback(() => {
@@ -60,28 +87,40 @@ const Home = ({ navigation }) => {
     const HeaderComponents = memo(({ data, NavigateToCategory }) => {
         return (
             <Animated.View style={{ backgroundColor: '#fff' }}>
-                <View style={{ marginVertical: 4 }}>
-                    <CustomSlider item={data?.data?.data?.sliders} />
-                </View>
-                <CustomHeading label={'Categories'} hide={false} marginH={20} />
-                <ScrollView
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.scrollViewContent}
-                >
-                    {data?.data?.data?.categories?.map((res, index) => (
-                        <Animated.View  style={{ marginRight: 8 }}>
-                            <CategoryCard key={res?._id} item={res} />
-                        </Animated.View>
-                    ))}
-                    <TouchableOpacity style={styles.iconConatiner} onPress={NavigateToCategory}>
-                        <Text style={styles.text2}>{'View All'}</Text>
-                        <Ionicons name='arrow-forward' color={COLORS.primary} size={20} />
-                    </TouchableOpacity>
-                </ScrollView>
-                <View style={{ marginTop: 3 }}>
-                    <CustomHeading label={'Popular Products'} hide={true} onPress={NavigateToAllPages} marginH={20} />
-                </View>
+                {
+                    data?.data?.data?.sliders?.length > 0 && (
+                        <View style={{ marginVertical: 4, marginBottom: 20 }}>
+                            <CustomSlider item={data?.data?.data?.sliders} />
+                        </View>
+                    )
+                }
+                {data?.data?.data?.categories?.length > 0 && (<>
+                    <CustomHeading label={'Categories'} hide={false} marginH={20} />
+                    <ScrollView
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={styles.scrollViewContent}
+                    >
+                        {
+                            data?.data?.data?.categories?.map((res, index) => (
+                                <Animated.View style={{ marginRight: 8 }}>
+                                    <CategoryCard key={res?._id} item={res} />
+                                </Animated.View>
+                            ))
+                        }
+                        <TouchableOpacity style={styles.iconConatiner} onPress={NavigateToCategory}>
+                            <Text style={styles.text2}>{'View All'}</Text>
+                            <Ionicons name='arrow-forward' color={COLORS.primary} size={20} />
+                        </TouchableOpacity>
+                    </ScrollView>
+                </>)}
+                {
+                    data?.data?.data.featuredList?.[0]?.featured_list && (
+                        <View style={{ marginTop: 3 }}>
+                            <CustomHeading label={'Popular Products'} hide={true} onPress={NavigateToAllPages} marginH={20} />
+                        </View>
+                    )
+                }
             </Animated.View>
 
         )
@@ -99,12 +138,14 @@ const Home = ({ navigation }) => {
 
 
     const ListFooterComponent = useCallback(() => {
-        return (
-            <>
+        return data?.data?.data?.allFeatures?.length > 0 && (
+            <View style={{
+                marginBottom: 50
+            }}>
                 {/* <View style={{ marginBottom: 20 }}>
                     <CustomSlider item={data?.data?.data?.sliders} />
                 </View> */}
-                <View style={{ marginTop: 2 }}>
+                <View style={{ marginTop: 20 }}>
                     <CustomHeading label={'HighLights'} hide={false} marginH={20} />
                 </View>
                 <View style={[styles.boxItem, styles.footerBox]}>
@@ -114,7 +155,7 @@ const Home = ({ navigation }) => {
                 </View>
                 <View style={{ marginBottom: 80 }}>
                 </View>
-            </>
+            </View>
         )
     }, [data?.data?.data])
 
@@ -126,15 +167,49 @@ const Home = ({ navigation }) => {
 
     if (isLoading) {
         return (
-            <HomeLoader />
+            <>
+                <HomeLoader />
+            </>
         )
     }
 
+    const toCart = () => {
+        navigation.navigate('Profile')
+    }
 
+    const toNotification = () => {
+        navigation.navigate('Notification')
+    }
+
+
+    const changeAdd = () => {
+        
+    }
+
+
+    const addLeng = currentLoc?.address?.length;
 
     return (
 
         <View style={{ backgroundColor: '#fff' }}>
+            {/* {currentLoc?.address && (
+                <TouchableOpacity onPress={changeAdd} style={{
+                    flexDirection: 'row',
+                    paddingLeft: 20,
+                    paddingTop: 10,
+                    alignItems: 'center'
+                }}>
+                    <IonIcon name='location' size={23} color={COLORS.primary} />
+                    <Text style={{
+                        fontSize: 13,
+                        color: COLORS.text,
+                        marginLeft: 8
+                    }}>{currentLoc?.address
+                        ?.slice(...addLeng ? [0, 40] : [0])
+                        ?.concat(addLeng ? ' ...' : '')}</Text>
+                </TouchableOpacity>
+            )
+            } */}
             <DummySearch press={NavigateToSearch} />
             <FlatList
                 data={data?.data?.data.featuredList?.[0]?.featured_list}
@@ -149,6 +224,7 @@ const Home = ({ navigation }) => {
                 maxToRenderPerBatch={10}
                 windowSize={10}
                 getItemLayout={(data, index) => ({ length: 80, offset: 80 * index, index })}
+                ListEmptyComponent={<NoData />}
             />
         </View>
     )
@@ -158,11 +234,12 @@ export default Home
 
 const styles = StyleSheet.create({
     scrollViewContent: {
-        paddingHorizontal: 20
+        paddingHorizontal: 20,
+        marginBottom: 20
     },
     text2: {
         letterSpacing: 1,
-        fontSize: 13, // Adjust the font size as needed
+        fontSize: 15, // Adjust the font size as needed
         fontWeight: 'bold',
         color: COLORS.primary// Optional: Apply bold styling
     },

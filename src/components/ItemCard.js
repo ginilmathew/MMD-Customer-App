@@ -44,6 +44,7 @@ const CustomItemCard = ({ onPress, item, key }) => {
   
     // TouchableOpacity onPress={NavigateToSingleProduct}
 
+<<<<<<< HEAD
     // useEffect(() => {
     //     if (item) {
     //         let products = item.products ? item.products[0].units[0].variants.map(item => (
@@ -51,6 +52,17 @@ const CustomItemCard = ({ onPress, item, key }) => {
     //         )) : item?.units?.[0]?.variants?.map(item => (
     //             item
     //         ));
+=======
+    // console.log(price);
+
+    useEffect(() => {
+        if (item) {
+            let products = item.products ? item.products[0].units[0].variants.map(item => (
+                item
+            )) : item?.units?.[0]?.variants?.map(item => (
+                item
+            ));
+>>>>>>> nazim
 
     //         let productsWithOffer = products.filter(product => product.offerPrice !== null);
 

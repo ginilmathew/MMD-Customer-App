@@ -1,13 +1,20 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native'
 import React from 'react'
 import { COLORS } from '../constants/COLORS'
 
-const CommonButton = ({ text, mb, mt, onPress, w }) => {
+const CommonButton = ({ text, mb, mt, onPress, w, loading }) => {
 
     return (
         <View style={[styles.container, { marginTop: mt, marginBottom: mb, width: w || '100%', alignSelf: 'center' }]}>
-            <TouchableOpacity style={styles.button} onPress={onPress}>
-                <Text style={styles.text}>{text}</Text>
+            <TouchableOpacity style={styles.button} onPress={loading ? null : onPress}>
+                {
+                    loading ? (
+                        <ActivityIndicator color={COLORS.white} />
+                    ) :
+                        (
+                            <Text style={styles.text}>{text}</Text>
+                        )
+                }
             </TouchableOpacity>
         </View>
     )

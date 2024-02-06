@@ -3,7 +3,7 @@ import { Platform, StyleSheet, Text, View, AppState, PermissionsAndroid } from '
 import React, { useEffect } from 'react'
 import Navigation from './src/navigation'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { MMKVLoader } from 'react-native-mmkv-storage'
+import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage'
 import { QueryClientProvider, QueryClient } from 'react-query'
 import NetInfo from '@react-native-community/netinfo';
 import { onlineManager } from '@tanstack/react-query';
@@ -19,6 +19,7 @@ export const queryClient = new QueryClient();
 export const storage = new MMKVLoader().initialize()
 
 const App = () => {
+
 
   onlineManager.setEventListener(setOnline => {
     return NetInfo.addEventListener(state => {
@@ -116,17 +117,6 @@ const App = () => {
     return unsubscribe;
   }, [])
 
-  // function onAppStateChange(status) {
-  //   if (Platform.OS !== 'web') {
-  //     focusManager.setFocused(status === 'active');
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   const subscription = AppState.addEventListener('change', onAppStateChange);
-
-  //   return () => subscription.remove();
-  // }, []);
 
 
 
