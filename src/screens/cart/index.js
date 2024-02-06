@@ -41,6 +41,18 @@ const Cart = ({ navigation, route }) => {
     }
   }, [cart_id])
 
+  const noProductsAdded = () => {
+    return (
+      <View style={styles.emptyContainer}>
+        <Image source={require('../../images/cart.png')} style={styles.emptyCart} />
+      </View>
+    )
+  }
+
+  const editAddress = () => {
+    navigation.navigate('EditAddress')
+  }
+
   const renderItem = useCallback(({ item, index }) => {
     return (
       <>
@@ -64,26 +76,27 @@ const ListEmptyCompont = useCallback(()=>{
     <View style={styles.container}>
       <Header />
       <CommonHeader heading={"Cart"} backBtn />
-    
-      {/* <View style={styles.innerContainer}>
-        <ItemCard /> 
-        <CommonButton text={"Checkout"} mt={30}/>
-      </View> */}
-      <FlatList
-        data={cartItems}
-        ListEmptyComponent={ListEmptyCompont}
-        renderItem={renderItem}
-        keyExtractor={(item) => item?._id}
-        showsVerticalScrollIndicator={false}
-        initialNumToRender={10}
-        refreshing={isLoading}
-        onRefresh={refetch}
-        maxToRenderPerBatch={10}
-        windowSize={10}
-        getItemLayout={(data, index) => ({ length: 80, offset: 80 * index, index })}
-      />
+      <View style={{ paddingBottom: 200, marginTop: 10 }}>
+        <FlatList
+          data={cartItems}
+          renderItem={renderItem}
+          keyExtractor={(item) => item?._id}
+          showsVerticalScrollIndicator={false}
+          initialNumToRender={10}
+          refreshing={isLoading}
+          onRefresh={refetch}
+          maxToRenderPerBatch={10}
+          windowSize={10}
+          getItemLayout={(data, index) => ({ length: 80, offset: 80 * index, index })}
+          ListEmptyComponent={noProductsAdded}
+        />
 
-    </View>
+        {cartItems?.length > 0 ? (<View style={styles.innerContainer}>
+          <CommonButton text={"Checkout"} onPress={editAddress} />
+        </View>) : null}
+      </View>
+
+    </View >
   )
 }
 
@@ -95,11 +108,10 @@ const styles = StyleSheet.create({
     flex: 1
   },
   innerContainer: {
-    paddingHorizontal: 20,
-    marginTop: 15
+    padding: 20,
   },
   emptyContainer: {
-    flex: 1,
+    marginTop: 130,
     paddingHorizontal: 20,
     alignItems: "center",
     justifyContent: "center"

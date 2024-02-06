@@ -40,9 +40,10 @@ const Home = ({ navigation, route }) => {
     const { data, isLoading, refetch } = useQuery({
         queryKey: ['Home'],
         retry: false,
-        queryFn: () => HomeApi({
-            coordinates: [currentLoc?.coord?.latitude, currentLoc?.coord?.longitude]
-        }),
+        // queryFn: () => HomeApi({
+        //     coordinates: [currentLoc?.coord?.latitude, currentLoc?.coord?.longitude]
+        // }),
+        queryFn: () => HomeApi(payload),
         enabled: false
     })
 
@@ -142,9 +143,9 @@ const Home = ({ navigation, route }) => {
             <View style={{
                 marginBottom: 50
             }}>
-                {/* <View style={{ marginBottom: 20 }}>
+                <View style={{ marginBottom: 20 }}>
                     <CustomSlider item={data?.data?.data?.sliders} />
-                </View> */}
+                </View>
                 <View style={{ marginTop: 20 }}>
                     <CustomHeading label={'HighLights'} hide={false} marginH={20} />
                 </View>

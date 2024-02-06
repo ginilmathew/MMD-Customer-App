@@ -34,6 +34,8 @@ import MapAddress from '../screens/Profile/MapAddress';
 import LocationContext from '../context/location';
 import Entypo from 'react-native-vector-icons/Entypo'
 import { PERMISSIONS, RESULTS, check } from 'react-native-permissions';
+import OrderPlaced from '../screens/checkout/OrderPlaced';
+import EditAddress from '../screens/checkout/EditAddress';
 
 
 const Stack = createNativeStackNavigator();
@@ -116,6 +118,8 @@ const Navigation = () => {
           <Stack.Screen name='ChangePasswd' component={ChangePasswd} />
           <Stack.Screen name='GoogleLocation' component={GoogleLocation} />
           <Stack.Screen name='MapPage' component={MapAddress} />
+          <Stack.Screen name='OrderPlaced' component={OrderPlaced} />
+          <Stack.Screen name='EditAddress' component={EditAddress} />
         </Stack.Navigator>
       </NavigationContainer>
 

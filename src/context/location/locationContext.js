@@ -151,7 +151,7 @@ const locationContext = ({ children }) => {
                 }
             },
             {
-                enableHighAccuracy: false,
+                enableHighAccuracy: true,
                 maximumAge: 1000
             },
         );
