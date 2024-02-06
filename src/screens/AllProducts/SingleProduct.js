@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useReducer } from 'react';
+import React, { useState, useCallback, useEffect, useReducer, useContext, useRef } from 'react';
 import {
     Dimensions,
     Image,
@@ -16,13 +16,59 @@ import CommonSelectDropdown from '../../components/CustomDropDown';
 import CustomDropdown from '../../components/CommonDropDown';
 import reactotron from 'reactotron-react-native';
 import Animated from 'react-native-reanimated';
+import { AddToCart } from '../../components/ItemCard';
+import Entypo from 'react-native-vector-icons/Entypo'
+import { useMutation, useQuery } from 'react-query';
+import { PostAddToCart } from '../../api/cart';
+import CartContext from '../../context/cart';
+import { singProduct } from '../../api/allProducts';
+import SelectDropdown from 'react-native-select-dropdown';
+
+
+let status = true;
 
 const SingleProduct = ({ route }) => {
 
     const { item } = route.params;
+    const { data } = useQuery({
+        queryKey: 'single-product',
+        queryFn: () => singProduct(item?.slug)
+    })
 
+    const variantRef = useRef(null);
+
+    const [unit, setUnit] = useState('')
+    const [unitList, setUnitList] = useState([])
+
+
+    useEffect(() => {
+        if (data) {
+            const list = data?.data?.data.product.units?.filter(({ name }) => name === unit)?.[0]?.variants?.map(({ name }) => name);
+            setUnitList(list)
+        }
+    }, [unit, data])
+
+    const { cartItems, setCartItems, } = useContext(CartContext);
+    const { mutate } = useMutation({
+        mutationKey: 'add-cart',
+        mutationFn: PostAddToCart
+    })
+
+
+    const initialQty = cartItems?.find(({ _id }) => _id === item?._id);
 
     const reducer = (state, action) => {
+
+        if (action?.type.includes('variant_')) {
+            return {
+                ...state,
+                variant: {
+                    ...state?.variant,
+                    [action.type.replace('variant_', '')]: action.value
+                }
+            }
+        }
+
         for (let i = 0; i < item?.units?.length; i++) {
             switch (action?.type) {
                 case item?.units[i]?.name: {
@@ -31,20 +77,58 @@ const SingleProduct = ({ route }) => {
                         [`${item?.units[i]?.name}`]: action?.value
                     }
                 }
+                default:
+                    return state
             }
         }
+
+        return state;
     }
+
+    const handleAddCart = useCallback(() => {
+
+        const unitId = data?.data?.data.product.units?.find(({ name }) => name === unit)
+        const variant = unitId?.variants?.find(({name}) => name === selectedValue);
+
+        const productDetails = {
+            ...data?.data?.data.product,
+            unit: { id: unitId?.id, name: unitId?.name },
+            variant,
+            qty
+        }
+
+        console.log(productDetails);
+
+        const updatedData = cartItems?.map(item => ({
+            ...item.item,
+            qty: item.qty
+
+        }));
+        mutate({ product: productDetails });
+    }, [qty, cartItems, unit, data, selectedValue])
+
+    useEffect(() => {
+        for (let i = 0; i < item?.units?.length; i++) {
+            for (let j = 0; j < item?.units[i]?.variants?.length; j++) {
+                dispatch({ type: 'variant_' + item?.units[i]?.id, value: item?.units[i]?.variants[j]?.name })
+            }
+        }
+    }, [])
+
 
 
     const { height } = useWindowDimensions()
     const [mainImage, setMainImage] = useState(require('../../images/spinach.jpg'));
     const [price, setPrice] = useState(0)
+    const [qty, setQty] = useState(initialQty?.qty || 1)
+    const [selectedValue, setSelectedValue] = useState('')
 
-    const [state, dispatch] = useReducer(reducer, {});
+    const [state, dispatch] = useReducer(reducer, { variant: {} });
 
     const handleImagePress = useCallback((image) => {
         setMainImage(image);
     }, []);
+
 
     const BASEPATHPRODCT = item?.imageBasePath;
 
@@ -53,7 +137,6 @@ const SingleProduct = ({ route }) => {
             { label: value?.name, value: value?.sellingPrice }
         )
     });
-
 
     useEffect(() => {
         if (item) {
@@ -65,15 +148,8 @@ const SingleProduct = ({ route }) => {
         }
     }, [item])
 
-    const changeValue = (items) => {
-        const find = item?.units?.[0]?.variants?.find((res) => res?.name === items?.label)
-        //console.log({find})
-        setPrice(find.sellingPrice)
-        // setSelect(items.label);
-        // dispatch({ type: "KG", value: items?.label })
 
-        // setIsFocus(false);
-    }
+    const units = data?.data?.data.product.units?.map(({ name }) => name)
 
 
     return (
@@ -84,7 +160,7 @@ const SingleProduct = ({ route }) => {
                 contentContainerStyle={[styles.container]}
                 scrollEnabled={true}
                 showsVerticalScrollIndicator={false}>
-                {/* <Animated.Image source={{ uri: BASEPATHPRODCT + item?.image?.[0] }} style={styles.mainImage} resizeMode="contain" sharedTransitionTag={item?._id} /> */}
+                <Animated.Image source={{ uri: BASEPATHPRODCT + item?.image?.[0] }} style={styles.mainImage} resizeMode="contain" sharedTransitionTag={item?._id} />
                 {/* <ScrollView
                     horizontal
                     showsHorizontalScrollIndicator={false}
@@ -95,19 +171,145 @@ const SingleProduct = ({ route }) => {
                     ))}
                 </ScrollView> */}
                 <ProductData item={item} price={price} />
+
                 <View style={styles.dropdownContainer}>
 
-                    {item?.units.map((item) => (<CommonSelectDropdown changeValue={(props) => {
-                        dispatch({ type: item?.name, value: props?.label })
-                        return changeValue(props)
-                    }} topLabel={item?.name} key={item?.id} value={state[item?.name]} datas={items} />))}
+                    <View style={{
+                        width: 80,
+                        justifyContent: 'space-between',
+                        flexDirection: 'row',
+                        marginLeft: 'auto'
+                    }}>
+                        <TouchableOpacity style={{
+                            backgroundColor: COLORS.primary,
+                            paddingHorizontal: 4,
+                            paddingVertical: 4,
+                            borderRadius: 6,
+                            marginRight: 2,
+                        }} onPress={() => {
+                            setQty(qty => {
+                                if (qty > 1) return qty - 1
+                                else return qty;
+                            })
+                        }}>
+                            <Entypo name='minus' size={15} color='#fff' />
+                        </TouchableOpacity>
 
+                        <Text style={{
+                            justifyContent: 'center',
+                            textAlign: 'center',
+                            minWidth: 20,
+                            fontFamily: 'Poppins-Regular',
+                            fontSize: 14,
+                            fontWeight: 'bold',
+                            color: COLORS.dark
+                        }}>{qty}</Text>
+
+                        <TouchableOpacity style={{
+                            backgroundColor: COLORS.primary,
+                            paddingHorizontal: 4,
+                            paddingVertical: 4,
+                            borderRadius: 6,
+                            marginRight: 2,
+                        }} onPress={() => {
+                            setQty(qty + 1)
+                        }}>
+                            <Entypo name='plus' size={15} color='#fff' />
+                        </TouchableOpacity>
+                    </View>
+
+
+                    <View style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        marginTop: 20,
+                        justifyContent: 'center',
+                        gap: 10
+                    }}>
+                        <View style={{
+                            width: '45%'
+                        }}>
+                            <Text style={{
+                                fontSize: 16,
+                                color: '#000',
+                                marginBottom: 10,
+                            }}>Units</Text>
+                            <SelectDropdown
+                                data={units}
+                                buttonTextStyle={{
+                                    fontSize: 13
+                                }}
+                                defaultButtonText={null}
+                                buttonStyle={{
+                                    width: '100%',
+                                    borderRadius: 10,
+                                }}
+                                onSelect={(selectedItem, index) => {
+                                    setUnit(selectedItem)
+                                    console.log(variantRef.current.reset())
+                                }}
+                            />
+                        </View>
+
+                        <View style={{
+                            width: '45%'
+                        }}>
+                            <Text style={{
+                                fontSize: 16,
+                                color: '#000',
+                                marginBottom: 10,
+                            }}>Variant</Text>
+
+                            <SelectDropdown
+                                ref={variantRef}
+                                data={unitList}
+                                buttonTextStyle={{
+                                    fontSize: 13,
+                                }}
+                                defaultButtonText={null}
+                                buttonStyle={{
+                                    width: '100%',
+                                    borderRadius: 10,
+                                }}
+                                disabled={unitList?.length === 0}
+                                onSelect={(value) => {
+                                    setSelectedValue(value)
+                                }}
+                            />
+                        </View>
+                    </View>
+
+                    {/* {item?.units.map((item, i) => {
+                        console.log(state)
+                        return (<CommonSelectDropdown changeValue={(props) => {
+                            // dispatch({ type: item?.name, value: props?.label })
+                            dispatch({ type: 'variant_' + item?.id, value: props?.label })
+                            return changeValue(props)
+                        }} topLabel={item?.name} key={item?.id} value={state?.variant ? state?.variant[item?.id] : null} datas={item?.variants?.map((value) => {
+                            return (
+                                { label: value?.name, value: value?.sellingPrice }
+                            )
+                        })} />)
+                    })} */}
+
+
+                    {/* <CommonSelectDropdown changeValue={() => {}} datas={unitList?.map((name) => {
+                        return (
+                            { label: name, value: name }
+                        )
+                    })} />
+
+                    <CommonSelectDropdown changeValue={() => { }} datas={units?.map((name) => {
+                        return (
+                            { label: name, value: name }
+                        )
+                    })} /> */}
                 </View>
                 {item?.details ? <AboutSection item={item} /> : null}
                 {item?.description ? <DescriptionSection item={item} /> : null}
             </ScrollView>
             <View>
-                <BuyButton />
+                <BuyButton onPress={handleAddCart} />
             </View>
         </View>
     );
@@ -162,9 +364,9 @@ const DescriptionSection = React.memo(({ item }) => (
 
 
 
-const BuyButton = React.memo(() => (
+const BuyButton = React.memo(({ onPress }) => (
     <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={onPress}>
             <Text style={styles.buttonText}>Add to Cart</Text>
         </TouchableOpacity>
     </View>

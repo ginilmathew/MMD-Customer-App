@@ -7,10 +7,10 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { COLORS } from '../constants/COLORS';
 import CartContext from '../context/cart';
 import reactotron from 'reactotron-react-native';
-import { PostAddToCart } from '../api/cart';
-import { useMutation } from 'react-query';
 import IonIcon from 'react-native-vector-icons/Ionicons'
 import LocationContext from '../context/location';
+import { PostAddToCart } from '../api/cart';
+import { useMutation } from 'react-query';
 import { useMMKVStorage } from 'react-native-mmkv-storage';
 import { storage } from '../../App';
 
@@ -89,9 +89,10 @@ const Header = memo(({ onPress, text }) => {
             {text && (
                 <TouchableOpacity style={{
                     flexDirection: 'row',
-                    gap: 3,
+                    gap: 2,
+                    marginRight: 30,
                     flex: 1,
-                    marginLeft: -20,
+                    alignItems: 'center',
                     justifyContent: 'center'
                 }} onPress={changeLoc}>
                     <IonIcon name='location' size={20} color={COLORS.primary} />
