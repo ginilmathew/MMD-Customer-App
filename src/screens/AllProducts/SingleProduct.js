@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useReducer, useContext } from 'react';
+import React, { useState, useCallback, useEffect, useReducer, useContext, useRef } from 'react';
 import {
     Dimensions,
     Image,
@@ -18,9 +18,11 @@ import reactotron from 'reactotron-react-native';
 import Animated from 'react-native-reanimated';
 import { AddToCart } from '../../components/ItemCard';
 import Entypo from 'react-native-vector-icons/Entypo'
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { PostAddToCart } from '../../api/cart';
 import CartContext from '../../context/cart';
+import { singProduct } from '../../api/allProducts';
+import SelectDropdown from 'react-native-select-dropdown';
 
 
 let status = true;
@@ -28,15 +30,45 @@ let status = true;
 const SingleProduct = ({ route }) => {
 
     const { item } = route.params;
+    const { data } = useQuery({
+        queryKey: 'single-product',
+        queryFn: () => singProduct(item?.slug)
+    })
+
+    const variantRef = useRef(null);
+
+    const [unit, setUnit] = useState('')
+    const [unitList, setUnitList] = useState([])
+
+
+    useEffect(() => {
+        if (data) {
+            const list = data?.data?.data.product.units?.filter(({ name }) => name === unit)?.[0]?.variants?.map(({ name }) => name);
+            setUnitList(list)
+        }
+    }, [unit, data])
+
     const { cartItems, setCartItems, } = useContext(CartContext);
     const { mutate } = useMutation({
         mutationKey: 'add-cart',
         mutationFn: PostAddToCart
     })
 
-    const initialQty = cartItems?.find(({ _id }) => _id === item?._id)
+
+    const initialQty = cartItems?.find(({ _id }) => _id === item?._id);
 
     const reducer = (state, action) => {
+
+        if (action?.type.includes('variant_')) {
+            return {
+                ...state,
+                variant: {
+                    ...state?.variant,
+                    [action.type.replace('variant_', '')]: action.value
+                }
+            }
+        }
+
         for (let i = 0; i < item?.units?.length; i++) {
             switch (action?.type) {
                 case item?.units[i]?.name: {
@@ -45,13 +77,17 @@ const SingleProduct = ({ route }) => {
                         [`${item?.units[i]?.name}`]: action?.value
                     }
                 }
+                default:
+                    return state
             }
         }
+
+        return state;
     }
 
     const handleAddCart = useCallback(() => {
         const updatedData = cartItems.map(product => {
-            if(item?._id === product?._id) {
+            if (item?._id === product?._id) {
                 return {
                     ...product,
                     qty,
@@ -68,17 +104,21 @@ const SingleProduct = ({ route }) => {
 
     useEffect(() => {
         for (let i = 0; i < item?.units?.length; i++) {
-            dispatch({ type: item?.units[i]?.name, value: item?.units[i]?.variants[0]?.name })
+            for (let j = 0; j < item?.units[i]?.variants?.length; j++) {
+                dispatch({ type: 'variant_' + item?.units[i]?.id, value: item?.units[i]?.variants[j]?.name })
+            }
         }
     }, [])
+
 
 
     const { height } = useWindowDimensions()
     const [mainImage, setMainImage] = useState(require('../../images/spinach.jpg'));
     const [price, setPrice] = useState(0)
     const [qty, setQty] = useState(initialQty?.qty || 1)
+    const [selectedValue, setSelectedValue] = useState('')
 
-    const [state, dispatch] = useReducer(reducer, {});
+    const [state, dispatch] = useReducer(reducer, { variant: {} });
 
     const handleImagePress = useCallback((image) => {
         setMainImage(image);
@@ -93,7 +133,6 @@ const SingleProduct = ({ route }) => {
         )
     });
 
-
     useEffect(() => {
         if (item) {
             let total = item?.units?.[0]?.variants?.map(item => (
@@ -104,15 +143,8 @@ const SingleProduct = ({ route }) => {
         }
     }, [item])
 
-    const changeValue = (items) => {
-        const find = item?.units?.[0]?.variants?.find((res) => res?.name === items?.label)
-        //console.log({find})
-        setPrice(find.sellingPrice)
-        // setSelect(items.label);
-        // dispatch({ type: "KG", value: items?.label })
 
-        // setIsFocus(false);
-    }
+    const units = data?.data?.data.product.units?.map(({ name }) => name)
 
 
     return (
@@ -135,59 +167,138 @@ const SingleProduct = ({ route }) => {
                 </ScrollView> */}
                 <ProductData item={item} price={price} />
 
-                <View style={{
-                    width: 80,
-                    justifyContent: 'space-between',
-                    flexDirection: 'row',
-                    marginLeft: 'auto'
-                }}>
-                    <TouchableOpacity style={{
-                        backgroundColor: COLORS.primary,
-                        paddingHorizontal: 4,
-                        paddingVertical: 4,
-                        borderRadius: 6,
-                        marginRight: 2,
-                    }} onPress={() => {
-                        setQty(qty => {
-                            if (qty > 1) return qty - 1
-                            else return qty;
-                        })
-                    }}>
-                        <Entypo name='minus' size={15} color='#fff' />
-                    </TouchableOpacity>
-
-                    <Text style={{
-                        justifyContent: 'center',
-                        textAlign: 'center',
-                        minWidth: 20,
-                        fontFamily: 'Poppins-Regular',
-                        fontSize: 14,
-                        fontWeight: 'bold',
-                        color: COLORS.dark
-                    }}>{qty}</Text>
-
-                    <TouchableOpacity style={{
-                        backgroundColor: COLORS.primary,
-                        paddingHorizontal: 4,
-                        paddingVertical: 4,
-                        borderRadius: 6,
-                        marginRight: 2,
-                    }} onPress={() => {
-                        setQty(qty + 1)
-                    }}>
-                        <Entypo name='plus' size={15} color='#fff' />
-                    </TouchableOpacity>
-                </View>
-
-
                 <View style={styles.dropdownContainer}>
 
-                    {item?.units.map((item, i) => {
+                    <View style={{
+                        width: 80,
+                        justifyContent: 'space-between',
+                        flexDirection: 'row',
+                        marginLeft: 'auto'
+                    }}>
+                        <TouchableOpacity style={{
+                            backgroundColor: COLORS.primary,
+                            paddingHorizontal: 4,
+                            paddingVertical: 4,
+                            borderRadius: 6,
+                            marginRight: 2,
+                        }} onPress={() => {
+                            setQty(qty => {
+                                if (qty > 1) return qty - 1
+                                else return qty;
+                            })
+                        }}>
+                            <Entypo name='minus' size={15} color='#fff' />
+                        </TouchableOpacity>
+
+                        <Text style={{
+                            justifyContent: 'center',
+                            textAlign: 'center',
+                            minWidth: 20,
+                            fontFamily: 'Poppins-Regular',
+                            fontSize: 14,
+                            fontWeight: 'bold',
+                            color: COLORS.dark
+                        }}>{qty}</Text>
+
+                        <TouchableOpacity style={{
+                            backgroundColor: COLORS.primary,
+                            paddingHorizontal: 4,
+                            paddingVertical: 4,
+                            borderRadius: 6,
+                            marginRight: 2,
+                        }} onPress={() => {
+                            setQty(qty + 1)
+                        }}>
+                            <Entypo name='plus' size={15} color='#fff' />
+                        </TouchableOpacity>
+                    </View>
+
+
+                    <View style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        marginTop: 20,
+                        justifyContent: 'center',
+                        gap: 10
+                    }}>
+                        <View style={{
+                            width: '45%'
+                        }}>
+                            <Text style={{
+                                fontSize: 16,
+                                color: '#000',
+                                marginBottom: 10,
+                            }}>Units</Text>
+                            <SelectDropdown
+                                data={units}
+                                buttonTextStyle={{
+                                    fontSize: 13
+                                }}
+                                defaultButtonText={null}
+                                buttonStyle={{
+                                    width: '100%',
+                                    borderRadius: 10,
+                                }}
+                                onSelect={(selectedItem, index) => {
+                                    setUnit(selectedItem)
+                                    console.log(variantRef.current.reset())
+                                }}
+                            />
+                        </View>
+
+                        <View style={{
+                            width: '45%'
+                        }}>
+                            <Text style={{
+                                fontSize: 16,
+                                color: '#000',
+                                marginBottom: 10,
+                            }}>Variant</Text>
+
+                            <SelectDropdown
+                                ref={variantRef}
+                                data={unitList}
+                                buttonTextStyle={{
+                                    fontSize: 13,
+                                }}
+                                defaultButtonText={null}
+                                buttonStyle={{
+                                    width: '100%',
+                                    borderRadius: 10,
+                                }}
+                                disabled={unitList?.length === 0}
+                                onSelect={(value) => {
+                                    setSelectedValue(value)
+                                }}
+                            />
+                        </View>
+                    </View>
+
+                    {/* {item?.units.map((item, i) => {
+                        console.log(state)
                         return (<CommonSelectDropdown changeValue={(props) => {
-                            dispatch({ type: item?.name, value: props?.label })
+                            // dispatch({ type: item?.name, value: props?.label })
+                            dispatch({ type: 'variant_' + item?.id, value: props?.label })
                             return changeValue(props)
-                        }} topLabel={item?.name} key={item?.id} value={state[item?.name]} datas={items} />)
-                    })}
+                        }} topLabel={item?.name} key={item?.id} value={state?.variant ? state?.variant[item?.id] : null} datas={item?.variants?.map((value) => {
+                            return (
+                                { label: value?.name, value: value?.sellingPrice }
+                            )
+                        })} />)
+                    })} */}
+
+
+                    {/* <CommonSelectDropdown changeValue={() => {}} datas={unitList?.map((name) => {
+                        return (
+                            { label: name, value: name }
+                        )
+                    })} />
+
+                    <CommonSelectDropdown changeValue={() => { }} datas={units?.map((name) => {
+                        return (
+                            { label: name, value: name }
+                        )
+                    })} /> */}
                 </View>
                 {item?.details ? <AboutSection item={item} /> : null}
                 {item?.description ? <DescriptionSection item={item} /> : null}

@@ -12,8 +12,9 @@ const CartProvider = ({ children }) => {
 
     const [cartItems, setCartItems] = useState([]);
 
-
+    
     const addToCart = ({ _id: itemId, ...items }) => {
+        console.log({ cartItems: cartItems[0].item.variant})
         setCartItems((prevItems) => {
             const existingItem = prevItems.find((item) => item._id === itemId);
             if (existingItem) {

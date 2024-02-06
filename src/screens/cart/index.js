@@ -31,6 +31,8 @@ const Cart = ({ navigation, route }) => {
         {
           _id: res?._id,
           qty: res?.qty,
+          unit_id :res?.unit?.id,
+          varientname:res?.variant?.name, 
           item: { ...res }
         }
       ))
@@ -48,6 +50,8 @@ const Cart = ({ navigation, route }) => {
         {
           _id: res?._id,
           qty: res?.qty,
+          unit_id :res?.unit?.id,
+          varientname:res?.variant?.name, 
           item: { ...res }
         }
       ))

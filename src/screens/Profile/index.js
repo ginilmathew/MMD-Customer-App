@@ -50,7 +50,7 @@ const Profile = ({ navigation }) => {
     navigation.reset({
       index: 0,
       routes: [
-        { name: 'Login' }
+        { name: 'Login' },
       ]
     })
   }

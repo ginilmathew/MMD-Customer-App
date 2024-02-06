@@ -12,17 +12,18 @@ const CustomItemCard = ({ onPress, item, key }) => {
     let products = item.products ? item.products[0] : item;
 
 
-    // const [price, setPrice] = useState({ sellingPrice: null, offerPrice: null, costPrice: null })
+    const [price, setPrice] = useState(null)
+
+//  reactotron.log({price})
+    
 
     const { cartItems, addToCart, incrementItem, decrementItem } = useContext(CartContext);
     let unitID = products?.units[0]?.id;
-    let varient = products?.units[0]?.variants?.[0];
+    let varientName = products?.units[0]?.variants?.[0]?.name;
 
-        // reactotron.log({unitID})
-        // reactotron.log({varient})
 
-    const isCartAdded = cartItems.some(cartItem => cartItem._id === products._id);
-    const cartItem = cartItems.find(cartItem => cartItem._id === products._id);
+    const isCartAdded = cartItems.some(cartItem => (cartItem._id === products._id && cartItem?.unit_id === unitID && cartItem?.varientname === varientName));
+    const cartItem = cartItems.find(cartItem =>(cartItem._id === products._id && cartItem?.unit_id === unitID && cartItem?.varientname === varientName));
 
     const handleAddToCart = useCallback(() => {
         addToCart(products);
@@ -41,42 +42,96 @@ const CustomItemCard = ({ onPress, item, key }) => {
     }, [navigation])
 
 
-  
+
     // TouchableOpacity onPress={NavigateToSingleProduct}
 
-    // useEffect(() => {
-    //     if (item) {
-    //         let products = item.products ? item.products[0].units[0].variants.map(item => (
-    //             item
-    //         )) : item?.units?.[0]?.variants?.map(item => (
-    //             item
-    //         ));
+    useEffect(() => {
+        if (item) {
+            let products = item.products ? item.products[0].units[0].variants.map(item => (
+                item
+            )) : item?.units?.[0]?.variants?.map(item => (
+                item
+            ));
 
-    //         let productsWithOffer = products.filter(product => product.offerPrice !== null);
 
-    //         // If there are products with offer prices, find the one with the lowest offer price
-    //         if (productsWithOffer.length > 0) {
-    //             let lowestOfferProduct = productsWithOffer.reduce((prev, current) => {
-    //                 return parseFloat(prev.offerPrice) < parseFloat(current.offerPrice) ? prev : current;
-    //             });
-    //             setPrice({
-    //                 sellingPrice: lowestOfferProduct?.sellingPrice,
-    //                 offerPrice: lowestOfferProduct?.offerPrice === "" ? null : lowestOfferProduct?.offerPrice,
-    //                 costPrice: lowestOfferProduct?.costPrice
-    //             });
-    //         } else {
-    //             // If there are no products with offer prices, find the one with the lowest selling price
-    //             let lowestSellingProduct = products.reduce((prev, current) => {
-    //                 return parseFloat(prev.sellingPrice) < parseFloat(current.sellingPrice) ? prev : current;
-    //             });
-    //             setPrice({
-    //                 sellingPrice: lowestSellingProduct?.sellingPrice,
-    //                 offerPrice: lowestSellingProduct?.offerPrice === "" ? null : lowestSellingProduct?.offerPrice,
-    //                 costPrice: lowestSellingProduct?.costPrice
-    //             });
-    //         }
-    //     }
-    // }, [item])
+            // reactotron.log({products})
+
+            // let productsWithOffer = products.filter(product => product.offerPrice !== null);
+
+            // // If there are products with offer prices, find the one with the lowest offer price
+            // if (productsWithOffer.length > 0) {
+            //     let lowestOfferProduct = productsWithOffer.reduce((prev, current) => {
+            //         return parseFloat(prev.offerPrice) < parseFloat(current.offerPrice) ? prev : current;
+            //     });
+            //     setPrice({
+            //         sellingPrice: lowestOfferProduct?.sellingPrice,
+            //         offerPrice: lowestOfferProduct?.offerPrice === "" ? null : lowestOfferProduct?.offerPrice,
+            //         costPrice: lowestOfferProduct?.costPrice
+            //     });
+            // } else {
+            //     // If there are no products with offer prices, find the one with the lowest selling price
+            //     let lowestSellingProduct = products.reduce((prev, current) => {
+            //         return parseFloat(prev.sellingPrice) < parseFloat(current.sellingPrice) ? prev : current;
+            //     });
+            //     setPrice({
+            //         sellingPrice: lowestSellingProduct?.sellingPrice,
+            //         offerPrice: lowestSellingProduct?.offerPrice === "" ? null : lowestSellingProduct?.offerPrice,
+            //         costPrice: lowestSellingProduct?.costPrice
+            //     });
+            // }
+            const getFinalPrices = (products) => {
+                return products.map((product) => {
+                  const { offerPrice, fromDate, toDate, sellingPrice } = product;
+              
+                  // If there's an offer price and it's not expired, use the offer price
+                  if (offerPrice && !isOfferExpired(fromDate, toDate)) {
+                    return { ...product, finalPrice: offerPrice ,hasOfferPrice: true, };
+                  }
+              
+                  // Otherwise, use the selling price
+                  return { ...product, finalPrice: sellingPrice , hasOfferPrice: false,};
+                });
+              };
+              
+              const isOfferExpired = (fromDate, toDate) => {
+                // Implement logic to check if the offer is expired based on fromDate and toDate
+                // For example, you could compare the dates with the current date
+              
+                // Simple example assuming current date is 2024-02-06:
+                const currentDate = new Date("2024-02-06");
+                return fromDate > currentDate || toDate < currentDate;
+              };
+              
+              const finalPriceProducts = getFinalPrices(products);
+              
+              const lowestPriceProduct = finalPriceProducts.reduce((lowest, current) => {
+                // If both have offer prices, compare final prices
+                if (current.hasOfferPrice && lowest.hasOfferPrice) {
+                  return current.finalPrice < lowest.finalPrice ? current : lowest;
+                }
+              
+                // If only one has an offer price, prioritize the offer price
+                if (current.hasOfferPrice) {
+                  return current;
+                } else if (lowest.hasOfferPrice) {
+                  return lowest;
+                }
+              
+                // Otherwise, just compare final prices
+                return current.finalPrice < lowest.finalPrice ? current : lowest;
+              });
+              
+              if (lowestPriceProduct) {
+                // console.log("Product with the lowest final price:", lowestPriceProduct);
+                setPrice(lowestPriceProduct)
+              } else {
+                console.log("There are no products in the finalPriceProducts array.");
+              }
+              
+              
+              
+        }
+    }, [item])
 
 
 
