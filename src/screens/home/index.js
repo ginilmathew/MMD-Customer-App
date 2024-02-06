@@ -23,6 +23,7 @@ import { useFocusEffect } from '@react-navigation/native'
 import NoData from '../../components/NoData'
 import Header from '../../components/Header'
 import CartContext from '../../context/cart'
+import reactotron from 'reactotron-react-native'
 
 
 
@@ -33,6 +34,8 @@ const Home = ({ navigation, route }) => {
     const checkLocRef = useRef(null)
     const [cart_id] = useMMKVStorage('cart_id', storage);
     const { cartItems, setCartItems } = useContext(CartContext);
+
+    reactotron.log(cart_id, "df")
 
     let payload = {
         "coordinates": [

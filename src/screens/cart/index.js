@@ -19,7 +19,11 @@ const Cart = ({ navigation, route }) => {
 
   const { cart_id } = route.params;
 
+<<<<<<< HEAD
   reactotron.log({ cart_id },'IN CART PAGE')
+=======
+ 
+>>>>>>> dipin
 
 
   const { mutate, data, isLoading, refetch } = useMutation({

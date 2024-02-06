@@ -36,8 +36,16 @@ import { PERMISSIONS, RESULTS, check } from 'react-native-permissions';
 import OrderPlaced from '../screens/checkout/OrderPlaced';
 import EditAddress from '../screens/checkout/EditAddress';
 import ProcessingOrder from '../screens/checkout/ProcessingOrder';
+<<<<<<< HEAD
 import CartContext from '../context/cart';
 import { useAppState } from '../hooks/appStateManagement';
+=======
+import reactotron from 'reactotron-react-native';
+import CartContext from '../context/cart';
+import { useAppState } from '../hooks/appStateManagement';
+import useAddToCartInBackground from '../hooks/backgroundCart';
+import { getCartItems } from '../api/cart';
+>>>>>>> dipin
 
 
 const Stack = createNativeStackNavigator();
