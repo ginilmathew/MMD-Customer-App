@@ -18,6 +18,7 @@ import { storage } from '../../../App'
 import { useMMKVStorage } from 'react-native-mmkv-storage'
 import { RAZORPAY_KEY } from '../../constants/API'
 import RazorpayCheckout from 'react-native-razorpay';
+import ChooseDate from './ChooseDate'
 
 
 const Checkout = ({ route }) => {
@@ -62,9 +63,9 @@ const Checkout = ({ route }) => {
   const { mutate, refetch: postsubrefetch } = useMutation({
     mutationKey: 'placedOrder',
     mutationFn: PlaceOrder,
-    onSuccess:  (data) => {
+    onSuccess: async (data) => {
       setCartItems([])
-      //await storage.getBoolAsync('cart_id', null);
+      await storage.getBoolAsync('cart_id', null);
       navigation.navigate('OrderPlaced', { item: data?.data?.data })
     }
   })
@@ -97,7 +98,7 @@ const Checkout = ({ route }) => {
     }
     RazorpayCheckout.open(options).then((data) => {
       navigation.navigate('Processing')
-        placeOrder()
+      placeOrder()
       //alert(`Success: ${data.razorpay_payment_id}`);
     }).catch((error) => {
       //alert(`Error: ${error.code} | ${error.description}`);
@@ -161,6 +162,16 @@ const Checkout = ({ route }) => {
             <View style={styles.locationStyle}>
               <Ionicons name="location" size={30} color={COLORS.blue} />
               <Text style={styles.description}>{item?.area?.address}</Text>
+            </View>
+          </View>
+
+          <View style={styles.payBox}>
+            <SubHeading label={"Delivery Slots"} />
+            <View style={{ gap: 8, marginVertical: 10 }}>
+              <View style={styles.checkbox}>
+                {/* <Text style={styles.common}>DATE GOES HERE</Text> */}
+                <ChooseDate />
+              </View>
             </View>
           </View>
 
