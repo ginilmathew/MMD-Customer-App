@@ -1,11 +1,29 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import LottieView from 'lottie-react-native';
 import { COLORS } from '../../constants/COLORS';
 import Header from '../../components/Header';
 import CommonHeader from '../../components/CommonHeader';
+import { useNavigation } from '@react-navigation/native';
+import reactotron from 'reactotron-react-native';
 
-const OrderPlaced = () => {
+const OrderPlaced = ({ route }) => {
+
+    const item = route?.params
+
+    reactotron.log(item, "DA2")
+
+    const navigation = useNavigation();
+
+    useEffect(() => {
+        if (item?.item === 0) {
+            setTimeout(() => {
+                navigation.navigate('Orders')
+            }, 2000);
+        }
+    }, [item , navigation])
+
+
     return (
         <View style={styles.container}>
             <Header />

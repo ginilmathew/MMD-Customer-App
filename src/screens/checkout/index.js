@@ -1,22 +1,43 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { COLORS } from '../../constants/COLORS'
 import CommonHeader from '../../components/CommonHeader'
 import Header from '../../components/Header'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import SubHeading from '../../components/SubHeading'
 import CommonButton from '../../components/CommonButton'
+import { useNavigation } from '@react-navigation/native'
+import reactotron from 'reactotron-react-native'
+import CartContext from '../../context/cart'
 
 
-const Checkout = () => {
+const Checkout = ({ route }) => {
 
-  const [item, setItem] = useState(0);
+  const item = route?.params;
+
+  const { cartItems } = useContext(CartContext);
+
+  reactotron.log(item, "item")
+
+  const navigation = useNavigation();
+
+  const [radioBtnStatus, stRadioBtnStatus] = useState(0);
 
   const checkBox = (num) => (
-    <TouchableOpacity onPress={() => setItem(num)}>
-      <Ionicons name={item === num ? 'radio-button-on' : `radio-button-off`} size={20} color={COLORS.primary} />
+    <TouchableOpacity onPress={() => stRadioBtnStatus(num)}>
+      <Ionicons name={radioBtnStatus === num ? 'radio-button-on' : `radio-button-off`} size={20} color={COLORS.primary} />
     </TouchableOpacity>
   )
+
+  const placeOrder = () => {
+    if (radioBtnStatus === 0) {
+      navigation.navigate('OrderPlaced', { item: radioBtnStatus })
+    } else if (radioBtnStatus === 1) {
+      //RazorPay//
+    }
+  }
+
+
 
   return (
     <View style={styles.container}>
@@ -25,29 +46,30 @@ const Checkout = () => {
       <View style={styles.innerContainer}>
 
         <View>
-          <View style={styles.imgContainer}>
+          {cartItems?.map(item => (<View style={styles.imgContainer} key={item?._id}>
             <View style={styles.boxStyle}>
-              <Image source={require('../../images/propic.jpg')} style={styles.imgStyle} />
+              <Image    source={{ uri: item?.item?.imageBasePath + item?.item?.image?.[0] }} style={styles.imgStyle} />
               <View style={styles.imgSection}>
-                <Text style={styles.productName}>Elite Premium Rice Puttupodi 1Kg Pouch</Text>
-                <Text style={styles.categoryName}>Category : Grocery</Text>
+                <Text style={styles.productName}>{item?.item?.name}</Text>
+                <Text style={styles.categoryName}>Category : {item?.item?.category?.name}</Text>
               </View>
             </View>
             <View style={styles.qtyBox}>
-              <Text style={styles.price}>₹100.50</Text>
+              <Text style={styles.price}>₹ {item?.item?.variant?.sellingPrice}</Text>
             </View>
           </View>
+          ))}
 
           <View style={styles.locationBox}>
             <View style={styles.shipping}>
               <Text style={styles.heading}>Shipping Address</Text>
-              <TouchableOpacity>
+              {/* <TouchableOpacity>
                 <Text style={styles.edit}>EDIT</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
             <View style={styles.locationStyle}>
               <Ionicons name="location" size={30} color={COLORS.blue} />
-              <Text style={styles.description}>Technopark Trivandrum, Nila Building, Module 011, Ground floor, Kazhakkoottam, Kerala 695581</Text>
+              <Text style={styles.description}>{item?.item?.area?.address}</Text>
             </View>
           </View>
 
@@ -85,7 +107,7 @@ const Checkout = () => {
         </View>
 
         <View style={{ paddingHorizontal: 22 }}>
-          <CommonButton text={"Place Order"} />
+          <CommonButton text={"Place Order"} onPress={placeOrder} />
         </View>
 
       </View>
@@ -224,8 +246,8 @@ const styles = StyleSheet.create({
     color: COLORS.primary
   },
   shipping: {
-    flexDirection: "row", 
-    justifyContent: "space-between", 
+    flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center"
   }
 })

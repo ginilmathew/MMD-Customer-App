@@ -106,9 +106,7 @@ const Header = memo(({ onPress, text }) => {
 
                 </TouchableOpacity>
                 <TouchableOpacity onPress={notPage}>
-                    <View style={styles.badgeStyle}>
-                        <Text style={styles.countStyle}>1</Text>
-                    </View>
+                    <View style={styles.badgeStyle} />
                     <IonIcons name='notifications' size={20} color="#000" />
                 </TouchableOpacity>
             </View>
@@ -142,14 +140,14 @@ const styles = StyleSheet.create({
         // resizeMode: 'contain', // Ensure the image maintains its aspect ratio
     },
     badgeStyle: {
-        width: 15,
-        height: 15,
+        width: 10,
+        height: 10,
         backgroundColor: COLORS.red,
         borderRadius: 100,
         position: "absolute",
         zIndex: 1,
-        right: -4,
-        top: -4,
+        right: -1,
+        top: -1,
         alignItems: "center",
         justifyContent: "center",
     },
