@@ -25,7 +25,6 @@ const Header = memo(({ onPress, text }) => {
     const navigation = useNavigation()
 
 
-
     const { mutate, refetch} = useMutation({
         mutationKey: 'addToCart_query',
         mutationFn: PostAddToCart,
@@ -54,7 +53,6 @@ const Header = memo(({ onPress, text }) => {
     }, [navigation])
 
     const cartPage = useCallback(() => {
-
         reactotron.log('API CSLLED')
         if (cartItems?.length > 0) {
             const updatedData = cartItems?.map(item => ({

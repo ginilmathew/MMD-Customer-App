@@ -1,2 +1,1 @@
-1. backbutton disable
-2. redirect to home
+1. default item

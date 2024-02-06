@@ -8,6 +8,7 @@ import reactotron from 'reactotron-react-native';
 
 const CartItemCard = ({ onPress, item, key }) => {
 
+    console.log(item?.item);
     const navigation = useNavigation()
     let products = item.products ? item.products[0] : item;
     // let unitID = products?.unit.id;
@@ -41,7 +42,7 @@ const CartItemCard = ({ onPress, item, key }) => {
     }, [decrementItem, products._id]);
 
     const NavigateToSingleProduct = useCallback(() => {
-        navigation.navigate('SingleProduct', { item: item.products ? item?.products?.[0] : item })
+        navigation.navigate('SingleProduct', { item: item?.item })
     }, [navigation])
 
 
