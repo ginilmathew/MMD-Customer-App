@@ -2,55 +2,100 @@ import { StyleSheet, Text, View } from 'react-native';
 import React, { useState, useMemo } from 'react';
 import CartContext from './index';
 import reactotron from 'reactotron-react-native';
-
+import { useNavigation } from '@react-navigation/native';
+import { getCurrentScreenPath } from '../../navigation/RootNavigation';
 const CartProvider = ({ children }) => {
+
+
+
+
+
     const [cartItems, setCartItems] = useState([]);
 
 
+
     const addToCart = ({ _id: itemId, ...items }) => {
-
         setCartItems((prevItems) => {
-            const existingItem = prevItems.find((item) => item.id === itemId);
-
+            const existingItem = prevItems.find((item) => item._id === itemId);
             if (existingItem) {
-                // If item is already in the cart, update the count
+                // If item is already in the cart, update the count  
                 return prevItems.map((item) =>
-                    item.id === itemId ? { ...item, qty: item.qty + 1 } : item
+                    item._id === itemId ? { item, qty: item.qty + 1 } : item
                 );
             } else {
+                const { variants, ...unitWithoutVariants } = { ...items.units[0] };
+                // delete items.units
+                let item = {
+                    _id: itemId,
+                    qty: 1,
+                    ...items,
+                    image: Array.isArray(items?.image[0]) ? items?.image[0] : items?.image,
+                    unit: unitWithoutVariants,
+                    variant: variants[0]
+                };
+
+
                 // If item is not in the cart, add it
-                // console.log(items.products[0].categories.image);
-                // console.log(items.products[0].units[0]?.variants);
-                return [...prevItems, { id: itemId, qty: 1, ...{ image: items.products[0].imageBasePath + items.products[0].image, ...items } }];
+
+                return [...prevItems, { _id: itemId, qty: 1, item }];
             }
         });
     };
 
-    const incrementItem = ({ _id: itemId }) => {
+    const incrementItem = ({ _id: itemId,}) => {
         setCartItems((prevItems) =>
             prevItems.map((item) => {
-                return item.id === itemId ? { ...item, qty: item.qty + 1 } : item
+                let items = {
+                    ...item,
+                    item: { ...item?.item, qty: item.qty + 1 }
+                }
+                return item._id === itemId ? { ...items, qty: item.qty + 1 } : items
             })
         );
     };
 
+
     const decrementItem = ({ _id: itemId }) => {
         setCartItems((prevItems) => {
-            const updatedItems = prevItems.map((item) =>
-                item.id === itemId ? { ...item, qty: Math.max(item.qty - 1, 0) } : item
-            );
+            const updatedItems = prevItems.map((item) => {
+                let items = {
+                    ...item,
+                    item: { ...item?.item, qty: Math.max(item.qty - 1, 0) }
+                }
+                return item._id === itemId ? { ...items, qty: Math.max(item.qty - 1, 0) } : items
+            });
 
             // Filter out items with count > 0
             return updatedItems.filter((item) => item.qty > 0);
         });
     };
 
+    const DeleteItem = ({ _id: itemId }) => {
+        setCartItems((prevItems) => {
+            const updatedItems = prevItems.map((item) => {
+                let items = {
+                    ...item,
+                    item: { ...item?.item, qty: Math.max(item.qty - 1, 0) }
+                }
+                return item._id === itemId ? { ...items, qty: Math.max(item.qty - 1, 0) } : items
+            });
+            let find = updatedItems.find((res) => res?.qty === 0);
+            let final = updatedItems.filter((res)=>res?._id !== find?._id)
+            return final
+        });
+    };
+
+
+
     const contextValue = useMemo(() => {
+
         return {
+            setCartItems,
             cartItems,
             addToCart,
             incrementItem,
             decrementItem,
+            DeleteItem,
         };
     }, [cartItems]); // Re-create the context value only when cartItems change
 

@@ -79,12 +79,12 @@ const SingleProduct = ({ route }) => {
     return (
         <View style={{ backgroundColor: '#fff', height: height, paddingBottom: 60 }}>
             <Header />
-            <CommonHeader heading={item?.name.length > 18 ? item?.name?.slice(0, 18) + "..." : item?.name} backBtn />
+            <CommonHeader heading={item?.name?.length > 18 ? item?.name?.slice(0, 18) + "..." : item?.name} backBtn />
             <ScrollView
                 contentContainerStyle={[styles.container]}
                 scrollEnabled={true}
                 showsVerticalScrollIndicator={false}>
-                <Animated.Image source={{ uri: BASEPATHPRODCT + item?.image?.[0] }} style={styles.mainImage} resizeMode="contain" sharedTransitionTag={item?._id} />
+                {/* <Animated.Image source={{ uri: BASEPATHPRODCT + item?.image?.[0] }} style={styles.mainImage} resizeMode="contain" sharedTransitionTag={item?._id} /> */}
                 {/* <ScrollView
                     horizontal
                     showsHorizontalScrollIndicator={false}

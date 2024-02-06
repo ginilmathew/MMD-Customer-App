@@ -9,24 +9,58 @@ import CartContext from '../context/cart';
 import reactotron from 'reactotron-react-native';
 import IonIcon from 'react-native-vector-icons/Ionicons'
 import LocationContext from '../context/location';
+import { PostAddToCart } from '../api/cart';
+import { useMutation } from 'react-query';
 
 
 const Header = memo(({ onPress, text }) => {
 
-    const { cartItems } = useContext(CartContext)
+    const { cartItems, setCartItems } = useContext(CartContext)
     const { setMode } = useContext(LocationContext)
 
-    reactotron.log(cartItems, "CART")
-
     const navigation = useNavigation()
+
+    const { mutate, refetch: postsubrefetch } = useMutation({
+        mutationKey: 'addToCart_query',
+        mutationFn: PostAddToCart,
+        onSuccess: (data) => {
+            let myStructure = data?.data?.data?.product.map((res) => (
+                {
+                    _id: res?._id,
+                    qty: res?.qty,
+                    item: { ...res }
+                }
+            ))
+            setCartItems(myStructure)
+            navigation.navigate('Cart', { cart_id: data?.data?.data?._id ?? null })
+        }
+    })
+
+
+
+
 
     const notPage = useCallback(() => {
         navigation.navigate('Notification')
     }, [navigation])
 
     const cartPage = useCallback(() => {
-        navigation.navigate('Cart')
-    }, [navigation])
+
+        if (cartItems?.length > 0) {
+            const updatedData = cartItems.map(item => ({
+                ...item.item,
+                qty: item.qty
+
+            }));
+            mutate({ product: updatedData })
+        } else {
+            navigation.navigate('Cart', { cart_id: null })
+        }
+        navigation.navigate('Cart', { cart_id: null })
+    }, [navigation, cartItems, mutate])
+
+
+
 
     const textLeng = text?.length;
 

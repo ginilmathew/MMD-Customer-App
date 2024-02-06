@@ -138,7 +138,6 @@ const RenderHeaderMemo = memo(({ LIST, AnimatedStyle, onPress, subList }) => {
         <>
             {LIST?.map((res, index) => (
                 <Animated.View entering={AnimatedStyle(index, 100)} style={{ marginRight: 10 }}>
-
                     <CustomTab label={res?.name} onPress={() => onPress(res)} subList={subList} />
                 </Animated.View>
             ))}

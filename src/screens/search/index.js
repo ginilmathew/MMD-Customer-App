@@ -13,7 +13,7 @@ import ItemCard from '../../components/ItemCard'
 
 const Search = () => {
 
-    const DATA2 = [1, 2, 3, 4, 5, 6]
+
     const [value, setValue] = useState('')
 
     const { height } = useWindowDimensions()
@@ -33,8 +33,7 @@ const Search = () => {
     let timeoutId;
 
     const onChangeProduct = useCallback((data) => {
-        setValue(data)
-     
+        setValue(data);
         clearTimeout(timeoutId);
         timeoutId = setTimeout(() => {
             mutate(data)
