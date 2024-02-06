@@ -18,7 +18,7 @@ const Cart = ({ navigation, route }) => {
 
   const { cart_id } = route.params;
 
-  reactotron.log({ cartItems },'IN CART PAGE')
+  reactotron.log({ cart_id },'IN CART PAGE')
 
   const { mutate, refetch: postsubrefetch, data, isLoading, refetch } = useMutation({
     mutationKey: 'cartItems',
@@ -50,7 +50,7 @@ const Cart = ({ navigation, route }) => {
   }
 
   const editAddress = () => {
-    navigation.navigate('EditAddress')
+    navigation.navigate('EditAddress', {cartID : cart_id})
   }
 
   const renderItem = useCallback(({ item, index }) => {
@@ -63,13 +63,13 @@ const Cart = ({ navigation, route }) => {
     )
   }, [data?.data?.data, cartItems])
 
-const ListEmptyCompont = useCallback(()=>{
-  return (
- <View style={styles.emptyContainer}>
-        <Image source={require('../../images/cart.png')} style={styles.emptyCart} />
-      </View> 
-  )
-},[])
+// const ListEmptyCompont = useCallback(()=>{
+//   return (
+//  <View style={styles.emptyContainer}>
+//         <Image source={require('../../images/cart.png')} style={styles.emptyCart} />
+//       </View> 
+//   )
+// },[])
 
 
   return (

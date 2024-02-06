@@ -36,6 +36,7 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import { PERMISSIONS, RESULTS, check } from 'react-native-permissions';
 import OrderPlaced from '../screens/checkout/OrderPlaced';
 import EditAddress from '../screens/checkout/EditAddress';
+import ProcessingOrder from '../screens/checkout/ProcessingOrder';
 
 
 const Stack = createNativeStackNavigator();
@@ -120,6 +121,7 @@ const Navigation = () => {
           <Stack.Screen name='MapPage' component={MapAddress} />
           <Stack.Screen name='OrderPlaced' component={OrderPlaced} />
           <Stack.Screen name='EditAddress' component={EditAddress} />
+          <Stack.Screen name='Processing' component={ProcessingOrder} />
         </Stack.Navigator>
       </NavigationContainer>
 
