@@ -10,7 +10,14 @@ const CartItemCard = ({ onPress, item, key }) => {
 
     const navigation = useNavigation()
     let products = item.products ? item.products[0] : item;
- 
+    // let unitID = products?.unit.id;
+    // let varientName = products?.variant?.name;
+     
+    // reactotron.log({unitID})
+    // reactotron.log({varientName})
+
+  
+       
 
     const { cartItems, addToCart, incrementItem, decrementItem ,DeleteItem} = useContext(CartContext);
 

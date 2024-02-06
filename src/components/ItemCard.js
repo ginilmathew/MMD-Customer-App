@@ -12,16 +12,22 @@ const CustomItemCard = ({ onPress, item, key }) => {
     let products = item.products ? item.products[0] : item;
 
 
-    // const [price, setPrice] = useState({ sellingPrice: null, offerPrice: null, costPrice: null })
+    const [price, setPrice] = useState(null)
+
+
+    
 
     const { cartItems, addToCart, incrementItem, decrementItem } = useContext(CartContext);
+    let unitID = products?.units[0]?.id;
+    let varientName = products?.units[0]?.variants?.[0]?.name;
 
-    const isCartAdded = cartItems.some(cartItem => cartItem._id === products._id);
-    const cartItem = cartItems.find(cartItem => cartItem._id === products._id);
+
+    const isCartAdded = cartItems.some(cartItem => (cartItem._id === products._id && cartItem?.unit_id === unitID && cartItem?.varientname === varientName));
+    const cartItem = cartItems.find(cartItem =>(cartItem._id === products._id && cartItem?.unit_id === unitID && cartItem?.varientname === varientName));
 
     const handleAddToCart = useCallback(() => {
         addToCart(products);
-    }, [addToCart,products]);
+    }, [addToCart, products]);
 
     const handleIncrement = useCallback(() => {
         incrementItem(products);
@@ -37,54 +43,97 @@ const CustomItemCard = ({ onPress, item, key }) => {
 
 
 
-
-
-
-
-  
     // TouchableOpacity onPress={NavigateToSingleProduct}
 
-    // useEffect(() => {
-    //     if (item) {
-    //         let products = item.products ? item.products[0].units[0].variants.map(item => (
-    //             item
-    //         )) : item?.units?.[0]?.variants?.map(item => (
-    //             item
-    //         ));
-
-    //         let productsWithOffer = products.filter(product => product.offerPrice !== null);
-
-    //         // If there are products with offer prices, find the one with the lowest offer price
-    //         if (productsWithOffer.length > 0) {
-    //             let lowestOfferProduct = productsWithOffer.reduce((prev, current) => {
-    //                 return parseFloat(prev.offerPrice) < parseFloat(current.offerPrice) ? prev : current;
-    //             });
-    //             setPrice({
-    //                 sellingPrice: lowestOfferProduct?.sellingPrice,
-    //                 offerPrice: lowestOfferProduct?.offerPrice === "" ? null : lowestOfferProduct?.offerPrice,
-    //                 costPrice: lowestOfferProduct?.costPrice
-    //             });
-    //         } else {
-    //             // If there are no products with offer prices, find the one with the lowest selling price
-    //             let lowestSellingProduct = products.reduce((prev, current) => {
-    //                 return parseFloat(prev.sellingPrice) < parseFloat(current.sellingPrice) ? prev : current;
-    //             });
-    //             setPrice({
-    //                 sellingPrice: lowestSellingProduct?.sellingPrice,
-    //                 offerPrice: lowestSellingProduct?.offerPrice === "" ? null : lowestSellingProduct?.offerPrice,
-    //                 costPrice: lowestSellingProduct?.costPrice
-    //             });
-    //         }
-    //     }
-    // }, [item])
+    useEffect(() => {
+        if (item) {
+            let products = item.products ? item.products[0].units[0].variants.map(item => (
+                item
+            )) : item?.units?.[0]?.variants?.map(item => (
+                item
+            ));
 
 
- 
+            // reactotron.log({products})
+
+            // let productsWithOffer = products.filter(product => product.offerPrice !== null);
+
+            // // If there are products with offer prices, find the one with the lowest offer price
+            // if (productsWithOffer.length > 0) {
+            //     let lowestOfferProduct = productsWithOffer.reduce((prev, current) => {
+            //         return parseFloat(prev.offerPrice) < parseFloat(current.offerPrice) ? prev : current;
+            //     });
+            //     setPrice({
+            //         sellingPrice: lowestOfferProduct?.sellingPrice,
+            //         offerPrice: lowestOfferProduct?.offerPrice === "" ? null : lowestOfferProduct?.offerPrice,
+            //         costPrice: lowestOfferProduct?.costPrice
+            //     });
+            // } else {
+            //     // If there are no products with offer prices, find the one with the lowest selling price
+            //     let lowestSellingProduct = products.reduce((prev, current) => {
+            //         return parseFloat(prev.sellingPrice) < parseFloat(current.sellingPrice) ? prev : current;
+            //     });
+            //     setPrice({
+            //         sellingPrice: lowestSellingProduct?.sellingPrice,
+            //         offerPrice: lowestSellingProduct?.offerPrice === "" ? null : lowestSellingProduct?.offerPrice,
+            //         costPrice: lowestSellingProduct?.costPrice
+            //     });
+            // }
+            const getFinalPrices = (products) => {
+                return products.map((product) => {
+                  const { offerPrice, fromDate, toDate, sellingPrice } = product;
+              
+                  // If there's an offer price and it's not expired, use the offer price
+                  if (offerPrice && !isOfferExpired(fromDate, toDate)) {
+                    return { ...product, finalPrice: offerPrice ,hasOfferPrice: true, };
+                  }
+              
+                  // Otherwise, use the selling price
+                  return { ...product, finalPrice: sellingPrice , hasOfferPrice: false,};
+                });
+              };
+              
+              const isOfferExpired = (fromDate, toDate) => {
+                // Implement logic to check if the offer is expired based on fromDate and toDate
+                // For example, you could compare the dates with the current date
+              
+                // Simple example assuming current date is 2024-02-06:
+                const currentDateString = new Date().toISOString().slice(0, 10);
+                return fromDate > currentDateString || toDate < currentDateString;
+              };
+              
+              const finalPriceProducts = getFinalPrices(products);
+              
+              const lowestPriceProduct = finalPriceProducts.reduce((lowest, current) => {
+                // If both have offer prices, compare final prices
+                if (current.hasOfferPrice && lowest.hasOfferPrice) {
+                  return current.finalPrice < lowest.finalPrice ? current : lowest;
+                }
+              
+                // If only one has an offer price, prioritize the offer price
+                if (current.hasOfferPrice) {
+                  return current;
+                } else if (lowest.hasOfferPrice) {
+                  return lowest;
+                }
+              
+                // Otherwise, just compare final prices
+                return current.finalPrice < lowest.finalPrice ? current : lowest;
+              });
+              
+              if (lowestPriceProduct) {
+                // console.log("Product with the lowest final price:", lowestPriceProduct);
+                setPrice(lowestPriceProduct)
+              } else {
+                console.log("There are no products in the finalPriceProducts array.");
+              }
+        }
+    }, [item])
+
+
+
 
     const AnimatedStyle = FadeInDown.easing().delay(300);
-
-
-
 
 
     return (
@@ -92,28 +141,28 @@ const CustomItemCard = ({ onPress, item, key }) => {
             <TouchableOpacity onPress={NavigateToSingleProduct} style={styles.container}>
                 {/* Left Side */}
                 <Animated.View style={styles.leftContainer}>
-                <Animated.Image
+                    <Animated.Image
                         source={{ uri: products?.imageBasePath + products?.image?.[0] }}
                         style={styles.leftImage}
                         sharedTransitionTag={item?.product_id}
                     />
-                    
+
                 </Animated.View>
 
                 {/* Center Content */}
                 <View style={styles.centerContainer}>
                     <Text style={styles.heading}>{products?.name}</Text>
                     <Text style={styles.subHeading}>Category: {products?.category?.name}</Text>
-                    {products?.units[0]?.variants[0]?.offerPrice !== "" ? (<View style={styles.offerBox}>
+                    {price?.hasOfferPrice ? (<View style={styles.offerBox}>
                         <Text style={styles.offerText}>Up to 10% off!</Text>
                     </View>) : null}
                 </View>
 
                 {/* Right Side */}
                 <View style={styles.rightContainer}>
-                    <Text style={styles.topPrice}>₹ {products?.units[0]?.variants[0]?.offerPrice * 1 ? products?.units[0]?.variants[0]?.offerPrice : products?.units[0]?.variants[0]?.sellingPrice ?? 0}</Text>
-                    {products?.units[0]?.variants[0]?.offerPrice  &&
-                        <Text style={styles.strikePrice}>₹ {products?.units[0]?.variants[0]?.sellingPrice ?? 0}</Text>}
+                    <Text style={styles.topPrice}>₹ {price?.finalPrice}</Text>
+                    {price?.hasOfferPrice &&
+                        <Text style={styles.strikePrice}>₹ {price?.sellingPrice}</Text>}
                     <AddToCart
                         isCartAdded={isCartAdded}
                         handleAddToCart={handleAddToCart}

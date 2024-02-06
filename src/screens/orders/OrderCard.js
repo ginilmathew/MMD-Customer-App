@@ -9,7 +9,7 @@ const OrderCard = ({ item }) => {
 
     const navigation = useNavigation();
 
-    reactotron.log(item, "ITEM")
+
 
     const statusColor = () => {
         if (item?.orderStatus === "created") {
