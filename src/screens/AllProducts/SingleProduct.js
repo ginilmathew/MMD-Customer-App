@@ -43,7 +43,7 @@ const SingleProduct = ({ navigation, route }) => {
         initialData: item,
         queryFn: () => singProduct(item?.slug),
         onSuccess(data) {
-            const initialQty = cartItems?.find(({ _id }) => _id === data?.data?.data.product?._id);
+            const initialQty = cartItems?.find(({ _id }) => _id === item?._id);
             setQty(initialQty?.qty || 1)
         },
         keepPreviousData: false
@@ -70,7 +70,7 @@ const SingleProduct = ({ navigation, route }) => {
 
     // useEffect(() => {
     //     const focus = navigation.addListener('focus', () => {
-    // setUnit(data?.data?.data.product.units[0]?.name)
+    // setUnit(item.units[0]?.name)
     //     })
 
     //     const blur = navigation.addListener('blur', () => {
@@ -87,7 +87,7 @@ const SingleProduct = ({ navigation, route }) => {
 
     useEffect(() => {
         if (data) {
-            const list = data?.data?.data.product.units?.filter(({ name }) => name === unit)?.[0]?.variants?.map(({ name }) => name);
+            const list = item.units?.filter(({ name }) => name === unit)?.[0]?.variants?.map(({ name }) => name);
             setUnitList(list)
         }
     }, [unit, data])
@@ -96,7 +96,7 @@ const SingleProduct = ({ navigation, route }) => {
 
     useEffect(() => {
         if (data) {
-            let total = data?.data?.data.product.units?.[0]?.variants?.map(item => (
+            let total = item.units?.[0]?.variants?.map(item => (
                 item.offerPrice ? item.offerPrice ?? 0 : item.sellingPrice ?? 0
             ))
             let lowestPrice = Math.min(...total);
@@ -116,12 +116,12 @@ const SingleProduct = ({ navigation, route }) => {
 
     const defaultVal = useMemo(() => {
         if (data) {
-            const initialQty = cartItems?.find(({ _id }) => _id === data?.data?.data.product?._id);
+            const initialQty = cartItems?.find(({ _id }) => _id === item?._id);
 
             if (initialQty) {
                 return { unit: initialQty?.item?.unit, variant: initialQty?.item?.variant?.name };
             } else {
-                return { unit: data?.data?.data.product.units[0]?.name, variant: data?.data?.data.product.units[0]?.variants[0]?.name }
+                return { unit: item.units[0]?.name, variant: item.units[0]?.variants[0]?.name }
             }
 
         }
@@ -129,42 +129,56 @@ const SingleProduct = ({ navigation, route }) => {
 
     const handleAddCart = useCallback(() => {
 
-        const unitId = data?.data?.data.product.units?.find(({ name }) => name === (unit || data?.data?.data.product.units[0]?.name))
+        const unitId = item.units?.find(({ name }) => name === (unit || item.units[0]?.name))
         const variant = unitId?.variants?.find(({ name }) => name === (selectedValue || unitId?.variants[0]?.name));
+        const { variants, ...unitWithoutVariants } = { unitId };
 
+        let selectedItem = {
+            ...item,
+            _id: item?._id,
+            qty,
+            image: Array.isArray(item?.image[0]) ? item?.image[0] : item?.image,
+            unit: unitWithoutVariants,
+            variant: variant
+        };
+        // const productDetails = {
+        //     item: {
+        //         ...item,
+        //         unit: { id: unitId?.id, name: unitId?.name },
+        //         variant,
+        //         qty
+        //     },
+        //     unit_id: unitId?.id,
+        //     varientname: variant?.name,
+        //     qty
+        // }
 
-        const productDetails = {
-            item: {
-                ...data?.data?.data.product,
-                unit: { id: unitId?.id, name: unitId?.name },
-                variant,
-                qty
-            },
+        const filtering = cartItems?.filter(({ _id }) => _id !== item?._id)
+        setCartItems([...filtering, {
+            _id: item?._id, 
+            qty, 
             unit_id: unitId?.id,
             varientname: variant?.name,
-            qty
-        }
-
-        const filtering = cartItems?.filter(({ _id }) => _id !== data?.data?.data.product?._id)
-        setCartItems([...filtering, productDetails])
+            item: selectedItem
+        }])
 
         storage.setString('success', 'Successfully added to cart')
-    }, [qty, cartItems, unit, data, selectedValue])
+    }, [qty, cartItems, unit, item, selectedValue])
 
 
-    const BASEPATHPRODCT = data?.data?.data.product?.imageBasePath || "";
-    const units = data?.data?.data.product.units?.map(({ name }) => name)
+    const BASEPATHPRODCT = item?.imageBasePath || "";
+    const units = item.units?.map(({ name }) => name)
 
 
     return (
         <View style={{ backgroundColor: '#fff', height: height, paddingBottom: 60 }}>
             <Header />
-            <CommonHeader heading={data?.data?.data.product?.name?.length > 18 ? data?.data?.data.product?.name?.slice(0, 18) + "..." : data?.data?.data.product?.name} backBtn />
+            <CommonHeader heading={item?.name?.length > 18 ? item?.name?.slice(0, 18) + "..." : item?.name} backBtn />
             <ScrollView
                 contentContainerStyle={[styles.container]}
                 scrollEnabled={true}
                 showsVerticalScrollIndicator={false}>
-                <Animated.Image source={{ uri: BASEPATHPRODCT + data?.data?.data.product?.image?.[0] || "" }} style={styles.mainImage} resizeMode="contain" sharedTransitionTag={data?.data?.data.product?._id} />
+                <Animated.Image source={{ uri: BASEPATHPRODCT + item?.image?.[0] || "" }} style={styles.mainImage} resizeMode="contain" sharedTransitionTag={item?._id} />
                 {/* <ScrollView
                     horizontal
                     showsHorizontalScrollIndicator={false}
