@@ -12,7 +12,7 @@ const CartProvider = ({ children }) => {
 
     const [cartItems, setCartItems] = useState([]);
 
-
+      reactotron.log({cartItems})
 
     const addToCart = ({ _id: itemId, ...items }) => {
         setCartItems((prevItems) => {
