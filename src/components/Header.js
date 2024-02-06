@@ -11,13 +11,15 @@ import { PostAddToCart } from '../api/cart';
 import { useMutation } from 'react-query';
 import IonIcon from 'react-native-vector-icons/Ionicons'
 import LocationContext from '../context/location';
+import { useMMKVStorage } from 'react-native-mmkv-storage';
+import { storage } from '../../App';
 
 
 const Header = memo(({ onPress, text }) => {
 
     const { setMode } = useContext(LocationContext)
 
-  
+
 
     const navigation = useNavigation()
 
@@ -26,17 +28,18 @@ const Header = memo(({ onPress, text }) => {
     const { mutate, refetch: postsubrefetch } = useMutation({
         mutationKey: 'addToCart_query',
         mutationFn: PostAddToCart,
-        onSuccess: (data) => {
+        onSuccess: async (data) => {
             let myStructure = data?.data?.data?.product.map((res) => (
                 {
                     _id: res?._id,
                     qty: res?.qty,
-                    unit_id :res?.unit?.id,
-                    varientname:res?.variant?.name, 
+                    unit_id: res?.unit?.id,
+                    varientname: res?.variant?.name,
                     item: { ...res }
                 }
             ))
             setCartItems(myStructure)
+            await storage.setStringAsync('cart_id', data?.data?.data?._id);
             navigation.navigate('Cart', { cart_id: data?.data?.data?._id ?? null })
         }
     })

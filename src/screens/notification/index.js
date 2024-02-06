@@ -20,7 +20,7 @@ const NotificationPage = () => {
 
     useRefetch(refetch)
 
-    reactotron.log(data, "HOW")
+
 
     const renderItem = ({ item, index }) => {
         return (
