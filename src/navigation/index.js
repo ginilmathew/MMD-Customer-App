@@ -35,11 +35,9 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import { PERMISSIONS, RESULTS, check } from 'react-native-permissions';
 import OrderPlaced from '../screens/checkout/OrderPlaced';
 import EditAddress from '../screens/checkout/EditAddress';
-import reactotron from 'reactotron-react-native';
+import ProcessingOrder from '../screens/checkout/ProcessingOrder';
 import CartContext from '../context/cart';
 import { useAppState } from '../hooks/appStateManagement';
-import useAddToCartInBackground from '../hooks/backgroundCart';
-import { getCartItems } from '../api/cart';
 
 
 const Stack = createNativeStackNavigator();
@@ -157,37 +155,38 @@ const Navigation = () => {
     }, []);
 
 
-    return (
-        <>
-            <NavigationContainer ref={navigationRef} onReady={onReady}>
-                <Stack.Navigator
-                    initialRouteName={user && homeAdd ? 'HomeNavigator' : user ? 'LocationPage' : 'Login'}
-                    screenOptions={{ headerShown: false }}>
-                    {/* <Stack.Navigator initialRouteName={ 'HomeNavigator' } screenOptions={{ headerShown: false }}> */}
-                    <Stack.Screen name="Login" component={Login} />
-                    <Stack.Screen name="Register" component={Register} />
-                    <Stack.Screen name="Forget" component={Forget} />
-                    <Stack.Screen name="HomeNavigator" component={HomeNavigation} />
-                    <Stack.Screen name="SingleOrder" component={SingleOrder} />
-                    <Stack.Screen name="Notification" component={NotificationPage} />
-                    <Stack.Screen name="Cart" component={Cart} />
-                    <Stack.Screen name="Checkout" component={Checkout} />
-                    <Stack.Screen name="Category" component={Category} />
-                    <Stack.Screen name="AllProducts" component={AllProducts} />
-                    <Stack.Screen name="SingleCategory" component={SingleCategory} />
-                    <Stack.Screen name="Search" component={Search} />
-                    <Stack.Screen name="SingleProduct" component={SingleProduct} />
-                    <Stack.Screen name="FeaturedProduct" component={FeaturedProduct} />
-                    <Stack.Screen name='LocationPage' component={LocationPage} />
-                    <Stack.Screen name='EditProfile' component={EditProfile} />
-                    <Stack.Screen name='Address' component={AddAddress} />
-                    <Stack.Screen name='ChangePasswd' component={ChangePasswd} />
-                    <Stack.Screen name='GoogleLocation' component={GoogleLocation} />
-                    <Stack.Screen name='MapPage' component={MapAddress} />
-                    <Stack.Screen name='OrderPlaced' component={OrderPlaced} />
-                    <Stack.Screen name='EditAddress' component={EditAddress} />
-                </Stack.Navigator>
-            </NavigationContainer>
+  return (
+    <>
+      <NavigationContainer ref={navigationRef} onReady={onReady}>
+        <Stack.Navigator
+          initialRouteName={user && homeAdd ? 'HomeNavigator' : user ? 'LocationPage' : 'Login'}
+          screenOptions={{ headerShown: false }}>
+          {/* <Stack.Navigator initialRouteName={ 'HomeNavigator' } screenOptions={{ headerShown: false }}> */}
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Register" component={Register} />
+          <Stack.Screen name="Forget" component={Forget} />
+          <Stack.Screen name="HomeNavigator" component={HomeNavigation} />
+          <Stack.Screen name="SingleOrder" component={SingleOrder} />
+          <Stack.Screen name="Notification" component={NotificationPage} />
+          <Stack.Screen name="Cart" component={Cart} />
+          <Stack.Screen name="Checkout" component={Checkout} />
+          <Stack.Screen name="Category" component={Category} />
+          <Stack.Screen name="AllProducts" component={AllProducts} />
+          <Stack.Screen name="SingleCategory" component={SingleCategory} />
+          <Stack.Screen name="Search" component={Search} />
+          <Stack.Screen name="SingleProduct" component={SingleProduct} />
+          <Stack.Screen name="FeaturedProduct" component={FeaturedProduct} />
+          <Stack.Screen name='LocationPage' component={LocationPage} />
+          <Stack.Screen name='EditProfile' component={EditProfile} />
+          <Stack.Screen name='Address' component={AddAddress} />
+          <Stack.Screen name='ChangePasswd' component={ChangePasswd} />
+          <Stack.Screen name='GoogleLocation' component={GoogleLocation} />
+          <Stack.Screen name='MapPage' component={MapAddress} />
+          <Stack.Screen name='OrderPlaced' component={OrderPlaced} />
+          <Stack.Screen name='EditAddress' component={EditAddress} />
+          <Stack.Screen name='Processing' component={ProcessingOrder} />
+        </Stack.Navigator>
+      </NavigationContainer>
 
             {
                 isConnected !== null && !isConnected && (

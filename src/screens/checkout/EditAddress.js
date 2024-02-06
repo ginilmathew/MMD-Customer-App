@@ -20,7 +20,11 @@ import locationContext from '../../context/location/locationContext'
 import reactotron from 'reactotron-react-native'
 
 
-const EditAddress = ({ navigation }) => {
+const EditAddress = ({ navigation, route }) => {
+
+    const {cartID} = route?.params;
+
+    reactotron.log(cartID, "ID")
 
     const [refresh, setRefresh] = useState(false);
     const [defaultAddress, setDefaultAddress] = useState("");
@@ -80,7 +84,7 @@ const EditAddress = ({ navigation }) => {
     }, [navigation])
 
     const goToCheckout = useCallback(() => {
-        navigation.navigate('Checkout', {item: defaultAddress})
+        navigation.navigate('Checkout', {item: defaultAddress, cart_ID: cartID})
     }, [navigation, defaultAddress])
 
 

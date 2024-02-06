@@ -19,7 +19,7 @@ const Header = memo(({ onPress, text }) => {
 
     const { setMode } = useContext(LocationContext)
 
-
+    const [cart_id] = useMMKVStorage('cart_id', storage);
 
     const navigation = useNavigation()
 
@@ -60,7 +60,7 @@ const Header = memo(({ onPress, text }) => {
                 qty: item.qty
 
             }));
-            mutate({ product: updatedData })
+            mutate({ product: updatedData, cartId: cart_id ? cart_id : null })
         } else {
             navigation.navigate('Cart', { cart_id: null })
         }

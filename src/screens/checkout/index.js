@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useContext, useState } from 'react'
 import { COLORS } from '../../constants/COLORS'
 import CommonHeader from '../../components/CommonHeader'
@@ -9,19 +9,70 @@ import CommonButton from '../../components/CommonButton'
 import { useNavigation } from '@react-navigation/native'
 import reactotron from 'reactotron-react-native'
 import CartContext from '../../context/cart'
+import { useMutation, useQuery } from 'react-query'
+import useRefetch from '../../hooks/useRefetch'
+import { PosttoCheckout } from '../../api/checkoutData'
+import { PlaceOrder } from '../../api/PlaceOrder'
+import moment from 'moment'
+import { storage } from '../../../App'
+import { useMMKVStorage } from 'react-native-mmkv-storage'
+import { RAZORPAY_KEY } from '../../constants/API'
+import RazorpayCheckout from 'react-native-razorpay';
 
 
 const Checkout = ({ route }) => {
 
-  const item = route?.params;
+  const [user] = useMMKVStorage('user', storage);
 
-  const { cartItems } = useContext(CartContext);
+  const { item, cart_ID } = route?.params;
 
-  reactotron.log(item, "item")
+  reactotron.log(RAZORPAY_KEY, "RAZORPAY_KEY")
+
+  reactotron.log(user?.user, "user")
+  // reactotron.log(cart_ID, "cart_ID")
+
+  const { cartItems, setCartItems } = useContext(CartContext);
+
+  reactotron.log(cartItems, "cartItems")
 
   const navigation = useNavigation();
 
   const [radioBtnStatus, stRadioBtnStatus] = useState(0);
+
+  let payload = {
+    cart_id: cart_ID
+  }
+
+  let today = new Date();
+
+  reactotron.log(today, "today")
+
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ['Checkout'],
+    //retry: false,
+    queryFn: () => PosttoCheckout(
+      payload
+    ),
+    //enabled: false
+  })
+
+  useRefetch(refetch)
+
+  const { mutate, refetch: postsubrefetch } = useMutation({
+    mutationKey: 'placedOrder',
+    mutationFn: PlaceOrder,
+    onSuccess: (data) => {
+      setCartItems([])
+      //navigation.navigate('Processing')
+        // navigation.navigate('OrderPlaced', { item: data?.data?.data })
+        navigation.reset
+      
+    }
+  })
+
+
+  reactotron.log(data, "CHKOUT")
+
 
   const checkBox = (num) => (
     <TouchableOpacity onPress={() => stRadioBtnStatus(num)}>
@@ -29,33 +80,75 @@ const Checkout = ({ route }) => {
     </TouchableOpacity>
   )
 
-  const placeOrder = () => {
-    if (radioBtnStatus === 0) {
-      navigation.navigate('OrderPlaced', { item: radioBtnStatus })
-    } else if (radioBtnStatus === 1) {
-      //RazorPay//
+  const handlePayment = () => {
+    var options = {
+      description: '',
+      image: 'https://mmdcartadmin.diginestsolutions.in/static/media/logo.5a3a4acf9425f0097cef.png',
+      currency: 'INR',
+      key: RAZORPAY_KEY,
+      amount: data?.data?.data?.total * 100,
+      name: 'DG Cart',
+      order_id: '',//Replace this with an order_id created using Orders API.
+      prefill: {
+        email: user?.user?.email,
+        contact: user?.user?.mobile,
+        name: user?.user?.name
+      },
+      theme: { color: '#53a20e' }
     }
+    RazorpayCheckout.open(options).then((data) => {
+        placeOrder()
+      //alert(`Success: ${data.razorpay_payment_id}`);
+    }).catch((error) => {
+      alert(`Error: ${error.code} | ${error.description}`);
+    });
   }
 
+  const placeOrder = () => {
+    mutate({
+      itemDetails: cartItems,
+      billingAddress: item?.area?.address,
+      shippingAddress: item?.area?.address,
+      orderDate: moment(today).format("DD-MM-YYYY"),
+      subTotal: data?.data?.data?.subtotal,
+      discount: 0,
+      tax: data?.data?.data?.tax,
+      total: data?.data?.data?.total,
+      paymentType: radioBtnStatus === 0 ? "cod" : "online",
+      paymentStatus: radioBtnStatus === 0 ? "pending" : "completed",
+      customer_id: user?.user?._id
+    })
+  }
+
+  const handlePlaceOrder = () => {
+    if (radioBtnStatus === 0) {
+      placeOrder()
+    } else if (radioBtnStatus === 1) {
+      navigation.navigate('Processing')
+      setTimeout(() => {
+        handlePayment()
+      }, 1500);
+    }
+  }
 
 
   return (
     <View style={styles.container}>
       <Header />
       <CommonHeader heading={"Checkout"} backBtn />
-      <View style={styles.innerContainer}>
+      <ScrollView contentContainerStyle={styles.innerContainer}>
 
         <View>
           {cartItems?.map(item => (<View style={styles.imgContainer} key={item?._id}>
             <View style={styles.boxStyle}>
-              <Image    source={{ uri: item?.item?.imageBasePath + item?.item?.image?.[0] }} style={styles.imgStyle} />
+              <Image source={{ uri: item?.item?.imageBasePath + item?.item?.image?.[0] }} style={styles.imgStyle} />
               <View style={styles.imgSection}>
                 <Text style={styles.productName}>{item?.item?.name}</Text>
                 <Text style={styles.categoryName}>Category : {item?.item?.category?.name}</Text>
               </View>
             </View>
             <View style={styles.qtyBox}>
-              <Text style={styles.price}>₹ {item?.item?.variant?.sellingPrice}</Text>
+              <Text style={styles.price}>₹ {(item?.item?.variant?.offerPrice && item?.item?.variant?.offerPrice < item?.item?.variant?.sellingPrice) ? (item?.item?.variant?.offerPrice) : (item?.item?.variant?.sellingPrice)}</Text>
             </View>
           </View>
           ))}
@@ -69,7 +162,7 @@ const Checkout = ({ route }) => {
             </View>
             <View style={styles.locationStyle}>
               <Ionicons name="location" size={30} color={COLORS.blue} />
-              <Text style={styles.description}>{item?.item?.area?.address}</Text>
+              <Text style={styles.description}>{item?.area?.address}</Text>
             </View>
           </View>
 
@@ -88,29 +181,29 @@ const Checkout = ({ route }) => {
             <View style={styles.totalContainer}>
               <View style={styles.textBox}>
                 <Text style={styles.subBox}>Sub-Total</Text>
-                <Text style={styles.priceBox}>₹100.50</Text>
+                <Text style={styles.priceBox}>₹ {data?.data?.data?.subtotal}</Text>
               </View>
               <View style={styles.textBox}>
                 <Text style={styles.subBox}>GST</Text>
-                <Text style={styles.priceBox}>₹10.00</Text>
+                <Text style={styles.priceBox}>₹ {data?.data?.data?.tax}</Text>
               </View>
               <View style={styles.textBox}>
                 <Text style={styles.subBox}>Delivery Charge</Text>
-                <Text style={styles.priceBox}>₹30.00</Text>
+                <Text style={styles.priceBox}>₹ {data?.data?.data.deliveryCharge}</Text>
               </View>
               <View style={styles.containerTwo}>
                 <Text style={styles.textStyle}>Grand Total</Text>
-                <Text style={styles.priceBox}>₹140.50</Text>
+                <Text style={styles.priceBox}>₹ {data?.data?.data?.total}</Text>
               </View>
             </View>
           </View>
         </View>
 
-        <View style={{ paddingHorizontal: 22 }}>
-          <CommonButton text={"Place Order"} onPress={placeOrder} />
+        <View style={{ paddingHorizontal: 22, marginTop: 20 }}>
+          <CommonButton text={"Place Order"} onPress={handlePlaceOrder} />
         </View>
 
-      </View>
+      </ScrollView>
     </View>
   )
 }
@@ -125,7 +218,6 @@ const styles = StyleSheet.create({
   innerContainer: {
     paddingTop: 5,
     paddingBottom: 25,
-    flex: 1,
     justifyContent: "space-between"
   },
   imgContainer: {
