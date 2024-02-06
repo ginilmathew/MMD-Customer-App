@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useReducer } from 'react';
+import React, { useState, useCallback, useEffect, useReducer, useContext } from 'react';
 import {
     Dimensions,
     Image,
@@ -17,7 +17,10 @@ import CustomDropdown from '../../components/CommonDropDown';
 import reactotron from 'reactotron-react-native';
 import Animated from 'react-native-reanimated';
 import { AddToCart } from '../../components/ItemCard';
-import CartButton from '../../components/CartButton';
+import Entypo from 'react-native-vector-icons/Entypo'
+import { useMutation } from 'react-query';
+import { PostAddToCart } from '../../api/cart';
+import CartContext from '../../context/cart';
 
 
 let status = true;
@@ -25,7 +28,13 @@ let status = true;
 const SingleProduct = ({ route }) => {
 
     const { item } = route.params;
+    const { cartItems, setCartItems, } = useContext(CartContext);
+    const { mutate } = useMutation({
+        mutationKey: 'add-cart',
+        mutationFn: PostAddToCart
+    })
 
+    const initialQty = cartItems?.find(({ _id }) => _id === item?._id)
 
     const reducer = (state, action) => {
         for (let i = 0; i < item?.units?.length; i++) {
@@ -40,6 +49,23 @@ const SingleProduct = ({ route }) => {
         }
     }
 
+    const handleAddCart = useCallback(() => {
+        const updatedData = cartItems.map(product => {
+            if(item?._id === product?._id) {
+                return {
+                    ...product,
+                    qty,
+                    item: {
+                        ...product?.item,
+                        qty
+                    }
+                }
+            }
+            return product
+        });
+        mutate({ product: updatedData });
+    }, [qty, cartItems])
+
     useEffect(() => {
         for (let i = 0; i < item?.units?.length; i++) {
             dispatch({ type: item?.units[i]?.name, value: item?.units[i]?.variants[0]?.name })
@@ -50,6 +76,7 @@ const SingleProduct = ({ route }) => {
     const { height } = useWindowDimensions()
     const [mainImage, setMainImage] = useState(require('../../images/spinach.jpg'));
     const [price, setPrice] = useState(0)
+    const [qty, setQty] = useState(initialQty?.qty || 1)
 
     const [state, dispatch] = useReducer(reducer, {});
 
@@ -96,7 +123,7 @@ const SingleProduct = ({ route }) => {
                 contentContainerStyle={[styles.container]}
                 scrollEnabled={true}
                 showsVerticalScrollIndicator={false}>
-                {/* <Animated.Image source={{ uri: BASEPATHPRODCT + item?.image?.[0] }} style={styles.mainImage} resizeMode="contain" sharedTransitionTag={item?._id} /> */}
+                <Animated.Image source={{ uri: BASEPATHPRODCT + item?.image?.[0] }} style={styles.mainImage} resizeMode="contain" sharedTransitionTag={item?._id} />
                 {/* <ScrollView
                     horizontal
                     showsHorizontalScrollIndicator={false}
@@ -108,9 +135,51 @@ const SingleProduct = ({ route }) => {
                 </ScrollView> */}
                 <ProductData item={item} price={price} />
 
-                <CartButton />
+                <View style={{
+                    width: 80,
+                    justifyContent: 'space-between',
+                    flexDirection: 'row',
+                    marginLeft: 'auto'
+                }}>
+                    <TouchableOpacity style={{
+                        backgroundColor: COLORS.primary,
+                        paddingHorizontal: 4,
+                        paddingVertical: 4,
+                        borderRadius: 6,
+                        marginRight: 2,
+                    }} onPress={() => {
+                        setQty(qty => {
+                            if (qty > 1) return qty - 1
+                            else return qty;
+                        })
+                    }}>
+                        <Entypo name='minus' size={15} color='#fff' />
+                    </TouchableOpacity>
 
-                    
+                    <Text style={{
+                        justifyContent: 'center',
+                        textAlign: 'center',
+                        minWidth: 20,
+                        fontFamily: 'Poppins-Regular',
+                        fontSize: 14,
+                        fontWeight: 'bold',
+                        color: COLORS.dark
+                    }}>{qty}</Text>
+
+                    <TouchableOpacity style={{
+                        backgroundColor: COLORS.primary,
+                        paddingHorizontal: 4,
+                        paddingVertical: 4,
+                        borderRadius: 6,
+                        marginRight: 2,
+                    }} onPress={() => {
+                        setQty(qty + 1)
+                    }}>
+                        <Entypo name='plus' size={15} color='#fff' />
+                    </TouchableOpacity>
+                </View>
+
+
                 <View style={styles.dropdownContainer}>
 
                     {item?.units.map((item, i) => {
@@ -124,7 +193,7 @@ const SingleProduct = ({ route }) => {
                 {item?.description ? <DescriptionSection item={item} /> : null}
             </ScrollView>
             <View>
-                <BuyButton />
+                <BuyButton onPress={handleAddCart} />
             </View>
         </View>
     );
@@ -179,9 +248,9 @@ const DescriptionSection = React.memo(({ item }) => (
 
 
 
-const BuyButton = React.memo(() => (
+const BuyButton = React.memo(({ onPress }) => (
     <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={onPress}>
             <Text style={styles.buttonText}>Add to Cart</Text>
         </TouchableOpacity>
     </View>

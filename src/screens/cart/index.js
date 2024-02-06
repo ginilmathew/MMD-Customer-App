@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Image, FlatList } from 'react-native'
-import React, { useCallback, useContext, useEffect } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import Header from '../../components/Header'
 import CommonHeader from '../../components/CommonHeader'
 import { COLORS } from '../../constants/COLORS'
@@ -7,7 +7,7 @@ import CommonButton from '../../components/CommonButton'
 import ItemCard from '../../components/ItemCard'
 import CartContext from '../../context/cart'
 import reactotron from 'reactotron-react-native'
-import { addToCart, getCartItems } from '../../api/cart'
+import { PostAddToCart, addToCart, getCartItems } from '../../api/cart'
 import { useMutation, useQuery } from 'react-query'
 import useRefetch from '../../hooks/useRefetch'
 import Animated from 'react-native-reanimated'
@@ -15,15 +15,18 @@ import CartItemCard from '../../components/cartItemCard'
 const Cart = ({ navigation, route }) => {
 
   const { cartItems, setCartItems, } = useContext(CartContext);
+  const [clean, setClean] = useState(null)
 
   const { cart_id } = route.params;
 
-  reactotron.log({ cartItems },'IN CART PAGE')
+ 
 
-  const { mutate, refetch: postsubrefetch, data, isLoading, refetch } = useMutation({
+
+  const { mutate, data, isLoading, refetch } = useMutation({
     mutationKey: 'cartItems',
     mutationFn: getCartItems,
     onSuccess: (data) => {
+      setClean(true)
       let myStructure = data?.data?.data?.product.map((res) => (
         {
           _id: res?._id,
@@ -33,12 +36,46 @@ const Cart = ({ navigation, route }) => {
       ))
       setCartItems(myStructure)
     }
+  });
+
+
+
+  const { mutate: MutatePostAddCart, refetch: addtoCartFetch } = useMutation({
+    mutationKey: 'addToCart_query',
+    mutationFn: PostAddToCart,
+    onSuccess: (data) => {
+      let myStructure = data?.data?.data?.product.map((res) => (
+        {
+          _id: res?._id,
+          qty: res?.qty,
+          item: { ...res }
+        }
+      ))
+      setCartItems(myStructure)
+
+    }
   })
+
 
   useEffect(() => {
     if (cart_id) {
       mutate({ cartId: cart_id })
+
     }
+    return () => {
+ 
+      // // cancel the subscription
+      if (!clean) {
+        setClean(1); // Set clean to 1 to prevent further calls
+
+        const updatedData = cartItems.map(item => ({
+          ...item.item,
+          qty: item.qty
+        }));
+        MutatePostAddCart({ product: updatedData });
+      }
+    };
+  
   }, [cart_id])
 
   const noProductsAdded = () => {
@@ -63,19 +100,25 @@ const Cart = ({ navigation, route }) => {
     )
   }, [data?.data?.data, cartItems])
 
-const ListEmptyCompont = useCallback(()=>{
-  return (
- <View style={styles.emptyContainer}>
+  const ListEmptyCompont = useCallback(() => {
+    return (
+      <View style={styles.emptyContainer}>
         <Image source={require('../../images/cart.png')} style={styles.emptyCart} />
-      </View> 
-  )
-},[])
+      </View>
+    )
+  }, [])
 
 
   return (
     <View style={styles.container}>
       <Header />
       <CommonHeader heading={"Cart"} backBtn />
+
+      {/* <View style={styles.innerContainer}>
+        <ItemCard /> 
+        <CommonButton text={"Checkout"} mt={30}/>
+      </View> */}
+
       <View style={{ paddingBottom: 200, marginTop: 10 }}>
         <FlatList
           data={cartItems}
@@ -111,6 +154,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   emptyContainer: {
+    flex: 1,
     marginTop: 130,
     paddingHorizontal: 20,
     alignItems: "center",
