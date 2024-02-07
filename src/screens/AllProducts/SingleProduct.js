@@ -107,7 +107,17 @@ const SingleProduct = ({ navigation, route }) => {
     const { mutate, isLoading } = useMutation({
         mutationKey: 'add-cart',
         mutationFn: PostAddToCart,
-        onSuccess() {
+        onSuccess(data) {
+            let myStructure = data?.data?.data?.product.map((res) => (
+                {
+                    _id: res?._id,
+                    qty: res?.qty,
+                    unit_id: res?.unit?.id,
+                    varientname: res?.variant?.name,
+                    item: { ...res }
+                }
+            ))
+            // setCartItems(myStructure)
             storage.setString('success', 'Successfully added to cart')
         }
     })
@@ -137,9 +147,10 @@ const SingleProduct = ({ navigation, route }) => {
             _id: item?._id,
             qty,
             image: Array.isArray(item?.image[0]) ? item?.image[0] : item?.image,
-            unit: unitWithoutVariants,
+            unit: { id: unitWithoutVariants?.unitId?.id, name: unitWithoutVariants?.unitId?.name },
             variant: variant
         };
+
         // const productDetails = {
         //     item: {
         //         ...item,
@@ -152,23 +163,11 @@ const SingleProduct = ({ navigation, route }) => {
         //     qty
         // }
 
-        const filtering = cartItems?.filter(({ _id }) => _id !== item?._id)
-        setCartItems([...filtering, {
-            _id: item?._id, 
-            qty, 
-            unit_id: unitId?.id,
-            varientname: variant?.name,
-            item: selectedItem
-        }])
+        let filtering = cartItems?.filter(({ _id }) => _id !== item?._id)
+
         mutate({
-            product: [...filtering, {
-                _id: item?._id,
-                qty,
-                unit_id: unitId?.id,
-                varientname: variant?.name,
-                item: selectedItem
-            }],
-            cartid: cart_id ? cart_id : null
+            product: [selectedItem, ...filtering],
+            cartId: cart_id ? cart_id : null
         })
 
         storage.setString('success', 'Successfully added to cart')
@@ -207,42 +206,6 @@ const SingleProduct = ({ navigation, route }) => {
                         flexDirection: 'row',
                         marginLeft: 'auto'
                     }}>
-                        <TouchableOpacity style={{
-                            backgroundColor: COLORS.primary,
-                            paddingHorizontal: 4,
-                            paddingVertical: 4,
-                            borderRadius: 6,
-                            marginRight: 2,
-                        }} onPress={() => {
-                            setQty(qty => {
-                                if (qty > 1) return qty - 1
-                                else return qty;
-                            })
-                        }}>
-                            <Entypo name='minus' size={15} color='#fff' />
-                        </TouchableOpacity>
-
-                        <Text style={{
-                            justifyContent: 'center',
-                            textAlign: 'center',
-                            minWidth: 20,
-                            fontFamily: 'Poppins-Regular',
-                            fontSize: 14,
-                            fontWeight: 'bold',
-                            color: COLORS.dark
-                        }}>{qty}</Text>
-
-                        <TouchableOpacity style={{
-                            backgroundColor: COLORS.primary,
-                            paddingHorizontal: 4,
-                            paddingVertical: 4,
-                            borderRadius: 6,
-                            marginRight: 2,
-                        }} onPress={() => {
-                            setQty(qty + 1)
-                        }}>
-                            <Entypo name='plus' size={15} color='#fff' />
-                        </TouchableOpacity>
                     </View>
 
 
@@ -325,6 +288,48 @@ const SingleProduct = ({ navigation, route }) => {
                             </View>
                         </View>
                     </View>
+
+                </View>
+
+                <View style={{
+                    flexDirection: 'row',
+                    width: '100%',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    backgroundColor: 'rgba(0,0,0,.2)'
+                }}>
+                    <TouchableOpacity style={{
+                        backgroundColor: COLORS.primary,
+                        padding: 14,
+                        marginRight: 2,
+                    }} onPress={() => {
+                        setQty(qty => {
+                            if (qty > 1) return qty - 1
+                            else return qty;
+                        })
+                    }}>
+                        <Entypo name='minus' size={25} color='#fff' />
+                    </TouchableOpacity>
+
+                    <Text style={{
+                        justifyContent: 'center',
+                        textAlign: 'center',
+                        minWidth: 20,
+                        fontFamily: 'Poppins-Regular',
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        color: COLORS.dark
+                    }}>{qty}</Text>
+
+                    <TouchableOpacity style={{
+                        backgroundColor: COLORS.primary,
+                        padding: 14,
+                        marginRight: 2,
+                    }} onPress={() => {
+                        setQty(qty + 1)
+                    }}>
+                        <Entypo name='plus' size={25} color='#fff' />
+                    </TouchableOpacity>
 
                 </View>
                 {data?.data?.data?.product?.details ? <AboutSection item={data?.data?.data?.product} /> : null}

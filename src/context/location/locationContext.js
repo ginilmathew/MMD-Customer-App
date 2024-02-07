@@ -27,7 +27,6 @@ const locationContext = ({ children }) => {
     
     const onSuccess = async ({ data }) => {
 
-        console.log(mode);
         if(mode === 'map') {
             setLocation(location => ({
                 ...location,

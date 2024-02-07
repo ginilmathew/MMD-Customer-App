@@ -39,6 +39,8 @@ import ProcessingOrder from '../screens/checkout/ProcessingOrder';
 import reactotron from 'reactotron-react-native';
 import CartContext from '../context/cart';
 import { useAppState } from '../hooks/appStateManagement';
+import { useMutation } from 'react-query';
+import { PostAddToCart } from '../api/cart';
 
 
 
@@ -46,7 +48,7 @@ const Stack = createNativeStackNavigator();
 const Navigation = () => {
 
 
-    const [cart_id] = useMMKVStorage('cart_id', storage);
+    const [cart_id, setCartId] = useMMKVStorage('cart_id', storage);
     const { isConnected } = useNetInfo();
     const [user] = useMMKVStorage('user', storage);
     const [error] = useMMKVStorage('error', storage)
@@ -54,6 +56,14 @@ const Navigation = () => {
     const [homeAdd] = useMMKVStorage('homeAdd', storage, false)
     const { setMode, getLocation, setModal, modal, handleModal, openSettings, setReady, mode } = useContext(LocationContext)
     const { cartItems, setCartItems } = useContext(CartContext);
+    const { mutate } = useMutation({ 
+        mutationKey: 'post-cart', 
+        mutationFn: PostAddToCart,
+        onSuccess(data) {
+            console.log(data?.data?.data?._id);
+            setCartId(data?.data?.data?._id)
+        }
+    })
 
 
     const appState = useAppState();
@@ -70,7 +80,7 @@ const Navigation = () => {
                         ...item.item,
                         qty: item.qty
                     }));
-                    await PostAddToCart({ product: updatedData, cartid: cart_id })
+                    mutate({ product: updatedData, cartId: cart_id })
 
 
                 } catch (err) {

@@ -8,13 +8,13 @@ import reactotron from 'reactotron-react-native';
 
 const CustomItemCard = ({ onPress, item, key }) => {
 
+
     const navigation = useNavigation()
     let products = item.products ? item.products[0] : item;
     reactotron.log('context', products)
 
 
     const [price, setPrice] = useState(null)
-
 
     
 
@@ -25,6 +25,7 @@ const CustomItemCard = ({ onPress, item, key }) => {
 
 
     const isCartAdded = cartItems.some(cartItem => (cartItem._id === products._id && cartItem?.unit_id === unitID && cartItem?.varientname === varientName));
+
     const cartItem = cartItems.find(cartItem =>(cartItem._id === products._id && cartItem?.unit_id === unitID && cartItem?.varientname === varientName));
 
     const handleAddToCart = useCallback(() => {

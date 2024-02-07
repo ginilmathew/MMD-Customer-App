@@ -8,9 +8,9 @@ import reactotron from 'reactotron-react-native';
 
 const CartItemCard = ({ onPress, item, key }) => {
 
-    console.log(item?.item);
     const navigation = useNavigation()
-    let products = item.products ? item.products[0] : item;
+    let products = item?.item || item;
+    console.log(products);
     // let unitID = products?.unit.id;
     // let varientName = products?.variant?.name;
      
@@ -101,7 +101,7 @@ const CartItemCard = ({ onPress, item, key }) => {
 
     return (
         <Animated.View entering={AnimatedStyle} key={key}>
-            <TouchableOpacity onPress={NavigateToSingleProduct} style={styles.container}>
+            <TouchableOpacity activeOpacity={0.9} style={styles.container}>
                 {/* Left Side */}
                 <Animated.View style={styles.leftContainer}>
                 <Animated.Image
