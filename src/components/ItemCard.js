@@ -10,7 +10,7 @@ const CustomItemCard = ({ onPress, item, key }) => {
 
 
     const navigation = useNavigation()
-    let products = item.products ? item.products[0] : item;
+    let products = item?.products ? item?.products[0] : item;
 
 
     const [price, setPrice] = useState(null)
