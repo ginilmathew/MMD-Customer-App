@@ -27,7 +27,6 @@ const locationContext = ({ children }) => {
     
     const onSuccess = async ({ data }) => {
 
-        console.log(mode);
         if(mode === 'map') {
             setLocation(location => ({
                 ...location,
@@ -151,7 +150,7 @@ const locationContext = ({ children }) => {
                 }
             },
             {
-                enableHighAccuracy: false,
+                enableHighAccuracy: true,
                 maximumAge: 1000
             },
         );

@@ -34,6 +34,8 @@ const Checkout = ({ route }) => {
   reactotron.log(orderData?.data?.data?.orderId, "orderData")
   reactotron.log(razorRes, "razorRes")
 
+
+
   const { item, cart_ID } = route?.params;
 
   const { cartItems, setCartItems } = useContext(CartContext);
@@ -105,6 +107,8 @@ const Checkout = ({ route }) => {
 
 
     }
+
+
   })
 
   const updateMutation = (data) => {
@@ -153,6 +157,7 @@ const Checkout = ({ route }) => {
   }
 
   const placeOrder = () => {
+
     mutate({
       itemDetails: cartItems,
       billingAddress: item,

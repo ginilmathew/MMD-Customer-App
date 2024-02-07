@@ -15,11 +15,10 @@ import CartItemCard from '../../components/cartItemCard'
 const Cart = ({ navigation, route }) => {
 
   const { cartItems, setCartItems, } = useContext(CartContext);
-  const [clean, setClean] = useState(null)
+  const [clean, setClean] = useState(false)
 
   const { cart_id } = route.params;
 
- 
 
 
   const { mutate, data, isLoading, refetch } = useMutation({
@@ -31,8 +30,8 @@ const Cart = ({ navigation, route }) => {
         {
           _id: res?._id,
           qty: res?.qty,
-          unit_id :res?.unit?.id,
-          varientname:res?.variant?.name, 
+          unit_id: res?.unit?.id,
+          varientname: res?.variant?.name,
           item: { ...res }
         }
       ))
@@ -45,18 +44,19 @@ const Cart = ({ navigation, route }) => {
   const { mutate: MutatePostAddCart, refetch: addtoCartFetch } = useMutation({
     mutationKey: 'addToCart_query',
     mutationFn: PostAddToCart,
+
     onSuccess: (data) => {
       let myStructure = data?.data?.data?.product.map((res) => (
         {
           _id: res?._id,
           qty: res?.qty,
-          unit_id :res?.unit?.id,
-          varientname:res?.variant?.name, 
+          unit_id: res?.unit?.id,
+          varientname: res?.variant?.name,
           item: { ...res }
         }
       ))
       setCartItems(myStructure)
-
+      navigation.navigate('EditAddress', { cartID: cart_id })
     }
   })
 
@@ -66,21 +66,23 @@ const Cart = ({ navigation, route }) => {
       mutate({ cartId: cart_id })
 
     }
-    return () => {
- 
-      // // cancel the subscription
-      if (!clean) {
-        setClean(1); // Set clean to 1 to prevent further calls
 
-        const updatedData = cartItems.map(item => ({
-          ...item.item,
-          qty: item.qty
-        }));
-        MutatePostAddCart({ product: updatedData });
-      }
-    };
-  
   }, [cart_id])
+
+  // useEffect(() => {
+  //   return () => {
+  //     if(cartItems?.length > 0 ){
+  //       const updatedData = cartItems?.map(item => ({
+  //         ...item.item,
+  //         qty: item.qty
+  //       }));
+  //       console.log('ADDDD CART PAGE')
+  //       MutatePostAddCart({ product: updatedData, cartid: cart_id });
+  //     }
+
+  //   }
+
+  // }, [cartItems?.length])
 
   const noProductsAdded = () => {
     return (
@@ -91,7 +93,12 @@ const Cart = ({ navigation, route }) => {
   }
 
   const editAddress = () => {
-    navigation.navigate('EditAddress', {cartID : cart_id})
+    const updatedData = cartItems?.map(item => ({
+      ...item.item,
+      qty: item.qty
+    }));
+    MutatePostAddCart({ product: updatedData, cartid: cart_id });
+   
   }
 
   const renderItem = useCallback(({ item, index }) => {
@@ -104,13 +111,13 @@ const Cart = ({ navigation, route }) => {
     )
   }, [data?.data?.data, cartItems])
 
-// const ListEmptyCompont = useCallback(()=>{
-//   return (
-//  <View style={styles.emptyContainer}>
-//         <Image source={require('../../images/cart.png')} style={styles.emptyCart} />
-//       </View> 
-//   )
-// },[])
+  // const ListEmptyCompont = useCallback(()=>{
+  //   return (
+  //  <View style={styles.emptyContainer}>
+  //         <Image source={require('../../images/cart.png')} style={styles.emptyCart} />
+  //       </View> 
+  //   )
+  // },[])
 
 
   return (

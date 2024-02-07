@@ -9,14 +9,57 @@ import reactotron from 'reactotron-react-native';
 const CartItemCard = ({ onPress, item, key }) => {
 
     const navigation = useNavigation()
-    let products = item.products ? item.products[0] : item;
+    const [price, setPrice] = useState(null)
+    let products = item.products ? item.products[0] : item?.item;
     // let unitID = products?.unit.id;
     // let varientName = products?.variant?.name;
      
     // reactotron.log({unitID})
     // reactotron.log({varientName})
 
-  
+
+    const BASEURL = products?.imageBasePath ?? null;
+    const IMAGE = products?.image?.[0];
+    const getFinalPrices = () => {
+        if (!products?.variant) {
+            return null;
+        }
+        const { offerPrice, fromDate, toDate, sellingPrice } = products.variant;
+        if (!offerPrice || isOfferExpired(fromDate, toDate)) {
+            return { ...products.variant, finalPrice: sellingPrice, hasOfferPrice: false };
+        }
+        return { ...products.variant, finalPrice: offerPrice, hasOfferPrice: true };
+    };
+    const isOfferExpired = (fromDate, toDate) => {
+        const currentDateString = new Date().toISOString().slice(0, 10);
+        return fromDate > currentDateString || toDate < currentDateString;
+    };
+    useEffect(() => {
+        if (products?.variant) {
+            const finalPriceResult = getFinalPrices();
+            let finalPriceProducts = [finalPriceResult]
+            const lowestPriceProduct = finalPriceProducts?.reduce((lowest, current) => {
+                // If both have offer prices, compare final prices
+                if (current.hasOfferPrice && lowest.hasOfferPrice) {
+                    return current.finalPrice < lowest.finalPrice ? current : lowest;
+                }
+                // If only one has an offer price, prioritize the offer price
+                if (current.hasOfferPrice) {
+                    return current;
+                } else if (lowest.hasOfferPrice) {
+                    return lowest;
+                }
+                // Otherwise, just compare final prices
+                return current.finalPrice < lowest.finalPrice ? current : lowest;
+            });
+            if (lowestPriceProduct) {
+                // console.log("Product with the lowest final price:", lowestPriceProduct);
+                setPrice(lowestPriceProduct)
+            } else {
+                console.log("There are no products in the finalPriceProducts array.");
+            }
+        }
+    }, [products]);
        
 
     const { cartItems, addToCart, incrementItem, decrementItem ,DeleteItem} = useContext(CartContext);
@@ -41,7 +84,7 @@ const CartItemCard = ({ onPress, item, key }) => {
     }, [decrementItem, products._id]);
 
     const NavigateToSingleProduct = useCallback(() => {
-        navigation.navigate('SingleProduct', { item: item.products ? item?.products?.[0] : item })
+        navigation.navigate('SingleProduct', { item: item?.item })
     }, [navigation])
 
 
@@ -100,38 +143,38 @@ const CartItemCard = ({ onPress, item, key }) => {
 
     return (
         <Animated.View entering={AnimatedStyle} key={key}>
-            <TouchableOpacity onPress={NavigateToSingleProduct} style={styles.container}>
+            <TouchableOpacity activeOpacity={0.9} style={styles.container}>
                 {/* Left Side */}
                 <Animated.View style={styles.leftContainer}>
-                <Animated.Image
-                        source={{ uri: products?.item?.imageBasePath + products?.item?.image?.[0] }}
+                {BASEURL && <Animated.Image
+                        source={{ uri: BASEURL + IMAGE }}
                         style={styles.leftImage}
                         sharedTransitionTag={item?.product_id}
-                    />
+                    /> }
                     
                 </Animated.View>
 
                 {/* Center Content */}
                 <View style={styles.centerContainer}>
-                    <Text style={styles.heading}>{products?.item?.name}</Text>
-                    <Text style={styles.subHeading}>Category: {products?.item?.category?.name}</Text>
-                    {products?.item?.units[0]?.variants[0]?.offerPrice !== "" ? (<View style={styles.offerBox}>
+                    <Text style={styles.heading}>{products?.name}</Text>
+                    <Text style={styles.subHeading}>Category: {products?.category?.name}</Text>
+                    {price?.hasOfferPrice ? (<View style={styles.offerBox}>
                         <Text style={styles.offerText}>Up to 10% off!</Text>
                     </View>) : null}
                 </View>
 
                 {/* Right Side */}
                 <View style={styles.rightContainer}>
-                    <Text style={styles.topPrice}>₹ {products?.item?.units[0]?.variants[0]?.offerPrice * 1 ? products?.item?.units[0]?.variants[0]?.offerPrice : products?.item.units[0]?.variants[0]?.sellingPrice ?? 0}</Text>
-                    {products?.item?.units[0]?.variants[0]?.offerPrice  &&
-                        <Text style={styles.strikePrice}>₹ {products?.item?.units[0]?.variants[0]?.sellingPrice ?? 0}</Text>}
-                    <AddToCart
-                        isCartAdded={isCartAdded}
-                        handleAddToCart={handleAddToCart}
-                        handleDecrement={handleDecrement}
-                        handleIncrement={handleIncrement}
-                        cartItem={cartItem} />
-                </View>
+                <Text style={styles.topPrice}>₹ {price?.finalPrice}</Text>
+                {price?.hasOfferPrice &&
+                    <Text style={styles.strikePrice}>₹ {price?.sellingPrice}</Text>}
+                <AddToCart
+                    isCartAdded={isCartAdded}
+                    handleAddToCart={handleAddToCart}
+                    handleDecrement={handleDecrement}
+                    handleIncrement={handleIncrement}
+                    cartItem={cartItem} />
+            </View>
             </TouchableOpacity>
 
         </Animated.View>

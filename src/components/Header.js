@@ -7,25 +7,24 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { COLORS } from '../constants/COLORS';
 import CartContext from '../context/cart';
 import reactotron from 'reactotron-react-native';
-import { PostAddToCart } from '../api/cart';
-import { useMutation } from 'react-query';
 import IonIcon from 'react-native-vector-icons/Ionicons'
 import LocationContext from '../context/location';
+import { PostAddToCart } from '../api/cart';
+import { useMutation } from 'react-query';
 import { useMMKVStorage } from 'react-native-mmkv-storage';
 import { storage } from '../../App';
 
 
 const Header = memo(({ onPress, text }) => {
 
+    const { cartItems, setCartItems } = useContext(CartContext);
     const { setMode } = useContext(LocationContext)
 
-
+    const [cart_id] = useMMKVStorage('cart_id', storage);
 
     const navigation = useNavigation()
 
-    const { cartItems, setCartItems } = useContext(CartContext)
-
-    const { mutate, refetch: postsubrefetch } = useMutation({
+    const { mutate, refetch} = useMutation({
         mutationKey: 'addToCart_query',
         mutationFn: PostAddToCart,
         onSuccess: async (data) => {
@@ -53,19 +52,20 @@ const Header = memo(({ onPress, text }) => {
     }, [navigation])
 
     const cartPage = useCallback(() => {
-
+        reactotron.log('API CSLLED')
         if (cartItems?.length > 0) {
-            const updatedData = cartItems.map(item => ({
+            console.log(cartItems[0]);
+            const updatedData = cartItems?.map(item => ({
                 ...item.item,
                 qty: item.qty
 
             }));
-            mutate({ product: updatedData })
+            mutate({ product: updatedData, cartId: cart_id ? cart_id : null })
         } else {
             navigation.navigate('Cart', { cart_id: null })
         }
-        navigation.navigate('Cart', { cart_id: null })
-    }, [navigation, cartItems, mutate])
+        // navigation.navigate('Cart', { cart_id: null })
+    }, [navigation, cartItems,cart_id])
 
 
 
@@ -87,9 +87,10 @@ const Header = memo(({ onPress, text }) => {
             {text && (
                 <TouchableOpacity style={{
                     flexDirection: 'row',
-                    gap: 3,
+                    gap: 2,
+                    marginRight: 30,
                     flex: 1,
-                    marginLeft: -20,
+                    alignItems: 'center',
                     justifyContent: 'center'
                 }} onPress={changeLoc}>
                     <IonIcon name='location' size={20} color={COLORS.primary} />

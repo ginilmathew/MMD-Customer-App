@@ -1,5 +1,6 @@
-import React, { useState, useCallback, useEffect, useReducer } from 'react';
+import React, { useState, useCallback, useEffect, useReducer, useContext, useRef, useMemo } from 'react';
 import {
+    ActivityIndicator,
     Dimensions,
     Image,
     ScrollView,
@@ -15,65 +16,173 @@ import { COLORS } from '../../constants/COLORS';
 import CommonSelectDropdown from '../../components/CustomDropDown';
 import CustomDropdown from '../../components/CommonDropDown';
 import reactotron from 'reactotron-react-native';
-import Animated from 'react-native-reanimated';
+import Animated, { interpolate } from 'react-native-reanimated';
+import { AddToCart } from '../../components/ItemCard';
+import Entypo from 'react-native-vector-icons/Entypo'
+import { useMutation, useQuery } from 'react-query';
+import { PostAddToCart } from '../../api/cart';
+import CartContext from '../../context/cart';
+import { singProduct } from '../../api/allProducts';
+import SelectDropdown from 'react-native-select-dropdown';
+import IonIcon from 'react-native-vector-icons/AntDesign'
+import useRefetch from '../../hooks/useRefetch'
+import { useFocusEffect } from '@react-navigation/native';
+import { storage } from '../../../App';
+import { useMMKVStorage } from 'react-native-mmkv-storage';
 
-const SingleProduct = ({ route }) => {
+
+const SingleProduct = ({ navigation, route }) => {
 
     const { item } = route.params;
+    const [cart_id] = useMMKVStorage('cart_id', storage);
 
+    const [qty, setQty] = useState(null)
+    const { cartItems, setCartItems, } = useContext(CartContext);
+    const { data, refetch } = useQuery({
+        queryKey: 'single-product',
+        initialData: item,
+        queryFn: () => singProduct(item?.slug),
+        onSuccess(data) {
+            const initialQty = cartItems?.find(({ _id }) => _id === item?._id);
+            setQty(initialQty?.qty || 1)
+        },
+        keepPreviousData: false
+    })
 
-    const reducer = (state, action) => {
-        for (let i = 0; i < item?.units?.length; i++) {
-            switch (action?.type) {
-                case item?.units[i]?.name: {
-                    return {
-                        ...state,
-                        [`${item?.units[i]?.name}`]: action?.value
-                    }
-                }
-            }
-        }
-    }
-
-
+    const [unit, setUnit] = useState("")
+    const [unitList, setUnitList] = useState([])
     const { height } = useWindowDimensions()
-    const [mainImage, setMainImage] = useState(require('../../images/spinach.jpg'));
     const [price, setPrice] = useState(0)
+    const [selectedValue, setSelectedValue] = useState('')
 
-    const [state, dispatch] = useReducer(reducer, {});
+    const variantRef = useRef(null);
+    const unitRef = useRef(null);
+    useRefetch(refetch)
 
-    const handleImagePress = useCallback((image) => {
-        setMainImage(image);
-    }, []);
+    useFocusEffect(useCallback(() => {
+        setQty(null)
+        variantRef?.current?.reset()
+        unitRef?.current?.reset()
+        setUnit('')
+        setSelectedValue('')
+    }, []))
 
-    const BASEPATHPRODCT = item?.imageBasePath;
+    // useEffect(() => {
+    //     const focus = navigation.addListener('focus', () => {
+    // setUnit(item.units[0]?.name)
+    //     })
 
-    const items = item?.units?.[0]?.variants?.map((value) => {
-        return (
-            { label: value?.name, value: value?.sellingPrice }
-        )
-    });
+    //     const blur = navigation.addListener('blur', () => {
+    //         variantRef?.current?.reset()
+    //         unitRef?.current?.reset()
+    //         setUnit('')
+    //     })
+
+    //     return () => {
+    //         blur();
+    //         focus()
+    //     };
+    // }, [data])
+
+    useEffect(() => {
+        if (data) {
+            const list = item.units?.filter(({ name }) => name === unit)?.[0]?.variants?.map(({ name }) => name);
+            setUnitList(list)
+        }
+    }, [unit, data])
+
 
 
     useEffect(() => {
-        if (item) {
-            let total = item?.units?.[0]?.variants?.map(item => (
+        if (data) {
+            let total = item.units?.[0]?.variants?.map(item => (
                 item.offerPrice ? item.offerPrice ?? 0 : item.sellingPrice ?? 0
             ))
             let lowestPrice = Math.min(...total);
             setPrice(lowestPrice)
         }
-    }, [item])
+    }, [data])
 
-    const changeValue = (items) => {
-        const find = item?.units?.[0]?.variants?.find((res) => res?.name === items?.label)
-        //console.log({find})
-        setPrice(find.sellingPrice)
-        // setSelect(items.label);
-        // dispatch({ type: "KG", value: items?.label })
 
-        // setIsFocus(false);
-    }
+    const { mutate, isLoading } = useMutation({
+        mutationKey: 'add-cart',
+        mutationFn: PostAddToCart,
+        onSuccess(data) {
+            let myStructure = data?.data?.data?.product.map((res) => (
+                {
+                    _id: res?._id,
+                    qty: res?.qty,
+                    unit_id: res?.unit?.id,
+                    varientname: res?.variant?.name,
+                    item: { ...res }
+                }
+            ))
+            setCartItems(myStructure)
+            storage.setString('success', 'Successfully added to cart')
+        }
+    })
+
+
+    const defaultVal = useMemo(() => {
+        if (data) {
+            const initialQty = cartItems?.find(({ _id }) => _id === item?._id);
+
+            if (initialQty) {
+                return { unit: initialQty?.item?.unit, variant: initialQty?.item?.variant?.name };
+            } else {
+                return { unit: item.units[0]?.name, variant: item.units[0]?.variants[0]?.name }
+            }
+
+        }
+    }, [data])
+
+
+    const handleAddCart = useCallback(() => {
+
+        const unitId = item.units?.find(({ name }) => name === (unit || item.units[0]?.name))
+        const variant = unitId?.variants?.find(({ name }) => name === (selectedValue || unitId?.variants[0]?.name));
+        const { variants, ...unitWithoutVariants } = { unitId };
+
+        let selectedItem = {
+            ...data?.data?.data?.product,
+            _id: data?.data?.data?.product?._id,
+            qty,
+            image: Array.isArray(item?.image[0]) ? item?.image[0] : item?.image,
+            unit: { id: unitWithoutVariants?.unitId?.id, name: unitWithoutVariants?.unitId?.name },
+            variant: variant
+        };
+
+        // const productDetails = {
+        //     item: {
+        //         ...item,
+        //         unit: { id: unitId?.id, name: unitId?.name },
+        //         variant,
+        //         qty
+        //     },
+        //     unit_id: unitId?.id,
+        //     varientname: variant?.name,
+        //     qty
+        // }
+
+        let filtering = cartItems?.filter(({ _id }) => _id !== item?._id)?.map(({ item }) => {
+            if(item?.item) {
+                const { item, ...others } = item?.item;
+                return others;
+            }
+            return item;
+        })
+        
+        mutate({
+            product: [selectedItem, ...filtering],
+            cartId: cart_id ? cart_id : null
+        })
+
+        storage.setString('success', 'Successfully added to cart')
+    }, [qty, cartItems, unit, item, data, selectedValue])
+
+
+    const BASEPATHPRODCT = item?.imageBasePath || "";
+    const units = item.units?.map(({ name }) => name)
 
 
     return (
@@ -84,7 +193,7 @@ const SingleProduct = ({ route }) => {
                 contentContainerStyle={[styles.container]}
                 scrollEnabled={true}
                 showsVerticalScrollIndicator={false}>
-                {/* <Animated.Image source={{ uri: BASEPATHPRODCT + item?.image?.[0] }} style={styles.mainImage} resizeMode="contain" sharedTransitionTag={item?._id} /> */}
+                <Animated.Image source={{ uri: BASEPATHPRODCT + item?.image?.[0] || "" }} style={styles.mainImage} resizeMode="contain" sharedTransitionTag={item?._id} />
                 {/* <ScrollView
                     horizontal
                     showsHorizontalScrollIndicator={false}
@@ -94,20 +203,153 @@ const SingleProduct = ({ route }) => {
                         <SmallImage key={index} image={image} onPress={handleImagePress} />
                     ))}
                 </ScrollView> */}
-                <ProductData item={item} price={price} />
+                <ProductData item={data?.data?.data?.product} price={price} />
+
                 <View style={styles.dropdownContainer}>
 
-                    {item?.units.map((item) => (<CommonSelectDropdown changeValue={(props) => {
-                        dispatch({ type: item?.name, value: props?.label })
-                        return changeValue(props)
-                    }} topLabel={item?.name} key={item?.id} value={state[item?.name]} datas={items} />))}
+                    <View style={{
+                        width: 80,
+                        justifyContent: 'space-between',
+                        flexDirection: 'row',
+                        marginLeft: 'auto'
+                    }}>
+                    </View>
+
+
+                    <View style={styles.dropDown}>
+                        <View style={{
+                            width: '45%'
+                        }}>
+                            <Text style={{
+                                fontSize: 16,
+                                color: '#000',
+                                marginBottom: 10,
+                            }}>Unit</Text>
+
+                            <View style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                backgroundColor: COLORS.primary_light,
+                                borderRadius: 10,
+                                // paddingRight: 10
+                            }}>
+                                <SelectDropdown
+                                    ref={unitRef}
+                                    data={units}
+                                    defaultValue={defaultVal?.unit}
+                                    buttonTextStyle={{
+                                        fontSize: 13
+                                    }}
+                                    defaultButtonText={'Select'}
+                                    buttonStyle={{
+                                        width: '90%',
+                                        borderRadius: 10,
+                                        backgroundColor: COLORS.primary_light
+                                    }}
+                                    onSelect={(selectedItem, index) => {
+                                        setUnit(selectedItem)
+                                        variantRef?.current?.reset()
+                                    }}
+                                />
+
+                                {/* <IonIcon name='arrowright' color={COLORS.blue} size={20} /> */}
+                            </View>
+                        </View>
+
+                        <View style={{
+                            width: '45%'
+                        }}>
+                            <Text style={{
+                                fontSize: 16,
+                                color: '#000',
+                                marginBottom: 10,
+                            }}>Variant</Text>
+                            <View style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                borderRadius: 10,
+                                backgroundColor: COLORS.primary_light,
+                                // paddingRight: 10
+                            }}>
+                                <SelectDropdown
+                                    ref={variantRef}
+                                    data={unitList}
+                                    defaultValue={defaultVal?.variant}
+                                    buttonTextStyle={{
+                                        fontSize: 13,
+                                    }}
+                                    defaultButtonText={'Select'}
+                                    renderSearchInputLeftIcon={() => <IonIcon name='home' size={23} />}
+                                    buttonStyle={{
+                                        width: '90%',
+                                        borderRadius: 10,
+                                        backgroundColor: COLORS.primary_light
+                                    }}
+                                    disabled={unitList?.length === 0}
+                                    onSelect={(value) => {
+                                        setSelectedValue(value)
+                                    }}
+                                />
+
+                                {/* <IonIcon name='arrowright' color={COLORS.blue} size={20} /> */}
+                            </View>
+                        </View>
+                    </View>
 
                 </View>
-                {item?.details ? <AboutSection item={item} /> : null}
-                {item?.description ? <DescriptionSection item={item} /> : null}
+
+                {/* Button */}
+                <View style={{
+                    flexDirection: 'row',
+                    width: '50%',
+                    alignSelf: 'center',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    borderRadius: 12,
+                    overflow: 'hidden',
+                    backgroundColor: 'rgba(0,0,0,.1)'
+                }}>
+                    <TouchableOpacity style={{
+                        backgroundColor: COLORS.primary,
+                        padding: 12,
+                        marginRight: 2,
+                    }} onPress={() => {
+                        setQty(qty => {
+                            if (qty > 1) return qty - 1
+                            else return qty;
+                        })
+                    }}>
+                        <Entypo name='minus' size={25} color='#fff' />
+                    </TouchableOpacity>
+
+                    <Text style={{
+                        justifyContent: 'center',
+                        textAlign: 'center',
+                        minWidth: 20,
+                        fontFamily: 'Poppins-Regular',
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        color: COLORS.dark
+                    }}>{qty}</Text>
+
+                    <TouchableOpacity style={{
+                        backgroundColor: COLORS.primary,
+                        padding: 14,
+                        marginRight: 2,
+                    }} onPress={() => {
+                        setQty(qty + 1)
+                    }}>
+                        <Entypo name='plus' size={25} color='#fff' />
+                    </TouchableOpacity>
+
+                </View>
+
+
+                {data?.data?.data?.product?.details ? <AboutSection item={data?.data?.data?.product} /> : null}
+                {data?.data?.data?.product?.description ? <DescriptionSection item={data?.data?.data?.product} /> : null}
             </ScrollView>
             <View>
-                <BuyButton />
+                <BuyButton loading={isLoading} disabled={!unit || !selectedValue} onPress={handleAddCart} />
             </View>
         </View>
     );
@@ -162,10 +404,16 @@ const DescriptionSection = React.memo(({ item }) => (
 
 
 
-const BuyButton = React.memo(() => (
+const BuyButton = React.memo(({ onPress, loading, disabled }) => (
     <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Add to Cart</Text>
+        <TouchableOpacity style={[styles.button, { backgroundColor: disabled ? COLORS.primary_light : COLORS.primary }]} disabled={disabled} onPress={loading ? null : onPress}>
+            {
+                loading ? (
+                    <ActivityIndicator color={'#fff'} />
+                ) : (
+                    <Text style={styles.buttonText}>Add to Cart</Text>
+                )
+            }
         </TouchableOpacity>
     </View>
 ));
@@ -199,8 +447,13 @@ const styles = StyleSheet.create({
         // borderBottomWidth: 1,
         // borderBottomColor: '#ccc',
     },
-
-
+    dropDown: {
+        display: 'flex',
+        flexDirection: 'row',
+        marginTop: 20,
+        justifyContent: 'center',
+        gap: 20
+    },
     dropdownContainer: {
         borderTopWidth: 1,
         borderBottomWidth: 1,

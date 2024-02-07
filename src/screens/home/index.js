@@ -35,12 +35,12 @@ const Home = ({ navigation, route }) => {
     const [cart_id] = useMMKVStorage('cart_id', storage);
     const { cartItems, setCartItems } = useContext(CartContext);
 
-    reactotron.log(cart_id, "df")
 
     let payload = {
         "coordinates": [
             8.5204866, 76.9371447
         ],
+        // coordinates: [currentLoc?.coord?.latitude, currentLoc?.coord?.longitude],
         cartId: cart_id,
 
     }
@@ -166,9 +166,9 @@ const Home = ({ navigation, route }) => {
             <View style={{
                 marginBottom: 30
             }}>
-                {/* <View style={{ marginBottom: 20 }}>
+                <View style={{ marginBottom: 20 }}>
                     <CustomSlider item={data?.data?.data?.sliders} />
-                </View> */}
+                </View>
                 <View style={{ marginTop: 20 }}>
                     <CustomHeading label={'HighLights'} hide={false} marginH={20} />
                 </View>

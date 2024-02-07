@@ -7,7 +7,8 @@ const CartProvider = ({ children }) => {
 
 
     const [cartItems, setCartItems] = useState([]);
-    const [cartid, setCartid] = useState(null)
+
+ reactotron.log({cartItems})
 
     const addToCart = ({ _id: itemId, ...items }) => {
         setCartItems((prevItems) => {
@@ -96,8 +97,7 @@ const CartProvider = ({ children }) => {
             incrementItem,
             decrementItem,
             DeleteItem,
-            setCartid,
-            cartid
+        
         };
     }, [cartItems]); // Re-create the context value only when cartItems change
 
