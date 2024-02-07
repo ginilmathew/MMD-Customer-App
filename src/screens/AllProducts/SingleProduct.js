@@ -161,6 +161,16 @@ const SingleProduct = ({ navigation, route }) => {
             varientname: variant?.name,
             item: selectedItem
         }])
+        mutate({
+            product: [...filtering, {
+                _id: item?._id,
+                qty,
+                unit_id: unitId?.id,
+                varientname: variant?.name,
+                item: selectedItem
+            }],
+            cartid: cart_id ? cart_id : null
+        })
 
         storage.setString('success', 'Successfully added to cart')
     }, [qty, cartItems, unit, item, selectedValue])
