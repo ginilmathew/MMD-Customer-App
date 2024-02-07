@@ -24,6 +24,7 @@ import NoData from '../../components/NoData'
 import Header from '../../components/Header'
 import CartContext from '../../context/cart'
 import reactotron from 'reactotron-react-native'
+import CartButton from '../../components/CartButton'
 
 
 
@@ -250,6 +251,8 @@ const Home = ({ navigation, route }) => {
                 getItemLayout={(data, index) => ({ length: 80, offset: 80 * index, index })}
                 ListEmptyComponent={<NoData />}
             />
+
+            <CartButton  />
         </View>
     )
 }
