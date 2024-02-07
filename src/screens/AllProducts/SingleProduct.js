@@ -117,7 +117,7 @@ const SingleProduct = ({ navigation, route }) => {
                     item: { ...res }
                 }
             ))
-            // setCartItems(myStructure)
+            setCartItems(myStructure)
             storage.setString('success', 'Successfully added to cart')
         }
     })
@@ -136,6 +136,7 @@ const SingleProduct = ({ navigation, route }) => {
         }
     }, [data])
 
+
     const handleAddCart = useCallback(() => {
 
         const unitId = item.units?.find(({ name }) => name === (unit || item.units[0]?.name))
@@ -143,8 +144,8 @@ const SingleProduct = ({ navigation, route }) => {
         const { variants, ...unitWithoutVariants } = { unitId };
 
         let selectedItem = {
-            ...item,
-            _id: item?._id,
+            ...data?.data?.data?.product,
+            _id: data?.data?.data?.product?._id,
             qty,
             image: Array.isArray(item?.image[0]) ? item?.image[0] : item?.image,
             unit: { id: unitWithoutVariants?.unitId?.id, name: unitWithoutVariants?.unitId?.name },
@@ -163,15 +164,21 @@ const SingleProduct = ({ navigation, route }) => {
         //     qty
         // }
 
-        let filtering = cartItems?.filter(({ _id }) => _id !== item?._id)
-
+        let filtering = cartItems?.filter(({ _id }) => _id !== item?._id)?.map(({ item }) => {
+            if(item?.item) {
+                const { item, ...others } = item?.item;
+                return others;
+            }
+            return item;
+        })
+        
         mutate({
             product: [selectedItem, ...filtering],
             cartId: cart_id ? cart_id : null
         })
 
         storage.setString('success', 'Successfully added to cart')
-    }, [qty, cartItems, unit, item, selectedValue])
+    }, [qty, cartItems, unit, item, data, selectedValue])
 
 
     const BASEPATHPRODCT = item?.imageBasePath || "";
@@ -291,16 +298,20 @@ const SingleProduct = ({ navigation, route }) => {
 
                 </View>
 
+                {/* Button */}
                 <View style={{
                     flexDirection: 'row',
-                    width: '100%',
+                    width: '50%',
+                    alignSelf: 'center',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    backgroundColor: 'rgba(0,0,0,.2)'
+                    borderRadius: 12,
+                    overflow: 'hidden',
+                    backgroundColor: 'rgba(0,0,0,.1)'
                 }}>
                     <TouchableOpacity style={{
                         backgroundColor: COLORS.primary,
-                        padding: 14,
+                        padding: 12,
                         marginRight: 2,
                     }} onPress={() => {
                         setQty(qty => {
@@ -332,6 +343,8 @@ const SingleProduct = ({ navigation, route }) => {
                     </TouchableOpacity>
 
                 </View>
+
+
                 {data?.data?.data?.product?.details ? <AboutSection item={data?.data?.data?.product} /> : null}
                 {data?.data?.data?.product?.description ? <DescriptionSection item={data?.data?.data?.product} /> : null}
             </ScrollView>
