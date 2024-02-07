@@ -12,14 +12,14 @@ const CartProvider = ({ children }) => {
 
     const addToCart = ({ _id: itemId, ...items }) => {
         setCartItems((prevItems) => {
-            const existingItem = prevItems.find((item) => item._id === itemId);
+            const existingItem = prevItems?.find((item) => item._id === itemId);
             if (existingItem) {
                 // If item is already in the cart, update the count  
-                return prevItems.map((item) =>
-                    item._id === itemId ? { item, qty: item.qty + 1 } : item
+                return prevItems?.map((item) =>
+                    item?._id === itemId ? { item, qty: item?.qty + 1 } : item
                 );
             } else {
-                const { variants, ...unitWithoutVariants } = { ...items.units[0] };
+                const { variants, ...unitWithoutVariants } = { ...items?.units[0] };
                 // delete items.units
 
                 let item = {
@@ -44,12 +44,12 @@ const CartProvider = ({ children }) => {
 
     const incrementItem = ({ _id: itemId, }) => {
         setCartItems((prevItems) =>
-            prevItems.map((item) => {
+            prevItems?.map((item) => {
                 let items = {
                     ...item,
                     item: { ...item?.item }
                 }
-                return item._id === itemId ? { ...items, qty: item.qty + 1 } : items
+                return item?._id === itemId ? { ...items, qty: item?.qty + 1 } : items
             })
         );
     };
@@ -57,7 +57,7 @@ const CartProvider = ({ children }) => {
 
     const decrementItem = ({ _id: itemId }) => {
         setCartItems((prevItems) => {
-            const updatedItems = prevItems.map((item) => {
+            const updatedItems = prevItems?.map((item) => {
                 let items = {
                     ...item,
                     item: { ...item?.item, }
@@ -66,22 +66,22 @@ const CartProvider = ({ children }) => {
             });
 
             // Filter out items with count > 0
-            return updatedItems.filter((item) => item.qty > 0);
+            return updatedItems?.filter((item) => item.qty > 0);
         });
     };
 
     const DeleteItem = ({ _id: itemId }) => {
         setCartItems((prevItems) => {
-            const updatedItems = prevItems.map((item) => {
+            const updatedItems = prevItems?.map((item) => {
                 let items = {
                     ...item,
                     item: { ...item?.item, qty: Math.max(item.qty - 1, 0) }
                 }
                 return item._id === itemId ? { ...items, qty: Math.max(item.qty - 1, 0) } : items
             });
-            let find = updatedItems.find((res) => res?.qty === 0);
-            let final = updatedItems.filter((res) => res?._id !== find?._id);
-            reactotron.log({ find }, 'FINAL')
+            let find = updatedItems?.find((res) => res?.qty === 0);
+            let final = updatedItems?.filter((res) => res?._id !== find?._id);
+            // reactotron.log({ find }, 'FINAL')
             return final
         });
     };

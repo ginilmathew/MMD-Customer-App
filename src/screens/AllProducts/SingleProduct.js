@@ -36,6 +36,7 @@ const SingleProduct = ({ navigation, route }) => {
     const { item } = route.params;
     const [cart_id] = useMMKVStorage('cart_id', storage);
 
+
     const [qty, setQty] = useState(null)
     const { cartItems, setCartItems, } = useContext(CartContext);
     const { data, refetch } = useQuery({
@@ -108,7 +109,7 @@ const SingleProduct = ({ navigation, route }) => {
         mutationKey: 'add-cart',
         mutationFn: PostAddToCart,
         onSuccess(data) {
-            let myStructure = data?.data?.data?.product.map((res) => (
+            let myStructure = data?.data?.data?.product?.map((res) => (
                 {
                     _id: res?._id,
                     qty: res?.qty,
@@ -314,7 +315,6 @@ const SingleProduct = ({ navigation, route }) => {
                 left: 0,
                 right: 0,
             }}>
-                <BuyButton loading={isLoading} disabled={!unit || !selectedValue} onPress={handleAddCart} />
 
                 {/* Button */}
                 <View style={{
@@ -331,7 +331,6 @@ const SingleProduct = ({ navigation, route }) => {
                         backgroundColor: COLORS.primary,
                         padding: 10,
                         height: '100%',
-                        marginRight: 'auto',
                     }} onPress={() => {
                         setQty(qty => {
                             if (qty > 1) return qty - 1
@@ -342,9 +341,6 @@ const SingleProduct = ({ navigation, route }) => {
                     </TouchableOpacity>
 
                     <Text style={{
-                        justifyContent: 'center',
-                        textAlign: 'center',
-                        minWidth: 20,
                         fontFamily: 'Poppins-Regular',
                         fontSize: 16,
                         fontWeight: 'bold',
@@ -355,7 +351,6 @@ const SingleProduct = ({ navigation, route }) => {
                         backgroundColor: COLORS.primary,
                         padding: 10,
                         height: '100%',
-                        marginRight: 'auto',
                     }} onPress={() => {
                         setQty(qty + 1)
                     }}>
@@ -363,6 +358,8 @@ const SingleProduct = ({ navigation, route }) => {
                     </TouchableOpacity>
 
                 </View>
+
+                <BuyButton loading={isLoading} disabled={!unit || !selectedValue} onPress={handleAddCart} />
 
             </View>
         </View>
@@ -500,6 +497,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         textAlign: 'right',
+        color: COLORS.dark
     },
     stock: {
         fontFamily: 'Poppins-bold',

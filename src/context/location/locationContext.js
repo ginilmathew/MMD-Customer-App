@@ -67,7 +67,7 @@ const locationContext = ({ children }) => {
                 setModal(true);
             }
         } catch (err) {
-            console.warn(err);
+            // console.warn(err);
         }
     }, [])
 
@@ -96,7 +96,7 @@ const locationContext = ({ children }) => {
                     // setmo
                 }
             } catch (err) {
-                console.warn(err);
+                // console.warn(err);
             }
     }
 

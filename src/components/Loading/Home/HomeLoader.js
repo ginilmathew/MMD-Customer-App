@@ -28,12 +28,12 @@ const HomeLoader = () => {
         </Animated.View>
         <CustomHeading label={'Categories'} hide={false} marginH={0} />
         <View style={[styles.categorymain]}>
-          {Array(5).fill().map((_, index) => (
+          {Array(5).fill()?.map((_, index) => (
             <Animated.View key={index} style={[styles.category, { opacity }]} entering={FadeInDown.easing().delay(300)}/>
           ))}
         </View>
         <CustomHeading label={'Popular Products'} hide={false} marginH={0} />
-        {Array(3).fill().map((_, index) => (
+        {Array(3).fill()?.map((_, index) => (
           <SkeletonItemCard opacity={opacity}  key={index}/>))}
       </Animated.View>
     </Animated.View>
