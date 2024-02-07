@@ -117,7 +117,7 @@ const SingleProduct = ({ navigation, route }) => {
                     item: { ...res }
                 }
             ))
-            // setCartItems(myStructure)
+            setCartItems(myStructure)
             storage.setString('success', 'Successfully added to cart')
         }
     })
