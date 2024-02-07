@@ -71,12 +71,12 @@ const Checkout = ({ route }) => {
 
   useRefetch(refetch)
 
-  let mainData = {
-    orderId: orderData?.data?.data?.orderId,
-    payment_id: razorRes?.razorpay_payment_id,
-    razorpayOrderId: razorRes?.razorpay_order_id,
-    signature: razorRes?.razorpay_signature
-  }
+  // let mainData = {
+  //   orderId: orderData?.data?.data?.orderId,
+  //   payment_id: razorRes?.razorpay_payment_id,
+  //   razorpayOrderId: razorRes?.razorpay_order_id,
+  //   signature: razorRes?.razorpay_signature
+  // }
 
   reactotron.log(mainData, "testm")
 
@@ -88,7 +88,7 @@ const Checkout = ({ route }) => {
     }
   })
 
-  const { mutate, refetch: postsubrefetch } = useMutation({
+  const { mutate, refetch: postsubrefetch, data: orderNewData } = useMutation({
     mutationKey: 'placedOrder',
     mutationFn: PlaceOrder,
     onSuccess: async (data) => {
@@ -98,7 +98,7 @@ const Checkout = ({ route }) => {
       if (radioBtnStatus === 0) {
         navigation.navigate('OrderPlaced', { item: data?.data?.data })
       } else {
-        setOrderData(data)
+        // setOrderData(orderNewData)
         setTimeout(() => {
           handlePayment(data)
         }, 2000);
@@ -113,7 +113,7 @@ const Checkout = ({ route }) => {
 
   const updateMutation = (data) => {
     reMutation({
-      orderId: orderData?.data?.data?.orderId,
+      orderId: orderNewData?.data?.data?.orderId,
       payment_id: data?.razorpay_payment_id,
       razorpayOrderId: data?.razorpay_order_id,
       signature: data?.razorpay_signature
