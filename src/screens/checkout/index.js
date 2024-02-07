@@ -25,14 +25,17 @@ import { UpdateOrder } from '../../api/updateOrder'
 
 const Checkout = ({ route }) => {
 
+  const [order_id] = useMMKVStorage('order_id', storage);
   const [user] = useMMKVStorage('user', storage);
   const [cart_id] = useMMKVStorage('cart_id', storage);
   const { useSlot, setUseSlot } = useContext(SlotContext);
   const [razorRes, setRazorRes] = useState("")
   const [orderData, setOrderData] = useState("")
 
-  reactotron.log(orderData?.data?.data?.orderId, "orderData")
-  reactotron.log(razorRes, "razorRes")
+  reactotron.log({ order_id }, "orderDataAAAA")
+
+
+
 
 
 
@@ -40,7 +43,6 @@ const Checkout = ({ route }) => {
 
   const { cartItems, setCartItems } = useContext(CartContext);
 
-  reactotron.log(cartItems, "cartItems")
 
   const navigation = useNavigation();
 
@@ -49,12 +51,11 @@ const Checkout = ({ route }) => {
 
 
   let payload = {
-    cart_id: cart_ID
+    cart_id: cart_id
   }
 
   let today = new Date();
 
-  reactotron.log(today, "today")
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['Checkout'],
@@ -71,6 +72,7 @@ const Checkout = ({ route }) => {
 
   useRefetch(refetch)
 
+
   // let mainData = {
   //   orderId: orderData?.data?.data?.orderId,
   //   payment_id: razorRes?.razorpay_payment_id,
@@ -78,20 +80,15 @@ const Checkout = ({ route }) => {
   //   signature: razorRes?.razorpay_signature
   // }
 
-  reactotron.log(mainData, "testm")
 
-  const { mutate: reMutation, refetch: newRefetch } = useMutation({
-    mutationKey: 'UpdateOrderdata',
-    mutationFn: UpdateOrder,
-    onSuccess: (data) => {
-      reactotron.log(data, "UPDATE123")
-    }
-  })
+
 
   const { mutate, refetch: postsubrefetch, data: orderNewData } = useMutation({
     mutationKey: 'placedOrder',
     mutationFn: PlaceOrder,
     onSuccess: async (data) => {
+      setOrderData(data?.data?.data)
+      await storage.setStringAsync('order_id', data?.data?.data?.orderId);
       setCartItems([])
       await storage.getBoolAsync('cart_id', null);
       setUseSlot()
@@ -99,21 +96,29 @@ const Checkout = ({ route }) => {
         navigation.navigate('OrderPlaced', { item: data?.data?.data })
       } else {
         // setOrderData(orderNewData)
-        setTimeout(() => {
-          handlePayment(data)
-        }, 2000);
-        navigation.navigate('Processing')
+        // setTimeout(() => {
+        //   handlePayment(data)
+        // }, 2000);
+        navigation.navigate('Processing', { data, chk })
       }
-
-
     }
 
+  })
 
+
+
+  const { mutate: reMutation, refetch: newRefetch } = useMutation({
+    mutationKey: 'UpdateOrderdata',
+    mutationFn: UpdateOrder,
+    onSuccess: (data) => {
+      //reactotron.log(data, "OR")
+      navigation.navigate('OrderPlaced', { item: data?.data?.data})
+    }
   })
 
   const updateMutation = (data) => {
     reMutation({
-      orderId: orderNewData?.data?.data?.orderId,
+      orderId: data?.orderId,
       payment_id: data?.razorpay_payment_id,
       razorpayOrderId: data?.razorpay_order_id,
       signature: data?.razorpay_signature
@@ -146,7 +151,9 @@ const Checkout = ({ route }) => {
       theme: { color: '#53a20e' }
     }
     RazorpayCheckout.open(options).then((data) => {
-      reactotron.log(data, "optidaons")
+      data.orderId = order_id;
+
+   
       //setRazorRes(data)
       updateMutation(data)
       //navigation.navigate('Processing')
@@ -166,12 +173,14 @@ const Checkout = ({ route }) => {
       subTotal: data?.data?.data?.subtotal,
       discount: 0,
       tax: data?.data?.data?.tax,
+      delivery_charge: data?.data?.data?.deliveryCharge,
       total: data?.data?.data?.total,
       paymentType: radioBtnStatus === 0 ? "cod" : "online",
       paymentStatus: radioBtnStatus === 0 ? "pending" : "completed",
       customer_id: user?.user?._id,
       cartId: cart_id,
-      slot_date: useSlot?._id
+      slot_id: useSlot?.idData?._id,
+      slot_date: useSlot?.date
     })
   }
 

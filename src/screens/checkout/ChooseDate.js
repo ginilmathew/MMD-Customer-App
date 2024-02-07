@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import DatePicker from 'react-native-date-picker'
 import reactotron from 'reactotron-react-native'
 import moment from 'moment'
@@ -36,22 +36,6 @@ const ChooseDate = ({slotSelected}) => {
         }
     }
 
-    // const data = [
-    //     {
-    //         "_id": "65c1d6af7dab38aeda08f272",
-    //         "day": "Tuesday",
-    //         "fromTime": "15:00",
-    //         "toTime": "17:00",
-    //     },
-    //     {
-    //         "_id": "65c1d6af7dab38aeda08f272",
-    //         "day": "wed",
-    //         "fromTime": "15:00",
-    //         "toTime": "17:00",
-    //     },
-    //     // Add more data objects as needed
-    // ];
-
     const { mutate, refetch: postsubrefetch } = useMutation({
         mutationKey: 'SlotPlace',
         mutationFn: ChooseSlot,
@@ -76,8 +60,17 @@ const ChooseDate = ({slotSelected}) => {
         reactotron.log(value, "VAlUE")
         setSelectedValue(value);
         setVisible(false);
-        setUseSlot(value)
     };
+
+    useEffect(() => {
+      if(chosenDate && selectedValue) {
+        setUseSlot({
+            date: chosenDate,
+            idData : selectedValue
+        })
+      }
+    }, [chosenDate, selectedValue])
+    
 
     return (
         <View style={{ width: "100%" }}>

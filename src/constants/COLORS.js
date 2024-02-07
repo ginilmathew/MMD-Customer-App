@@ -14,6 +14,7 @@ export const COLORS = {
     status_completed: '#66C538',
     status_cancelled: '#FF6161',
     status_accepted: '#1C70D1',
+    status_paid: '#4D9FFF',
     white: '#fff',
     Offer_box:'#ffd8d8',
     border_color: "#707070" 
