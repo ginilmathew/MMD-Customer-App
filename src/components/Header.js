@@ -24,7 +24,6 @@ const Header = memo(({ onPress, text }) => {
 
     const navigation = useNavigation()
 
-
     const { mutate, refetch} = useMutation({
         mutationKey: 'addToCart_query',
         mutationFn: PostAddToCart,

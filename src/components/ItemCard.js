@@ -10,6 +10,7 @@ const CustomItemCard = ({ onPress, item, key }) => {
 
     const navigation = useNavigation()
     let products = item.products ? item.products[0] : item;
+    reactotron.log('context', products)
 
 
     const [price, setPrice] = useState(null)
@@ -20,6 +21,7 @@ const CustomItemCard = ({ onPress, item, key }) => {
     const { cartItems, addToCart, incrementItem, decrementItem } = useContext(CartContext);
     let unitID = products?.units[0]?.id;
     let varientName = products?.units[0]?.variants?.[0]?.name;
+
 
 
     const isCartAdded = cartItems.some(cartItem => (cartItem._id === products._id && cartItem?.unit_id === unitID && cartItem?.varientname === varientName));

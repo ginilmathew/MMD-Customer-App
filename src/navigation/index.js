@@ -65,20 +65,19 @@ const Navigation = () => {
         if ((appState === "background" && cartItems?.length > 0)) {
             reactotron.log('BACKGROUND API')
             const postCart = async () => {
-                // try {
-                //     const updatedData = cartItems.map(item => ({
-                //         ...item.item,
-                //         qty: item.qty
+                try {
+                    const updatedData = cartItems.map(item => ({
+                        ...item.item,
+                        qty: item.qty
+                    }));
+                    await PostAddToCart({ product: updatedData, cartid: cart_id })
 
-                //     }));
-                //     await PostAddToCart({ product: updatedData, cartid: cart_id })
 
+                } catch (err) {
 
-                // } catch (err) {
+                } finally {
 
-                // } finally {
-
-                // }
+                }
             }
             postCart()
 

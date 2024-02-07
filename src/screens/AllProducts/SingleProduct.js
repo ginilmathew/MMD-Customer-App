@@ -59,7 +59,6 @@ const SingleProduct = ({ navigation, route }) => {
     const unitRef = useRef(null);
     useRefetch(refetch)
 
-
     useFocusEffect(useCallback(() => {
         setQty(null)
         variantRef?.current?.reset()
