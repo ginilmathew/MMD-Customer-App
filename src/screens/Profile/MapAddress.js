@@ -27,7 +27,7 @@ const MapAddress = ({ navigation, route }) => {
     const [defaultVal, setDefaultVal] = useState(false)
     const [user] = useMMKVStorage('user', storage)
 
-    const { location, setLocation, changeLocation } = useContext(locationContext)
+    const { location, setLocation, changeLocation, setMode: accessMode } = useContext(locationContext)
 
 
     const { mutate, isLoading } = useMutation({
@@ -47,7 +47,7 @@ const MapAddress = ({ navigation, route }) => {
 
             //     return;
             // }
-            navigation.navigate('Address')
+            navigation.navigate(route?.params?.cartID ? 'EditAddress' : 'Address', route?.params?.cartID && { cartID: route?.params?.cartID })
         }
     })
 
@@ -70,7 +70,8 @@ const MapAddress = ({ navigation, route }) => {
     });
 
     const toLocation = useCallback(() => {
-        navigation.navigate("GoogleLocation", route?.params?.mode && { mode: true })
+        accessMode('map')
+        navigation.navigate("GoogleLocation", route?.params?.cartID && { cartID: route?.params?.cartID })
     }, [route?.params])
 
 
@@ -172,10 +173,10 @@ const MapAddress = ({ navigation, route }) => {
 
                             <View style={{ padding: 13, backgroundColor: COLORS.white, marginTop: "auto" }}>
                                 <Text style={{
-                                    color: COLORS.light,
+                                    color: COLORS.dark,
                                     fontFamily: 'Poppins-Bold',
                                     marginBottom: 2
-                                }}>SELECT DELIVERY LOCATION</Text>
+                                }}>DELIVERY LOCATION</Text>
 
                                 <View style={{
                                     flexDirection: 'row',
@@ -191,7 +192,7 @@ const MapAddress = ({ navigation, route }) => {
                                             fontFamily: 'Poppins-Bold',
                                             marginBottom: 2,
                                             marginLeft: 20
-                                        }}>{location?.address?.main}</Text>
+                                        }}>{location?.address?.main?.length > 25 ? location?.address?.main?.slice(0, 25) + '...' : location?.address?.main}</Text>
                                     </View>
 
                                     <TouchableOpacity style={{

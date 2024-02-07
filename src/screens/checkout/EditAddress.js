@@ -81,7 +81,7 @@ const EditAddress = ({ navigation, route }) => {
     });
 
     const addAddress = useCallback(() => {
-        setMode('edit')
+        setMode('map')
         navigation.navigate('GoogleLocation', { cartID: route?.params?.cartID })
     }, [navigation])
 

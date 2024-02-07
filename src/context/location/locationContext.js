@@ -16,7 +16,7 @@ import { PERMISSIONS, check, RESULTS } from 'react-native-permissions'
 
 const locationContext = ({ children }) => {
 
-
+    const [cart_id] = useMMKVStorage('cart_id', storage);
     const [location, setLocation] = useState({})
     const [mode, setMode] = useState('')
     const [currentLoc, setCurrentLoc] = useState('')
@@ -24,10 +24,11 @@ const locationContext = ({ children }) => {
     const [modal, setModal] = useState(false)
     const [homeFocus, setHomeFocus] = useState(false)
 
-    
+
     const onSuccess = async ({ data }) => {
 
-        if(mode === 'map') {
+        console.log(mode);
+        if(mode === 'map' || mode === 'edit') {
             setLocation(location => ({
                 ...location,
                 address: {
@@ -36,7 +37,7 @@ const locationContext = ({ children }) => {
                 },
             }));
 
-            navigationRef.navigate('MapPage')
+            navigationRef.navigate('MapPage', mode === 'edit' && { cartID: cart_id })
         } else if (mode === 'home') {
             if(!homeAdd) {
                 setHomeAdd(true);
