@@ -165,13 +165,13 @@ const SingleProduct = ({ navigation, route }) => {
         // }
 
         let filtering = cartItems?.filter(({ _id }) => _id !== item?._id)?.map(({ item }) => {
-            if(item?.item) {
+            if (item?.item) {
                 const { item, ...others } = item?.item;
                 return others;
             }
             return item;
         })
-        
+
         mutate({
             product: [selectedItem, ...filtering],
             cartId: cart_id ? cart_id : null
@@ -298,21 +298,40 @@ const SingleProduct = ({ navigation, route }) => {
 
                 </View>
 
+                {data?.data?.data?.product?.details ? <AboutSection item={data?.data?.data?.product} /> : null}
+                {data?.data?.data?.product?.description ? <DescriptionSection item={data?.data?.data?.product} /> : null}
+            </ScrollView>
+
+
+            <View style={{
+                marginTop: 12,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                // backgroundColor: 'rgba(0,0,0,.1)',
+                paddingHorizontal: 10,
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+            }}>
+                <BuyButton loading={isLoading} disabled={!unit || !selectedValue} onPress={handleAddCart} />
+
                 {/* Button */}
                 <View style={{
                     flexDirection: 'row',
-                    width: '50%',
+                    width: '40%',
                     alignSelf: 'center',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    borderRadius: 12,
+                    borderRadius: 10,
                     overflow: 'hidden',
                     backgroundColor: 'rgba(0,0,0,.1)'
                 }}>
                     <TouchableOpacity style={{
                         backgroundColor: COLORS.primary,
-                        padding: 12,
-                        marginRight: 2,
+                        padding: 10,
+                        height: '100%',
+                        marginRight: 'auto',
                     }} onPress={() => {
                         setQty(qty => {
                             if (qty > 1) return qty - 1
@@ -334,8 +353,9 @@ const SingleProduct = ({ navigation, route }) => {
 
                     <TouchableOpacity style={{
                         backgroundColor: COLORS.primary,
-                        padding: 14,
-                        marginRight: 2,
+                        padding: 10,
+                        height: '100%',
+                        marginRight: 'auto',
                     }} onPress={() => {
                         setQty(qty + 1)
                     }}>
@@ -344,12 +364,6 @@ const SingleProduct = ({ navigation, route }) => {
 
                 </View>
 
-
-                {data?.data?.data?.product?.details ? <AboutSection item={data?.data?.data?.product} /> : null}
-                {data?.data?.data?.product?.description ? <DescriptionSection item={data?.data?.data?.product} /> : null}
-            </ScrollView>
-            <View>
-                <BuyButton loading={isLoading} disabled={!unit || !selectedValue} onPress={handleAddCart} />
             </View>
         </View>
     );
@@ -518,10 +532,6 @@ const styles = StyleSheet.create({
     buttonContainer: {
         alignItems: 'center',
         justifyContent: 'center',
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
         paddingVertical: 10,
 
     },
