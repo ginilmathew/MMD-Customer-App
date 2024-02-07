@@ -48,6 +48,9 @@ const GoogleLocation = ({ navigation, route }) => {
         }
       })
       navigationRef.navigate('MapPage')
+    } else if ('edit') {
+      
+      navigationRef.navigate('EditAddress', { cartID: route?.params?.cartID })
     }
   }
 

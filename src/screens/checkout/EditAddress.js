@@ -18,10 +18,12 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useMMKVStorage } from 'react-native-mmkv-storage'
 import locationContext from '../../context/location/locationContext'
 import reactotron from 'reactotron-react-native'
+import LocationContext from '../../context/location'
 
 
 const EditAddress = ({ navigation, route }) => {
 
+    const { setMode } = useContext(LocationContext)
     const { cartID } = route?.params;
 
     reactotron.log(cartID, "ID")
@@ -79,7 +81,8 @@ const EditAddress = ({ navigation, route }) => {
     });
 
     const addAddress = useCallback(() => {
-        navigation.navigate('GoogleLocation')
+        setMode('edit')
+        navigation.navigate('GoogleLocation', { cartID: route?.params?.cartID })
     }, [navigation])
 
     const goToCheckout = useCallback(() => {
