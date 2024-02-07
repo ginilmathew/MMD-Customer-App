@@ -13,7 +13,6 @@ const CustomItemCard = ({ onPress, item, key }) => {
     let products = item.products ? item.products[0] : item;
 
 
-
     const [price, setPrice] = useState(null)
 
     
