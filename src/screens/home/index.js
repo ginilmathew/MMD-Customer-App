@@ -37,10 +37,10 @@ const Home = ({ navigation, route }) => {
 
 
     let payload = {
-        // "coordinates": [
-        //     8.5204866, 76.9371447
-        // ],
-        coordinates: [currentLoc?.coord?.latitude, currentLoc?.coord?.longitude],
+        "coordinates": [
+            8.5204866, 76.9371447
+        ],
+        // coordinates: [currentLoc?.coord?.latitude, currentLoc?.coord?.longitude],
         cartId: cart_id,
 
     }

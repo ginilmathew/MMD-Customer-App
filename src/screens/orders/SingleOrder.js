@@ -56,17 +56,17 @@ const SingleOrder = ({route}) => {
 
                 <View style={styles.singleContainer}>
                     <SubHeading label={"Products & Bill"} />
-                    {item?.itemDetails.map(item => (
+                    {item?.itemDetails?.map(item => (
                    <View style={styles.imgContainer} key={item?._id}>
                         <View style={styles.boxStyle}>
-                            <Image source={{uri: `${item?.image}`}} style={styles.imgStyle} />
+                            <Image source={{ uri: item?.item?.imageBasePath + item?.item?.image?.[0] }} style={styles.imgStyle} />
                             <View style={styles.imgSection}>
-                                <Text style={styles.productName}>{item?.name}</Text>
-                                <Text style={styles.categoryName}>Category : {item?.category?.name}</Text>
+                                <Text style={styles.productName}>{item?.item?.name}</Text>
+                                <Text style={styles.categoryName}>Category : {item?.item?.category?.name}</Text>
                             </View>
                         </View>
                         <View style={styles.qtyBox}>
-                            <Text style={styles.price}>₹ {item?.costPrice}</Text>
+                            <Text style={styles.price}>₹ {item?.item?.variant?.offerPrice ? item?.item?.variant?.offerPrice : item?.item?.variant?.sellingPrice}</Text>
                             <Text style={styles.qty}>Qty x {item?.qty}</Text>
                         </View>
                     </View>

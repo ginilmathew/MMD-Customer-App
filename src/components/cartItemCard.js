@@ -53,7 +53,7 @@ const CartItemCard = ({ onPress, item, key }) => {
                 return current.finalPrice < lowest.finalPrice ? current : lowest;
             });
             if (lowestPriceProduct) {
-                // console.log(“Product with the lowest final price:“, lowestPriceProduct);
+                // console.log("Product with the lowest final price:", lowestPriceProduct);
                 setPrice(lowestPriceProduct)
             } else {
                 console.log("There are no products in the finalPriceProducts array.");
