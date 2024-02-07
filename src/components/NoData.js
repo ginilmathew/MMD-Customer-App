@@ -20,8 +20,12 @@ const NoData = () => {
       }} />
       <Text style={{
         color: '#000',
-        marginBottom: height * .4
-      }}>No data Found ...</Text>
+        marginBottom: height * .4,
+        marginTop: -40,
+        fontFamily: "Poppins-Medium",
+        opacity: 0.3,
+        letterSpacing: 1.5
+      }}>No Data Found!</Text>
     </View>
   )
 }

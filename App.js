@@ -14,6 +14,7 @@ import notifee, { AndroidImportance, EventType } from '@notifee/react-native'
 
 import CartProvider from './src/context/cart/cartContext'
 import { useAppState } from './src/hooks/appStateManagement'
+import SlotProvider from './src/context/slot/slotContext'
 
 
 
@@ -131,7 +132,9 @@ const App = () => {
       <SafeAreaView style={styles.safeArea}>
         <LocationContext>
           <CartProvider>
-            <Navigation />
+            <SlotProvider>
+              <Navigation />
+            </SlotProvider>
           </CartProvider>
         </LocationContext>
       </SafeAreaView>

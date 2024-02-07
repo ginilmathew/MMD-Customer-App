@@ -6,21 +6,14 @@ const DummySearch = ({ press }) => {
     return (
         <Pressable onPress={press} >
             <View style={{
-                backgroundColor: COLORS.dark_gray,
+                backgroundColor: COLORS.gray,
                 borderRadius: 15,
-
-                shadowOpacity: 0.1,
-                shadowRadius: 5,
-                elevation: 2,
                 shadowOffset: { width: 1, height: 5 },
-                flexDirection: 'row',
-                alignItems: 'center',
-                margin: 1,
-                height: 40,
-                justifyContent: 'flex-end',
                 marginHorizontal: 20,
+                padding: 10
             }}>
                 <View style={styles.iconBox}>
+                    <Text style={styles.textStyle}>Search Products...</Text>
                     <Ionicons name='search' color={COLORS.blue} size={25} />
                 </View>
             </View>
@@ -34,6 +27,15 @@ export default DummySearch
 
 const styles = StyleSheet.create({
     iconBox: {
-        marginRight: 10
+        flexDirection: "row",
+        paddingHorizontal: 5,
+        alignItems: 'center',
+        justifyContent: "space-between"
+    },
+    textStyle: {
+    fontFamily: "Poppins-Italic",
+    color: COLORS.light,
+    opacity: 0.5,
+
     }
 })

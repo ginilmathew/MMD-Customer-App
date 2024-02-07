@@ -10,6 +10,7 @@ import useRefetch from '../../hooks/useRefetch'
 import reactotron from 'reactotron-react-native'
 import Animated, { FadeInDown } from 'react-native-reanimated'
 import ItemCard from '../../components/ItemCard'
+import NoData from '../../components/NoData'
 
 const Search = () => {
 
@@ -23,12 +24,6 @@ const Search = () => {
         mutationFn: getSearchList,
 
     })
-
-
-
-
-
-
 
     let timeoutId;
 
@@ -88,9 +83,7 @@ const Search = () => {
                 <View>
                     <CustomSearch values={value} onChangeText={onChangeProduct} />
                 </View>
-                <Text style={{ textAlign: 'center', marginTop: 20, fontSize: 18, color: COLORS.primary }}>
-                    No data found.
-                </Text>
+                <NoData/>
             </View>
         );
     }
@@ -107,7 +100,7 @@ const Search = () => {
             <Header />
             <CommonHeader heading={'Search'} backBtn />
             <View style={styles.searchcontainer}>
-                <CustomSearch values={value} onChangeText={onChangeProduct} />
+                <CustomSearch values={value} onChangeText={onChangeProduct} placeholder={"Search Products..."}/>
             </View>
             <FlatList
 

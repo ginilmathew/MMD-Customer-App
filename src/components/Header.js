@@ -81,7 +81,7 @@ const Header = memo(({ onPress, text }) => {
     return (
         <View style={styles.container}>
             <View style={styles.imageContainer}>
-                <Image source={require('../images/DG.png')} style={[styles.logo]} />
+                <Image source={require('../images/DGLogo.png')} style={[styles.logo]} />
             </View>
 
             {text && (
@@ -140,9 +140,9 @@ const styles = StyleSheet.create({
         // Margin to separate the icon from the image
     },
     logo: {
-        width: 100, // Set the width of the image
-        height: 100, // Set the height of the image
-        // resizeMode: 'contain', // Ensure the image maintains its aspect ratio
+        width: 50, // Set the width of the image
+        height: 50, // Set the height of the image
+        resizeMode: 'contain'// Ensure the image maintains its aspect ratio
     },
     badgeStyle: {
         width: 10,

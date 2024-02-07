@@ -27,18 +27,16 @@ const CustomSearch = ({ placeholder, placeHoldeColor, keyboardType, onPress, onC
         <>
             <View
                 style={{
-                    backgroundColor: COLORS.dark_gray,
+                    backgroundColor: COLORS.gray,
                     borderRadius: 15,
                     marginTop: 5,
-                    shadowOpacity: 0.1,
-                    shadowRadius: 5,
-                    elevation: 2,
                     shadowOffset: { width: 1, height: 5 },
                     flexDirection: 'row',
                     alignItems: 'center',
                     margin: 1,
                     justifyContent: 'space-between',
                     marginHorizontal: 20,
+                    marginTop: 10
                 }}
             >
                 <TextInput
@@ -49,7 +47,7 @@ const CustomSearch = ({ placeholder, placeHoldeColor, keyboardType, onPress, onC
                     value={values}
                     variant="unstyled"
                     placeholder={placeholder}
-                    backgroundColor={COLORS.dark_gray}
+                    backgroundColor={COLORS.gray}
                     placeholderTextColor={placeHoldeColor ? placeHoldeColor : '#0C256C21'}
                     borderColor={0}
                     keyboardType={keyboardType}

@@ -19,19 +19,22 @@ import { useMMKVStorage } from 'react-native-mmkv-storage'
 import { RAZORPAY_KEY } from '../../constants/API'
 import RazorpayCheckout from 'react-native-razorpay';
 import ChooseDate from './ChooseDate'
+import SlotContext from '../../context/slot'
+import { UpdateOrder } from '../../api/updateOrder'
 
 
 const Checkout = ({ route }) => {
 
   const [user] = useMMKVStorage('user', storage);
   const [cart_id] = useMMKVStorage('cart_id', storage);
+  const { useSlot, setUseSlot } = useContext(SlotContext);
+  const [razorRes, setRazorRes] = useState("")
+  const [orderData, setOrderData] = useState("")
+
+  reactotron.log(orderData?.data?.data?.orderId, "orderData")
+  reactotron.log(razorRes, "razorRes")
 
   const { item, cart_ID } = route?.params;
-
-  reactotron.log(RAZORPAY_KEY, "RAZORPAY_KEY")
-
-  reactotron.log(user?.user, "user")
-  // reactotron.log(cart_ID, "cart_ID")
 
   const { cartItems, setCartItems } = useContext(CartContext);
 
@@ -40,6 +43,8 @@ const Checkout = ({ route }) => {
   const navigation = useNavigation();
 
   const [radioBtnStatus, stRadioBtnStatus] = useState(0);
+  const [chk, setChk] = useState("");
+
 
   let payload = {
     cart_id: cart_ID
@@ -51,14 +56,35 @@ const Checkout = ({ route }) => {
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['Checkout'],
-    //retry: false,
+    retry: false,
     queryFn: () => PosttoCheckout(
       payload
     ),
+    onSuccess: (data) => {
+      setChk(data)
+    },
+
     //enabled: false
   })
 
   useRefetch(refetch)
+
+  let mainData = {
+    orderId: orderData?.data?.data?.orderId,
+    payment_id: razorRes?.razorpay_payment_id,
+    razorpayOrderId: razorRes?.razorpay_order_id,
+    signature: razorRes?.razorpay_signature
+  }
+
+  reactotron.log(mainData, "testm")
+
+  const { mutate: reMutation, refetch: newRefetch } = useMutation({
+    mutationKey: 'UpdateOrderdata',
+    mutationFn: UpdateOrder,
+    onSuccess: (data) => {
+      reactotron.log(data, "UPDATE123")
+    }
+  })
 
   const { mutate, refetch: postsubrefetch } = useMutation({
     mutationKey: 'placedOrder',
@@ -66,12 +92,31 @@ const Checkout = ({ route }) => {
     onSuccess: async (data) => {
       setCartItems([])
       await storage.getBoolAsync('cart_id', null);
-      navigation.navigate('OrderPlaced', { item: data?.data?.data })
+      setUseSlot()
+      if (radioBtnStatus === 0) {
+        navigation.navigate('OrderPlaced', { item: data?.data?.data })
+      } else {
+        setOrderData(data)
+        setTimeout(() => {
+          handlePayment(data)
+        }, 2000);
+        navigation.navigate('Processing')
+      }
+
+
     }
   })
 
+  const updateMutation = (data) => {
+    reMutation({
+      orderId: orderData?.data?.data?.orderId,
+      payment_id: data?.razorpay_payment_id,
+      razorpayOrderId: data?.razorpay_order_id,
+      signature: data?.razorpay_signature
+    })
+  }
 
-  reactotron.log(data, "CHKOUT")
+
 
 
   const checkBox = (num) => (
@@ -80,15 +125,15 @@ const Checkout = ({ route }) => {
     </TouchableOpacity>
   )
 
-  const handlePayment = () => {
+  const handlePayment = (data) => {
     var options = {
       description: '',
       image: 'https://mmdcartadmin.diginestsolutions.in/static/media/logo.5a3a4acf9425f0097cef.png',
       currency: 'INR',
       key: RAZORPAY_KEY,
-      amount: data?.data?.data?.total * 100,
+      amount: chk?.data?.data?.total * 100,
       name: 'DG Cart',
-      order_id: '',//Replace this with an order_id created using Orders API.
+      order_id: data?.data?.data?.razorPayId,//Replace this with an order_id created using Orders API.
       prefill: {
         email: user?.user?.email,
         contact: user?.user?.mobile,
@@ -97,8 +142,10 @@ const Checkout = ({ route }) => {
       theme: { color: '#53a20e' }
     }
     RazorpayCheckout.open(options).then((data) => {
-      navigation.navigate('Processing')
-      placeOrder()
+      reactotron.log(data, "optidaons")
+      //setRazorRes(data)
+      updateMutation(data)
+      //navigation.navigate('Processing')
       //alert(`Success: ${data.razorpay_payment_id}`);
     }).catch((error) => {
       //alert(`Error: ${error.code} | ${error.description}`);
@@ -108,8 +155,8 @@ const Checkout = ({ route }) => {
   const placeOrder = () => {
     mutate({
       itemDetails: cartItems,
-      billingAddress: item?.area?.address,
-      shippingAddress: item?.area?.address,
+      billingAddress: item,
+      shippingAddress: item,
       orderDate: moment(today).format("DD-MM-YYYY"),
       subTotal: data?.data?.data?.subtotal,
       discount: 0,
@@ -118,16 +165,9 @@ const Checkout = ({ route }) => {
       paymentType: radioBtnStatus === 0 ? "cod" : "online",
       paymentStatus: radioBtnStatus === 0 ? "pending" : "completed",
       customer_id: user?.user?._id,
-      cartId: cart_id
+      cartId: cart_id,
+      slot_date: useSlot?._id
     })
-  }
-
-  const handlePlaceOrder = () => {
-    if (radioBtnStatus === 0) {
-      placeOrder()
-    } else if (radioBtnStatus === 1) {
-      handlePayment()
-    }
   }
 
 
@@ -209,7 +249,7 @@ const Checkout = ({ route }) => {
         </View>
 
         <View style={{ paddingHorizontal: 22, marginTop: 20 }}>
-          <CommonButton text={"Place Order"} onPress={handlePlaceOrder} />
+          <CommonButton text={"Place Order"} onPress={placeOrder} />
         </View>
 
       </ScrollView>
@@ -294,6 +334,7 @@ const styles = StyleSheet.create({
   },
   payBox: {
     paddingHorizontal: 22,
+    marginTop: 10
   },
   common: {
     fontFamily: "Poppins-Medium",
