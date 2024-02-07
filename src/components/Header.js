@@ -28,7 +28,8 @@ const Header = memo(({ onPress, text }) => {
         mutationKey: 'addToCart_query',
         mutationFn: PostAddToCart,
         onSuccess: async (data) => {
-            let myStructure = data?.data?.data?.product.map((res) => (
+        
+            let myStructure = data?.data?.data?.product?.map((res) => (
                 {
                     _id: res?._id,
                     qty: res?.qty,
@@ -54,7 +55,7 @@ const Header = memo(({ onPress, text }) => {
     const cartPage = useCallback(() => {
         reactotron.log('API CSLLED')
         if (cartItems?.length > 0) {
-            console.log(cartItems[0]);
+      
             const updatedData = cartItems?.map(item => ({
                 ...item.item,
                 qty: item.qty
