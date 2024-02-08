@@ -22,12 +22,9 @@ const CustomSlider = memo(({ item }) => {
         />
       </TouchableOpacity>
     );
-  }, [IMG_URL]);
+  }, []);
 
-  const CarouselSelect = (selectedItem) => {
-    // Handle selection logic
-  
-  };
+
 
   const IMAGE_ARRAY = [{id:1}]
   return (

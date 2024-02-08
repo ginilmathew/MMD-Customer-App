@@ -12,8 +12,8 @@ import { useMutation, useQuery } from 'react-query'
 import useRefetch from '../../hooks/useRefetch'
 import Animated from 'react-native-reanimated'
 import CartItemCard from '../../components/cartItemCard'
-import LottieView from 'lottie-react-native'
 import { storage } from '../../../App'
+import LottieView from 'lottie-react-native'
 const Cart = ({ navigation, route }) => {
 
   const { cartItems, setCartItems, } = useContext(CartContext);
