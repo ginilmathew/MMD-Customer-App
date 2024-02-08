@@ -218,9 +218,9 @@ const Home = ({ navigation, route }) => {
     // }
 
 
-    // const changeAdd = () => {
+    const changeAdd = () => {
 
-    // }
+    }
 
 
     // const addLeng = currentLoc?.address?.length;

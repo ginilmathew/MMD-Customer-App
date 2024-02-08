@@ -41,6 +41,7 @@ import CartContext from '../context/cart';
 import { useAppState } from '../hooks/appStateManagement';
 import { useMutation } from 'react-query';
 import { PostAddToCart } from '../api/cart';
+import AuthNavigation from './AuthNavigation';
 
 
 
@@ -274,26 +275,7 @@ const Navigation = ({ location }) => {
                     <Stack.Screen name="Login" component={Login} />
                     <Stack.Screen name="Register" component={Register} />
                     <Stack.Screen name="Forget" component={Forget} />
-                    <Stack.Screen name="HomeNavigator" component={HomeNavigation} />
-                    <Stack.Screen name="SingleOrder" component={SingleOrder} />
-                    <Stack.Screen name="Notification" component={NotificationPage} />
-                    <Stack.Screen name="Cart" component={Cart} />
-                    <Stack.Screen name="Checkout" component={Checkout} />
-                    <Stack.Screen name="Category" component={Category} />
-                    <Stack.Screen name="AllProducts" component={AllProducts} />
-                    <Stack.Screen name="SingleCategory" component={SingleCategory} />
-                    <Stack.Screen name="Search" component={Search} />
-                    <Stack.Screen name="SingleProduct" component={SingleProduct} />
-                    <Stack.Screen name="FeaturedProduct" component={FeaturedProduct} />
-                    <Stack.Screen name='LocationPage' component={LocationPage} />
-                    <Stack.Screen name='EditProfile' component={EditProfile} />
-                    <Stack.Screen name='Address' component={AddAddress} />
-                    <Stack.Screen name='ChangePasswd' component={ChangePasswd} />
-                    <Stack.Screen name='GoogleLocation' component={GoogleLocation} />
-                    <Stack.Screen name='MapPage' component={MapAddress} />
-                    <Stack.Screen name='OrderPlaced' component={OrderPlaced} />
-                    <Stack.Screen name='EditAddress' component={EditAddress} />
-                    <Stack.Screen name='Processing' component={ProcessingOrder} />
+                    <Stack.Screen name="HomeNavigator" component={AuthNavigation} />
                 </Stack.Navigator>
             </NavigationContainer>
 
