@@ -156,43 +156,44 @@ const GoogleLocation = ({ navigation, route }) => {
 				</TouchableOpacity>
 
 				<GooglePlacesAutocomplete
-					isRowScrollable
-					keyboardShouldPersistTaps='always'
-					placeholder={'Search Location ...'}
-					fetchDetails
-					minLength={2}
-					enablePoweredByContainer={false}
-					listViewDisplayed={false}
-					nearbyPlacesAPI="GooglePlacesSearch"
-					renderRow={renderRow}
-					textInputProps={{
-						placeholderTextColor: COLORS.light
-					}}
-					styles={{
-						textInput: {
-							color: 'black',
-							borderWidth: 1,
-							fontFamily: 'Poppins-Medium',
-						},
-						description: {
-							fontWeight: 'bold',
-						},
-						predefinedPlacesDescription: {
-							color: '#1faadb',
-						},
-						listView: {
-							color: 'black', //To see where exactly the list is
-							zIndex: 1000, //To popover the component outwards
-							position: 'absolute',
-							top: 50
-						},
-					}}
-					onPress={addLoc}
-					query={{
-						key: GOOGLE_API,
-						language: 'en'
-					}}
-				/>
+          isRowScrollable
+          keyboardShouldPersistTaps='always'
+          placeholder={'Search Location ...'}
+          fetchDetails
+          minLength={2}
+          enablePoweredByContainer={false}
+          listViewDisplayed={false}
+          nearbyPlacesAPI="GooglePlacesSearch"
+          renderRow={renderRow}
+          textInputProps={{
+            placeholderTextColor: COLORS.light
+          }}
+          styles={{
+            textInput: {
+              color: 'black',
+              borderWidth: 0.5,
+              fontFamily: 'Poppins-Medium',
+              borderRadius: 8
+            },
+            description: {
+              fontWeight: 'bold',
+            },
+            predefinedPlacesDescription: {
+              color: '#1faadb',
+            },
+            listView: {
+              color: 'black', //To see where exactly the list is
+              zIndex: 1000, //To popover the component outwards
+              position: 'absolute',
+              top: 50
+            },
+          }}
+          onPress={addLoc}
+          query={{
+            key: GOOGLE_API,
+            language: 'en'
+          }}
+        />
 			</View>
 			<Modal visible={modal} transparent>
                     <View style={styles.modal}>
@@ -217,6 +218,7 @@ const GoogleLocation = ({ navigation, route }) => {
                 </Modal>
 		</>
 	)
+        
 }
 
 
