@@ -81,7 +81,7 @@ const Header = memo(({ onPress, text }) => {
     return (
         <View style={styles.container}>
             <View style={styles.imageContainer}>
-                <Image source={require('../images/DGLogo.png')} style={[styles.logo]} />
+                <Image source={require('../images/DGLogo.png')} style={styles.logo} />
             </View>
 
             {text && (
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.white
     },
     imageContainer: {
-        marginRight: 10, // Margin to separate the image from the icon
+        marginLeft: -5, // Margin to separate the image from the icon
     },
     iconContainer: {
         display: 'flex',

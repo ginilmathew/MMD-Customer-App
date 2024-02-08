@@ -104,8 +104,9 @@ const GoogleLocation = ({ navigation, route }) => {
           styles={{
             textInput: {
               color: 'black',
-              borderWidth: 1,
+              borderWidth: 0.5,
               fontFamily: 'Poppins-Medium',
+              borderRadius: 8
             },
             description: {
               fontWeight: 'bold',
