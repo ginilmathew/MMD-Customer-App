@@ -113,7 +113,7 @@ const Header = memo(({ onPress, text }) => {
 
                 </TouchableOpacity>
                 <TouchableOpacity onPress={notPage}>
-                    <View style={styles.badgeStyle} />
+                    {/* <View style={styles.badgeStyle} /> */}
                     <IonIcons name='notifications' size={20} color={COLORS.light} />
                 </TouchableOpacity>
             </View>

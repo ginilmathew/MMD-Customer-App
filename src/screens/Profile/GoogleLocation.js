@@ -103,9 +103,10 @@ const GoogleLocation = ({ navigation, route }) => {
           }}
           styles={{
             textInput: {
-              color: 'black',
-              borderWidth: 0.5,
-              fontFamily: 'Poppins-Medium',
+              color: COLORS.light,
+              borderWidth: 1,
+              borderColor: "#e8e8e8",
+              fontFamily: 'Poppins-Regular',
               borderRadius: 8
             },
             description: {
