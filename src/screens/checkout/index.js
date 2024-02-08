@@ -73,6 +73,7 @@ const Checkout = ({ route }) => {
 
   useRefetch(refetch)
 
+  reactotron.log(data, "Discount")
 
   // let mainData = {
   //   orderId: orderData?.data?.data?.orderId,
@@ -173,7 +174,7 @@ const Checkout = ({ route }) => {
       shippingAddress: item,
       orderDate: moment(today).format("DD-MM-YYYY"),
       subTotal: data?.data?.data?.subtotal,
-      discount: 0,
+      discount: data?.data?.data.discount,
       tax: data?.data?.data?.tax,
       delivery_charge: data?.data?.data?.deliveryCharge,
       total: data?.data?.data?.total,

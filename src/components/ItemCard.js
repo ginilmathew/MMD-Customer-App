@@ -225,7 +225,7 @@ const AddToCart = memo(({ isCartAdded, handleDecrement, handleAddToCart, handleI
                         <Text style={styles?.addText}>-</Text>
                     </TouchableOpacity>
                     <Text style={styles?.countText}>{cartItem?.qty}</Text>
-                    <TouchableOpacity style={[styles?.incrementButton, { marginLeft: 5 }]} onPress={memoizedIncrement}>
+                    <TouchableOpacity style={styles?.incrementButton} onPress={memoizedIncrement}>
                         <Text style={styles.addText}>+</Text>
                     </TouchableOpacity>
                 </View>
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
         color: COLORS.red,
     },
     rightContainer: {
-        flex: 0.3,
+        flex: 0.4,
         alignItems: 'flex-end',
     },
     topPrice: {
@@ -320,14 +320,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between', // Center the count between the buttons
-        gap: 4
+        gap: 4,
     },
     incrementButton: {
         backgroundColor: COLORS.primary,
-        width: 30,
+        width: 27,
         height: 27,
         borderRadius: 6,
-        marginRight: 3,
+
         alignItems: "center",
         justifyContent: "center"
     },
