@@ -187,7 +187,7 @@ const SingleProduct = ({ navigation, route }) => {
 
 
     return (
-        <View style={{ backgroundColor: '#fff', height: height, paddingBottom: 60 }}>
+        <View style={[styles.mainContainer, { height: height, }]}>
             <Header />
             <CommonHeader heading={item?.name?.length > 18 ? item?.name?.slice(0, 18) + "..." : item?.name} backBtn />
             <ScrollView
@@ -308,7 +308,7 @@ const SingleProduct = ({ navigation, route }) => {
                 // marginTop: 12,
                 flexDirection: 'row',
                 justifyContent: 'space-between',
-                // backgroundColor: 'rgba(0,0,0,.1)',
+                height: 60,
                 paddingHorizontal: 10,
                 position: 'absolute',
                 bottom: 20,
@@ -325,7 +325,7 @@ const SingleProduct = ({ navigation, route }) => {
                     alignItems: 'center',
                     borderRadius: 10,
                     overflow: 'hidden',
-                    backgroundColor: 'rgba(0,0,0,.1)'
+                    backgroundColor: COLORS.gray
                 }}>
                     <TouchableOpacity style={{
                         backgroundColor: COLORS.primary,
@@ -431,6 +431,7 @@ const BuyButton = React.memo(({ onPress, loading, disabled }) => (
 
 
 const styles = StyleSheet.create({
+    mainContainer: { backgroundColor: '#fff', paddingBottom: 60 },
     container: {
         paddingHorizontal: 20,
         paddingVertical: 5,

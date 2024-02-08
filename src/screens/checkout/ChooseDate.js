@@ -87,7 +87,7 @@ const ChooseDate = ({slotSelected}) => {
                         modal
                         open={open}
                         mode='date'
-                        //minimumDate={new Date()}
+                        minimumDate={new Date()}
                         date={date}
                         onConfirm={handleDateChange}
                         onCancel={() => {

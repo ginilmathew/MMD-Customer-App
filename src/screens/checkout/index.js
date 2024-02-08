@@ -83,17 +83,18 @@ const Checkout = ({ route }) => {
 
 
 
-  const { mutate, refetch: postsubrefetch, data: orderNewData } = useMutation({
+  const { mutate, refetch: postsubrefetch, data: orderNewData, isLoading: placeLoading } = useMutation({
     mutationKey: 'placedOrder',
     mutationFn: PlaceOrder,
     onSuccess: async (data) => {
       setOrderData(data?.data?.data)
       await storage.setStringAsync('order_id', data?.data?.data?.orderId);
-      setCartItems([])
-      await storage.getBoolAsync('cart_id', null);
-      setUseSlot()
+      
       if (radioBtnStatus === 0) {
         navigation.navigate('OrderPlaced', { item: data?.data?.data })
+        setCartItems([])
+        await storage.getBoolAsync('cart_id', null);
+        setUseSlot()
       } else {
         // setOrderData(orderNewData)
         // setTimeout(() => {
@@ -263,7 +264,7 @@ const Checkout = ({ route }) => {
         </View>
 
         <View style={{ paddingHorizontal: 22, marginTop: 20 }}>
-          <CommonButton text={"Place Order"} onPress={placeOrder} />
+          <CommonButton text={"Place Order"} onPress={placeOrder} loading={placeLoading}/>
         </View>
 
       </ScrollView>
@@ -338,7 +339,8 @@ const styles = StyleSheet.create({
   },
   description: {
     fontFamily: "Poppins-Regular",
-    fontSize: 12
+    fontSize: 12,
+    color: COLORS.light
   },
   locationStyle: {
     flexDirection: "row",

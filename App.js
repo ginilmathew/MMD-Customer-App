@@ -1,8 +1,8 @@
 
-import { Platform, StyleSheet, Text, View, AppState, PermissionsAndroid } from 'react-native'
+import { Platform, StyleSheet, Text, View, AppState, PermissionsAndroid, SafeAreaView } from 'react-native'
 import React, { useContext, useEffect } from 'react'
 import Navigation from './src/navigation'
-import { SafeAreaView } from 'react-native-safe-area-context'
+//import { SafeAreaView } from 'react-native-safe-area-context'
 import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage'
 import { QueryClientProvider, QueryClient } from 'react-query'
 import NetInfo from '@react-native-community/netinfo';

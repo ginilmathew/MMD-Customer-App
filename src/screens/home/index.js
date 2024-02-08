@@ -29,7 +29,6 @@ import { useFocusNotifyOnChangeProps } from '../../hooks/useFocusNotifyOnChangeP
 
 
 
-
 const Home = ({ navigation, route }) => {
 
     // const notifyOnChangeProps = useFocusNotifyOnChangeProps()
@@ -38,6 +37,9 @@ const Home = ({ navigation, route }) => {
     const checkLocRef = useRef(null)
     const [cart_id] = useMMKVStorage('cart_id', storage);
     const { cartItems, setCartItems } = useContext(CartContext);
+    const notifyOnChangeProps = useFocusNotifyOnChangeProps()
+
+    //reactotron.log({currentLoc, location})
 
 
     let payload = {
@@ -57,7 +59,7 @@ const Home = ({ navigation, route }) => {
             ...payload
         }),
         // notifyOnChangeProps,
-    
+        //enabled: false,
     })
 
 
@@ -216,9 +218,9 @@ const Home = ({ navigation, route }) => {
     // }
 
 
-    // const changeAdd = () => {
+    const changeAdd = () => {
 
-    // }
+    }
 
 
     // const addLeng = currentLoc?.address?.length;
@@ -226,7 +228,7 @@ const Home = ({ navigation, route }) => {
     return (
 
         <View style={{ backgroundColor: '#fff' }}>
-            {/* {currentLoc?.address && (
+            {currentLoc?.address && (
                 <TouchableOpacity onPress={changeAdd} style={{
                     flexDirection: 'row',
                     paddingLeft: 20,
@@ -243,7 +245,7 @@ const Home = ({ navigation, route }) => {
                         ?.concat(addLeng ? ' ...' : '')}</Text>
                 </TouchableOpacity>
             )
-            } */}
+            }
             <DummySearch press={NavigateToSearch} />
             <FlatList
                 data={data?.data?.data.featuredList?.[0]?.featured_list || []}

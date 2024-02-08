@@ -75,9 +75,11 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins-SemiBold'
     },
     subHead: {
-        color: COLORS.text,
+        color: COLORS.light,
+        opacity: 0.5,
         fontSize: 15,
         marginBottom: 23,
+        fontFamily: "Poppins-Regular"
     },
     link: {
         color: COLORS.blue,

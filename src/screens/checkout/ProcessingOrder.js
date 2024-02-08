@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { COLORS } from '../../constants/COLORS'
 import LottieView from 'lottie-react-native'
 import Header from '../../components/Header'
@@ -11,6 +11,7 @@ import { UpdateOrder } from '../../api/updateOrder'
 import { RAZORPAY_KEY } from '../../constants/API'
 import { useMMKVStorage } from 'react-native-mmkv-storage'
 import { storage } from '../../../App'
+import CartContext from '../../context/cart'
 
 
 const ProcessingOrder = ({route, navigation}) => {
@@ -18,11 +19,10 @@ const ProcessingOrder = ({route, navigation}) => {
     const { data, chk } = route?.params;
   const [user] = useMMKVStorage('user', storage);
   const [order_id] = useMMKVStorage('order_id', storage);
-
+  const { setCartItems } = useContext(CartContext);
 
 
     reactotron.log({data})
-
 
     useEffect(() => {
         if(data){
@@ -56,7 +56,8 @@ const ProcessingOrder = ({route, navigation}) => {
           //navigation.navigate('Processing')
           //alert(`Success: ${data.razorpay_payment_id}`);
         }).catch((error) => {
-            reactotron.log({error})
+            storage.setString("error",'Payment cancelled by user');
+            navigation.goBack()
           //alert(`Error: ${error.code} | ${error.description}`);
         });
       }
@@ -64,8 +65,10 @@ const ProcessingOrder = ({route, navigation}) => {
       const { mutate: reMutation, refetch: newRefetch } = useMutation({
         mutationKey: 'UpdateOrderdata',
         mutationFn: UpdateOrder,
-        onSuccess: (data) => {
+        onSuccess: async(data) => {
           //reactotron.log(data, "OR")
+          setCartItems([])
+          await storage.getBoolAsync('cart_id', null);
           navigation.navigate('OrderPlaced', { item: data?.data?.data})
         }
       })
