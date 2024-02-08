@@ -60,11 +60,11 @@ const Forget = ({ navigation }) => {
   }
 
   return (
-    <Background headline={forget ? 'FORGET' : 'OTP'}
+    <Background headline={forget ? 'FORGET PASSWORD' : 'OTP'}
       subhead={forget ? 'Enter your registered email address' : 'Enter the OTP sent to your registered email'}
       onPress={goBack}
       description={forget ? 'Remember your password?' : 'Something wrong?'}
-      link={forget ? 'Login' : 'Go Back'}
+      link={forget ? 'Go To Login' : 'Go Back'}
     >
 
       {

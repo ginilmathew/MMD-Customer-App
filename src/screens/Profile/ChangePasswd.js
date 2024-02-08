@@ -21,8 +21,8 @@ const ChangePasswd = ({ navigation, route }) => {
     mutationFn: changePasswd,
     onSuccess({ data }) {
       storage.setString('success', data?.message)
-      
-      if(route?.params?.user) {
+
+      if (route?.params?.user) {
         navigationRef.navigate('Login')
       } else {
         navigation?.goBack()
@@ -54,7 +54,7 @@ const ChangePasswd = ({ navigation, route }) => {
 
       <CommonHeader heading={route?.params?.user ? 'Reset Password' : 'Change Password'} backBtn onPress={route?.params?.user ? navToLogin : null} />
       <View style={styles.container}>
-      
+
         <CustomInput
           name='password'
           control={control}
@@ -69,7 +69,7 @@ const ChangePasswd = ({ navigation, route }) => {
           passwd
         />
 
-        <CommonButton text={'update'} mt='auto' onPress={handleSubmit(mutate)} />
+        <CommonButton text={'Update'} mt='auto' onPress={handleSubmit(mutate)} />
       </View>
     </>
   )
@@ -79,7 +79,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
-    padding: 30
+    paddingHorizontal: 16,
+    paddingTop: 15,
+    paddingBottom: 30
   }
 })
 

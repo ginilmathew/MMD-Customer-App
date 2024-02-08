@@ -15,7 +15,7 @@ const ItemBox = ({ onPress, key, item, index }) => {
 };
 
 const { width } = Dimensions.get('window');
-const itemWidth = width / 3.9; // Divide by the number of columns
+const itemWidth = width / 3.7; // Divide by the number of columns
 
 const styles = StyleSheet.create({
     container: {
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
         width: itemWidth,
         height: 100,
         backgroundColor: COLORS.primary, // Box background color
-        borderRadius: 8, // Optional: Add border radius for rounded corners
+        borderRadius: 12, // Optional: Add border radius for rounded corners
         justifyContent: 'center', // Center text vertically
         alignItems: 'center',
         textAlign: 'center', // Center text horizontally
@@ -41,10 +41,10 @@ const styles = StyleSheet.create({
     text: {
         color: '#fff', // Text color
         fontSize: 14,
-        fontWeight: 'bold',
-        fontStyle: 'italic',
-        letterSpacing: 1,
-        fontFamily: 'Poppins-Regular',
+        letterSpacing: 1.5,
+        fontFamily: 'Poppins-Medium',
+        textAlign: "center",
+        width:"80%"
     },
 });
 

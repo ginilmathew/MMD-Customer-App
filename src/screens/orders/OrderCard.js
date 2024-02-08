@@ -33,7 +33,7 @@ const OrderCard = ({ item }) => {
                 color = COLORS.status_paid;
                 break;
             default:
-                color = COLORS.default_color; // Assuming you have a default color defined
+                color = COLORS.light; // Assuming you have a default color defined
                 break;
         }
         return (

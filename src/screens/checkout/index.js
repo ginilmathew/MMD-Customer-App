@@ -334,7 +334,8 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontFamily: "Poppins-Medium",
-    fontSize: 15
+    fontSize: 15,
+    color: COLORS.light
   },
   description: {
     fontFamily: "Poppins-Regular",

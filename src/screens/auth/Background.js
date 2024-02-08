@@ -21,7 +21,6 @@ const Background = ({ headline, subhead, children, onPress, link, description })
 
                 {children}
 
-
                 <View style={styles.footer}>
                     <Text style={styles.description}>{description}</Text>
                     <View style={styles.line} />
@@ -84,20 +83,22 @@ const styles = StyleSheet.create({
     link: {
         color: COLORS.blue,
         fontSize: 15,
-        fontWeight: '600',
         textAlign: 'center',
         fontFamily: 'Poppins-Medium'
     },
     description: {
         textAlign: 'center',
         color: COLORS.light,
+        fontSize: 14,
+        fontFamily: "Poppins-Regular",
+        opacity: 0.8
     },
     line: {
         borderBottomWidth: 1,
         width: '40%',
         borderBottomColor: COLORS.gray,
         alignSelf: 'center',
-        marginVertical: 6.5
+        marginVertical: 5.5
     },
     footer: {
         marginTop: 56

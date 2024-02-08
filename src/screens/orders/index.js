@@ -9,6 +9,7 @@ import reactotron from 'reactotron-react-native'
 import { useQuery } from 'react-query'
 import { getOrders } from '../../api/Orders'
 import useRefetch from '../../hooks/useRefetch'
+import NoData from '../../components/NoData'
 
 const Orders = () => {
 
@@ -28,6 +29,12 @@ const Orders = () => {
         )
     }
 
+    const EmptyComp = () => {
+        return(
+            <NoData />
+        )
+    }
+
     return (
         <View style={styles.mainStyle}>
             <CommonHeader heading={"My Orders"} />
@@ -38,7 +45,7 @@ const Orders = () => {
                     renderItem={renderItem}
                     refreshing={isLoading}
                     onRefresh={refetch}
-                    //ListEmptyComponent={EmptyComp}
+                    ListEmptyComponent={EmptyComp}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={styles.flatList}
                 />

@@ -97,6 +97,7 @@ const Header = memo(({ onPress, text }) => {
                     <Text style={{
                         fontSize: 11,
                         color: COLORS.dark,
+                        fontFamily: "Poppins-Regular"
                     }}>{text
                         ?.slice(...textLeng ? [0, 24] : [0])
                         ?.concat(textLeng ? ' ...' : '')}</Text>
@@ -105,7 +106,7 @@ const Header = memo(({ onPress, text }) => {
 
             <View style={styles.iconContainer}>
                 <TouchableOpacity onPress={cartPage}>
-                    <IonIcons name='cart' size={20} color="#000" />
+                    <IonIcons name='cart' size={20} color={COLORS.light} />
                     {cartItems?.length > 0 ? (<View style={styles.cartBadge}>
                         <Text style={styles.countStyle}>{cartItems?.length}</Text>
                     </View>) : null}
@@ -113,7 +114,7 @@ const Header = memo(({ onPress, text }) => {
                 </TouchableOpacity>
                 <TouchableOpacity onPress={notPage}>
                     <View style={styles.badgeStyle} />
-                    <IonIcons name='notifications' size={20} color="#000" />
+                    <IonIcons name='notifications' size={20} color={COLORS.light} />
                 </TouchableOpacity>
             </View>
         </View>

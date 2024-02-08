@@ -39,6 +39,7 @@ const SingleProduct = ({ navigation, route }) => {
 
     const [qty, setQty] = useState(null)
     const { cartItems, setCartItems, } = useContext(CartContext);
+    reactotron.log({ cartItems })
     const { data, refetch } = useQuery({
         queryKey: 'single-product',
         initialData: item,

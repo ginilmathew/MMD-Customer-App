@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, FlatList, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, FlatList, ScrollView, useWindowDimensions } from 'react-native'
 import React, { memo, useCallback, useState } from 'react'
 import Header from '../../components/Header'
 import CommonHeader from '../../components/CommonHeader'
@@ -15,13 +15,13 @@ import NoData from '../../components/NoData'
 
 const SingleCategory = ({ route }) => {
 
+    const {height} = useWindowDimensions();
+
     const item = route?.params;
 
     const [subList, setSubList] = useState("")
     const [listItem, setListItem] = useState([])
     const [subCategoryList, setSubCategoryList] = useState([]);
-
-
 
     const { data, isLoading, refetch } = useQuery({
         queryKey: ['catProducts-query'],
@@ -60,11 +60,13 @@ const SingleCategory = ({ route }) => {
 
     const ListHeaderComponents = useCallback(({ item, index }) => {
         return (
-            <View style={{ padding: 8, backgroundColor: COLORS.white }}>
+            <View style={{ backgroundColor: COLORS.white }}>
+                <Header />
+                <CommonHeader heading={data?.data?.data?.category?.name || []} backBtn />
                 <ScrollView
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={{ flexDirection: 'row', alignItems: 'center' }}
+                    contentContainerStyle={styles.subScroll}
                 >
                     <RenderHeaderMemo subList={subList} LIST={subCategoryList} AnimatedStyle={AnimatedStyles} key={index} onPress={onChangeSub} />
                 </ScrollView>
@@ -83,9 +85,7 @@ const SingleCategory = ({ route }) => {
 
     const ListFooterComponent = useCallback(() => {
         return (
-            <View style={{ marginBottom: 60 }}>
-
-            </View>
+            <View style={{ marginBottom: 60 }} />
         )
     }, [])
 
@@ -103,23 +103,23 @@ const SingleCategory = ({ route }) => {
 
 
     return (
-        <View style={{ backgroundColor: '#fff', flex: 1 }}>
-            <Header />
-            <CommonHeader heading={data?.data?.data?.category?.name || []} backBtn />
-            <FlatList
-                stickyHeaderIndices={[0]}
-                data={listItem}
-                ListHeaderComponent={ListHeaderComponents}
-                renderItem={renderItem}
-                keyExtractor={item => item._id}
-                initialNumToRender={10}
-                refreshing={isLoading}
-                onRefresh={mainRefetch}
-                showsVerticalScrollIndicator={false}
-                ListFooterComponent={ListFooterComponent}
-                ListEmptyComponent={emptyScreen}
-            />
-        </View>
+
+
+        <FlatList
+            stickyHeaderIndices={[0]}
+            data={listItem}
+            ListHeaderComponent={ListHeaderComponents}
+            renderItem={renderItem}
+            keyExtractor={item => item._id}
+            initialNumToRender={10}
+            refreshing={isLoading}
+            onRefresh={mainRefetch}
+            showsVerticalScrollIndicator={false}
+            ListFooterComponent={ListFooterComponent}
+            ListEmptyComponent={emptyScreen}
+            contentContainerStyle={{ backgroundColor: COLORS.white, height: height }}
+        />
+
     )
 }
 
@@ -130,6 +130,12 @@ const styles = StyleSheet.create({
     tabView: {
         gap: 5,
         flexDirection: 'row'
+    },
+    subScroll: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 16,
+        marginVertical: 10
     }
 })
 

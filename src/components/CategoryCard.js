@@ -37,12 +37,14 @@ const styles = StyleSheet.create({
     image: {
         width: 60,
         height: 60,
-        borderRadius: 50,
+        borderRadius: 25,
         marginBottom: 5,
     },
     text: {
         fontSize: 12,
-        fontWeight: 'bold',
-        color:COLORS.light
+        fontFamily: "Poppins-Regular",
+        color:COLORS.light,
+        opacity: 0.8,
+        textAlign: "center"
     },
 });
