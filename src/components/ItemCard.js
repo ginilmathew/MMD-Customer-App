@@ -6,7 +6,7 @@ import CartContext from '../context/cart';
 import { useNavigation } from '@react-navigation/core';
 import reactotron from 'reactotron-react-native';
 
-const CustomItemCard = ({ onPress, item, key }) => {
+const CustomItemCard = memo(({ onPress, item, key }) => {
 
 
     const navigation = useNavigation();
@@ -164,7 +164,7 @@ const CustomItemCard = ({ onPress, item, key }) => {
 
         </Animated.View>
     );
-};
+});
 
 
 
@@ -306,4 +306,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default memo(CustomItemCard);
+export default CustomItemCard;
