@@ -1,33 +1,40 @@
-import { View, Text, Image, useWindowDimensions } from 'react-native'
-import React from 'react'
-import { COLORS } from '../constants/COLORS'
+import React from 'react';
+import { View, Text, Image, useWindowDimensions, StyleSheet } from 'react-native';
+import { COLORS } from '../constants/COLORS';
 
 const NoData = () => {
-
   const { height } = useWindowDimensions();
- 
-  return (
-    <View style={{
-      height,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: COLORS.white
-    }}>
-      <Image source={require('../images/noData.png')} style={{
-        height: 230, 
-        width: 780,
-        resizeMode: 'contain'
-      }} />
-      <Text style={{
-        color: '#000',
-        marginBottom: height * .4,
-        marginTop: -40,
-        fontFamily: "Poppins-Medium",
-        opacity: 0.3,
-        letterSpacing: 1.5
-      }}>No Data Found!</Text>
-    </View>
-  )
-}
+  const imageHeight = height * 0.4; // Adjust image height dynamically
+  const textMarginTop = -40; // Margin top for the text
 
-export default NoData
+  return (
+    <View style={styles.container}>
+      <Image 
+        source={require('../images/noData.png')} 
+        style={[styles.image, { height: imageHeight }]} 
+      />
+      <Text style={[styles.text, { marginTop: textMarginTop }]}>No Data Found!</Text>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLORS.white
+  },
+  image: {
+    aspectRatio: 3/4, // Aspect ratio 4:3 for width:height
+    resizeMode: 'contain'
+  },
+  text: {
+    color: '#000',
+    fontFamily: "Poppins-Medium",
+    opacity: 0.3,
+    letterSpacing: 1.5
+  }
+});
+
+export default NoData;
