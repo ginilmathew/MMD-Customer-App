@@ -93,7 +93,7 @@ const Checkout = ({ route }) => {
       if (radioBtnStatus === 0) {
         navigation.navigate('OrderPlaced', { item: data?.data?.data })
         setCartItems([])
-        await storage.getBoolAsync('cart_id', null);
+        await storage.setMapAsync('cart_id', null);
         setUseSlot()
       } else {
         // setOrderData(orderNewData)
