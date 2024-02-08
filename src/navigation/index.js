@@ -55,7 +55,7 @@ const Navigation = ({ location }) => {
     const [error] = useMMKVStorage('error', storage)
     const [success] = useMMKVStorage('success', storage);
     const [homeAdd] = useMMKVStorage('homeAdd', storage, false)
-    // const { setMode, getLocation, setModal, modal, handleModal, openSettings, setReady, mode } = useContext(LocationContext)
+    const { getLocation, location: locationData } = useContext(LocationContext)
 
     const { cartItems, setCartItems } = useContext(CartContext);
     const { mutate } = useMutation({
@@ -72,12 +72,17 @@ const Navigation = ({ location }) => {
 
     //reactotron.log({appState})
 
-
+    useEffect(() => {
+        if(location){
+            getLocation()
+        }
+    }, [location])
+    
 
 
     useEffect(() => {
         if ((appState === "background" && cartItems?.length > 0)) {
-            reactotron.log('BACKGROUND API')
+            //reactotron.log('BACKGROUND API')
             const postCart = async () => {
                 try {
                     const updatedData = cartItems?.map(item => ({
@@ -109,65 +114,7 @@ const Navigation = ({ location }) => {
         SplashScreen.hide()
     }, [])
 
-    // const modalVisible = useCallback(async () => {
-    //     const result = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
 
-    //     if (result === RESULTS.DENIED) {
-    //         navigationRef.navigate('GoogleLocation')
-
-    //         setModal(false);
-    //     }
-    // }, [modal])
-
-
-    // const getCartItem = 
-
-    // async function onAppStateChange(status) {
-
-    //     const user = await storage.getMapAsync('user');
-    //     if (status === 'active' && user) {
-    //         const result = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
-    //         if (result === RESULTS.DENIED) {
-    //             return setModal(true);
-    //         } else if (result === RESULTS.GRANTED) {
-    //             setModal(false);
-
-    //             setMode('home')
-    //             // if (cart_id) {
-    //             //     try {
-    //             //         const response = await getCartItems({ cartId: cart_id })
-    //             //         let myStructure = response?.data?.data?.product.map((res) => (
-    //             //             {
-    //             //                 _id: res?._id,
-    //             //                 qty: res?.qty,
-    //             //                 unit_id: res?.unit?.id,
-    //             //                 varientname: res?.variant?.name,
-    //             //                 item: { ...res }
-    //             //             }
-    //             //         ))
-    //             //         setCartItems(myStructure)
-    //             //         getLocation()
-    //             //     } catch (err) {
-
-    //             //     } finally {
-
-    //             //     }
-    //             // } else {
-    //             //     getLocation()
-    //             // }
-    //             //getLocation()
-
-    //         }
-
-    //     }
-    // }
-
-
-    // useEffect(() => {
-    //     const subscription = AppState.addEventListener('change', onAppStateChange);
-
-    //     return () => subscription.remove();
-    // }, []);
 
 
     if (!user) {
@@ -187,37 +134,23 @@ const Navigation = ({ location }) => {
         )
     }
 
+    if(!locationData){
+        <View />
+    }
+    
 
-    if(user){
+    if (user) {
         return (
             <>
                 <NavigationContainer ref={navigationRef} onReady={onReady}>
                     <Stack.Navigator
-                        initialRouteName={location ? 'HomeNavigator' : 'LocationPage' }
+                        initialRouteName={location ? 'HomeNavigator' : 'LocationPage'}
                         screenOptions={{ headerShown: false }}>
-                        <Stack.Screen name="HomeNavigator" component={HomeNavigation} />
-                        <Stack.Screen name="SingleOrder" component={SingleOrder} />
-                        <Stack.Screen name="Notification" component={NotificationPage} />
-                        <Stack.Screen name="Cart" component={Cart} />
-                        <Stack.Screen name="Checkout" component={Checkout} />
-                        <Stack.Screen name="Category" component={Category} />
-                        <Stack.Screen name="AllProducts" component={AllProducts} />
-                        <Stack.Screen name="SingleCategory" component={SingleCategory} />
-                        <Stack.Screen name="Search" component={Search} />
-                        <Stack.Screen name="SingleProduct" component={SingleProduct} />
-                        <Stack.Screen name="FeaturedProduct" component={FeaturedProduct} />
+                        <Stack.Screen name="HomeNavigator" component={AuthNavigation} />
                         <Stack.Screen name='LocationPage' component={LocationPage} />
-                        <Stack.Screen name='EditProfile' component={EditProfile} />
-                        <Stack.Screen name='Address' component={AddAddress} />
-                        <Stack.Screen name='ChangePasswd' component={ChangePasswd} />
-                        <Stack.Screen name='GoogleLocation' component={GoogleLocation} />
-                        <Stack.Screen name='MapPage' component={MapAddress} />
-                        <Stack.Screen name='OrderPlaced' component={OrderPlaced} />
-                        <Stack.Screen name='EditAddress' component={EditAddress} />
-                        <Stack.Screen name='Processing' component={ProcessingOrder} />
                     </Stack.Navigator>
                 </NavigationContainer>
-    
+
                 {
                     isConnected !== null && !isConnected && (
                         <Modal visible transparent>
@@ -228,101 +161,18 @@ const Navigation = ({ location }) => {
                                 />
                             </View>
                         </Modal>
-    
+
                     )
                 }
-    
+
                 <Modal visible={!!error || !!success} transparent>
                     <View style={{ backgroundColor: 'rgba(0,0,0,.1)', flex: 1 }}>
                         <Toast error={error} success={success} />
                     </View>
                 </Modal>
-    
-                {/* <Modal visible={modal} transparent>
-                    <View style={styles.modal}>
-                        <View style={styles.box}>
-                            <View style={styles.box__header}>
-                                <Text style={styles.header__main}>Turn On Location permission</Text>
-                                <TouchableOpacity style={{ alignSelf: 'flex-start' }} onPress={modalVisible}>
-                                    <Entypo name='circle-with-cross' size={23} color={COLORS.light} />
-                                </TouchableOpacity>
-                            </View>
-                            <Text style={styles.box__description}>Please go to Settings - Location to turn on Location permission</Text>
-    
-                            <View style={styles.box__container}>
-                                <TouchableOpacity style={[styles.box__btn, { backgroundColor: COLORS.primary_light }]} onPress={modalVisible}>
-                                    <Text style={[styles.btn__text, { color: COLORS.primary }]}>Cancel</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={[styles.box__btn, { backgroundColor: COLORS.primary }]} onPress={openSettings}>
-                                    <Text style={[styles.btn__text, { color: COLORS.white }]}>Settings</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    </View>
-                </Modal> */}
             </>
         )
     }
-
-
-    return (
-        <>
-            <NavigationContainer ref={navigationRef} onReady={onReady}>
-                <Stack.Navigator
-                    initialRouteName={user && homeAdd ? 'HomeNavigator' : user ? 'LocationPage' : 'Login'}
-                    screenOptions={{ headerShown: false }}>
-                    {/* <Stack.Navigator initialRouteName={ 'HomeNavigator' } screenOptions={{ headerShown: false }}> */}
-                    <Stack.Screen name="Login" component={Login} />
-                    <Stack.Screen name="Register" component={Register} />
-                    <Stack.Screen name="Forget" component={Forget} />
-                    <Stack.Screen name="HomeNavigator" component={AuthNavigation} />
-                </Stack.Navigator>
-            </NavigationContainer>
-
-            {
-                isConnected !== null && !isConnected && (
-                    <Modal visible transparent>
-                        <View style={{ height, width, flex: 1, backgroundColor: COLORS.white, justifyContent: 'center', alignItems: 'center' }}>
-                            <Image
-                                style={{ height: 293, width: 250, resizeMode: 'contain' }}
-                                source={require('../images/no_internet.jpg')}
-                            />
-                        </View>
-                    </Modal>
-
-                )
-            }
-
-            <Modal visible={!!error || !!success} transparent>
-                <View style={{ backgroundColor: 'rgba(0,0,0,.1)', flex: 1 }}>
-                    <Toast error={error} success={success} />
-                </View>
-            </Modal>
-
-            {/* <Modal visible={modal} transparent>
-                <View style={styles.modal}>
-                    <View style={styles.box}>
-                        <View style={styles.box__header}>
-                            <Text style={styles.header__main}>Turn On Location permission</Text>
-                            <TouchableOpacity style={{ alignSelf: 'flex-start' }} onPress={modalVisible}>
-                                <Entypo name='circle-with-cross' size={23} color={COLORS.light} />
-                            </TouchableOpacity>
-                        </View>
-                        <Text style={styles.box__description}>Please go to Settings - Location to turn on Location permission</Text>
-
-                        <View style={styles.box__container}>
-                            <TouchableOpacity style={[styles.box__btn, { backgroundColor: COLORS.primary_light }]} onPress={modalVisible}>
-                                <Text style={[styles.btn__text, { color: COLORS.primary }]}>Cancel</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={[styles.box__btn, { backgroundColor: COLORS.primary }]} onPress={openSettings}>
-                                <Text style={[styles.btn__text, { color: COLORS.white }]}>Settings</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-            </Modal> */}
-        </>
-    )
 }
 
 export default Navigation

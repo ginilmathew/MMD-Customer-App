@@ -223,7 +223,7 @@ const Home = ({ navigation, route }) => {
     }
 
 
-    // const addLeng = currentLoc?.address?.length;
+    const addLeng = currentLoc?.address?.length;
 
     return (
 

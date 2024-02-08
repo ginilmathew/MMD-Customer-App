@@ -58,6 +58,9 @@ const App = () => {
 				setLocationPermission(true)
 				setLoading(false)
 			}
+			else{
+				setLoading(false)
+			}
 
             // const status = await PermissionsAndroid.requestMultiple([PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION]);
             
@@ -67,6 +70,9 @@ const App = () => {
 
 			if(location === "granted"){
 				setLocationPermission(true)
+				setLoading(false)
+			}
+			else{
 				setLoading(false)
 			}
 

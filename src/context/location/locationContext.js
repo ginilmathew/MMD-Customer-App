@@ -18,7 +18,7 @@ import reactotron from 'reactotron-react-native';
 const locationContext = ({ children }) => {
 
     const [cart_id] = useMMKVStorage('cart_id', storage);
-    const [location, setLocation] = useState({})
+    const [location, setLocation] = useState(null)
     const [mode, setMode] = useState('')
     const [currentLoc, setCurrentLoc] = useState('')
     const [homeAdd, setHomeAdd] = useMMKVStorage('homeAdd', storage);
@@ -92,29 +92,29 @@ const locationContext = ({ children }) => {
 
 
     const requestLocationPermisson = async () => {
+        getOneTimeLocation()
 
-
-            try {
-                if(Platform.OS === 'android'){
-                    const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
-                    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                        //To Check, If Permission is granted
-                        getOneTimeLocation();
-                        subscribeLocationLocation();
-                    } else {
-                        // setmo
-                    }
-                }
-                else{
-                    let location = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
-                    if(location === RESULTS.GRANTED){
-                        getOneTimeLocation();
-                        subscribeLocationLocation();
-                    }
-                }
-            } catch (err) {
-                // console.warn(err);
-            }
+            // try {
+            //     if(Platform.OS === 'android'){
+            //         const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+            //         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            //             //To Check, If Permission is granted
+            //             getOneTimeLocation();
+            //             //subscribeLocationLocation();
+            //         } else {
+            //             // setmo
+            //         }
+            //     }
+            //     else{
+            //         let location = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+            //         if(location === RESULTS.GRANTED){
+            //             getOneTimeLocation();
+            //             //subscribeLocationLocation();
+            //         }
+            //     }
+            // } catch (err) {
+            //     // console.warn(err);
+            // }
     }
 
     const getOneTimeLocation = () => {
@@ -126,9 +126,9 @@ const locationContext = ({ children }) => {
 
                 const { latitude, longitude } = position.coords;
 
-                setLocation(({address}) => ({
+                setLocation((prev) => ({
                     location: { latitude, longitude },
-                    address
+                    address : prev?.address
                 }))
 
                 mutate(position.coords)
@@ -152,28 +152,28 @@ const locationContext = ({ children }) => {
     };
 
 
-    const subscribeLocationLocation = () => {
-        watchID = Geolocation.watchPosition(
-            (position) => {
+    // const subscribeLocationLocation = () => {
+    //     watchID = Geolocation.watchPosition(
+    //         (position) => {
 
-                const { latitude, longitude } = position.coords
+    //             const { latitude, longitude } = position.coords
 
-                setLocation(({ address }) => ({
-                    location: { latitude, longitude },
-                    address
-                }))
-            },
-            (error) => {
-                if (error?.message === "No location provider available.") {
-                    // Alert.alert(t('location_msg'))
-                }
-            },
-            {
-                enableHighAccuracy: true,
-                maximumAge: 1000
-            },
-        );
-    };
+    //             setLocation(({ address }) => ({
+    //                 location: { latitude, longitude },
+    //                 address
+    //             }))
+    //         },
+    //         (error) => {
+    //             if (error?.message === "No location provider available.") {
+    //                 // Alert.alert(t('location_msg'))
+    //             }
+    //         },
+    //         {
+    //             enableHighAccuracy: true,
+    //             maximumAge: 1000
+    //         },
+    //     );
+    // };
 
     return (
         <LocationContext.Provider

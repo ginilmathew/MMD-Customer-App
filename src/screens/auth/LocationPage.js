@@ -1,9 +1,12 @@
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, Image, StyleSheet, TouchableOpacity, Platform, Linking } from 'react-native'
 import React, { useCallback, useContext, useEffect } from 'react'
 import { COLORS } from '../../constants/COLORS'
 import CommonButton from '../../components/CommonButton'
 import locationContext from '../../context/location'
 import { navigate } from '../../navigation/RootNavigation'
+import { PERMISSIONS, request } from 'react-native-permissions'
+import { storage } from '../../../App'
+import reactotron from 'reactotron-react-native'
 
 const LocationPage = ({ navigation }) => {
 
@@ -17,6 +20,37 @@ const LocationPage = ({ navigation }) => {
         navigation.navigate('GoogleLocation')
     }, [])
 
+
+    const getLocationPermission = async() => {
+        reactotron.log("in")
+        let permissions;
+        if(Platform.OS === 'android'){
+            permissions = await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+            if(permissions === "granted"){
+                getLocation()
+            }
+            else{
+                reactotron.log({permissions})
+                if(permissions === "blocked"){
+                    Linking.openSettings()
+                }
+                storage.setString("error", `Location Permission ${permissions} by the user`)
+            }
+        }
+        else{
+            permissions = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
+            if(permissions === "granted"){
+                getLocation()
+            }
+            else{
+                reactotron.log({permissions})
+                storage.setString("error", `Location Permission ${permissions} by the user`)
+            }
+        }
+
+        
+    }
+
     return (
         <View style={styles.container}>
 
@@ -28,7 +62,7 @@ const LocationPage = ({ navigation }) => {
             <Image source={require('../../images/building.png')} style={styles.img} />
 
             <View style={styles.header}>
-                <CommonButton text={'Allow location access'} onPress={getLocation} />
+                <CommonButton text={'Allow location access'} onPress={getLocationPermission} />
 
                 <TouchableOpacity 
                 style={{
