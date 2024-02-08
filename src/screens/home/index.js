@@ -31,11 +31,13 @@ import { useFocusNotifyOnChangeProps } from '../../hooks/useFocusNotifyOnChangeP
 
 const Home = ({ navigation, route }) => {
 
-    const { currentLoc, setMode, getLocation, mode, setHomeFocus } = useContext(LocationContext)
+    const { currentLoc, setMode, getLocation, mode, setHomeFocus, location } = useContext(LocationContext)
     const checkLocRef = useRef(null)
     const [cart_id] = useMMKVStorage('cart_id', storage);
     const { cartItems, setCartItems } = useContext(CartContext);
     const notifyOnChangeProps = useFocusNotifyOnChangeProps()
+
+    reactotron.log({currentLoc, location})
 
 
     let payload = {
@@ -55,7 +57,7 @@ const Home = ({ navigation, route }) => {
             ...payload
         }),
         enabled: false,
-        notifyOnChangeProps
+        //notifyOnChangeProps : false
 
     })
 
@@ -170,9 +172,9 @@ const Home = ({ navigation, route }) => {
             <View style={{
                 marginBottom: 30
             }}>
-                <View style={{ marginBottom: 20 }}>
+                {/* <View style={{ marginBottom: 20 }}>
                     <CustomSlider item={data?.data?.data?.sliders} />
-                </View>
+                </View> */}
                 <View style={{ marginTop: 20 }}>
                     <CustomHeading label={'HighLights'} hide={false} marginH={20} />
                 </View>
@@ -220,7 +222,7 @@ const Home = ({ navigation, route }) => {
     return (
 
         <View style={{ backgroundColor: '#fff' }}>
-            {/* {currentLoc?.address && (
+            {currentLoc?.address && (
                 <TouchableOpacity onPress={changeAdd} style={{
                     flexDirection: 'row',
                     paddingLeft: 20,
@@ -237,7 +239,7 @@ const Home = ({ navigation, route }) => {
                         ?.concat(addLeng ? ' ...' : '')}</Text>
                 </TouchableOpacity>
             )
-            } */}
+            }
             <DummySearch press={NavigateToSearch} />
             <FlatList
                 data={data?.data?.data.featuredList?.[0]?.featured_list}

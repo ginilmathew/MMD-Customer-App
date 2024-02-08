@@ -12,6 +12,7 @@ import { storage } from '../../../App'
 import { useMutation } from 'react-query'
 import { updateProfile } from '../../api/Profile'
 import Header from '../../components/Header'
+import LocationContext from '../../context/location'
 
 
 const EditProfile = ({ navigation }) => {

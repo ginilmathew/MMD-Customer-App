@@ -108,7 +108,7 @@ const ChooseDate = ({slotSelected}) => {
 
                     {visible && (
                         <View style={styles.dropdown}>
-                            {storeData?.data?.data.map((item, index) => (
+                            {storeData?.data?.data?.map((item, index) => (
                                 <TouchableOpacity key={index} style={styles.option} onPress={() => handleSelectOption(item)}>
                                     <Text style={{color: COLORS.light, fontFamily: "Poppins-Medium" }}>{item?.fromTime} ~ {item?.toTime}</Text>
                                 </TouchableOpacity>

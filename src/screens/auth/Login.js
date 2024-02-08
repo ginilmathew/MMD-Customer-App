@@ -58,7 +58,7 @@ const Login = ({ navigation }) => {
 
             storage.setString('success', 'Login successful')
         } catch (err) {
-            console.warn(err);
+            // console.warn(err);
         }
         // navigation.navigate(data?.defaultAddress ? 'HomeNavigator' : 'LocationPage');
     }

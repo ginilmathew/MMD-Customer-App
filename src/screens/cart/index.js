@@ -12,7 +12,7 @@ import { useMutation, useQuery } from 'react-query'
 import useRefetch from '../../hooks/useRefetch'
 import Animated from 'react-native-reanimated'
 import CartItemCard from '../../components/cartItemCard'
-import { storage } from '../../../App'
+import LottieView from 'lottie-react-native'
 const Cart = ({ navigation, route }) => {
 
   const { cartItems, setCartItems, } = useContext(CartContext);
@@ -27,7 +27,7 @@ const Cart = ({ navigation, route }) => {
     mutationFn: getCartItems,
     onSuccess: (data) => {
       setClean(true)
-      let myStructure = data?.data?.data?.product.map((res) => (
+      let myStructure = data?.data?.data?.product?.map((res) => (
         {
           _id: res?._id,
           qty: res?.qty,
@@ -120,6 +120,22 @@ const Cart = ({ navigation, route }) => {
   //       </View> 
   //   )
   // },[])
+
+  if(isLoading) {
+    return (
+      <View style={{
+        flex: 1,
+        alignItems: 'center',
+        backgroundColor: COLORS.white,
+        justifyContent: 'center'
+      }}>
+        <LottieView source={require('../../lottie/cartLoader.json')} autoPlay loop style={{
+          width: 400,
+          height: 400
+        }} />
+      </View>
+    )
+  }
 
 
   return (

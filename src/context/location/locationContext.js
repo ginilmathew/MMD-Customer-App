@@ -10,13 +10,14 @@ import { navigationRef } from '../../navigation/RootNavigation';
 import { useMMKVStorage } from 'react-native-mmkv-storage';
 import { storage } from '../../../App';
 import { PERMISSIONS, check, RESULTS, request } from 'react-native-permissions'
+import reactotron from 'reactotron-react-native';
 
 
 
 
 const locationContext = ({ children }) => {
 
-
+    const [cart_id] = useMMKVStorage('cart_id', storage);
     const [location, setLocation] = useState({})
     const [mode, setMode] = useState('')
     const [currentLoc, setCurrentLoc] = useState('')
@@ -24,10 +25,11 @@ const locationContext = ({ children }) => {
     const [modal, setModal] = useState(false)
     const [homeFocus, setHomeFocus] = useState(false)
 
-    
+
     const onSuccess = async ({ data }) => {
 
-        if(mode === 'map') {
+        console.log(mode);
+        if(mode === 'map' || mode === 'edit') {
             setLocation(location => ({
                 ...location,
                 address: {
@@ -36,15 +38,20 @@ const locationContext = ({ children }) => {
                 },
             }));
 
-            navigationRef.navigate('MapPage')
+            navigationRef.navigate('MapPage', mode === 'edit' && { cartID: cart_id })
         } else if (mode === 'home') {
             if(!homeAdd) {
                 setHomeAdd(true);
             }
 
+            reactotron.log({location: {
+                coord: { ...location?.location },
+                address: data?.results?.[0]?.formatted_address
+            }})
+
             setCurrentLoc({
                 coord: { ...location?.location },
-                address: data?.results[3]?.formatted_address
+                address: data?.results?.[0]?.formatted_address
             })
 
             navigationRef.reset({
@@ -67,7 +74,7 @@ const locationContext = ({ children }) => {
                 setModal(true);
             }
         } catch (err) {
-            console.warn(err);
+            // console.warn(err);
         }
     }, [])
 
@@ -105,7 +112,7 @@ const locationContext = ({ children }) => {
                     }
                 }
             } catch (err) {
-                console.warn(err);
+                // console.warn(err);
             }
     }
 
@@ -113,6 +120,8 @@ const locationContext = ({ children }) => {
         Geolocation.getCurrentPosition(
             //Will give you the current location
             (position) => {
+
+                reactotron.log({position})
 
                 const { latitude, longitude } = position.coords;
 
