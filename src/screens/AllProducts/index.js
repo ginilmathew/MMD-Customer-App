@@ -10,6 +10,7 @@ import useRefreshOnFocus from '../../hooks/useRefetch'
 import reactotron from 'reactotron-react-native'
 import { COLORS } from '../../constants/COLORS'
 import NoData from '../../components/NoData'
+import CartButton from '../../components/CartButton'
 
 const AllProducts = ({ navigation }) => {
 
@@ -100,7 +101,7 @@ const AllProducts = ({ navigation }) => {
                 ListEmptyComponent={emptyScreen}
             />
 
-
+            <CartButton bottom={120} />
         </View>
     )
 }

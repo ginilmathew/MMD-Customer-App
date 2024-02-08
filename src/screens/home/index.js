@@ -186,6 +186,7 @@ const Home = ({ navigation, route }) => {
     const ListFooterComponent = useCallback(() => {
         const allFeatures = data?.data?.data?.allFeatures || [];
 
+
         return (
             allFeatures.length > 0 && (
                 <View style={{ marginBottom: 90 }}>
@@ -265,7 +266,7 @@ const Home = ({ navigation, route }) => {
                 ListEmptyComponent={<NoData heights={500} />}
             />
 
-            <CartButton />
+            <CartButton bottom={60} />
         </View>
     )
 }

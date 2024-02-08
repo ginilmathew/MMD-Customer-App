@@ -7,6 +7,7 @@ import { useQuery } from 'react-query';
 import ItemCard from '../../components/ItemCard';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import NoData from '../../components/NoData';
+import CartButton from '../../components/CartButton';
 
 
 const FeaturedProduct = ({ route }) => {
@@ -19,7 +20,7 @@ const FeaturedProduct = ({ route }) => {
     })
 
 
- 
+
 
 
     const ListHeaderComponents = useCallback(() => {
@@ -32,10 +33,10 @@ const FeaturedProduct = ({ route }) => {
     }, [])
 
 
-    const AnimatedStyle = useCallback((index)=>{
+    const AnimatedStyle = useCallback((index) => {
         return FadeInDown.delay(index * 200).duration(200).springify().damping(12);
-      },[])
-    
+    }, [])
+
 
     const renderItem = useCallback(({ item, index }) => {
         return (
@@ -59,21 +60,25 @@ const FeaturedProduct = ({ route }) => {
     }
 
     return (
-        <FlatList
-            data={data?.data?.data?.[0]?.featured_list}
-            stickyHeaderIndices={[0]}
-            ListHeaderComponent={ListHeaderComponents}
-            renderItem={renderItem}
-            showsVerticalScrollIndicator={false}
-            ListFooterComponent={ListFooterComponent}
-            initialNumToRender={10}
-            maxToRenderPerBatch={10}
-            refreshing={isLoading}
-            onRefresh={refetch}
-            windowSize={10}
-            contentContainerStyle={styles.flatlistContainer}
-            ListEmptyComponent={emptyScreen}
-        />
+        <>
+            <FlatList
+                data={data?.data?.data?.[0]?.featured_list}
+                stickyHeaderIndices={[0]}
+                ListHeaderComponent={ListHeaderComponents}
+                renderItem={renderItem}
+                showsVerticalScrollIndicator={false}
+                ListFooterComponent={ListFooterComponent}
+                initialNumToRender={10}
+                maxToRenderPerBatch={10}
+                refreshing={isLoading}
+                onRefresh={refetch}
+                windowSize={10}
+                contentContainerStyle={styles.flatlistContainer}
+                ListEmptyComponent={emptyScreen}
+            />
+
+            <CartButton bottom={10} />
+        </>
     )
 }
 
@@ -81,10 +86,10 @@ export default FeaturedProduct
 
 const styles = StyleSheet.create({
     footer: {
-        marginBottom: 50
+        marginBottom: 80
     },
     flatlistContainer: {
         backgroundColor: '#fff',
-       flexGrow:1,
+        flexGrow: 1,
     }
 })
