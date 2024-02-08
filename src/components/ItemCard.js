@@ -6,15 +6,15 @@ import CartContext from '../context/cart';
 import { useNavigation } from '@react-navigation/core';
 import reactotron from 'reactotron-react-native';
 
-const CustomItemCard = ({ onPress, item, key }) => {
+const CustomItemCard = memo(({ onPress, item, key }) => {
 
 
     const navigation = useNavigation();
-    
+
     let products = item?.products ? item?.products[0] : item;
 
 
-    const [price, setPrice] = useState(null);    
+    const [price, setPrice] = useState(null);
 
     const { cartItems, addToCart, incrementItem, decrementItem } = useContext(CartContext);
 
@@ -24,7 +24,7 @@ const CustomItemCard = ({ onPress, item, key }) => {
 
     const isCartAdded = cartItems?.some(cartItem => (cartItem?._id === products?._id && cartItem?.unit_id === unitID && cartItem?.varientname === varientName));
 
-    const cartItem = cartItems?.find(cartItem =>(cartItem?._id === products?._id && cartItem?.unit_id === unitID && cartItem?.varientname === varientName));
+    const cartItem = cartItems?.find(cartItem => (cartItem?._id === products?._id && cartItem?.unit_id === unitID && cartItem?.varientname === varientName));
 
     const handleAddToCart = useCallback(() => {
         addToCart(products);
@@ -55,60 +55,60 @@ const CustomItemCard = ({ onPress, item, key }) => {
             ));
             const getFinalPrices = (products) => {
                 return products?.map((product) => {
-                  const { offerPrice, fromDate, toDate, sellingPrice } = product;
-              
-                  // If there's an offer price and it's not expired, use the offer price
-                  if (offerPrice && !isOfferExpired(fromDate, toDate)) {
-                    return { ...product, finalPrice: offerPrice ,hasOfferPrice: true, };
-                  }
-              
-                  // Otherwise, use the selling price
-                  return { ...product, finalPrice: sellingPrice , hasOfferPrice: false,};
+                    const { offerPrice, fromDate, toDate, sellingPrice } = product;
+
+                    // If there's an offer price and it's not expired, use the offer price
+                    if (offerPrice && !isOfferExpired(fromDate, toDate)) {
+                        return { ...product, finalPrice: offerPrice, hasOfferPrice: true, };
+                    }
+
+                    // Otherwise, use the selling price
+                    return { ...product, finalPrice: sellingPrice, hasOfferPrice: false, };
                 });
-              };
-              
-              const isOfferExpired = (fromDate, toDate) => {
+            };
+
+            const isOfferExpired = (fromDate, toDate) => {
                 // Implement logic to check if the offer is expired based on fromDate and toDate
                 // For example, you could compare the dates with the current date
-              
+
                 // Simple example assuming current date is 2024-02-06:
                 const currentDateString = new Date()?.toISOString()?.slice(0, 10);
                 return fromDate > currentDateString || toDate < currentDateString;
-              };
-              
-              const finalPriceProducts = getFinalPrices(products);
-              
-              const lowestPriceProduct = finalPriceProducts?.reduce((lowest, current) => {
+            };
+
+            const finalPriceProducts = getFinalPrices(products);
+
+            const lowestPriceProduct = finalPriceProducts?.reduce((lowest, current) => {
                 // If both have offer prices, compare final prices
                 if (current?.hasOfferPrice && lowest?.hasOfferPrice) {
-                  return current?.finalPrice < lowest?.finalPrice ? current : lowest;
+                    return current?.finalPrice < lowest?.finalPrice ? current : lowest;
                 }
-              
+
                 // If only one has an offer price, prioritize the offer price
                 if (current?.hasOfferPrice) {
-                  return current;
+                    return current;
                 } else if (lowest?.hasOfferPrice) {
-                  return lowest;
+                    return lowest;
                 }
-              
+
                 // Otherwise, just compare final prices
                 return current?.finalPrice < lowest?.finalPrice ? current : lowest;
-              });
-              
-              if (lowestPriceProduct) {
+            });
+
+            if (lowestPriceProduct) {
                 // console.log("Product with the lowest final price:", lowestPriceProduct);
                 setPrice(lowestPriceProduct)
-              } else {
+            } else {
                 // console.log("There are no products in the finalPriceProducts array.");
-              }
+            }
         }
     }, [item])
 
 
 
 
-    const AnimatedStyle =  FadeInDown.easing().delay(300);
-    
+    const AnimatedStyle = FadeInDown.easing().delay(300);
+
     const offerText = useMemo(() => {
         if (price?.hasOfferPrice) {
             return (
@@ -141,8 +141,10 @@ const CustomItemCard = ({ onPress, item, key }) => {
 
                 {/* Center Content */}
                 <View style={styles.centerContainer}>
-                    <Text style={styles?.heading}>{products?.name}</Text>
-                    <Text style={styles.subHeading}>Category: {products?.category?.name}</Text>
+                    <View>
+                        <Text style={styles?.heading}>{products?.name}</Text>
+                        <Text style={styles.subHeading}>Category: {products?.category?.name}</Text>
+                    </View>
                     {offerText}
                 </View>
 
@@ -162,7 +164,7 @@ const CustomItemCard = ({ onPress, item, key }) => {
 
         </Animated.View>
     );
-};
+});
 
 
 
@@ -176,11 +178,11 @@ const AddToCart = memo(({ isCartAdded, handleDecrement, handleAddToCart, handleI
             {isCartAdded ? (
                 <View style={styles?.buttonContainer}>
                     <TouchableOpacity style={[styles?.incrementButton, { paddingHorizontal: 12 }]} onPress={memoizedDecrement}>
-                        <Text style={styles?.buttonText}>-</Text>
+                        <Text style={styles?.addText}>-</Text>
                     </TouchableOpacity>
                     <Text style={styles?.countText}>{cartItem?.qty}</Text>
                     <TouchableOpacity style={[styles?.incrementButton, { marginLeft: 5 }]} onPress={memoizedIncrement}>
-                        <Text style={styles.buttonText}>+</Text>
+                        <Text style={styles.addText}>+</Text>
                     </TouchableOpacity>
                 </View>
             ) : (
@@ -208,36 +210,37 @@ const styles = StyleSheet.create({
     leftImage: {
         width: 80,
         height: 80,
-        borderRadius: 8,
+        borderRadius: 12,
     },
     centerContainer: {
-        flex: 0.5,
+        flex: 0.65,
+        alignItems: "flex-start",
+        justifyContent: "space-between"
     },
     heading: {
-        fontFamily: 'Poppins-Regular',
+        fontFamily: 'Poppins-Medium',
         fontSize: 12,
-        fontWeight: 'bold',
-        marginBottom: 4,
-        color: COLORS.dark,
+        marginBottom: 2,
+        color: COLORS.light,
     },
     subHeading: {
-        fontFamily: 'Poppins-Regular',
-        fontSize: 12,
-        fontStyle: 'italic',
-        color: COLORS.text,
+        fontFamily: 'Poppins-Italic',
+        fontSize: 10,
+        color: COLORS.light,
+        opacity: 0.5,
         marginBottom: 4,
     },
     offerBox: {
-        width: 100,
+        width: 85,
         backgroundColor: COLORS.Offer_box,
         padding: 2,
         borderRadius: 6,
         alignItems: "center"
     },
     offerText: {
-        fontFamily: 'Poppins-Regular',
-        fontSize: 12,
-        color: COLORS.status_cancelled,
+        fontFamily: 'Poppins-Medium',
+        fontSize: 10,
+        color: COLORS.red,
     },
     rightContainer: {
         flex: 0.3,
@@ -250,17 +253,23 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: COLORS.primary,
-        paddingHorizontal: 4,
-        paddingVertical: 7,
+        width: 80,
+        height: 27,
         borderRadius: 6,
+        alignItems: "center",
+        justifyContent: "center"
     },
     buttonText: {
         color: 'white',
-        fontWeight: 'bold',
-        fontFamily: 'Poppins-Regular',
-        fontSize: 12,
-        fontWeight: 'bold',
+        fontFamily: 'Poppins-SemiBold',
+        fontSize: 10,
         letterSpacing: .5,
+
+    },
+    addText: {
+        color: 'white',
+        fontFamily: 'Poppins-SemiBold',
+        fontSize: 10,
 
     },
     buttonContainer: {
@@ -271,10 +280,12 @@ const styles = StyleSheet.create({
     },
     incrementButton: {
         backgroundColor: COLORS.primary,
-        paddingHorizontal: 11,
-        paddingVertical: 8,
+        width: 30,
+        height: 27,
         borderRadius: 6,
-        marginRight: 2,
+        marginRight: 3,
+        alignItems: "center",
+        justifyContent: "center"
     },
     countText: {
         justifyContent: 'center',
@@ -295,4 +306,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default memo(CustomItemCard);
+export default CustomItemCard;

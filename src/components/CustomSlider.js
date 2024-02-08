@@ -12,7 +12,7 @@ const CustomSlider = memo(({ item }) => {
       <TouchableOpacity
         key={index}
         onPress={() => CarouselSelect(item)}
-        style={{ alignItems: 'center', marginTop: 20, width: '100%', height: '85%' }}
+        style={{ alignItems: 'center', marginTop: 25, width: '100%', height: '85%' }}
       >
         <Image
         //   source={{ uri: `${IMG_URL}${item?.original_image}` }}

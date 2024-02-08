@@ -27,7 +27,7 @@ const AddAddress = ({ navigation }) => {
 
   const { refetch, data } = useQuery({
     queryKey: ['address-query'],
-    
+
     queryFn: addressList,
     initialData: [],
     onSettled() {
@@ -96,9 +96,9 @@ const AddAddress = ({ navigation }) => {
 
 
     return (
-      <View>
+      <View style={{paddingHorizontal: 5}}>
         <TouchableOpacity onPress={() => mutateDefault(item?._id)} style={styles.renderItem}>
-          <View style={[styles.end, { width: '15%' }]}>
+          <View style={styles.end}>
             <IonIcons name='location' size={25} color={COLORS.blue} />
           </View>
 
@@ -111,7 +111,7 @@ const AddAddress = ({ navigation }) => {
           </View>
 
           <View style={styles.end}>
-            <View style={{ alignItems: 'center', justifyContent: 'space-between' }}>
+            <View>
               {/* <Text style={[styles.end_text, { color: item?.default ? COLORS.primary : COLORS.light }]}>{item?.default ? 'DEFAULT' : 'SET AS DEFAULT'}</Text> */}
               <IonIcons name={(item?.default) ? 'radio-button-on' : `radio-button-off`} size={20} color={COLORS.primary} />
             </View>
@@ -132,7 +132,7 @@ const AddAddress = ({ navigation }) => {
     )
   }, [])
 
-  
+
   return (
     <>
 
@@ -162,35 +162,37 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
-    padding: 15
+    paddingHorizontal: 15,
+    paddingBottom: 15,
   },
   renderItem: {
     flexDirection: 'row',
     borderBottomWidth: 1,
     borderBottomColor: COLORS.gray,
-    paddingVertical: 14
+    paddingVertical: 14,
+    gap: 10
   },
   box_text: {
-    width: '65%',
-    padding: 2
+    width: '75%',
+    justifyContent: "center",
   },
   text: {
-    color: COLORS.dark,
+    color: COLORS.light,
     fontFamily: 'Poppins-Medium',
-    fontSize: 14
-  },
+    fontSize: 12
+},
   header: {
     marginTop: 13
   },
   end: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: '20%',
+    paddingLeft: 5
   },
   end_text: {
     fontSize: 7,
     fontFamily: 'Poppins-Medium'
-  }
+  },
 })
 
 export default AddAddress

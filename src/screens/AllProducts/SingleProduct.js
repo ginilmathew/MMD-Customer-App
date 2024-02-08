@@ -39,9 +39,7 @@ const SingleProduct = ({ navigation, route }) => {
 
     const [qty, setQty] = useState(null)
     const { cartItems, setCartItems, } = useContext(CartContext);
-
-
-  
+    reactotron.log({ cartItems })
     const { data, refetch } = useQuery({
         queryKey: 'single-product',
         initialData: item,
@@ -371,11 +369,11 @@ const SingleProduct = ({ navigation, route }) => {
 
 
 
-const SmallImage = React.memo(({ image, onPress }) => (
-    <TouchableOpacity onPress={() => onPress(image)}>
-        <Image source={image} style={styles.smallImage} resizeMode="cover" />
-    </TouchableOpacity>
-));
+// const SmallImage = React.memo(({ image, onPress }) => (
+//     <TouchableOpacity onPress={() => onPress(image)}>
+//         <Image source={image} style={styles.smallImage} resizeMode="cover" />
+//     </TouchableOpacity>
+// ));
 
 
 

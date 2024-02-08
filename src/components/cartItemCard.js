@@ -225,36 +225,37 @@ const styles = StyleSheet.create({
     leftImage: {
         width: 80,
         height: 80,
-        borderRadius: 8,
+        borderRadius: 12,
     },
     centerContainer: {
-        flex: 0.5,
+        flex: 0.65,
+        alignItems: "flex-start",
+        justifyContent: "space-between"
     },
     heading: {
-        fontFamily: 'Poppins-Regular',
+        fontFamily: 'Poppins-Medium',
         fontSize: 12,
-        fontWeight: 'bold',
-        marginBottom: 4,
-        color: COLORS.dark,
+        marginBottom: 2,
+        color: COLORS.light,
     },
     subHeading: {
-        fontFamily: 'Poppins-Regular',
-        fontSize: 12,
-        fontStyle: 'italic',
-        color: COLORS.text,
+        fontFamily: 'Poppins-Italic',
+        fontSize: 10,
+        color: COLORS.light,
+        opacity: 0.5,
         marginBottom: 4,
     },
     offerBox: {
-        width: 100,
+        width: 85,
         backgroundColor: COLORS.Offer_box,
         padding: 2,
         borderRadius: 6,
         alignItems: "center"
     },
     offerText: {
-        fontFamily: 'Poppins-Regular',
-        fontSize: 12,
-        color: COLORS.status_cancelled,
+        fontFamily: 'Poppins-Medium',
+        fontSize: 10,
+        color: COLORS.red,
     },
     rightContainer: {
         flex: 0.3,
@@ -267,17 +268,23 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: COLORS.primary,
-        paddingHorizontal: 4,
-        paddingVertical: 7,
+        width: 80,
+        height: 27,
         borderRadius: 6,
+        alignItems: "center",
+        justifyContent: "center"
     },
     buttonText: {
         color: 'white',
-        fontWeight: 'bold',
-        fontFamily: 'Poppins-Regular',
-        fontSize: 12,
-        fontWeight: 'bold',
+        fontFamily: 'Poppins-SemiBold',
+        fontSize: 10,
         letterSpacing: .5,
+
+    },
+    addText: {
+        color: 'white',
+        fontFamily: 'Poppins-SemiBold',
+        fontSize: 10,
 
     },
     buttonContainer: {
@@ -288,10 +295,12 @@ const styles = StyleSheet.create({
     },
     incrementButton: {
         backgroundColor: COLORS.primary,
-        paddingHorizontal: 11,
-        paddingVertical: 8,
+        width: 30,
+        height: 27,
         borderRadius: 6,
-        marginRight: 2,
+        marginRight: 3,
+        alignItems: "center",
+        justifyContent: "center"
     },
     countText: {
         justifyContent: 'center',

@@ -31,7 +31,10 @@ const styles = StyleSheet.create({
         width: '100%',
         borderRadius: 12,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        elevation: 3,
+        shadowColor: "#2F2F2F",
+        shadowRadius: 15
     },
     text: {
         fontSize: 22,
