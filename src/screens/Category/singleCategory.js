@@ -58,7 +58,7 @@ const SingleCategory = ({ route }) => {
     }, [])
 
 
-    const ListHeaderComponents = useCallback(({ item, index }) => {
+    const ListHeaderComponents = useCallback(({ _, index }) => {
         return (
             <View style={{ padding: 8, backgroundColor: COLORS.white }}>
                 <ScrollView
@@ -137,7 +137,7 @@ const RenderHeaderMemo = memo(({ LIST, AnimatedStyle, onPress, subList }) => {
     return (
         <>
             {LIST?.map((res, index) => (
-                <Animated.View entering={AnimatedStyle(index, 100)} style={{ marginRight: 10 }}>
+                <Animated.View entering={AnimatedStyle(index, 50)} style={{ marginRight: 10 }} key={index}>
                     <CustomTab label={res?.name} onPress={() => onPress(res)} subList={subList} />
                 </Animated.View>
             ))}
@@ -148,9 +148,9 @@ const RenderHeaderMemo = memo(({ LIST, AnimatedStyle, onPress, subList }) => {
 
 const MainRenderMemo = memo(({ item, AnimatedStyle, index }) => {
     return (
-        <Animated.View entering={AnimatedStyle(index, 200)} >
+        <Animated.View entering={AnimatedStyle(index, 100)} >
             <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
-                <ItemCard item={item} />
+                <ItemCard item={item} key={item._id} />
             </View>
         </Animated.View>
 

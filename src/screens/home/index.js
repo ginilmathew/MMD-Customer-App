@@ -57,7 +57,7 @@ const Home = ({ navigation, route }) => {
             ...payload
         }),
         // notifyOnChangeProps,
-        enabled: false,
+    
     })
 
 

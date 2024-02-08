@@ -14,21 +14,21 @@ const Category = () => {
     const { data, isLoading, refetch } = useQuery({
         queryKey: ['category'],
         queryFn: getCategory,
-        enabled: true
+        // enabled: true
     })
 
 
     useRefetch(refetch)
 
     const AnimatedStyle = useCallback((index) => {
-        return FadeInDown.delay(index * 100).duration(200).springify().damping(12);
+        return FadeInDown.delay(index * 50).duration(150).springify().damping(12);
     }, [])
 
 
     const renderSectionHeader = useCallback(({ item, index }) => {
 
         return (
-            <Animated.View entering={AnimatedStyle(index)}>
+            <Animated.View entering={AnimatedStyle(index)} key={item?._id}>
                 <View style={styles.itemContainer}>
                     <CategoryCard key={item?._id} item={item} />
                 </View>
@@ -52,6 +52,10 @@ const Category = () => {
         )
     }
 
+    const KeyExtractor = useCallback((item) => {
+        return item?._id
+    }, [])
+
     return (
         <FlatList
             StickyHeaderComponent={[0]}
@@ -61,7 +65,7 @@ const Category = () => {
             renderItem={renderSectionHeader}
             refreshing={isLoading}
             onRefresh={refetch}
-            keyExtractor={(item, index) => index.toString()}
+            keyExtractor={KeyExtractor}
             contentContainerStyle={styles.flatListContent}
             ListEmptyComponent={emptyScreen}
         />
