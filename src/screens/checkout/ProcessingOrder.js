@@ -22,10 +22,7 @@ const ProcessingOrder = ({route, navigation}) => {
   const { setCartItems } = useContext(CartContext);
 
 
-
-
     reactotron.log({data})
-
 
     useEffect(() => {
         if(data){

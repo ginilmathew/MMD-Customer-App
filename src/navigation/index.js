@@ -49,7 +49,6 @@ const Navigation = () => {
 
 
     const [cart_id, setCartId] = useMMKVStorage('cart_id', storage);
-    console.log(cart_id);
     const { isConnected } = useNetInfo();
     const [user] = useMMKVStorage('user', storage);
     const [error] = useMMKVStorage('error', storage)

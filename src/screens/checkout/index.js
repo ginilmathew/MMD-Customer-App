@@ -83,7 +83,7 @@ const Checkout = ({ route }) => {
 
 
 
-  const { mutate, refetch: postsubrefetch, data: orderNewData } = useMutation({
+  const { mutate, refetch: postsubrefetch, data: orderNewData, isLoading: placeLoading } = useMutation({
     mutationKey: 'placedOrder',
     mutationFn: PlaceOrder,
     onSuccess: async (data) => {
@@ -264,7 +264,7 @@ const Checkout = ({ route }) => {
         </View>
 
         <View style={{ paddingHorizontal: 22, marginTop: 20 }}>
-          <CommonButton text={"Place Order"} onPress={placeOrder} />
+          <CommonButton text={"Place Order"} onPress={placeOrder} loading={placeLoading}/>
         </View>
 
       </ScrollView>
@@ -339,7 +339,8 @@ const styles = StyleSheet.create({
   },
   description: {
     fontFamily: "Poppins-Regular",
-    fontSize: 12
+    fontSize: 12,
+    color: COLORS.light
   },
   locationStyle: {
     flexDirection: "row",
