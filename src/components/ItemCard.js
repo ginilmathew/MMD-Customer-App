@@ -5,6 +5,7 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import CartContext from '../context/cart';
 import { useNavigation } from '@react-navigation/core';
 import reactotron from 'reactotron-react-native';
+import moment from 'moment';
 
 const CustomItemCard = memo(({ onPress, item, key }) => {
 
@@ -48,59 +49,101 @@ const CustomItemCard = memo(({ onPress, item, key }) => {
 
     useEffect(() => {
         if (item) {
-            let products = item?.products ? item?.products[0]?.units[0]?.variants?.map(item => (
-                item
-            )) : item?.units?.[0]?.variants?.map(item => (
-                item
-            ));
-            const getFinalPrices = (products) => {
-                return products?.map((product) => {
-                    const { offerPrice, fromDate, toDate, sellingPrice } = product;
-
-                    // If there's an offer price and it's not expired, use the offer price
-                    if (offerPrice && !isOfferExpired(fromDate, toDate)) {
-                        return { ...product, finalPrice: offerPrice, hasOfferPrice: true, };
+            let product;
+            let products = item?.products ? item?.products[0]?.units[0]?.variants?.[0] : item?.units?.[0]?.variants?.[0];
+            const { offerPrice, fromDate, toDate, sellingPrice, costPrice } = products;
+            if(fromDate && toDate && offerPrice){
+                let startDate = moment(fromDate, "YYY-MM-DD").add(-1, 'day');
+                let endDate = moment(toDate, "YYYY-MM-DD").add(1, 'day')
+                if(moment().isBetween(startDate, endDate)){
+                    product = {
+                        ...products,
+                        finalPrice: offerPrice,
+                        hasOfferPrice: true,
+                        discount: parseFloat(sellingPrice)-parseFloat(offerPrice),
+                        discountPercentage: (100 * (parseFloat(costPrice) - parseFloat(offerPrice)) / parseFloat(costPrice)).toFixed(2)*1,
+                        unitName: item?.products ? item?.products[0]?.units[0]?.name : item?.units?.[0]?.name
                     }
-
-                    // Otherwise, use the selling price
-                    return { ...product, finalPrice: sellingPrice, hasOfferPrice: false, };
-                });
-            };
-
-            const isOfferExpired = (fromDate, toDate) => {
-                // Implement logic to check if the offer is expired based on fromDate and toDate
-                // For example, you could compare the dates with the current date
-
-                // Simple example assuming current date is 2024-02-06:
-                const currentDateString = new Date()?.toISOString()?.slice(0, 10);
-                return fromDate > currentDateString || toDate < currentDateString;
-            };
-
-            const finalPriceProducts = getFinalPrices(products);
-
-            const lowestPriceProduct = finalPriceProducts?.reduce((lowest, current) => {
-                // If both have offer prices, compare final prices
-                if (current?.hasOfferPrice && lowest?.hasOfferPrice) {
-                    return current?.finalPrice < lowest?.finalPrice ? current : lowest;
                 }
-
-                // If only one has an offer price, prioritize the offer price
-                if (current?.hasOfferPrice) {
-                    return current;
-                } else if (lowest?.hasOfferPrice) {
-                    return lowest;
+                else{
+                    product = { 
+                        ...products, 
+                        finalPrice: sellingPrice, 
+                        hasOfferPrice: false,
+                        discount: 0,
+                        discountPercentage: (100 * (parseFloat(costPrice) - parseFloat(sellingPrice)) / parseFloat(costPrice)).toFixed(2)*1,
+                        unitName: item?.products ? item?.products[0]?.units[0]?.name : item?.units?.[0]?.name
+                    };
                 }
-
-                // Otherwise, just compare final prices
-                return current?.finalPrice < lowest?.finalPrice ? current : lowest;
-            });
-
-            if (lowestPriceProduct) {
-                // console.log("Product with the lowest final price:", lowestPriceProduct);
-                setPrice(lowestPriceProduct)
-            } else {
-                // console.log("There are no products in the finalPriceProducts array.");
             }
+            else{
+                product = { 
+                    ...products, 
+                    finalPrice: sellingPrice, 
+                    hasOfferPrice: false,
+                    discount: 0,
+                    discountPercentage: (100 * (parseFloat(costPrice) - parseFloat(sellingPrice)) / parseFloat(costPrice)).toFixed(2)*1,
+                    unitName: item?.products ? item?.products[0]?.units[0]?.name : item?.units?.[0]?.name
+                };
+            }
+
+            setPrice(product)
+
+            reactotron.log({product})
+
+
+            // const getFinalPrices = (products) => {
+            //     return products?.map((product) => {
+            //         const { offerPrice, fromDate, toDate, sellingPrice } = product;
+
+                    
+
+            //         // If there's an offer price and it's not expired, use the offer price
+            //         if (offerPrice && !isOfferExpired(fromDate, toDate)) {
+            //             return { ...product, finalPrice: offerPrice, hasOfferPrice: true, };
+            //         }
+
+            //         // Otherwise, use the selling price
+            //         return { ...product, finalPrice: sellingPrice, hasOfferPrice: false, };
+            //     });
+            // };
+
+            // const isOfferExpired = (fromDate, toDate) => {
+
+                
+            //     // Implement logic to check if the offer is expired based on fromDate and toDate
+            //     // For example, you could compare the dates with the current date
+
+            //     // Simple example assuming current date is 2024-02-06:
+            //     const currentDateString = new Date()?.toISOString()?.slice(0, 10);
+            //     return fromDate > currentDateString || toDate < currentDateString;
+            // };
+
+            // const finalPriceProducts = getFinalPrices(products);
+
+            // const lowestPriceProduct = finalPriceProducts?.reduce((lowest, current) => {
+            //     // If both have offer prices, compare final prices
+            //     if (current?.hasOfferPrice && lowest?.hasOfferPrice) {
+            //         return current?.finalPrice < lowest?.finalPrice ? current : lowest;
+            //     }
+
+            //     // If only one has an offer price, prioritize the offer price
+            //     if (current?.hasOfferPrice) {
+            //         return current;
+            //     } else if (lowest?.hasOfferPrice) {
+            //         return lowest;
+            //     }
+
+            //     // Otherwise, just compare final prices
+            //     return current?.finalPrice < lowest?.finalPrice ? current : lowest;
+            // });
+
+            // if (lowestPriceProduct) {
+            //     // console.log("Product with the lowest final price:", lowestPriceProduct);
+            //     setPrice(lowestPriceProduct)
+            // } else {
+            //     // console.log("There are no products in the finalPriceProducts array.");
+            // }
         }
     }, [item])
 
@@ -144,15 +187,16 @@ const CustomItemCard = memo(({ onPress, item, key }) => {
                     <View>
                         <Text style={styles?.heading}>{products?.name}</Text>
                         <Text style={styles.subHeading}>Category: {products?.category?.name}</Text>
+                        <Text style={styles.subHeading}>{`${price?.name} ${price?.unitName}`}</Text>
                     </View>
                     {offerText}
                 </View>
 
                 {/* Right Side */}
                 <View style={styles?.rightContainer}>
-                    <Text style={styles.topPrice}>₹ {price?.finalPrice}</Text>
+                    <Text style={styles.topPrice}>₹ {cartItem?.qty ? parseFloat(price?.finalPrice) * parseInt(cartItem?.qty) : price?.finalPrice  }</Text>
                     {price?.hasOfferPrice &&
-                        <Text style={styles.strikePrice}>₹ {price?.sellingPrice}</Text>}
+                        <Text style={styles.strikePrice}>₹ {cartItem?.qty ? parseFloat(price?.sellingPrice) * parseInt(cartItem?.qty) : price?.sellingPrice}</Text>}
                     <AddToCart
                         isCartAdded={isCartAdded}
                         handleAddToCart={handleAddToCart}

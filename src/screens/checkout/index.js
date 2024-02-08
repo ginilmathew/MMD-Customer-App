@@ -21,6 +21,7 @@ import RazorpayCheckout from 'react-native-razorpay';
 import ChooseDate from './ChooseDate'
 import SlotContext from '../../context/slot'
 import { UpdateOrder } from '../../api/updateOrder'
+import CheckoutItemCard from '../../components/CheckoutItemCard'
 
 
 const Checkout = ({ route }) => {
@@ -192,20 +193,12 @@ const Checkout = ({ route }) => {
       <CommonHeader heading={"Checkout"} backBtn />
       <ScrollView contentContainerStyle={styles.innerContainer}>
 
-        <View>
-          {cartItems?.map(item => (<View style={styles.imgContainer} key={item?._id}>
-            <View style={styles.boxStyle}>
-              <Image source={{ uri: item?.item?.imageBasePath + item?.item?.image?.[0] }} style={styles.imgStyle} />
-              <View style={styles.imgSection}>
-                <Text style={styles.productName}>{item?.item?.name}</Text>
-                <Text style={styles.categoryName}>Category : {item?.item?.category?.name}</Text>
-              </View>
-            </View>
-            <View style={styles.qtyBox}>
-              <Text style={styles.price}>₹ {(item?.item?.variant?.offerPrice && item?.item?.variant?.offerPrice < item?.item?.variant?.sellingPrice) ? (item?.item?.variant?.offerPrice) : (item?.item?.variant?.sellingPrice)}</Text>
-            </View>
-          </View>
+        <View >
+          <View style={{ paddingHorizontal: 15 }}>
+          {cartItems?.map(item => (
+            <CheckoutItemCard item={item} />
           ))}
+          </View>
 
           <View style={styles.locationBox}>
             <View style={styles.shipping}>

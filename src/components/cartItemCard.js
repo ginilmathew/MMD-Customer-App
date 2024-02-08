@@ -5,6 +5,7 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import CartContext from '../context/cart';
 import { useNavigation } from '@react-navigation/core';
 import reactotron from 'reactotron-react-native';
+import moment from 'moment';
 
 const CartItemCard = ({ onPress, item, key }) => {
 
@@ -24,11 +25,50 @@ const CartItemCard = ({ onPress, item, key }) => {
         if (!products?.variant) {
             return null;
         }
-        const { offerPrice, fromDate, toDate, sellingPrice } = products.variant;
-        if (!offerPrice || isOfferExpired(fromDate, toDate)) {
-            return { ...products.variant, finalPrice: sellingPrice, hasOfferPrice: false };
+        const { offerPrice, fromDate, toDate, sellingPrice, costPrice } = products.variant;
+
+        let product;
+
+        if(fromDate && toDate && offerPrice){
+            let startDate = moment(fromDate, "YYY-MM-DD").add(-1, 'day');
+            let endDate = moment(toDate, "YYYY-MM-DD").add(1, 'day')
+            if(moment().isBetween(startDate, endDate)){
+                product = {
+                    ...products.variant,
+                    finalPrice: offerPrice,
+                    hasOfferPrice: true,
+                    discount: parseFloat(sellingPrice)-parseFloat(offerPrice),
+                    discountPercentage: (100 * (parseFloat(costPrice) - parseFloat(offerPrice)) / parseFloat(costPrice)).toFixed(2)*1,
+                    unitName: products?.unit?.name
+                }
+            }
+            else{
+                product = { 
+                    ...products.variant, 
+                    finalPrice: sellingPrice, 
+                    hasOfferPrice: false,
+                    discount: 0,
+                    discountPercentage: (100 * (parseFloat(costPrice) - parseFloat(sellingPrice)) / parseFloat(costPrice)).toFixed(2)*1,
+                    unitName: products?.unit?.name
+                };
+            }
         }
-        return { ...products.variant, finalPrice: offerPrice, hasOfferPrice: true };
+        else{
+            product = { 
+                ...products.variant, 
+                finalPrice: sellingPrice, 
+                hasOfferPrice: false,
+                discount: 0,
+                discountPercentage: (100 * (parseFloat(costPrice) - parseFloat(sellingPrice)) / parseFloat(costPrice)).toFixed(2)*1,
+                unitName: products?.unit?.name
+            };
+        }
+
+        setPrice(product)
+        // if (!offerPrice || isOfferExpired(fromDate, toDate)) {
+        //     return { ...products.variant, finalPrice: sellingPrice, hasOfferPrice: false };
+        // }
+        // return { ...products.variant, finalPrice: offerPrice, hasOfferPrice: true };
     };
     const isOfferExpired = (fromDate, toDate) => {
         const currentDateString = new Date().toISOString().slice(0, 10);
@@ -36,28 +76,29 @@ const CartItemCard = ({ onPress, item, key }) => {
     };
     useEffect(() => {
         if (products?.variant) {
-            const finalPriceResult = getFinalPrices();
-            let finalPriceProducts = [finalPriceResult]
-            const lowestPriceProduct = finalPriceProducts?.reduce((lowest, current) => {
-                // If both have offer prices, compare final prices
-                if (current.hasOfferPrice && lowest.hasOfferPrice) {
-                    return current.finalPrice < lowest.finalPrice ? current : lowest;
-                }
-                // If only one has an offer price, prioritize the offer price
-                if (current.hasOfferPrice) {
-                    return current;
-                } else if (lowest.hasOfferPrice) {
-                    return lowest;
-                }
-                // Otherwise, just compare final prices
-                return current.finalPrice < lowest.finalPrice ? current : lowest;
-            });
-            if (lowestPriceProduct) {
-                // console.log("Product with the lowest final price:", lowestPriceProduct);
-                setPrice(lowestPriceProduct)
-            } else {
-                // console.log("There are no products in the finalPriceProducts array.");
-            }
+            // const finalPriceResult = getFinalPrices();
+            // let finalPriceProducts = [finalPriceResult]
+            // const lowestPriceProduct = finalPriceProducts?.reduce((lowest, current) => {
+            //     // If both have offer prices, compare final prices
+            //     if (current.hasOfferPrice && lowest.hasOfferPrice) {
+            //         return current.finalPrice < lowest.finalPrice ? current : lowest;
+            //     }
+            //     // If only one has an offer price, prioritize the offer price
+            //     if (current.hasOfferPrice) {
+            //         return current;
+            //     } else if (lowest.hasOfferPrice) {
+            //         return lowest;
+            //     }
+            //     // Otherwise, just compare final prices
+            //     return current.finalPrice < lowest.finalPrice ? current : lowest;
+            // });
+            // if (lowestPriceProduct) {
+            //     // console.log("Product with the lowest final price:", lowestPriceProduct);
+            //     setPrice(lowestPriceProduct)
+            // } else {
+            //     // console.log("There are no products in the finalPriceProducts array.");
+            // }
+            getFinalPrices()
         }
     }, [products]);
        
@@ -158,6 +199,7 @@ const CartItemCard = ({ onPress, item, key }) => {
                 <View style={styles.centerContainer}>
                     <Text style={styles.heading}>{products?.name}</Text>
                     <Text style={styles.subHeading}>Category: {products?.category?.name}</Text>
+                    <Text style={styles.subHeading}>{`${price?.name} ${price?.unitName}`}</Text>
                     {price?.hasOfferPrice ? (<View style={styles.offerBox}>
                         <Text style={styles.offerText}>Up to 10% off!</Text>
                     </View>) : null}
@@ -165,9 +207,9 @@ const CartItemCard = ({ onPress, item, key }) => {
 
                 {/* Right Side */}
                 <View style={styles.rightContainer}>
-                <Text style={styles.topPrice}>₹ {price?.finalPrice}</Text>
+                <Text style={styles.topPrice}>₹ {parseFloat(price?.finalPrice) * parseInt(cartItem.qty)}</Text>
                 {price?.hasOfferPrice &&
-                    <Text style={styles.strikePrice}>₹ {price?.sellingPrice}</Text>}
+                    <Text style={styles.strikePrice}>₹ {parseFloat(price?.sellingPrice) * parseInt(cartItem.qty)}</Text>}
                 <AddToCart
                     isCartAdded={isCartAdded}
                     handleAddToCart={handleAddToCart}
