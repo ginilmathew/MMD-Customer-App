@@ -305,6 +305,7 @@ const SingleProduct = ({ navigation, route }) => {
 
 
             <View style={{
+                // marginTop: 12,
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 height: 60,
