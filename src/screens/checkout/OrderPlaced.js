@@ -10,9 +10,10 @@ import moment from 'moment';
 
 const OrderPlaced = ({ route }) => {
 
+
     const item = route?.params
 
-
+reactotron.log(item, "ORPLA")
 
     const navigation = useNavigation();
 

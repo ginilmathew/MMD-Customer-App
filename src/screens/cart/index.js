@@ -12,6 +12,7 @@ import { useMutation, useQuery } from 'react-query'
 import useRefetch from '../../hooks/useRefetch'
 import Animated from 'react-native-reanimated'
 import CartItemCard from '../../components/cartItemCard'
+import { storage } from '../../../App'
 const Cart = ({ navigation, route }) => {
 
   const { cartItems, setCartItems, } = useContext(CartContext);
@@ -45,7 +46,7 @@ const Cart = ({ navigation, route }) => {
     mutationKey: 'addToCart_query',
     mutationFn: PostAddToCart,
 
-    onSuccess: (data) => {
+    onSuccess: async(data) => {
       let myStructure = data?.data?.data?.product.map((res) => (
         {
           _id: res?._id,
@@ -56,6 +57,7 @@ const Cart = ({ navigation, route }) => {
         }
       ))
       setCartItems(myStructure)
+      await storage.setStringAsync('cart_id', data?.data?.data?._id);
       navigation.navigate('EditAddress', { cartID: cart_id })
     }
   })

@@ -14,28 +14,43 @@ const SingleOrder = ({route}) => {
     reactotron.log(item, "SINGLE")
 
     const statusColor = () => {
-        if (item?.orderStatus === "created") {
-            return (
-                <Text style={[styles.statusText, { color: COLORS.status_created }]}>{item?.orderStatus}</Text>
-            )
-        } else if (item?.orderStatus === "Accept") {
-            return (
-                <Text style={[styles.statusText, { color: COLORS.status_accepted }]}>{item?.orderStatus}</Text>
-            )
-        } else if (item?.orderStatus === "Out for delivery") {
-            return (
-                <Text style={[styles.statusText, { color: COLORS.status_out }]}>{item?.orderStatus}</Text>
-            )
-        } else if (item?.orderStatus === "Delivered") {
-            return (
-                <Text style={[styles.statusText, { color: COLORS.status_completed }]}>{item?.orderStatus}</Text>
-            )
-        } else if (item?.orderStatus === "Cancelled") {
-            return (
-                <Text style={[styles.statusText, { color: COLORS.status_cancelled }]}>{item?.orderStatus}</Text>
-            )
+        let color;
+        switch (item?.orderStatus) {
+            case "created":
+                color = COLORS.status_created;
+                break;
+            case "Accept":
+                color = COLORS.status_accepted;
+                break;
+            case "Out for delivery":
+                color = COLORS.status_out;
+                break;
+            case "Delivered":
+                color = COLORS.status_completed;
+                break;
+            case "Cancelled":
+                color = COLORS.status_cancelled;
+                break;
+            case "paid":
+                color = COLORS.status_paid;
+                break;
+            default:
+                color = COLORS.default_color; // Assuming you have a default color defined
+                break;
         }
+        return (
+            <Text style={[styles.statusText, { color: color }]}>{item?.orderStatus}</Text>
+        );
     }
+
+    // const statusColor = () => {
+    //     const status = item?.orderStatus;
+    //     const color = COLORS[status.toLowerCase()] || COLORS.light;
+    
+    //     return (
+    //         <Text style={[styles.statusText, { color: color }]}>{status}</Text>
+    //     );
+    // }
 
     return (
         <View style={styles.mainStyle}>

@@ -28,7 +28,6 @@ const Header = memo(({ onPress, text }) => {
         mutationKey: 'addToCart_query',
         mutationFn: PostAddToCart,
         onSuccess: async (data) => {
-        
             let myStructure = data?.data?.data?.product?.map((res) => (
                 {
                     _id: res?._id,
