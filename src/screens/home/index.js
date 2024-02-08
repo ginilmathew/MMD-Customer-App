@@ -25,6 +25,7 @@ import Header from '../../components/Header'
 import CartContext from '../../context/cart'
 import reactotron from 'reactotron-react-native'
 import { useFocusNotifyOnChangeProps } from '../../hooks/useFocusNotifyOnChangeProps'
+import CartButton from '../../components/CartButton'
 
 
 
@@ -187,7 +188,7 @@ const Home = ({ navigation, route }) => {
 
         return (
             allFeatures.length > 0 && (
-                <View style={{ marginBottom: 30 }}>
+                <View style={{ marginBottom: 90 }}>
                     <View style={{ marginTop: 20 }}>
                         <CustomHeading label={'HighLights'} hide={false} marginH={20} />
                     </View>
@@ -222,12 +223,6 @@ const Home = ({ navigation, route }) => {
     // const toNotification = () => {
     //     navigation.navigate('Notification')
     // }
-
-
-    const changeAdd = () => {
-
-    }
-
 
 
     const addLeng = currentLoc?.address?.length;
@@ -269,6 +264,8 @@ const Home = ({ navigation, route }) => {
                 getItemLayout={(data, index) => ({ length: 80, offset: 80 * index, index })}
                 ListEmptyComponent={<NoData heights={500} />}
             />
+
+            <CartButton />
         </View>
     )
 }
