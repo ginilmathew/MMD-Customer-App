@@ -52,7 +52,7 @@ const Home = ({ navigation, route }) => {
     }
 
 
-    reactotron.log({ payload })
+    // reactotron.log({ payload })
 
     const { data, isLoading, refetch } = useQuery({
         queryKey: ['Home'],
