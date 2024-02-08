@@ -32,6 +32,7 @@ const Orders = () => {
         <View style={styles.mainStyle}>
             <CommonHeader heading={"My Orders"} />
                 <FlatList
+                    
                     data={data?.data?.data || []}
                     keyExtractor={(item) => item._id}
                     renderItem={renderItem}

@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { COLORS } from '../constants/COLORS';
 import Animated, { FadeInDown } from 'react-native-reanimated';
@@ -9,18 +9,17 @@ import reactotron from 'reactotron-react-native';
 const CustomItemCard = ({ onPress, item, key }) => {
 
 
-    const navigation = useNavigation()
+    const navigation = useNavigation();
+    
     let products = item?.products ? item?.products[0] : item;
 
 
-    const [price, setPrice] = useState(null)
-
-    
+    const [price, setPrice] = useState(null);    
 
     const { cartItems, addToCart, incrementItem, decrementItem } = useContext(CartContext);
+
     let unitID = products?.units[0]?.id;
     let varientName = products?.units[0]?.variants?.[0]?.name;
-
 
 
     const isCartAdded = cartItems?.some(cartItem => (cartItem?._id === products?._id && cartItem?.unit_id === unitID && cartItem?.varientname === varientName));
@@ -54,33 +53,6 @@ const CustomItemCard = ({ onPress, item, key }) => {
             )) : item?.units?.[0]?.variants?.map(item => (
                 item
             ));
-
-
-            // reactotron.log({products})
-
-            // let productsWithOffer = products.filter(product => product.offerPrice !== null);
-
-            // // If there are products with offer prices, find the one with the lowest offer price
-            // if (productsWithOffer.length > 0) {
-            //     let lowestOfferProduct = productsWithOffer.reduce((prev, current) => {
-            //         return parseFloat(prev.offerPrice) < parseFloat(current.offerPrice) ? prev : current;
-            //     });
-            //     setPrice({
-            //         sellingPrice: lowestOfferProduct?.sellingPrice,
-            //         offerPrice: lowestOfferProduct?.offerPrice === "" ? null : lowestOfferProduct?.offerPrice,
-            //         costPrice: lowestOfferProduct?.costPrice
-            //     });
-            // } else {
-            //     // If there are no products with offer prices, find the one with the lowest selling price
-            //     let lowestSellingProduct = products.reduce((prev, current) => {
-            //         return parseFloat(prev.sellingPrice) < parseFloat(current.sellingPrice) ? prev : current;
-            //     });
-            //     setPrice({
-            //         sellingPrice: lowestSellingProduct?.sellingPrice,
-            //         offerPrice: lowestSellingProduct?.offerPrice === "" ? null : lowestSellingProduct?.offerPrice,
-            //         costPrice: lowestSellingProduct?.costPrice
-            //     });
-            // }
             const getFinalPrices = (products) => {
                 return products?.map((product) => {
                   const { offerPrice, fromDate, toDate, sellingPrice } = product;
@@ -135,7 +107,23 @@ const CustomItemCard = ({ onPress, item, key }) => {
 
 
 
-    const AnimatedStyle = FadeInDown.easing().delay(300);
+    const AnimatedStyle =  FadeInDown.easing().delay(300);
+    
+    const offerText = useMemo(() => {
+        if (price?.hasOfferPrice) {
+            return (
+                <View style={styles.offerBox}>
+                    <Text style={styles.offerText}>Up to 10% off!</Text>
+                </View>
+            );
+        }
+        return null;
+    }, [price?.hasOfferPrice]);
+
+
+    const imageSource = useMemo(() => (
+        { uri: products?.imageBasePath + products?.image?.[0] }
+    ), [products?.imageBasePath, products?.image]);
 
 
     return (
@@ -144,7 +132,7 @@ const CustomItemCard = ({ onPress, item, key }) => {
                 {/* Left Side */}
                 <Animated.View style={styles?.leftContainer}>
                     <Animated.Image
-                        source={{ uri: products?.imageBasePath + products?.image?.[0] }}
+                        source={imageSource}
                         style={styles.leftImage}
                         sharedTransitionTag={item?.product_id}
                     />
@@ -155,9 +143,7 @@ const CustomItemCard = ({ onPress, item, key }) => {
                 <View style={styles.centerContainer}>
                     <Text style={styles?.heading}>{products?.name}</Text>
                     <Text style={styles.subHeading}>Category: {products?.category?.name}</Text>
-                    {price?.hasOfferPrice ? (<View style={styles.offerBox}>
-                        <Text style={styles?.offerText}>Up to 10% off!</Text>
-                    </View>) : null}
+                    {offerText}
                 </View>
 
                 {/* Right Side */}

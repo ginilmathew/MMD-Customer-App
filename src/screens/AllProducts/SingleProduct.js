@@ -305,13 +305,13 @@ const SingleProduct = ({ navigation, route }) => {
 
 
             <View style={{
-                marginTop: 12,
+                // marginTop: 12,
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 // backgroundColor: 'rgba(0,0,0,.1)',
                 paddingHorizontal: 10,
                 position: 'absolute',
-                bottom: 0,
+                bottom: 20,
                 left: 0,
                 right: 0,
             }}>
