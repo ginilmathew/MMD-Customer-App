@@ -19,10 +19,7 @@ const ProcessingOrder = ({route, navigation}) => {
   const [user] = useMMKVStorage('user', storage);
   const [order_id] = useMMKVStorage('order_id', storage);
 
-
-
     reactotron.log({data})
-
 
     useEffect(() => {
         if(data){

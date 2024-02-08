@@ -34,11 +34,6 @@ const Checkout = ({ route }) => {
 
   reactotron.log({ order_id }, "orderDataAAAA")
 
-
-
-
-
-
   const { item, cart_ID } = route?.params;
 
   const { cartItems, setCartItems } = useContext(CartContext);
@@ -83,7 +78,7 @@ const Checkout = ({ route }) => {
 
 
 
-  const { mutate, refetch: postsubrefetch, data: orderNewData } = useMutation({
+  const { mutate, refetch: postsubrefetch, data: orderNewData, isLoading: placeLoading } = useMutation({
     mutationKey: 'placedOrder',
     mutationFn: PlaceOrder,
     onSuccess: async (data) => {
@@ -107,23 +102,23 @@ const Checkout = ({ route }) => {
 
 
 
-  const { mutate: reMutation, refetch: newRefetch } = useMutation({
-    mutationKey: 'UpdateOrderdata',
-    mutationFn: UpdateOrder,
-    onSuccess: (data) => {
-      //reactotron.log(data, "OR")
-      navigation.navigate('OrderPlaced', { item: data?.data?.data})
-    }
-  })
+  // const { mutate: reMutation, refetch: newRefetch } = useMutation({
+  //   mutationKey: 'UpdateOrderdata',
+  //   mutationFn: UpdateOrder,
+  //   onSuccess: (data) => {
+  //     //reactotron.log(data, "OR")
+  //     navigation.navigate('OrderPlaced', { item: data?.data?.data})
+  //   }
+  // })
 
-  const updateMutation = (data) => {
-    reMutation({
-      orderId: data?.orderId,
-      payment_id: data?.razorpay_payment_id,
-      razorpayOrderId: data?.razorpay_order_id,
-      signature: data?.razorpay_signature
-    })
-  }
+  // const updateMutation = (data) => {
+  //   reMutation({
+  //     orderId: data?.orderId,
+  //     payment_id: data?.razorpay_payment_id,
+  //     razorpayOrderId: data?.razorpay_order_id,
+  //     signature: data?.razorpay_signature
+  //   })
+  // }
 
 
 
@@ -134,34 +129,34 @@ const Checkout = ({ route }) => {
     </TouchableOpacity>
   )
 
-  const handlePayment = (data) => {
-    var options = {
-      description: '',
-      image: 'https://mmdcartadmin.diginestsolutions.in/static/media/logo.5a3a4acf9425f0097cef.png',
-      currency: 'INR',
-      key: RAZORPAY_KEY,
-      amount: chk?.data?.data?.total * 100,
-      name: 'DG Cart',
-      order_id: data?.data?.data?.razorPayId,//Replace this with an order_id created using Orders API.
-      prefill: {
-        email: user?.user?.email,
-        contact: user?.user?.mobile,
-        name: user?.user?.name
-      },
-      theme: { color: '#53a20e' }
-    }
-    RazorpayCheckout.open(options).then((data) => {
-      data.orderId = order_id;
+  // const handlePayment = (data) => {
+  //   var options = {
+  //     description: '',
+  //     image: 'https://mmdcartadmin.diginestsolutions.in/static/media/logo.5a3a4acf9425f0097cef.png',
+  //     currency: 'INR',
+  //     key: RAZORPAY_KEY,
+  //     amount: chk?.data?.data?.total * 100,
+  //     name: 'DG Cart',
+  //     order_id: data?.data?.data?.razorPayId,//Replace this with an order_id created using Orders API.
+  //     prefill: {
+  //       email: user?.user?.email,
+  //       contact: user?.user?.mobile,
+  //       name: user?.user?.name
+  //     },
+  //     theme: { color: '#53a20e' }
+  //   }
+  //   RazorpayCheckout.open(options).then((data) => {
+  //     data.orderId = order_id;
 
    
-      //setRazorRes(data)
-      updateMutation(data)
-      //navigation.navigate('Processing')
-      //alert(`Success: ${data.razorpay_payment_id}`);
-    }).catch((error) => {
-      //alert(`Error: ${error.code} | ${error.description}`);
-    });
-  }
+  //     //setRazorRes(data)
+  //     updateMutation(data)
+  //     //navigation.navigate('Processing')
+  //     //alert(`Success: ${data.razorpay_payment_id}`);
+  //   }).catch((error) => {
+  //     //alert(`Error: ${error.code} | ${error.description}`);
+  //   });
+  // }
 
   const placeOrder = () => {
 
@@ -263,7 +258,7 @@ const Checkout = ({ route }) => {
         </View>
 
         <View style={{ paddingHorizontal: 22, marginTop: 20 }}>
-          <CommonButton text={"Place Order"} onPress={placeOrder} />
+          <CommonButton text={"Place Order"} onPress={placeOrder} loading={placeLoading}/>
         </View>
 
       </ScrollView>
