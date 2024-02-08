@@ -23,9 +23,9 @@ const CustomItemCard = ({ onPress, item, key }) => {
 
 
 
-    const isCartAdded = cartItems?.some(cartItem => (cartItem._id === products._id && cartItem?.unit_id === unitID && cartItem?.varientname === varientName));
+    const isCartAdded = cartItems?.some(cartItem => (cartItem?._id === products?._id && cartItem?.unit_id === unitID && cartItem?.varientname === varientName));
 
-    const cartItem = cartItems?.find(cartItem =>(cartItem._id === products._id && cartItem?.unit_id === unitID && cartItem?.varientname === varientName));
+    const cartItem = cartItems?.find(cartItem =>(cartItem?._id === products?._id && cartItem?.unit_id === unitID && cartItem?.varientname === varientName));
 
     const handleAddToCart = useCallback(() => {
         addToCart(products);
@@ -33,14 +33,14 @@ const CustomItemCard = ({ onPress, item, key }) => {
 
     const handleIncrement = useCallback(() => {
         incrementItem(products);
-    }, [incrementItem, products._id]);
+    }, [incrementItem, products?._id]);
 
     const handleDecrement = useCallback(() => {
         decrementItem(products);
-    }, [decrementItem, products._id]);
+    }, [decrementItem, products?._id]);
 
     const NavigateToSingleProduct = useCallback(() => {
-        navigation.navigate('SingleProduct', { item: item.products ? item?.products?.[0] : item })
+        navigation.navigate('SingleProduct', { item: item?.products ? item?.products?.[0] : item })
     }, [navigation])
 
 
@@ -49,7 +49,7 @@ const CustomItemCard = ({ onPress, item, key }) => {
 
     useEffect(() => {
         if (item) {
-            let products = item.products ? item.products[0].units[0].variants.map(item => (
+            let products = item?.products ? item?.products[0]?.units[0]?.variants?.map(item => (
                 item
             )) : item?.units?.[0]?.variants?.map(item => (
                 item
@@ -82,7 +82,7 @@ const CustomItemCard = ({ onPress, item, key }) => {
             //     });
             // }
             const getFinalPrices = (products) => {
-                return products.map((product) => {
+                return products?.map((product) => {
                   const { offerPrice, fromDate, toDate, sellingPrice } = product;
               
                   // If there's an offer price and it's not expired, use the offer price
@@ -100,34 +100,34 @@ const CustomItemCard = ({ onPress, item, key }) => {
                 // For example, you could compare the dates with the current date
               
                 // Simple example assuming current date is 2024-02-06:
-                const currentDateString = new Date().toISOString().slice(0, 10);
+                const currentDateString = new Date()?.toISOString()?.slice(0, 10);
                 return fromDate > currentDateString || toDate < currentDateString;
               };
               
               const finalPriceProducts = getFinalPrices(products);
               
-              const lowestPriceProduct = finalPriceProducts.reduce((lowest, current) => {
+              const lowestPriceProduct = finalPriceProducts?.reduce((lowest, current) => {
                 // If both have offer prices, compare final prices
-                if (current.hasOfferPrice && lowest.hasOfferPrice) {
-                  return current.finalPrice < lowest.finalPrice ? current : lowest;
+                if (current?.hasOfferPrice && lowest?.hasOfferPrice) {
+                  return current?.finalPrice < lowest?.finalPrice ? current : lowest;
                 }
               
                 // If only one has an offer price, prioritize the offer price
-                if (current.hasOfferPrice) {
+                if (current?.hasOfferPrice) {
                   return current;
-                } else if (lowest.hasOfferPrice) {
+                } else if (lowest?.hasOfferPrice) {
                   return lowest;
                 }
               
                 // Otherwise, just compare final prices
-                return current.finalPrice < lowest.finalPrice ? current : lowest;
+                return current?.finalPrice < lowest?.finalPrice ? current : lowest;
               });
               
               if (lowestPriceProduct) {
                 // console.log("Product with the lowest final price:", lowestPriceProduct);
                 setPrice(lowestPriceProduct)
               } else {
-                console.log("There are no products in the finalPriceProducts array.");
+                // console.log("There are no products in the finalPriceProducts array.");
               }
         }
     }, [item])
@@ -140,9 +140,9 @@ const CustomItemCard = ({ onPress, item, key }) => {
 
     return (
         <Animated.View entering={AnimatedStyle} key={key}>
-            <TouchableOpacity onPress={NavigateToSingleProduct} style={styles.container}>
+            <TouchableOpacity onPress={NavigateToSingleProduct} style={styles?.container}>
                 {/* Left Side */}
-                <Animated.View style={styles.leftContainer}>
+                <Animated.View style={styles?.leftContainer}>
                     <Animated.Image
                         source={{ uri: products?.imageBasePath + products?.image?.[0] }}
                         style={styles.leftImage}
@@ -153,15 +153,15 @@ const CustomItemCard = ({ onPress, item, key }) => {
 
                 {/* Center Content */}
                 <View style={styles.centerContainer}>
-                    <Text style={styles.heading}>{products?.name}</Text>
+                    <Text style={styles?.heading}>{products?.name}</Text>
                     <Text style={styles.subHeading}>Category: {products?.category?.name}</Text>
                     {price?.hasOfferPrice ? (<View style={styles.offerBox}>
-                        <Text style={styles.offerText}>Up to 10% off!</Text>
+                        <Text style={styles?.offerText}>Up to 10% off!</Text>
                     </View>) : null}
                 </View>
 
                 {/* Right Side */}
-                <View style={styles.rightContainer}>
+                <View style={styles?.rightContainer}>
                     <Text style={styles.topPrice}>₹ {price?.finalPrice}</Text>
                     {price?.hasOfferPrice &&
                         <Text style={styles.strikePrice}>₹ {price?.sellingPrice}</Text>}
@@ -188,12 +188,12 @@ const AddToCart = memo(({ isCartAdded, handleDecrement, handleAddToCart, handleI
     return (
         <>
             {isCartAdded ? (
-                <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={[styles.incrementButton, { paddingHorizontal: 12 }]} onPress={memoizedDecrement}>
-                        <Text style={styles.buttonText}>-</Text>
+                <View style={styles?.buttonContainer}>
+                    <TouchableOpacity style={[styles?.incrementButton, { paddingHorizontal: 12 }]} onPress={memoizedDecrement}>
+                        <Text style={styles?.buttonText}>-</Text>
                     </TouchableOpacity>
-                    <Text style={styles.countText}>{cartItem.qty}</Text>
-                    <TouchableOpacity style={[styles.incrementButton, { marginLeft: 5 }]} onPress={memoizedIncrement}>
+                    <Text style={styles?.countText}>{cartItem?.qty}</Text>
+                    <TouchableOpacity style={[styles?.incrementButton, { marginLeft: 5 }]} onPress={memoizedIncrement}>
                         <Text style={styles.buttonText}>+</Text>
                     </TouchableOpacity>
                 </View>

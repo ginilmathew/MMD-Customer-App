@@ -4,7 +4,7 @@ import customAxios from "../customAxios";
 
 const id = storage.getMap('user')?.user?._id;
 
-export const getLocation = ({ latitude, longitude }) => customAxios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${latitude},${longitude}&key=${GOOGLE_API}`)
+export const getLocation = ({ latitude, longitude }) => customAxios?.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${latitude},${longitude}&key=${GOOGLE_API}`)
 
 export const getProfile = async (data) => customAxios.get('public/api/auth/user-profile')
 

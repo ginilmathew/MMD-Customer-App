@@ -24,7 +24,7 @@ const CustomDropdown = ({ options }) => {
 
             {visible && (
                 <View style={styles.dropdown}>
-                    {options.map((option, index) => (
+                    {options?.map((option, index) => (
                         <TouchableOpacity key={index} style={styles.option} onPress={() => handleSelectOption(option)}>
                             <Text>{option}</Text>
                         </TouchableOpacity>

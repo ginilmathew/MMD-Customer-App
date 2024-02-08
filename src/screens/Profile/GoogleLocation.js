@@ -16,7 +16,7 @@ import LocationContext from '../../context/location/index'
 
 const GoogleLocation = ({ navigation, route }) => {
 
-  const { setLocation, getLocation, mode, setCurrentLoc, setModal, handleModal } = useContext(locationContext)
+  const { setLocation, getLocation, mode, setCurrentLoc, setModal, setMode, handleModal } = useContext(locationContext)
   const [homeAdd, setHomeAdd] = useMMKVStorage('homeAdd', storage);
 
 
@@ -47,11 +47,19 @@ const GoogleLocation = ({ navigation, route }) => {
           secondary: data?.formatted_address
         }
       })
-      navigationRef.navigate('MapPage')
+
+
+      navigationRef.navigate('MapPage', route?.params?.cartID && { cartID: route?.params?.cartID })
+
     }
   }
 
-
+  const currentLocation = useCallback(() => {
+    if (route?.params?.cartID) {
+      setMode('edit')
+    }
+    handleModal()
+  }, [route?.params?.cartID])
 
   const renderRow = (data) => (
     <View style={{ pointerEvents: 'none', flexDirection: 'row', alignItems: 'center' }}>
@@ -75,7 +83,7 @@ const GoogleLocation = ({ navigation, route }) => {
 
       <View style={styles.container}>
 
-        <TouchableOpacity style={styles.current__btn} onPress={handleModal}>
+        <TouchableOpacity style={styles.current__btn} onPress={currentLocation}>
           <MaterialCommunityIcons name='navigation-variant' size={23} color={COLORS.blue} />
           <Text style={{ color: COLORS.blue, fontFamily: 'Poppins-Medium' }}>Use my current location</Text>
         </TouchableOpacity>

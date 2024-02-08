@@ -49,6 +49,7 @@ const Navigation = () => {
 
 
     const [cart_id, setCartId] = useMMKVStorage('cart_id', storage);
+    console.log(cart_id);
     const { isConnected } = useNetInfo();
     const [user] = useMMKVStorage('user', storage);
     const [error] = useMMKVStorage('error', storage)
@@ -60,7 +61,7 @@ const Navigation = () => {
         mutationKey: 'post-cart', 
         mutationFn: PostAddToCart,
         onSuccess(data) {
-            console.log(data?.data?.data?._id);
+            // console.log(data?.data?.data?._id);
             setCartId(data?.data?.data?._id)
         }
     })
@@ -76,7 +77,7 @@ const Navigation = () => {
             reactotron.log('BACKGROUND API')
             const postCart = async () => {
                 try {
-                    const updatedData = cartItems.map(item => ({
+                    const updatedData = cartItems?.map(item => ({
                         ...item.item,
                         qty: item.qty
                     }));
