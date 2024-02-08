@@ -144,7 +144,7 @@ const Home = ({ navigation, route }) => {
                     </View>
                 )}
                 {categories.length > 0 && (
-                    <>
+                    <View style={{marginTop : 5}}>
                         <CustomHeading label={'Categories'} hide={false} marginH={20} />
                         <ScrollView
                             horizontal={true}
@@ -158,10 +158,10 @@ const Home = ({ navigation, route }) => {
                             ))}
                             <TouchableOpacity style={styles.iconConatiner} onPress={NavigateToCategory}>
                                 <Text style={styles.text2}>{'View All'}</Text>
-                                <Ionicons name='arrow-forward' color={COLORS.primary} size={20} />
+                                <Ionicons name='arrow-forward' color={COLORS.primary} size={18} />
                             </TouchableOpacity>
                         </ScrollView>
-                    </>
+                    </View>
                 )}
                 {featuredList && (
                     <View style={{ marginTop: 3 }}>
@@ -291,16 +291,17 @@ const styles = StyleSheet.create({
         marginBottom: 20
     },
     text2: {
+        fontFamily: 'Poppins-Medium',
+        marginTop: 2,
         letterSpacing: 1,
         fontSize: 15, // Adjust the font size as needed
-        fontWeight: 'bold',
         color: COLORS.primary// Optional: Apply bold styling
     },
     iconConatiner: {
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'row',
-        gap: 2
+        gap: 5
     },
     footerBox: {
         paddingHorizontal: 18

@@ -31,7 +31,7 @@ const Register = ({ navigation }) => {
         navigation.navigate('Login')
     }
 
-    const { mutate } = useMutation({
+    const { mutate, isLoading } = useMutation({
         mutationKey: ['register-query'],
         mutationFn: registerApi,
         onSuccess
@@ -82,7 +82,7 @@ const Register = ({ navigation }) => {
                 type='number-pad'
             />
 
-            <CommonButton text={'Register'} mt={23} onPress={handleSubmit(mutate)} />
+            <CommonButton text={'Register'} mt={23} onPress={handleSubmit(mutate)} loading={isLoading}/>
 
         </Background>
     )

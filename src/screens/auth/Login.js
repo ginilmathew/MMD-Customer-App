@@ -63,7 +63,7 @@ const Login = ({ navigation }) => {
         // navigation.navigate(data?.defaultAddress ? 'HomeNavigator' : 'LocationPage');
     }
 
-    const { mutate } = useMutation({
+    const { mutate, isLoading } = useMutation({
         mutationKey: 'login-query',
         mutationFn: loginApi,
         onSuccess
@@ -85,7 +85,7 @@ const Login = ({ navigation }) => {
             headline={'LOGIN'}
             subhead={'To your registered account'}
             onPress={navToRegister}
-            link={'Register here'}
+            link={'Register Here'}
             description={"Don't have an account yet?"}
         >
 
@@ -111,7 +111,7 @@ const Login = ({ navigation }) => {
                 <Text style={styles.link}>{'Forget Password?'}</Text>
             </TouchableOpacity>
 
-            <CommonButton text={'Login'} onPress={handleSubmit(mutate)} />
+            <CommonButton text={'Login'} onPress={handleSubmit(mutate)} loading={isLoading}/>
 
 
         </Background>
@@ -136,8 +136,7 @@ const styles = StyleSheet.create({
     link: {
         color: COLORS.red,
         fontSize: 15,
-        fontWeight: '500',
         textAlign: 'right',
-        fontFamily: 'Poppins-bold'
+        fontFamily: 'Poppins-Medium'
     },
 })

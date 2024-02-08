@@ -68,7 +68,7 @@ const CustomInput = ({ left, right, color, passwd, control, name, placeholder, t
 
 const style = (passwd, right, left, multi) => StyleSheet.create({
   input: {
-    height: 56,
+    height: 60,
     width: '100%',
     backgroundColor: COLORS.gray,
     borderRadius: 12,
@@ -96,9 +96,11 @@ const style = (passwd, right, left, multi) => StyleSheet.create({
     minHeight: multi ? 120 : 55
   },
   error: {
-    fontSize: 14,
+    marginTop: 5,
+    fontSize: 12,
     color: COLORS.red,
-    textAlign: 'left'
+    textAlign: 'left',
+    fontFamily: "Poppins-Regular"
   }
 })
 

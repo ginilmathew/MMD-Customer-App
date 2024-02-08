@@ -3,7 +3,7 @@ import React, { useCallback, useContext } from 'react'
 import { COLORS } from '../../constants/COLORS'
 import CommonHeader from '../../components/CommonHeader'
 import ProfileButton from '../../components/ProfileButton'
-import IonIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import { queryClient, storage } from '../../../App'
 import { useMMKVStorage } from 'react-native-mmkv-storage'
 import { useQuery } from 'react-query'
@@ -84,7 +84,7 @@ const Profile = ({ navigation }) => {
 
         <TouchableOpacity style={styles.logout} onPress={handleLogout}>
           <Text style={styles.logText}>Logout</Text>
-          <IonIcon name='logout' color={COLORS.primary} size={23} />
+          <Ionicons name='log-out' color={COLORS.primary} size={23} />
         </TouchableOpacity>
 
       </View>
@@ -102,27 +102,30 @@ const styles = StyleSheet.create({
   user: {
     borderBottomWidth: 1,
     borderColor: COLORS.gray,
-    paddingVertical: 7
+    paddingBottom: 10
   },
   name: {
-    fontFamily: 'Poppins-bold',
+    fontFamily: 'Poppins-Medium',
     color: COLORS.primary,
-    letterSpacing: .6,
-    fontSize: 23
+    letterSpacing: 1,
+    fontSize: 25
   },
   email: {
     color: COLORS.light,
     fontFamily: 'Poppins-Italic',
-    fontSize: 12
+    fontSize: 12,
+    opacity: 0.7,
+    letterSpacing: 1
   },
   logout: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 20
+    paddingVertical: 20,
+    alignItems: "center"
   },
   logText: {
-    fontSize: 17,
-    color: COLORS.dark,
+    fontSize: 18,
+    color: COLORS.light,
     fontFamily: 'Poppins-Bold'
   }
 })
