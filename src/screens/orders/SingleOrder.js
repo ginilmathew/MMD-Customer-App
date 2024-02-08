@@ -7,7 +7,7 @@ import SubHeading from '../../components/SubHeading'
 import reactotron from 'reactotron-react-native'
 import moment from 'moment'
 
-const SingleOrder = ({route}) => {
+const SingleOrder = ({ route }) => {
 
     const { item } = route.params;
 
@@ -46,7 +46,7 @@ const SingleOrder = ({route}) => {
     // const statusColor = () => {
     //     const status = item?.orderStatus;
     //     const color = COLORS[status.toLowerCase()] || COLORS.light;
-    
+
     //     return (
     //         <Text style={[styles.statusText, { color: color }]}>{status}</Text>
     //     );
@@ -72,19 +72,26 @@ const SingleOrder = ({route}) => {
                 <View style={styles.singleContainer}>
                     <SubHeading label={"Products & Bill"} />
                     {item?.itemDetails?.map(item => (
-                   <View style={styles.imgContainer} key={item?._id}>
-                        <View style={styles.boxStyle}>
-                            <Image source={{ uri: item?.item?.imageBasePath + item?.item?.image?.[0] }} style={styles.imgStyle} />
-                            <View style={styles.imgSection}>
-                                <Text style={styles.productName}>{item?.item?.name}</Text>
-                                <Text style={styles.categoryName}>Category : {item?.item?.category?.name}</Text>
+                        <View style={styles.imgContainer} key={item?._id}>
+                            <View style={styles.boxStyle}>
+                                <Image source={{ uri: item?.item?.imageBasePath + item?.item?.image?.[0] }} style={styles.imgStyle} />
+                                <View style={styles.imgSection}>
+                                    <View>
+                                        <Text style={styles.productName}>{item?.item?.name}</Text>
+                                        <Text style={styles.categoryName}>Category : {item?.item?.category?.name}</Text>
+                                    </View>
+                                    <View>
+                                        <Text style={styles.unitStyle}>{item?.item?.unit?.name} : {item?.item?.variant?.name}</Text>
+                                        
+                                    </View>
+                                </View>
+                            </View>
+                            <View style={styles.qtyBox}>
+                                <Text style={styles.price}>₹ {item?.item?.variant?.offerPrice ? item?.item?.variant?.offerPrice * item?.qty : item?.item?.variant?.sellingPrice * item?.qty}</Text>
+                                {/* <Text style={styles.qty}>Qty x {item?.qty}</Text> */}
+                                <Text style={styles.qty}>Qty x {item?.qty}</Text>
                             </View>
                         </View>
-                        <View style={styles.qtyBox}>
-                            <Text style={styles.price}>₹ {item?.item?.variant?.offerPrice ? item?.item?.variant?.offerPrice : item?.item?.variant?.sellingPrice}</Text>
-                            <Text style={styles.qty}>Qty x {item?.qty}</Text>
-                        </View>
-                    </View>
                     ))}
 
                     <View style={styles.totalContainer}>
@@ -100,13 +107,13 @@ const SingleOrder = ({route}) => {
                             <Text style={styles.subBox}>Discount</Text>
                             <Text style={styles.priceBox}>- ₹ {item?.discount}</Text>
                         </View> : null}
-                        {/* <View style={styles.textBox}>
+                        <View style={styles.textBox}>
                             <Text style={styles.subBox}>Delivery Charge</Text>
-                            <Text style={styles.priceBox}>₹30.00</Text>
-                        </View> */}
+                            <Text style={styles.priceBox}>₹ {item?.delivery_charge}</Text>
+                        </View>
                         <View style={styles.containerTwo}>
                             <Text style={styles.textStyle}>Grand Total</Text>
-                            <Text style={[styles.priceBox, {fontFamily: "Poppins-Bold"}]}>₹ {item?.total}</Text>
+                            <Text style={[styles.priceBox, { fontFamily: "Poppins-Bold" }]}>₹ {item?.total}</Text>
                         </View>
                     </View>
                 </View>
@@ -221,7 +228,8 @@ const styles = StyleSheet.create({
         borderRadius: 12
     },
     imgSection: {
-        width: "57%"
+        width: "60%",
+        justifyContent: "space-between"
     },
     productName: {
         fontFamily: "Poppins-Medium",
@@ -236,21 +244,29 @@ const styles = StyleSheet.create({
         opacity: 0.5,
         marginLeft: 10
     },
-     boxStyle: {
+    boxStyle: {
         flexDirection: "row"
-     },
-     price: {
+    },
+    price: {
         fontFamily: "Poppins-SemiBold",
         fontSize: 18,
         color: COLORS.light,
     },
     qty: {
-        fontFamily: "Poppins-Regular",
-        fontSize: 15,
+        fontFamily: "Poppins-Italic",
+        fontSize: 12,
         color: COLORS.light,
+   
+        marginLeft: 10
     },
     qtyBox: {
         alignItems: "flex-end",
         justifyContent: "space-between"
+    },
+    unitStyle: {
+        fontFamily: "Poppins-MediumItalic",
+        fontSize: 12,
+        color: COLORS.light,
+        marginLeft: 10
     }
 })
