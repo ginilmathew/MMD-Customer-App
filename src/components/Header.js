@@ -18,7 +18,9 @@ import { storage } from '../../App';
 const Header = memo(({ onPress, text }) => {
 
     const { cartItems, setCartItems } = useContext(CartContext);
-    const { setMode } = useContext(LocationContext)
+    const { setMode, location } = useContext(LocationContext)
+
+    reactotron.log({header: location})
 
     const [cart_id] = useMMKVStorage('cart_id', storage);
 
@@ -70,11 +72,11 @@ const Header = memo(({ onPress, text }) => {
 
 
 
-    const textLeng = text?.length;
+    const textLeng = location?.address?.length;
 
     const changeLoc = () => {
         setMode('home');
-        navigation.navigate('GoogleLocation')
+        navigation.navigate('GoogleLocation', { mode: 'header'})
     }
 
 
@@ -84,7 +86,7 @@ const Header = memo(({ onPress, text }) => {
                 <Image source={require('../images/DGLogo.png')} style={[styles.logo]} />
             </View>
 
-            {text && (
+            {location && (
                 <TouchableOpacity style={{
                     flexDirection: 'row',
                     gap: 2,
@@ -97,7 +99,7 @@ const Header = memo(({ onPress, text }) => {
                     <Text style={{
                         fontSize: 11,
                         color: COLORS.dark,
-                    }}>{text
+                    }}>{location?.address
                         ?.slice(...textLeng ? [0, 24] : [0])
                         ?.concat(textLeng ? ' ...' : '')}</Text>
                 </TouchableOpacity>

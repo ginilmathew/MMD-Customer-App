@@ -33,7 +33,7 @@ const Home = ({ navigation, route }) => {
 
     // const notifyOnChangeProps = useFocusNotifyOnChangeProps()
 
-    const { currentLoc, setMode, getLocation, mode, setHomeFocus } = useContext(LocationContext)
+    const { currentLoc, setMode, getLocation, mode, setHomeFocus, location } = useContext(LocationContext)
     const checkLocRef = useRef(null)
     const [cart_id] = useMMKVStorage('cart_id', storage);
     const { cartItems, setCartItems } = useContext(CartContext);
@@ -43,34 +43,42 @@ const Home = ({ navigation, route }) => {
 
 
     let payload = {
-        "coordinates": [
-            8.5204866, 76.9371447
-        ],
-        // coordinates: [currentLoc?.coord?.latitude, currentLoc?.coord?.longitude],
+        // "coordinates": [
+        //     8.5204866, 76.9371447
+        // ],
+        coordinates: [location?.location?.latitude, location?.location?.longitude],
         cartId: cart_id,
 
     }
+
+
+    reactotron.log({payload})
 
     const { data, isLoading, refetch } = useQuery({
         queryKey: ['Home'],
         retry: false,
         queryFn: () => HomeApi({
             // coordinates: [currentLoc?.coord?.latitude, currentLoc?.coord?.longitude]
-            ...payload
+            ...payload,
+            //coordinates: [location?.coord?.latitude, location?.coord?.longitude]
         }),
         // notifyOnChangeProps,
-        //enabled: false,
+        enabled: !!location?.address,
     })
 
 
 
     useFocusEffect(useCallback(() => {
-        setHomeFocus(true);
-        if (currentLoc?.coord?.latitude !== checkLocRef?.current?.latitude) {
-            checkLocRef.current = currentLoc?.coord;
+        reactotron.log({location})
+        // setHomeFocus(true);
+        // if (location?.coord?.latitude !== checkLocRef?.current?.latitude) {
+        //     checkLocRef.current = currentLoc?.coord;
+        if(location?.address){
             refetch()
         }
-    }, [currentLoc]))
+            
+       // }
+    }, [location?.address]))
 
 
     React.useEffect(() => {
@@ -123,7 +131,7 @@ const Home = ({ navigation, route }) => {
 
 
 
-    const HeaderComponents = memo(({ data, NavigateToCategory }) => {
+    const HeaderComponents = useCallback(({ data, NavigateToCategory }) => {
         const sliders = data?.data?.data?.sliders || [];
         const categories = data?.data?.data?.categories || [];
         const featuredList = data?.data?.data?.featuredList?.[0]?.featured_list;
@@ -162,7 +170,7 @@ const Home = ({ navigation, route }) => {
                 )}
             </View>
         );
-    });
+    },[data?.data?.data]);
 
 
     const renderItem = useCallback(({ item, index }) => {
@@ -201,7 +209,7 @@ const Home = ({ navigation, route }) => {
     }, [data?.data?.data]);
 
 
-    if (isLoading) {
+    if (isLoading || !location?.address) {
         return (
             <>
                 <HomeLoader />
@@ -220,6 +228,15 @@ const Home = ({ navigation, route }) => {
 
     const changeAdd = () => {
 
+    }
+
+    const renderHeader = () => {
+        return(
+            <HeaderComponents 
+                data={data} 
+                //NavigateToCategory={NavigateToCategory} 
+            />
+        )
     }
 
 
@@ -249,7 +266,7 @@ const Home = ({ navigation, route }) => {
             <DummySearch press={NavigateToSearch} />
             <FlatList
                 data={data?.data?.data.featuredList?.[0]?.featured_list || []}
-                ListHeaderComponent={<HeaderComponents data={data} NavigateToCategory={NavigateToCategory} />}
+                ListHeaderComponent={renderHeader}
                 renderItem={renderItem}
                 keyExtractor={keyExtractor}
                 showsVerticalScrollIndicator={false}
@@ -260,7 +277,7 @@ const Home = ({ navigation, route }) => {
                 maxToRenderPerBatch={10}
                 windowSize={10}
                 getItemLayout={(data, index) => ({ length: 80, offset: 80 * index, index })}
-                ListEmptyComponent={<NoData />}
+                ListEmptyComponent={<NoData heights={500} />}
             />
         </View>
     )

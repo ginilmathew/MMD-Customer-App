@@ -63,7 +63,7 @@ const MapAddress = ({ navigation, route }) => {
 
     const { control, handleSubmit } = useForm({
         resolver: yupResolver(schema), defaultValues: {
-            address: location?.address?.secondary,
+            address: location?.address,
             mobile: user?.user?.mobile,
             landmark: ""
         }
@@ -192,7 +192,7 @@ const MapAddress = ({ navigation, route }) => {
                                             fontFamily: 'Poppins-Bold',
                                             marginBottom: 2,
                                             marginLeft: 20
-                                        }}>{location?.address?.main?.length > 25 ? location?.address?.main?.slice(0, 25) + '...' : location?.address?.main}</Text>
+                                        }}>{location?.address?.length > 25 ? location?.address?.slice(0, 25) + '...' : location?.address}</Text>
                                     </View>
 
                                     <TouchableOpacity style={{

@@ -148,6 +148,7 @@ const Navigation = ({ location }) => {
                         screenOptions={{ headerShown: false }}>
                         <Stack.Screen name="HomeNavigator" component={AuthNavigation} />
                         <Stack.Screen name='LocationPage' component={LocationPage} />
+                        <Stack.Screen name='GoogleLocation' component={GoogleLocation} />
                     </Stack.Navigator>
                 </NavigationContainer>
 
@@ -170,6 +171,7 @@ const Navigation = ({ location }) => {
                         <Toast error={error} success={success} />
                     </View>
                 </Modal>
+                
             </>
         )
     }

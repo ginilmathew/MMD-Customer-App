@@ -86,7 +86,15 @@ const locationContext = ({ children }) => {
 
     const { mutate } = useMutation({
         mutationFn: locationApi,
-        onSuccess
+        onSuccess: (data) => {
+            let address = data?.data?.results?.[0]?.formatted_address
+            let coords =  data?.data?.results?.[0]?.geometry?.location;
+
+            setLocation({
+                location: { latitude: coords?.lat, longitude: coords?.lng },
+                address : address
+            })
+        }
         // onError // need to hide error
     });
 
@@ -126,10 +134,7 @@ const locationContext = ({ children }) => {
 
                 const { latitude, longitude } = position.coords;
 
-                setLocation((prev) => ({
-                    location: { latitude, longitude },
-                    address : prev?.address
-                }))
+                
 
                 mutate(position.coords)
             },

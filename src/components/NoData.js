@@ -2,13 +2,13 @@ import { View, Text, Image, useWindowDimensions } from 'react-native'
 import React from 'react'
 import { COLORS } from '../constants/COLORS'
 
-const NoData = () => {
+const NoData = ({heights}) => {
 
   const { height } = useWindowDimensions();
  
   return (
     <View style={{
-      height,
+      height : heights ? heights : height,
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: COLORS.white
