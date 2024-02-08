@@ -56,7 +56,7 @@ const ProcessingOrder = ({route, navigation}) => {
           //navigation.navigate('Processing')
           //alert(`Success: ${data.razorpay_payment_id}`);
         }).catch((error) => {
-            reactotron.log({error})
+            navigation.goBack()
           //alert(`Error: ${error.code} | ${error.description}`);
         });
       }

@@ -39,7 +39,8 @@ const locationContext = ({ children }) => {
             }));
 
             navigationRef.navigate('MapPage', mode === 'edit' && { cartID: cart_id })
-        } else if (mode === 'home') {
+        } 
+        else if (mode === 'home') {
             if(!homeAdd) {
                 setHomeAdd(true);
             }

@@ -152,7 +152,7 @@ const Navigation = () => {
                 // } else {
                 //     getLocation()
                 // }
-                getLocation()
+                //getLocation()
 
             }
 
