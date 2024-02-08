@@ -39,7 +39,6 @@ const SingleProduct = ({ navigation, route }) => {
 
     const [qty, setQty] = useState(null)
     const { cartItems, setCartItems, } = useContext(CartContext);
-    reactotron.log({ cartItems })
     const { data, refetch } = useQuery({
         queryKey: 'single-product',
         initialData: item,
@@ -306,7 +305,6 @@ const SingleProduct = ({ navigation, route }) => {
 
 
             <View style={{
-                // marginTop: 12,
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 height: 60,
@@ -440,7 +438,7 @@ const styles = StyleSheet.create({
     mainImage: {
         borderRadius: 6,
         width: '100%',
-        height: 150,
+        height: 200,
         marginBottom: 10,
     },
     smallImagesContainer: {

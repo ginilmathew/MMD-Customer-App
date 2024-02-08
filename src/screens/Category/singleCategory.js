@@ -73,7 +73,7 @@ const SingleCategory = ({ route }) => {
             </View>
         )
 
-    }, [AnimatedStyles, data?.data?.data, subList])
+    }, [AnimatedStyles, data?.data?.data, subList,listItem])
 
     const renderItem = useCallback(({ item, index }) => {
         return (
@@ -85,7 +85,7 @@ const SingleCategory = ({ route }) => {
 
     const ListFooterComponent = useCallback(() => {
         return (
-            <View style={{ marginBottom: 60 }} />
+            <View style={{ marginBottom: 30 }} />
         )
     }, [])
 
@@ -117,7 +117,7 @@ const SingleCategory = ({ route }) => {
             showsVerticalScrollIndicator={false}
             ListFooterComponent={ListFooterComponent}
             ListEmptyComponent={emptyScreen}
-            contentContainerStyle={{ backgroundColor: COLORS.white, height: height }}
+            contentContainerStyle={{ backgroundColor: COLORS.white,flexGrow:1 }}
         />
 
     )

@@ -52,15 +52,13 @@ const Home = ({ navigation, route }) => {
     }
 
 
-    reactotron.log({payload})
+    reactotron.log({ payload })
 
     const { data, isLoading, refetch } = useQuery({
         queryKey: ['Home'],
         retry: false,
         queryFn: () => HomeApi({
-            // coordinates: [currentLoc?.coord?.latitude, currentLoc?.coord?.longitude]
             ...payload,
-            //coordinates: [location?.coord?.latitude, location?.coord?.longitude]
         }),
         // notifyOnChangeProps,
         enabled: !!location?.address,
@@ -69,15 +67,15 @@ const Home = ({ navigation, route }) => {
 
 
     useFocusEffect(useCallback(() => {
-        reactotron.log({location})
+        // reactotron.log({location})
         // setHomeFocus(true);
         // if (location?.coord?.latitude !== checkLocRef?.current?.latitude) {
         //     checkLocRef.current = currentLoc?.coord;
-        if(location?.address){
+        if (location?.address) {
             refetch()
         }
-            
-       // }
+
+        // }
     }, [location?.address]))
 
 
@@ -144,7 +142,7 @@ const Home = ({ navigation, route }) => {
                     </View>
                 )}
                 {categories.length > 0 && (
-                    <View style={{marginTop : 5}}>
+                    <View style={{ marginTop: 5 }}>
                         <CustomHeading label={'Categories'} hide={false} marginH={20} />
                         <ScrollView
                             horizontal={true}
@@ -170,7 +168,7 @@ const Home = ({ navigation, route }) => {
                 )}
             </View>
         );
-    },[data?.data?.data]);
+    }, [data?.data?.data]);
 
 
     const renderItem = useCallback(({ item, index }) => {
@@ -198,7 +196,7 @@ const Home = ({ navigation, route }) => {
                             <ItemBox onPress={() => NavigateToFeatured(res)} key={res?._id} item={res} index={index} />
                         ))}
                     </View>
-                    <View style={{ marginBottom: 80 }} />
+                    <View style={{ marginBottom: 40 }} />
                 </View>
             )
         );

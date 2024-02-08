@@ -1,17 +1,20 @@
 import React, { memo, useCallback } from 'react';
 import { StyleSheet, View, TouchableOpacity, useWindowDimensions, Image } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
+import reactotron from 'reactotron-react-native';
 
 const CustomSlider = memo(({ item }) => {
   const { width, height } = useWindowDimensions();
 
-  const IMG_URL = 'YOUR_IMAGE_BASE_URL'; // Replace with your image base URL
+  // const IMG_URL = 'YOUR_IMAGE_BASE_URL'; // Replace with your image base URL
 
   const CarouselCardItem = useCallback(({ item, index }) => {
+
+
     return (
       <TouchableOpacity
         key={index}
-        onPress={() => CarouselSelect(item)}
+        onPress={null}
         style={{ alignItems: 'center', marginTop: 25, width: '100%', height: '85%' }}
       >
         <Image
@@ -24,16 +27,16 @@ const CustomSlider = memo(({ item }) => {
     );
   }, []);
 
+const IMGLEN = item?.length;
 
-
-  const IMAGE_ARRAY = [{id:1}]
   return (
     <View style={[styles.container]}>
       <Carousel
-        loop
+        loop={IMGLEN > 1 ? true : false}
+        
         width={width/1 - 18}
         height={height / 4 - 22}
-        autoPlay={false}
+        autoPlay={IMGLEN > 1 ? true : false}
         data={item}
         renderItem={CarouselCardItem}
         lazy
