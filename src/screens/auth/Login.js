@@ -42,24 +42,24 @@ const Login = ({ navigation }) => {
         const token = await messaging().getToken();
         tokenMutate(token)
 
-        try {
+        // try {
 
-            const result = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+        //     const result = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
 
-            if (result === RESULTS.GRANTED) {
-                setMode('home');
-                getLocation();
-            } else {
-                navigation.reset({
-                    index: 0,
-                    routes: [{ name: 'LocationPage' }]
-                });
-            }
+        //     if (result === RESULTS.GRANTED) {
+        //         setMode('home');
+        //         getLocation();
+        //     } else {
+        //         navigation.reset({
+        //             index: 0,
+        //             routes: [{ name: 'LocationPage' }]
+        //         });
+        //     }
 
-            storage.setString('success', 'Login successful')
-        } catch (err) {
-            // console.warn(err);
-        }
+        //     storage.setString('success', 'Login successful')
+        // } catch (err) {
+        //     // console.warn(err);
+        // }
         // navigation.navigate(data?.defaultAddress ? 'HomeNavigator' : 'LocationPage');
     }
 

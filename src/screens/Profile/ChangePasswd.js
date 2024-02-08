@@ -20,6 +20,7 @@ const ChangePasswd = ({ navigation, route }) => {
     mutationKey: 'change-query',
     mutationFn: changePasswd,
     onSuccess({ data }) {
+      
       storage.setString('success', data?.message)
 
       if (route?.params?.user) {
@@ -50,9 +51,9 @@ const ChangePasswd = ({ navigation, route }) => {
 
   return (
     <>
-      <Header />
+      {route?.params?.user && <Header /> }
 
-      <CommonHeader heading={route?.params?.user ? 'Reset Password' : 'Change Password'} backBtn onPress={route?.params?.user ? navToLogin : null} />
+      <CommonHeader heading={route?.params?.user ? 'Reset Password' : 'Change Password'} backBtn={!route?.params?.user ? true : false} onPress={route?.params?.user ? navToLogin : null} />
       <View style={styles.container}>
 
         <CustomInput

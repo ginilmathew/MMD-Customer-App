@@ -128,6 +128,7 @@ const Navigation = ({ location }) => {
                         <Stack.Screen name="Login" component={Login} />
                         <Stack.Screen name="Register" component={Register} />
                         <Stack.Screen name="Forget" component={Forget} />
+                        <Stack.Screen name='ChangePasswd' component={ChangePasswd} />
                     </Stack.Navigator>
                 </NavigationContainer>
             </>

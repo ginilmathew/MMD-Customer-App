@@ -55,6 +55,7 @@ const LocationPage = ({ navigation }) => {
             permissions = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
             if(permissions === "granted"){
                 getLocation()
+                navigation.navigate('HomeNavigator')
             }
             else{
                 reactotron.log({permissions})

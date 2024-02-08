@@ -19,6 +19,8 @@ const Header = memo(({ onPress, text }) => {
 
     const { cartItems, setCartItems } = useContext(CartContext);
     const { setMode, location } = useContext(LocationContext)
+    const [user] = useMMKVStorage('user', storage);
+
 
     reactotron.log({header: location})
 
@@ -79,48 +81,54 @@ const Header = memo(({ onPress, text }) => {
         navigation.navigate('GoogleLocation', { mode: 'header'})
     }
 
-
-    return (
-        <View style={styles.container}>
-            <View style={styles.imageContainer}>
-                <Image source={require('../images/DGLogo.png')} style={styles.logo} />
+    if(user){
+        return (
+            <View style={styles.container}>
+                <View style={styles.imageContainer}>
+                    <Image source={require('../images/DGLogo.png')} style={styles.logo} />
+                </View>
+    
+                {location &&  user && (
+                    <TouchableOpacity style={{
+                        flexDirection: 'row',
+                        gap: 2,
+                        marginRight: 30,
+                        flex: 1,
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                    }} onPress={changeLoc}>
+                        <IonIcon name='location' size={20} color={COLORS.primary} />
+                        <Text style={{
+                            fontSize: 11,
+                            color: COLORS.dark,
+                            fontFamily: "Poppins-Regular"
+                        }}>{location?.address
+                            ?.slice(...textLeng ? [0, 24] : [0])
+                            ?.concat(textLeng ? ' ...' : '')}</Text>
+                    </TouchableOpacity>
+                )}
+    
+                {user && <View style={styles.iconContainer}>
+                    <TouchableOpacity onPress={cartPage}>
+                        <IonIcons name='cart' size={20} color={COLORS.light} />
+                        {cartItems?.length > 0 ? (<View style={styles.cartBadge}>
+                            <Text style={styles.countStyle}>{cartItems?.length}</Text>
+                        </View>) : null}
+    
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={notPage}>
+                        <View style={styles.badgeStyle} />
+                        <IonIcons name='notifications' size={20} color={COLORS.light} />
+                    </TouchableOpacity>
+                </View>}
             </View>
+        )
+    }
+    else{
+        return (<View />)
+    }
 
-            {location && (
-                <TouchableOpacity style={{
-                    flexDirection: 'row',
-                    gap: 2,
-                    marginRight: 30,
-                    flex: 1,
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                }} onPress={changeLoc}>
-                    <IonIcon name='location' size={20} color={COLORS.primary} />
-                    <Text style={{
-                        fontSize: 11,
-                        color: COLORS.dark,
-                        fontFamily: "Poppins-Regular"
-                    }}>{location?.address
-                        ?.slice(...textLeng ? [0, 24] : [0])
-                        ?.concat(textLeng ? ' ...' : '')}</Text>
-                </TouchableOpacity>
-            )}
-
-            <View style={styles.iconContainer}>
-                <TouchableOpacity onPress={cartPage}>
-                    <IonIcons name='cart' size={20} color={COLORS.light} />
-                    {cartItems?.length > 0 ? (<View style={styles.cartBadge}>
-                        <Text style={styles.countStyle}>{cartItems?.length}</Text>
-                    </View>) : null}
-
-                </TouchableOpacity>
-                <TouchableOpacity onPress={notPage}>
-                    <View style={styles.badgeStyle} />
-                    <IonIcons name='notifications' size={20} color={COLORS.light} />
-                </TouchableOpacity>
-            </View>
-        </View>
-    )
+    
 })
 
 export default Header
