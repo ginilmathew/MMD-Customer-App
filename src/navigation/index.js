@@ -55,7 +55,7 @@ const Navigation = () => {
     const [error] = useMMKVStorage('error', storage)
     const [success] = useMMKVStorage('success', storage);
     const [homeAdd] = useMMKVStorage('homeAdd', storage, false)
-    const { setMode, getLocation, setModal, modal, handleModal, openSettings, setReady, mode } = useContext(LocationContext)
+    // const { setMode, getLocation, setModal, modal, handleModal, openSettings, setReady, mode } = useContext(LocationContext)
     const { cartItems, setCartItems } = useContext(CartContext);
     const { mutate } = useMutation({ 
         mutationKey: 'post-cart', 
@@ -68,6 +68,8 @@ const Navigation = () => {
 
 
     const appState = useAppState();
+
+    reactotron.log({appState})
 
 
 
@@ -106,65 +108,65 @@ const Navigation = () => {
         SplashScreen.hide()
     }, [])
 
-    const modalVisible = useCallback(async () => {
-        const result = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+    // const modalVisible = useCallback(async () => {
+    //     const result = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
 
-        if (result === RESULTS.DENIED) {
-            navigationRef.navigate('GoogleLocation')
+    //     if (result === RESULTS.DENIED) {
+    //         navigationRef.navigate('GoogleLocation')
 
-            setModal(false);
-        }
-    }, [modal])
+    //         setModal(false);
+    //     }
+    // }, [modal])
 
 
     // const getCartItem = 
 
-    async function onAppStateChange(status) {
+    // async function onAppStateChange(status) {
 
-        const user = await storage.getMapAsync('user');
-        if (status === 'active' && user) {
-            const result = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
-            if (result === RESULTS.DENIED) {
-                return setModal(true);
-            } else if (result === RESULTS.GRANTED) {
-                setModal(false);
+    //     const user = await storage.getMapAsync('user');
+    //     if (status === 'active' && user) {
+    //         const result = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+    //         if (result === RESULTS.DENIED) {
+    //             return setModal(true);
+    //         } else if (result === RESULTS.GRANTED) {
+    //             setModal(false);
 
-                setMode('home')
-                // if (cart_id) {
-                //     try {
-                //         const response = await getCartItems({ cartId: cart_id })
-                //         let myStructure = response?.data?.data?.product.map((res) => (
-                //             {
-                //                 _id: res?._id,
-                //                 qty: res?.qty,
-                //                 unit_id: res?.unit?.id,
-                //                 varientname: res?.variant?.name,
-                //                 item: { ...res }
-                //             }
-                //         ))
-                //         setCartItems(myStructure)
-                //         getLocation()
-                //     } catch (err) {
+    //             setMode('home')
+    //             // if (cart_id) {
+    //             //     try {
+    //             //         const response = await getCartItems({ cartId: cart_id })
+    //             //         let myStructure = response?.data?.data?.product.map((res) => (
+    //             //             {
+    //             //                 _id: res?._id,
+    //             //                 qty: res?.qty,
+    //             //                 unit_id: res?.unit?.id,
+    //             //                 varientname: res?.variant?.name,
+    //             //                 item: { ...res }
+    //             //             }
+    //             //         ))
+    //             //         setCartItems(myStructure)
+    //             //         getLocation()
+    //             //     } catch (err) {
 
-                //     } finally {
+    //             //     } finally {
 
-                //     }
-                // } else {
-                //     getLocation()
-                // }
-                //getLocation()
+    //             //     }
+    //             // } else {
+    //             //     getLocation()
+    //             // }
+    //             //getLocation()
 
-            }
+    //         }
 
-        }
-    }
+    //     }
+    // }
 
 
-    useEffect(() => {
-        const subscription = AppState.addEventListener('change', onAppStateChange);
+    // useEffect(() => {
+    //     const subscription = AppState.addEventListener('change', onAppStateChange);
 
-        return () => subscription.remove();
-    }, []);
+    //     return () => subscription.remove();
+    // }, []);
 
 
     return (
@@ -220,7 +222,7 @@ const Navigation = () => {
                 </View>
             </Modal>
 
-            <Modal visible={modal} transparent>
+            {/* <Modal visible={modal} transparent>
                 <View style={styles.modal}>
                     <View style={styles.box}>
                         <View style={styles.box__header}>
@@ -241,7 +243,7 @@ const Navigation = () => {
                         </View>
                     </View>
                 </View>
-            </Modal>
+            </Modal> */}
         </>
     )
 }

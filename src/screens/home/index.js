@@ -39,7 +39,7 @@ const Home = ({ navigation, route }) => {
     const { cartItems, setCartItems } = useContext(CartContext);
     const notifyOnChangeProps = useFocusNotifyOnChangeProps()
 
-    reactotron.log({currentLoc, location})
+    //reactotron.log({currentLoc, location})
 
 
     let payload = {
@@ -59,7 +59,7 @@ const Home = ({ navigation, route }) => {
             ...payload
         }),
         // notifyOnChangeProps,
-        enabled: false,
+        //enabled: false,
     })
 
 

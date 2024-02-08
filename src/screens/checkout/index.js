@@ -89,11 +89,12 @@ const Checkout = ({ route }) => {
     onSuccess: async (data) => {
       setOrderData(data?.data?.data)
       await storage.setStringAsync('order_id', data?.data?.data?.orderId);
-      setCartItems([])
-      await storage.getBoolAsync('cart_id', null);
-      setUseSlot()
+      
       if (radioBtnStatus === 0) {
         navigation.navigate('OrderPlaced', { item: data?.data?.data })
+        setCartItems([])
+        await storage.getBoolAsync('cart_id', null);
+        setUseSlot()
       } else {
         // setOrderData(orderNewData)
         // setTimeout(() => {
