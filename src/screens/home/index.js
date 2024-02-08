@@ -24,6 +24,7 @@ import NoData from '../../components/NoData'
 import Header from '../../components/Header'
 import CartContext from '../../context/cart'
 import reactotron from 'reactotron-react-native'
+import { useFocusNotifyOnChangeProps } from '../../hooks/useFocusNotifyOnChangeProps'
 
 
 
@@ -34,6 +35,7 @@ const Home = ({ navigation, route }) => {
     const checkLocRef = useRef(null)
     const [cart_id] = useMMKVStorage('cart_id', storage);
     const { cartItems, setCartItems } = useContext(CartContext);
+    const notifyOnChangeProps = useFocusNotifyOnChangeProps()
 
 
     let payload = {
@@ -52,7 +54,9 @@ const Home = ({ navigation, route }) => {
             // coordinates: [currentLoc?.coord?.latitude, currentLoc?.coord?.longitude]
             ...payload
         }),
-        enabled: false
+        enabled: false,
+        notifyOnChangeProps
+
     })
 
 

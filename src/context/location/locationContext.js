@@ -1,4 +1,4 @@
-import { Alert, Linking, PermissionsAndroid } from 'react-native'
+import { Alert, Linking, PermissionsAndroid, Platform } from 'react-native'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import Geolocation from '@react-native-community/geolocation';
 import { useMutation } from 'react-query';
@@ -9,7 +9,7 @@ import LocationContext from './index'
 import { navigationRef } from '../../navigation/RootNavigation';
 import { useMMKVStorage } from 'react-native-mmkv-storage';
 import { storage } from '../../../App';
-import { PERMISSIONS, check, RESULTS } from 'react-native-permissions'
+import { PERMISSIONS, check, RESULTS, request } from 'react-native-permissions'
 
 
 
@@ -87,13 +87,22 @@ const locationContext = ({ children }) => {
 
 
             try {
-                const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
-                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                    //To Check, If Permission is granted
-                    getOneTimeLocation();
-                    subscribeLocationLocation();
-                } else {
-                    // setmo
+                if(Platform.OS === 'android'){
+                    const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+                    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                        //To Check, If Permission is granted
+                        getOneTimeLocation();
+                        subscribeLocationLocation();
+                    } else {
+                        // setmo
+                    }
+                }
+                else{
+                    let location = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+                    if(location === RESULTS.GRANTED){
+                        getOneTimeLocation();
+                        subscribeLocationLocation();
+                    }
                 }
             } catch (err) {
                 console.warn(err);
