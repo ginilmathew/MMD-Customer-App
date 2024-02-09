@@ -24,7 +24,8 @@ const HomeLoader = () => {
         </Animated.View>
         <Animated.View style={[styles.sliderBox, { opacity }]} entering={FadeInDown.easing().delay(200)}>
         </Animated.View>
-        <CustomHeading label={'Categories'} hide={false} marginH={0} />
+        <View style={{marginVertical:5}}></View>
+        {/* <CustomHeading label={'Categories'} hide={false} marginH={0} /> */}
         <View style={[styles.categorymain]}>
           {Array(5).fill()?.map((_, index) => {
             const uniqueKey = `category_${index}`; // Generate a unique key
@@ -33,7 +34,8 @@ const HomeLoader = () => {
             );
           })}
         </View>
-        <CustomHeading label={'Popular Products'} hide={false} marginH={0} />
+        <View style={{marginVertical:5}}></View>
+        {/* <CustomHeading label={'Popular Products'} hide={false} marginH={0} /> */}
         {Array(3).fill()?.map((_, index) => {
           const uniqueKey = `skeleton_${index}`; // Generate a unique key
           return (

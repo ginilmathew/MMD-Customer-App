@@ -21,6 +21,7 @@ import CartContext from '../../context/cart'
 import { useFocusNotifyOnChangeProps } from '../../hooks/useFocusNotifyOnChangeProps'
 import ProductCard from '../../components/ProductCard'
 import moment from 'moment'
+import CartButton from '../../components/CartButton'
 
 
 
@@ -182,7 +183,7 @@ const Home = ({ navigation, route }) => {
 
         return (
             allFeatures.length > 0 && (
-                <View style={{ marginBottom: 30 }}>
+                <View style={{ marginBottom: 130 }}>
                     <View style={{ marginTop: 20 }}>
                         <CustomHeading label={'HighLights'} hide={false} marginH={20} />
                     </View>
@@ -191,7 +192,7 @@ const Home = ({ navigation, route }) => {
                             <ItemBox onPress={() => NavigateToFeatured(res)} key={res?._id} item={res} index={index} />
                         ))}
                     </View>
-                    <View style={{ marginBottom: 40 }} />
+                    {/* <View style={{ marginBottom: 40 }} /> */}
                 </View>
             )
         );
@@ -264,6 +265,8 @@ const Home = ({ navigation, route }) => {
                 ListEmptyComponent={<NoData heights={500} />}
                 extraData={cartTotal}
             />
+
+            <CartButton bottom={60} />
         </View>
     )
 }

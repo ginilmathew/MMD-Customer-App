@@ -11,6 +11,7 @@ import ProductCard from '../../components/ProductCard'
 import CartContext from '../../context/cart'
 import { useFocusEffect } from '@react-navigation/native'
 import moment from 'moment'
+import CartButton from '../../components/CartButton'
 
 const AllProducts = ({ navigation }) => {
 
@@ -36,6 +37,9 @@ const AllProducts = ({ navigation }) => {
             return pages?.length + 1
         },
     })
+
+
+
 
     useFocusEffect(
         useCallback(() => {
@@ -78,7 +82,7 @@ const AllProducts = ({ navigation }) => {
 
     const ListFooterComponents = memo(() => {
         return (
-            <View style={{ marginBottom: 100 }}>
+            <View style={{ marginBottom: 150 }}>
                 {isFetchingNextPage && <ActivityIndicator size="large" color={COLORS.primary} />}
             </View>
         )
@@ -107,7 +111,7 @@ const AllProducts = ({ navigation }) => {
                 ListEmptyComponent={emptyScreen}
             />
 
-
+            <CartButton bottom={120}/>
         </View>
     )
 }

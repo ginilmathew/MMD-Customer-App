@@ -25,6 +25,7 @@ customAxios.interceptors.request.use(async function (config) {
         return Promise.resolve(config);
 
     } catch (error) {
+        console.log({ error, success });
         storage.setBool('loading', false);
     }
 }, (err) => {
@@ -62,7 +63,7 @@ customAxios.interceptors.response.use(function (res) {
             storage.clearStore();
         }
 
-        storage.setString('error', err?.response?.data['message']);
+        storage.setString('error', err?.response?.data?.message);
     }
     storage.setBool('loading', false);
     return Promise.reject(err?.response?.data?.message)

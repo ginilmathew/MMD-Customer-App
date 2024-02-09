@@ -125,51 +125,6 @@ const CartItemCard = ({ onPress, item, key }) => {
     }, [navigation])
 
 
-
-
-
-
-
-  
-    // TouchableOpacity onPress={NavigateToSingleProduct}
-
-    // useEffect(() => {
-    //     if (item) {
-    //         let products = item.products ? item.products[0].units[0].variants.map(item => (
-    //             item
-    //         )) : item?.units?.[0]?.variants?.map(item => (
-    //             item
-    //         ));
-
-    //         let productsWithOffer = products.filter(product => product.offerPrice !== null);
-
-    //         // If there are products with offer prices, find the one with the lowest offer price
-    //         if (productsWithOffer.length > 0) {
-    //             let lowestOfferProduct = productsWithOffer.reduce((prev, current) => {
-    //                 return parseFloat(prev.offerPrice) < parseFloat(current.offerPrice) ? prev : current;
-    //             });
-    //             setPrice({
-    //                 sellingPrice: lowestOfferProduct?.sellingPrice,
-    //                 offerPrice: lowestOfferProduct?.offerPrice === "" ? null : lowestOfferProduct?.offerPrice,
-    //                 costPrice: lowestOfferProduct?.costPrice
-    //             });
-    //         } else {
-    //             // If there are no products with offer prices, find the one with the lowest selling price
-    //             let lowestSellingProduct = products.reduce((prev, current) => {
-    //                 return parseFloat(prev.sellingPrice) < parseFloat(current.sellingPrice) ? prev : current;
-    //             });
-    //             setPrice({
-    //                 sellingPrice: lowestSellingProduct?.sellingPrice,
-    //                 offerPrice: lowestSellingProduct?.offerPrice === "" ? null : lowestSellingProduct?.offerPrice,
-    //                 costPrice: lowestSellingProduct?.costPrice
-    //             });
-    //         }
-    //     }
-    // }, [item])
-
-
-
-
  
 
     const AnimatedStyle = FadeInDown.easing().delay(300);

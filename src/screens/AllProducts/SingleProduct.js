@@ -10,8 +10,10 @@ import {
 } from 'react-native';
 import Header from '../../components/Header';
 import CommonHeader from '../../components/CommonHeader';
-import { COLORS } from '../../constants/COLORS';
-import Animated from 'react-native-reanimated';
+import { COLORS } from '../../constants/COLORS'
+import reactotron from 'reactotron-react-native';
+import Animated, { interpolate } from 'react-native-reanimated';
+import { AddToCart } from '../../components/ItemCard';
 import Entypo from 'react-native-vector-icons/Entypo'
 import { useMutation, useQuery } from 'react-query';
 import { PostAddToCart } from '../../api/cart';
@@ -27,20 +29,18 @@ import moment from 'moment';
 const SingleProduct = ({ navigation, route }) => {
 
     const { item } = route.params;
-
+  const {height}=useWindowDimensions()
     const [selectedUnit, setSelectedUnit] = useState(null)
     const [selectedVariant, setSelectedVariant] = useState(null)
     const [variantsList, setVariantsList] = useState([])
     const [unitList, setUnitList] = useState([])
     const [product, setProduct] = useState(null)
-    const { height } = useWindowDimensions()
     const [price, setPrice] = useState(null)
     const [quantity, setQuantity] = useState(0)
 
-    const [cart_id] = useMMKVStorage('cart_id', storage);
 
     const [qty, setQty] = useState(null)
-    const { cartItems, setCartItems, addItemToCart, cartsDatas } = useContext(CartContext);
+    const { cartItems, addItemToCart } = useContext(CartContext);
     const { data, refetch } = useQuery({
         queryKey: 'single-product',
         initialData: item,
@@ -65,12 +65,12 @@ const SingleProduct = ({ navigation, route }) => {
 
 
             //let quanti = cartsDatas?.find(cart => cart?._id === product?._id && cart?.unit?.id === product?.units?.[0]?.id && product?.units?.[0]?.variants?.[0]?.name === cart?.variant?.name)
-            
+
             //if (quanti) {
-                setQuantity(route?.params?.quantity)
+            setQuantity(route?.params?.quantity)
             //}
 
-            
+
         }
 
         if (data?.data?.data?.product) {
@@ -83,13 +83,13 @@ const SingleProduct = ({ navigation, route }) => {
 
 
     useEffect(() => {
-        if(selectedVariant && selectedUnit){
+        if (selectedVariant && selectedUnit) {
             let price;
             let tax = product?.subcategories?.tax ? product?.subcategories?.tax : product?.categories?.tax
             const { offerPrice, fromDate, toDate, sellingPrice, costPrice } = selectedVariant
-    
+
             if (fromDate && toDate && offerPrice) {
-    
+
                 let startDate = moment(fromDate, "YYY-MM-DD").add(-1, 'day');
                 let endDate = moment(toDate, "YYYY-MM-DD").add(1, 'day')
                 if (moment().isBetween(startDate, endDate)) {
@@ -103,8 +103,8 @@ const SingleProduct = ({ navigation, route }) => {
                         tax,
                         taxValue: (offerPrice / 100) * tax
                     }
-    
-    
+
+
                 }
                 else {
                     price = {
@@ -120,7 +120,7 @@ const SingleProduct = ({ navigation, route }) => {
                 }
             }
             else {
-    
+
                 price = {
                     ...selectedVariant,
                     finalPrice: sellingPrice,
@@ -131,17 +131,18 @@ const SingleProduct = ({ navigation, route }) => {
                     tax,
                     taxValue: (sellingPrice / 100) * tax
                 };
-    
+
+                reactotron.log({ price })
             }
 
             setPrice(price)
         }
     }, [selectedVariant, selectedUnit])
-    
+
 
 
     // function calculatePrice() {
-        
+
     // }
 
 
@@ -282,12 +283,12 @@ const SingleProduct = ({ navigation, route }) => {
 
 
     useEffect(() => {
-        if(product && price){
+        if (product && price) {
             const { description, details, image, imageBasePath, status, units, updated_at, created_at, featuredList, variants, categories, subcategories, unit, ...other } = product
 
 
             const { finalPrice, tax, taxValue, costPrice } = price
-    
+
             let productObj = {
                 ...other,
                 unit: {
@@ -298,22 +299,25 @@ const SingleProduct = ({ navigation, route }) => {
                 qty: quantity,
                 price: finalPrice,
                 image: `${imageBasePath}${image[0]}`,
-                tax, 
+                tax,
                 taxValue,
                 total: finalPrice + taxValue,
                 costPrice
                 //tax: 
             }
 
+
+
+
             addItemToCart(productObj)
         }
-        
+
 
     }, [quantity])
-    
 
 
-    const changeUnit = async(index) => {
+
+    const changeUnit = async (index) => {
         setSelectedUnit(product?.units?.[index])
         setVariantsList(product?.units?.[index]?.variants?.map(vari => vari?.name))
         setSelectedVariant(product?.units?.[index]?.variants?.[0])
@@ -321,26 +325,26 @@ const SingleProduct = ({ navigation, route }) => {
         let carts = [...cartItems]
         let quanti = carts?.find(cart => cart?._id === product?._id && cart?.unit?.id === product?.units?.[index]?.id && product?.units?.[index]?.variants?.[0]?.name === cart?.variant?.name)
 
-        if(quanti){
+        if (quanti) {
             setQuantity(quanti?.qty)
         }
-        else{
+        else {
             setQuantity(0)
         }
     }
 
 
-    const changeVariant = async(index) => {
+    const changeVariant = async (index) => {
         let selectedVariant = selectedUnit?.variants[index]
         setSelectedVariant(selectedVariant)
 
         let carts = [...cartItems]
         let quanti = carts?.find(cart => cart?._id === product?._id && cart?.unit?.id === selectedUnit?.id && selectedVariant?.name === cart?.variant?.name)
 
-        if(quanti){
+        if (quanti) {
             setQuantity(quanti?.qty)
         }
-        else{
+        else {
             setQuantity(0)
         }
 
@@ -396,7 +400,8 @@ const SingleProduct = ({ navigation, route }) => {
 
 
     return (
-        <View style={[styles.mainContainer, { flexGrow: 1 }]}>
+        <View style={[styles.mainContainer, ]}>
+            <View style={{ height: height / 1.05 ,}}>
             <Header />
             <CommonHeader heading={item?.name?.length > 18 ? item?.name?.slice(0, 18) + "..." : item?.name} backBtn />
             <ScrollView
@@ -504,17 +509,17 @@ const SingleProduct = ({ navigation, route }) => {
                 {product?.description ? <DescriptionSection item={product} /> : null}
 
             </ScrollView>
+
             <View style={{
                 flexDirection: 'row',
                 justifyContent: 'center',
                 height: 60,
-                paddingHorizontal: 10,
                 position: 'absolute',
-                bottom: 10,
-                left: 0,
-                right: 0,
+                bottom: 0,
+                width: '100%',
+                backgroundColor: COLORS.white,
+                paddingHorizontal: 10,
             }}>
-
                 {/* Button */}
                 {quantity > 0 && <View style={{
                     flexDirection: 'row',
@@ -559,10 +564,8 @@ const SingleProduct = ({ navigation, route }) => {
                     loading={isLoading}
                     onPress={changeQty}
                 />}
-
             </View>
-
-
+            </View>
         </View>
     );
 };

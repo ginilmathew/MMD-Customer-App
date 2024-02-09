@@ -1,31 +1,52 @@
-import { StyleSheet, View, Image, FlatList } from 'react-native'
+import { StyleSheet, Text, View, Image, FlatList, TouchableOpacity } from 'react-native'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import Header from '../../components/Header'
 import CommonHeader from '../../components/CommonHeader'
 import { COLORS } from '../../constants/COLORS'
 import CommonButton from '../../components/CommonButton'
 import CartContext from '../../context/cart'
-import { PostAddToCart, getCartItems } from '../../api/cart'
-import { useMutation } from 'react-query'
+import reactotron from 'reactotron-react-native'
+import { PostAddToCart, addToCart, getCartItems } from '../../api/cart'
+import { useMutation, useQuery } from 'react-query'
+import useRefetch from '../../hooks/useRefetch'
+
+import CartItemCard from '../../components/cartItemCard'
 import { storage } from '../../../App'
 import LottieView from 'lottie-react-native'
 import CartCard from '../../components/CartCard'
 import moment from 'moment'
 import { useFocusEffect } from '@react-navigation/native'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { set } from 'react-hook-form'
+
+
 
 const Cart = ({ navigation, route }) => {
 
   const { cartItems, setCartItems, addItemToCart } = useContext(CartContext);
-  const [time, setTime] = useState(moment().unix())
+  const [time, setTime] = useState(moment().unix());
+
+
+
+
+
+
+
+
+
+  // reactotron.log({animatedStyle: animatedStyle ?? null})
+
 
   useFocusEffect(
     useCallback(() => {
-        setTime(moment().unix())
+      setTime(moment().unix())
     }, [])
-)
+  )
 
 
   const [clean, setClean] = useState(false)
+
+
 
   const { cart_id } = route.params;
 
@@ -46,7 +67,7 @@ const Cart = ({ navigation, route }) => {
     mutationKey: 'addToCart_query',
     mutationFn: PostAddToCart,
 
-    onSuccess: async(data) => {
+    onSuccess: async (data) => {
       // let myStructure = data?.data?.data?.product.map((res) => (
       //   {
       //     _id: res?._id,
@@ -86,6 +107,16 @@ const Cart = ({ navigation, route }) => {
 
   // }, [cartItems?.length])
 
+
+
+  const removeItem = useCallback((item) => {
+
+    let cartItem = cartItems.findIndex((e) => e._id === item._id && item?.unit?.id === e?.unit?.id && item?.variant?.name === e?.variant?.name)
+		cartItems?.splice(cartItem, 1)
+    setCartItems([...cartItems]);
+
+  }, [cartItems])
+
   const noProductsAdded = () => {
     return (
       <View style={styles.emptyContainer}>
@@ -94,25 +125,25 @@ const Cart = ({ navigation, route }) => {
     )
   }
 
-  const editAddress = async() => {
+  const editAddress = async () => {
     // const updatedData = cartItems?.map(item => ({
     //   ...item.item,
     //   qty: item.qty
     // }));
     let cartId = await storage.getStringAsync('cart_id');
     MutatePostAddCart({ product: cartItems, cartid: cartId });
-    
-   
+
+
   }
 
   const renderItem = ({ item, index }) => {
     return (
-      <>
-        <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
-          <CartCard key={index} item={item} increaseQuantity={increaseQuantity} decreaseQuantity={decreaseQuantity} />
-          {/* <CartItemCard key={index} item={item} /> */}
-        </View>
-      </>
+
+      <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
+        <CartCard key={index} item={item} increaseQuantity={increaseQuantity} decreaseQuantity={decreaseQuantity} removeItem={removeItem} />
+        {/* <CartItemCard key={index} item={item} /> */}
+      </View>
+
     )
   }
 
@@ -124,7 +155,12 @@ const Cart = ({ navigation, route }) => {
   //   )
   // },[])
 
-  if(isLoading) {
+
+
+
+
+
+  if (isLoading) {
     return (
       <View style={{
         flex: 1,
@@ -153,11 +189,11 @@ const Cart = ({ navigation, route }) => {
       ...item,
       qty: item?.qty - 1
     })
-  },[cartItems])
+  }, [cartItems])
 
 
   return (
-    <View style={styles.container}>
+    <GestureHandlerRootView style={styles.container}>
       <Header />
       <CommonHeader heading={"Cart"} backBtn />
 
@@ -187,7 +223,7 @@ const Cart = ({ navigation, route }) => {
         </View>) : null}
       </View>
 
-    </View >
+    </ GestureHandlerRootView>
   )
 }
 
@@ -211,5 +247,6 @@ const styles = StyleSheet.create({
   emptyCart: {
     width: 251,
     height: 318
-  }
+  },
+
 })
