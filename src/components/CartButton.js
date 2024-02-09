@@ -44,7 +44,7 @@ const CartButton = ({ bottom }) => {
                 </View>
             </View>
             <View style={styles.rightContainer}>
-                <Text style={styles.totalText}>{'total'}</Text>
+                <Text style={styles.totalText}>{'Total'}</Text>
                 <View style={styles.priceContainer}>
                     <Text style={styles.price}>₹ {total}</Text>
                 </View>
@@ -84,14 +84,15 @@ const styles = StyleSheet.create({
         flexShrink: 1
     },
     mainText: {
-        fontFamily: 'Quicksand-Bold',
+        fontFamily: 'Poppins-SemiBold',
         color: 'white',
         fontSize: 16,
         textAlign: 'center'
     },
     items: {
         color: 'white',
-        fontSize: 12
+        fontSize: 12,
+        fontFamily: "Poppins-Medium"
     },
     subTextContainer: {
         flexDirection: 'row',
@@ -116,18 +117,19 @@ const styles = StyleSheet.create({
     },
     totalText: {
         color: 'white',
-        fontSize: 12
+        fontSize: 12,
+        fontFamily: "Poppins-Regular"
     },
     priceContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 2
+        marginTop: -2
     },
     price: {
-        fontFamily: 'Quicksand-Bold',
+        fontFamily: 'Poppins-Bold',
         color: 'white',
-        fontSize: 16
+        fontSize: 18
     },
     currency: {
         color: 'white',

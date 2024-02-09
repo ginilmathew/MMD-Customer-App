@@ -21,10 +21,6 @@ import ChooseDate from './ChooseDate'
 import SlotContext from '../../context/slot'
 import { UpdateOrder } from '../../api/updateOrder'
 import CheckoutCard from '../../components/CheckoutCard'
-import { useForm } from 'react-hook-form'
-import * as yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup';
-import reactotron from 'reactotron-react-native'
 
 
 
@@ -36,8 +32,6 @@ const Checkout = ({ route }) => {
   const { useSlot, setUseSlot } = useContext(SlotContext);
   const [razorRes, setRazorRes] = useState("")
   const [orderData, setOrderData] = useState("")
-
-  reactotron.log(useSlot, "USEDLOT")
 
 
   // const schema = yup.object({
