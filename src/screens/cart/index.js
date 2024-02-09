@@ -111,11 +111,10 @@ const Cart = ({ navigation, route }) => {
 
 
   const removeItem = useCallback((item) => {
-    reactotron.log({ item })
 
-    reactotron.log({ cartItems })
-    const filterData = cartItems?.filter(res => (res?._id && res?.unit?.id && res?.varient?.name) !== (item?._id && item?.unit.id && item?.varient?.name))
-    reactotron.log({ filterData })
+    let cartItem = cartItems.findIndex((e) => e._id === item._id && item?.unit?.id === e?.unit?.id && item?.variant?.name === e?.variant?.name)
+		cartItems?.splice(cartItem, 1)
+    setCartItems([...cartItems]);
 
   }, [cartItems])
 

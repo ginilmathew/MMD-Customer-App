@@ -14,6 +14,7 @@ import ProductCard from '../../components/ProductCard'
 import CartContext from '../../context/cart'
 import { useFocusEffect } from '@react-navigation/native'
 import moment from 'moment'
+import CartButton from '../../components/CartButton'
 
 const AllProducts = ({ navigation }) => {
 
@@ -112,6 +113,8 @@ const AllProducts = ({ navigation }) => {
                 onEndReachedThreshold={.1}
                 ListEmptyComponent={emptyScreen}
             />
+
+            <CartButton bottom={120}/>
         </View>
     )
 }
