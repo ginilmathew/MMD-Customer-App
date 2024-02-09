@@ -15,8 +15,12 @@ import Animated, {
     withSpring,
 } from 'react-native-reanimated';
 import { storage } from '../../App';
+import { navigationRef } from '../navigation/RootNavigation';
+
+
 
 const Header = memo(({ onPress, text }) => {
+
     const { cartItems, setCartItems } = useContext(CartContext);
     const { setMode, location } = useContext(LocationContext);
     const [user] = useMMKVStorage('user', storage);
@@ -125,17 +129,21 @@ const Header = memo(({ onPress, text }) => {
 
                 {user && (
                     <View style={styles.iconContainer}>
-                        <TouchableOpacity onPress={cartPage}>
-                            <IonIcons name="cart" size={20} color={COLORS.light} />
-                            <Animated.View
-                                style={[
-                                    styles.cartBadge,
-                                    { opacity: cartItems.length > 0 ? 1 : 0 },
-                                    badgeAnimatedStyle,
-                                ]}>
-                                <Text style={styles.countStyle}>{cartItems?.length}</Text>
-                            </Animated.View>
-                        </TouchableOpacity>
+                    { 
+                            navigationRef.getCurrentRoute()?.name !== 'SingleProduct' && (
+                                <TouchableOpacity onPress={cartPage}>
+                                    <IonIcons name="cart" size={20} color={COLORS.light} />
+                                    <Animated.View
+                                        style={[
+                                            styles.cartBadge,
+                                            { opacity: cartItems.length > 0 ? 1 : 0 },
+                                            badgeAnimatedStyle,
+                                        ]}>
+                                        <Text style={styles.countStyle}>{cartItems?.length}</Text>
+                                    </Animated.View>
+                                </TouchableOpacity>
+                            )
+                    }
                         <TouchableOpacity onPress={notPage}>
                             <View style={styles.badgeStyle} />
                             <IonIcons name="notifications" size={20} color={COLORS.light} />
