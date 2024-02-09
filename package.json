@@ -32,7 +32,7 @@
     "react-native-android-location-services-dialog-box": "^2.8.2",
     "react-native-date-picker": "^4.3.5",
     "react-native-element-dropdown": "^2.10.1",
-    "react-native-gesture-handler": "^2.14.1",
+    "react-native-gesture-handler": "^2.15.0",
     "react-native-google-places-autocomplete": "^2.5.6",
     "react-native-maps": "^1.10.0",
     "react-native-mmkv-storage": "^0.9.1",

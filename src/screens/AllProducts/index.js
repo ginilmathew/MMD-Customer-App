@@ -41,7 +41,7 @@ const AllProducts = ({ navigation }) => {
         },
     })
 
-    reactotron.log({data})
+
 
 
     useFocusEffect(

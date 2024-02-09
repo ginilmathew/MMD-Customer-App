@@ -74,7 +74,7 @@ const Checkout = ({ route }) => {
 
   useRefetch(refetch)
 
-  reactotron.log(data, "Discount")
+
 
   // let mainData = {
   //   orderId: orderData?.data?.data?.orderId,
