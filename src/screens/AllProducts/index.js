@@ -1,13 +1,10 @@
-import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { memo, useCallback, useContext, useRef, useState } from 'react'
+import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native'
+import React, { memo, useCallback, useContext, useState } from 'react'
 import Header from '../../components/Header'
 import CommonHeader from '../../components/CommonHeader'
-import ItemCard from '../../components/ItemCard'
 import Animated, { FadeInDown } from 'react-native-reanimated'
 import { getAllProducts } from '../../api/allProducts'
-import { useInfiniteQuery, useQuery } from 'react-query'
-import useRefreshOnFocus from '../../hooks/useRefetch'
-import reactotron from 'reactotron-react-native'
+import { useInfiniteQuery } from 'react-query'
 import { COLORS } from '../../constants/COLORS'
 import NoData from '../../components/NoData'
 import ProductCard from '../../components/ProductCard'
@@ -39,9 +36,6 @@ const AllProducts = ({ navigation }) => {
             return pages?.length + 1
         },
     })
-
-    reactotron.log({data})
-
 
     useFocusEffect(
         useCallback(() => {

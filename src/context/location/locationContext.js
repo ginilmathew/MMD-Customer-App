@@ -45,11 +45,6 @@ const locationContext = ({ children }) => {
                 setHomeAdd(true);
             }
 
-            reactotron.log({location: {
-                coord: { ...location?.location },
-                address: data?.results?.[0]?.formatted_address
-            }})
-
             setCurrentLoc({
                 coord: { ...location?.location },
                 address: data?.results?.[0]?.formatted_address
@@ -130,11 +125,7 @@ const locationContext = ({ children }) => {
             //Will give you the current location
             (position) => {
 
-                reactotron.log({position})
-
                 const { latitude, longitude } = position.coords;
-
-                
 
                 mutate(position.coords)
             },

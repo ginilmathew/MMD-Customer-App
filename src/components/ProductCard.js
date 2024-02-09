@@ -1,12 +1,10 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { memo, useCallback, useContext, useEffect, useState } from 'react'
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import { storage } from '../../App';
 import CartContext from '../context/cart';
 import AddToCart from './AddToCart';
 import { useNavigation } from '@react-navigation/native';
 import { COLORS } from '../constants/COLORS';
-import reactotron from 'reactotron-react-native';
 import moment from 'moment';
 
 
@@ -17,10 +15,6 @@ const ProductCard = ({ item, key, time }) => {
     const navigation = useNavigation()
     let products = item?.products ? item?.products[0] : item;
     const [price, setPrice] = useState(null)
-
-
-    //reactotron.log({cartItems}, "single", quantity)
-
 
     useEffect(() => {
         setQuantity(0)
@@ -33,10 +27,8 @@ const ProductCard = ({ item, key, time }) => {
         if(cartItems){
             let carts = [...cartItems];
 
-            reactotron.log({carts}, "price")
             let quanti = carts?.find(cart => cart?._id === products?._id && cart?.unit?.id === products?.units?.[0]?.id && products?.units?.[0]?.variants?.[0]?.name === cart?.variant?.name)
     
-            //reactotron.log({quanti})
             if (quanti) {
                 setQuantity(quanti?.qty)
             }
@@ -96,7 +88,6 @@ const ProductCard = ({ item, key, time }) => {
                 taxValue: (sellingPrice / 100) * tax
             };
 
-            //reactotron.log({ price })
         }
 
         setPrice(price)
@@ -145,9 +136,6 @@ const ProductCard = ({ item, key, time }) => {
                 //tax: 
             }
 
-
-
-            //reactotron.log({ productObj })
             addItemToCart(productObj)
         }
     }, [quantity, price, products])

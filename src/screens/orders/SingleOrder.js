@@ -4,14 +4,11 @@ import CommonHeader from '../../components/CommonHeader'
 import Header from '../../components/Header'
 import { COLORS } from '../../constants/COLORS'
 import SubHeading from '../../components/SubHeading'
-import reactotron from 'reactotron-react-native'
 import moment from 'moment'
 
 const SingleOrder = ({ route }) => {
 
     const { item } = route.params;
-
-    reactotron.log(item, "SINGLE")
 
     // const statusColor = () => {
     //     let color;
@@ -82,20 +79,20 @@ const SingleOrder = ({ route }) => {
                     {item?.itemDetails?.map(item => (
                         <View style={styles.imgContainer} key={item?._id}>
                             <View style={styles.boxStyle}>
-                                <Image source={{ uri: item?.item?.imageBasePath + item?.item?.image?.[0] }} style={styles.imgStyle} />
+                                <Image source={{ uri: item?.image }} style={styles.imgStyle} />
                                 <View style={styles.imgSection}>
                                     <View>
-                                        <Text style={styles.productName}>{item?.item?.name}</Text>
-                                        <Text style={styles.categoryName}>Category : {item?.item?.category?.name}</Text>
+                                        <Text style={styles.productName}>{item?.name}</Text>
+                                        <Text style={styles.categoryName}>Category : {item?.category?.name}</Text>
                                     </View>
                                     <View>
-                                        <Text style={styles.unitStyle}>{item?.item?.unit?.name} : {item?.item?.variant?.name}</Text>
+                                        <Text style={styles.unitStyle}>{item?.unit?.name} : {item?.variant?.name}</Text>
                                         
                                     </View>
                                 </View>
                             </View>
                             <View style={styles.qtyBox}>
-                                <Text style={styles.price}>₹ {item?.item?.variant?.offerPrice ? item?.item?.variant?.offerPrice * item?.qty : item?.item?.variant?.sellingPrice * item?.qty}</Text>
+                                <Text style={styles.price}>₹ {item?.variant?.offerPrice ? item?.variant?.offerPrice * item?.qty : item?.variant?.sellingPrice * item?.qty}</Text>
                                 {/* <Text style={styles.qty}>Qty x {item?.qty}</Text> */}
                                 <Text style={styles.qty}>Qty x {item?.qty}</Text>
                             </View>

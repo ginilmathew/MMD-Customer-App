@@ -1,9 +1,8 @@
-import { Image, StyleSheet, Text, View, ScrollView } from 'react-native'
-import React, { useContext, useState } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
+import React, { useState } from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { Dropdown } from 'react-native-element-dropdown';
 import { COLORS } from '../constants/COLORS';
-import reactotron from 'reactotron-react-native';
 
 
 const CommonSelectDropdown = ({ topLabel, placeholder, value, setValue, changeValue, search, datas }) => {
@@ -21,8 +20,6 @@ const CommonSelectDropdown = ({ topLabel, placeholder, value, setValue, changeVa
     // const datas = item?.variants?.map(item => (
     //     { label: item?.name, value: item?.sellingPrice }
     // ));
-
-    //reactotron.log(datas, "datas")
 
     // const renderLabel = () => {
     //     if (values || isFocus) {

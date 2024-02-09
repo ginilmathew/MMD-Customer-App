@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet } from 'react-native'
-import React, { useCallback } from 'react'
+import { View, StyleSheet } from 'react-native'
+import React from 'react'
 import { COLORS } from '../../constants/COLORS'
 import CommonHeader from '../../components/CommonHeader'
 import CustomInput from '../../components/CustomInput'
@@ -12,7 +12,6 @@ import { storage } from '../../../App'
 import { useMutation } from 'react-query'
 import { updateProfile } from '../../api/Profile'
 import Header from '../../components/Header'
-import LocationContext from '../../context/location'
 
 
 const EditProfile = ({ navigation }) => {

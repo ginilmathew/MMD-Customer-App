@@ -2,15 +2,11 @@ import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import CartContext from '../context/cart';
-import { useNavigation } from '@react-navigation/core';
-import reactotron from 'reactotron-react-native';
 import { COLORS } from '../constants/COLORS';
 import moment from 'moment';
 
 
 const CheckoutItemCard = ({ item }) => {
-
-    reactotron.log({item})
 
     const [price, setPrice] = useState(null)
     let products = item.products ? item.products[0] : item?.item;

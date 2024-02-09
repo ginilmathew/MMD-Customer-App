@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet } from 'react-native'
-import React, { useCallback, useEffect } from 'react'
+import { View, StyleSheet } from 'react-native'
+import React, { useCallback } from 'react'
 import CustomInput from '../../components/CustomInput'
 import CommonButton from '../../components/CommonButton'
 import { useForm } from 'react-hook-form'

@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet, FlatList, RefreshControl, TouchableOpacity, Alert } from 'react-native'
-import React, { memo, useCallback, useContext, useState } from 'react'
-import CustomInput from '../../components/CustomInput'
+import React, { useCallback, useContext, useState } from 'react'
 import CommonButton from '../../components/CommonButton'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -14,7 +13,6 @@ import { addressList, defaultAddrss, deletAddrss } from '../../api/Profile'
 import useRefetch from '../../hooks/useRefetch'
 import Header from '../../components/Header'
 import { storage } from '../../../App'
-import { useMMKVStorage } from 'react-native-mmkv-storage'
 import LocationContext from '../../context/location'
 
 

@@ -3,7 +3,6 @@ import { BASE_URL } from "./constants/API";
 import { queryClient, storage } from "../App";
 import { fetch } from "@react-native-community/netinfo";
 import navRef from "./navigation/RootNavigation";
-import reactotron from "reactotron-react-native";
 
 
 const customAxios = axios.create({
@@ -41,7 +40,6 @@ customAxios.interceptors.response.use(function (res) {
     storage.setBool('loading', false);
     return Promise.resolve(res);
 }, (err) => {
-    reactotron.log({err: err?.response})
     if (err?.response?.data?.message) {
 
         if ((err?.response?.status === 403 || err?.response?.status === 401) && err?.response?.data?.message === "Unauthenticated.") {

@@ -2,11 +2,8 @@ import { StyleSheet, Text, View } from 'react-native'
 import React, { useContext, useEffect } from 'react'
 import { COLORS } from '../../constants/COLORS'
 import LottieView from 'lottie-react-native'
-import Header from '../../components/Header'
-import { useNavigation } from '@react-navigation/native'
 import RazorpayCheckout from 'react-native-razorpay';
 import { useMutation } from 'react-query'
-import reactotron from 'reactotron-react-native'
 import { UpdateOrder } from '../../api/updateOrder'
 import { RAZORPAY_KEY } from '../../constants/API'
 import { useMMKVStorage } from 'react-native-mmkv-storage'
@@ -20,9 +17,6 @@ const ProcessingOrder = ({route, navigation}) => {
   const [user] = useMMKVStorage('user', storage);
   const [order_id] = useMMKVStorage('order_id', storage);
   const { setCartItems } = useContext(CartContext);
-
-
-    reactotron.log({data})
 
     useEffect(() => {
         if(data){
@@ -66,7 +60,6 @@ const ProcessingOrder = ({route, navigation}) => {
         mutationKey: 'UpdateOrderdata',
         mutationFn: UpdateOrder,
         onSuccess: async(data) => {
-          //reactotron.log(data, "OR")
           setCartItems([])
           await storage.setMapAsync('cart_id', null);
           navigation.navigate('OrderPlaced', { item: data?.data?.data})

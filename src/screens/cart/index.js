@@ -1,22 +1,18 @@
-import { StyleSheet, Text, View, Image, FlatList } from 'react-native'
+import { StyleSheet, View, Image, FlatList } from 'react-native'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import Header from '../../components/Header'
 import CommonHeader from '../../components/CommonHeader'
 import { COLORS } from '../../constants/COLORS'
 import CommonButton from '../../components/CommonButton'
-import ItemCard from '../../components/ItemCard'
 import CartContext from '../../context/cart'
-import reactotron from 'reactotron-react-native'
-import { PostAddToCart, addToCart, getCartItems } from '../../api/cart'
-import { useMutation, useQuery } from 'react-query'
-import useRefetch from '../../hooks/useRefetch'
-import Animated from 'react-native-reanimated'
-import CartItemCard from '../../components/cartItemCard'
+import { PostAddToCart, getCartItems } from '../../api/cart'
+import { useMutation } from 'react-query'
 import { storage } from '../../../App'
 import LottieView from 'lottie-react-native'
 import CartCard from '../../components/CartCard'
 import moment from 'moment'
 import { useFocusEffect } from '@react-navigation/native'
+
 const Cart = ({ navigation, route }) => {
 
   const { cartItems, setCartItems, addItemToCart } = useContext(CartContext);
@@ -30,8 +26,6 @@ const Cart = ({ navigation, route }) => {
 
 
   const [clean, setClean] = useState(false)
-
-  reactotron.log({cartItems})
 
   const { cart_id } = route.params;
 
@@ -148,7 +142,6 @@ const Cart = ({ navigation, route }) => {
 
 
   const increaseQuantity = useCallback((item) => {
-    //reactotron.log({cartItems})
     addItemToCart({
       ...item,
       qty: item?.qty + 1
@@ -156,7 +149,6 @@ const Cart = ({ navigation, route }) => {
   }, [cartItems])
 
   const decreaseQuantity = useCallback((item) => {
-    //reactotron.log({cartItems})
     addItemToCart({
       ...item,
       qty: item?.qty - 1

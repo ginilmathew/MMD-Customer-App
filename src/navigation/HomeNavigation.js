@@ -3,23 +3,11 @@ import Home from '../screens/home';
 import Orders from '../screens/orders';
 import Profile from '../screens/Profile';
 import IonIcons from 'react-native-vector-icons/Ionicons'
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext } from 'react';
 import { StyleSheet, TouchableOpacity, View, useWindowDimensions } from 'react-native';
 import { COLORS } from '../constants/COLORS';
 import Header from '../components/Header';
-import EditProfile from '../screens/Profile/EditProfile';
-import AddAddress from '../screens/Profile/AddAddress';
-import SingleCategory from '../screens/Category/singleCategory';
-import AllProducts from '../screens/AllProducts';
-import Category from '../screens/Category';
-import SingleOrder from '../screens/orders/SingleOrder';
-import Animated, { useSharedValue, withSpring, withTiming, useAnimatedStyle, FadeInDown, BounceIn, BounceOut, FadeInUp } from 'react-native-reanimated';
-import { useFocusEffect } from '@react-navigation/native';
-import { storage } from '../../App';
-import LocationPage from '../screens/auth/LocationPage';
-import { useMMKVStorage } from 'react-native-mmkv-storage';
-import locationContext from '../context/location';
-import { navigationRef } from './RootNavigation';
+import Animated, { FadeInUp } from 'react-native-reanimated';
 import LocationContext from '../context/location';
 
 

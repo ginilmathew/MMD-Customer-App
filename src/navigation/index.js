@@ -1,42 +1,21 @@
-import { StyleSheet, Text, View, Modal, useWindowDimensions, Image, AppState, TouchableOpacity } from 'react-native'
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import { StyleSheet, View, Modal, useWindowDimensions, Image } from 'react-native'
+import React, { useCallback, useContext, useEffect } from 'react'
 import { navigationRef } from './RootNavigation';
 import SplashScreen from 'react-native-splash-screen'
 import Login from '../screens/auth/Login';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NavigationContainer, useNavigation, NavigationState, useRoute } from '@react-navigation/native';
-import HomeNavigation from './HomeNavigation';
+import { NavigationContainer } from '@react-navigation/native';
 import Register from '../screens/auth/Register';
 import Forget from '../screens/auth/Forget';
-import Category from '../screens/Category';
-import AllProducts from '../screens/AllProducts';
-import SingleCategory from '../screens/Category/singleCategory';
-import SingleOrder from '../screens/orders/SingleOrder';
-import NotificationPage from '../screens/notification';
-import Cart from '../screens/cart';
-import { FadeIn } from 'react-native-reanimated';
-import Search from '../screens/search';
-import SingleProduct from '../screens/AllProducts/SingleProduct';
 import { useMMKVStorage } from 'react-native-mmkv-storage';
 import { storage } from '../../App';
 import { useNetInfo } from '@react-native-community/netinfo';
 import Toast from '../components/Toast';
-import FeaturedProduct from '../screens/featuredProducts';
-import Checkout from '../screens/checkout';
 import LocationPage from '../screens/auth/LocationPage';
 import { COLORS } from '../constants/COLORS';
-import EditProfile from '../screens/Profile/EditProfile';
-import AddAddress from '../screens/Profile/AddAddress';
 import ChangePasswd from '../screens/Profile/ChangePasswd';
 import GoogleLocation from '../screens/Profile/GoogleLocation';
-import MapAddress from '../screens/Profile/MapAddress';
 import LocationContext from '../context/location';
-import Entypo from 'react-native-vector-icons/Entypo'
-import { PERMISSIONS, RESULTS, check } from 'react-native-permissions';
-import OrderPlaced from '../screens/checkout/OrderPlaced';
-import EditAddress from '../screens/checkout/EditAddress';
-import ProcessingOrder from '../screens/checkout/ProcessingOrder';
-import reactotron from 'reactotron-react-native';
 import CartContext from '../context/cart';
 import { useAppState } from '../hooks/appStateManagement';
 import { useMutation } from 'react-query';
@@ -82,8 +61,6 @@ const Navigation = ({ location }) => {
 
     const appState = useAppState();
 
-    reactotron.log({appState})
-
     useEffect(() => {
         if(cart_id){
             getCarts({ cartId: cart_id })
@@ -98,7 +75,6 @@ const Navigation = ({ location }) => {
 
     useEffect(() => {
         if (((appState === "background" || appState === "inactive") && cartItems?.length > 0)) {
-            //reactotron.log('BACKGROUND API')
             const postCart = async () => {
                 try {
                     // const updatedData = cartItems?.map(item => ({

@@ -1,8 +1,6 @@
-import React, { useState, useCallback, useEffect, useReducer, useContext, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import {
     ActivityIndicator,
-    Dimensions,
-    Image,
     ScrollView,
     StyleSheet,
     Text,
@@ -13,11 +11,7 @@ import {
 import Header from '../../components/Header';
 import CommonHeader from '../../components/CommonHeader';
 import { COLORS } from '../../constants/COLORS';
-import CommonSelectDropdown from '../../components/CustomDropDown';
-import CustomDropdown from '../../components/CommonDropDown';
-import reactotron from 'reactotron-react-native';
-import Animated, { interpolate } from 'react-native-reanimated';
-import { AddToCart } from '../../components/ItemCard';
+import Animated from 'react-native-reanimated';
 import Entypo from 'react-native-vector-icons/Entypo'
 import { useMutation, useQuery } from 'react-query';
 import { PostAddToCart } from '../../api/cart';
@@ -25,8 +19,6 @@ import CartContext from '../../context/cart';
 import { singProduct } from '../../api/allProducts';
 import SelectDropdown from 'react-native-select-dropdown';
 import IonIcon from 'react-native-vector-icons/AntDesign'
-import useRefetch from '../../hooks/useRefetch'
-import { useFocusEffect } from '@react-navigation/native';
 import { storage } from '../../../App';
 import { useMMKVStorage } from 'react-native-mmkv-storage';
 import moment from 'moment';
@@ -36,7 +28,6 @@ const SingleProduct = ({ navigation, route }) => {
 
     const { item } = route.params;
 
-    reactotron.log({item})
     const [selectedUnit, setSelectedUnit] = useState(null)
     const [selectedVariant, setSelectedVariant] = useState(null)
     const [variantsList, setVariantsList] = useState([])
@@ -46,15 +37,7 @@ const SingleProduct = ({ navigation, route }) => {
     const [price, setPrice] = useState(null)
     const [quantity, setQuantity] = useState(0)
 
-
-
-
-
-
-    reactotron.log({ price })
-
     const [cart_id] = useMMKVStorage('cart_id', storage);
-
 
     const [qty, setQty] = useState(null)
     const { cartItems, setCartItems, addItemToCart, cartsDatas } = useContext(CartContext);
@@ -69,18 +52,14 @@ const SingleProduct = ({ navigation, route }) => {
         keepPreviousData: false
     })
 
-    //reactotron.log({ selectedVariant, variantsList })
-
     useEffect(() => {
 
         async function setInitialDatas(product) {
-            reactotron.log({ initialData: product })
 
             setSelectedUnit(product?.units?.[0])
             setUnitList(product?.units?.map(unit => unit?.name))
 
             setVariantsList(product?.units?.[0]?.variants?.map(vari => vari?.name))
-            //reactotron.log("in")
             setSelectedVariant(product?.units?.[0]?.variants?.[0])
 
 
@@ -153,7 +132,6 @@ const SingleProduct = ({ navigation, route }) => {
                     taxValue: (sellingPrice / 100) * tax
                 };
     
-                reactotron.log({ price })
             }
 
             setPrice(price)
@@ -327,9 +305,6 @@ const SingleProduct = ({ navigation, route }) => {
                 //tax: 
             }
 
-            
-    
-            reactotron.log({productObj})
             addItemToCart(productObj)
         }
         
@@ -410,8 +385,6 @@ const SingleProduct = ({ navigation, route }) => {
         //         discountPercentage: (100 * (parseFloat(costPrice) - parseFloat(sellingPrice)) / parseFloat(costPrice)).toFixed(2) * 1,
         //         unitName: selectedUnit?.name
         //     };
-
-        //     reactotron.log({ price })
         // }
 
         // setPrice(price)
@@ -476,7 +449,6 @@ const SingleProduct = ({ navigation, route }) => {
                                     }}
                                     onSelect={(selectedItem, index) => {
                                         changeUnit(index)
-                                        reactotron.log({ selectedItem, index })
                                         // setUnit(selectedItem)
                                         // variantRef?.current?.reset()
                                     }}

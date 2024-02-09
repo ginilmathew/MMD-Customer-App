@@ -1,7 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity } from 'react-native'
 import React, { useCallback, useContext } from 'react'
 import Background from './Background';
-import IonIcons from 'react-native-vector-icons/Ionicons'
 import CommonButton from '../../components/CommonButton';
 import CustomInput from '../../components/CustomInput';
 import { COLORS } from '../../constants/COLORS';
@@ -10,13 +9,9 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutation } from 'react-query';
 import { loginApi, tokenApi } from '../../api/auth';
-import { useMMKVStorage } from 'react-native-mmkv-storage';
 import { storage } from '../../../App';
-import { CommonActions } from '@react-navigation/native';
 import locationContext from '../../context/location';
 import messaging from '@react-native-firebase/messaging';
-import customAxios from '../../customAxios';
-import { PERMISSIONS, check, RESULTS } from 'react-native-permissions'
 
 
 const Login = ({ navigation }) => {

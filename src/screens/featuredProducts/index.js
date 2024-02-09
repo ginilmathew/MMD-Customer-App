@@ -1,10 +1,9 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import { FlatList, StyleSheet, View } from 'react-native'
 import React, { useCallback, useContext, useState } from 'react'
 import Header from '../../components/Header';
 import CommonHeader from '../../components/CommonHeader';
 import { getfeaturedProduct } from '../../api/featuredProducts';
 import { useQuery } from 'react-query';
-import ItemCard from '../../components/ItemCard';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import NoData from '../../components/NoData';
 import ProductCard from '../../components/ProductCard';

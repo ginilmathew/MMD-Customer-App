@@ -44,7 +44,6 @@ const App = () => {
 
         if (Platform.OS === 'android') {
             let permissions = await requestMultiple([PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION, PERMISSIONS.ANDROID.POST_NOTIFICATIONS])
-            reactotron.log({permissions})
 			if(permissions?.['android.permission.POST_NOTIFICATIONS'] === "granted"){
 				await notifee?.createChannel({
 					id: 'sound',
@@ -76,15 +75,12 @@ const App = () => {
 				setLoading(false)
 			}
 
-            reactotron.log({location})
-
             const authStatus = await messaging().requestPermission();
             const enabled =
                 authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
                 authStatus === messaging.AuthorizationStatus.PROVISIONAL;
     
             if (enabled) {
-                reactotron.log('Authorization status:', authStatus);
 				await notifee?.createChannel({
 					id: 'sound',
 					name: 'pressable channel',
