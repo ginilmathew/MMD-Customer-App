@@ -14,15 +14,40 @@ import useRefetch from '../../hooks/useRefetch'
 import CartItemCard from '../../components/cartItemCard'
 import { storage } from '../../../App'
 import LottieView from 'lottie-react-native'
-import Animated, { interpolate, Extrapolate, clamp } from 'react-native-reanimated';
-import { Swipeable } from 'react-native-gesture-handler'
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import Swipable from '../../components/swipable'
+import CartCard from '../../components/CartCard'
+import moment from 'moment'
+import { useFocusEffect } from '@react-navigation/native'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { set } from 'react-hook-form'
+
+
 
 const Cart = ({ navigation, route }) => {
 
-  const { cartItems, setCartItems, } = useContext(CartContext);
+  const { cartItems, setCartItems, addItemToCart } = useContext(CartContext);
+  const [time, setTime] = useState(moment().unix());
+
+
+
+
+
+
+
+
+
+  // reactotron.log({animatedStyle: animatedStyle ?? null})
+
+
+  useFocusEffect(
+    useCallback(() => {
+      setTime(moment().unix())
+    }, [])
+  )
+
+
   const [clean, setClean] = useState(false)
+
+
 
   const { cart_id } = route.params;
 
@@ -33,16 +58,7 @@ const Cart = ({ navigation, route }) => {
     mutationFn: getCartItems,
     onSuccess: (data) => {
       setClean(true)
-      let myStructure = data?.data?.data?.product?.map((res) => (
-        {
-          _id: res?._id,
-          qty: res?.qty,
-          unit_id: res?.unit?.id,
-          varientname: res?.variant?.name,
-          item: { ...res }
-        }
-      ))
-      setCartItems(myStructure)
+      setCartItems(data?.data?.data?.product)
     }
   });
 
@@ -53,25 +69,25 @@ const Cart = ({ navigation, route }) => {
     mutationFn: PostAddToCart,
 
     onSuccess: async (data) => {
-      let myStructure = data?.data?.data?.product.map((res) => (
-        {
-          _id: res?._id,
-          qty: res?.qty,
-          unit_id: res?.unit?.id,
-          varientname: res?.variant?.name,
-          item: { ...res }
-        }
-      ))
-      setCartItems(myStructure)
+      // let myStructure = data?.data?.data?.product.map((res) => (
+      //   {
+      //     _id: res?._id,
+      //     qty: res?.qty,
+      //     unit_id: res?.unit?.id,
+      //     varientname: res?.variant?.name,
+      //     item: { ...res }
+      //   }
+      // ))
+      //setCartItems(myStructure)
       await storage.setStringAsync('cart_id', data?.data?.data?._id);
-      navigation.navigate('EditAddress', { cartID: cart_id })
+      navigation.navigate('EditAddress', { cartID: data?.data?.data?._id })
     }
   })
 
 
   useEffect(() => {
     if (cart_id) {
-      mutate({ cartId: cart_id })
+      //mutate({ cartId: cart_id })
 
     }
 
@@ -92,6 +108,17 @@ const Cart = ({ navigation, route }) => {
 
   // }, [cartItems?.length])
 
+
+
+  const removeItem = useCallback((item) => {
+    reactotron.log({ item })
+
+    reactotron.log({ cartItems })
+    const filterData = cartItems?.filter(res => (res?._id && res?.unit?.id && res?.varient?.name) !== (item?._id && item?.unit.id && item?.varient?.name))
+    reactotron.log({ filterData })
+
+  }, [cartItems])
+
   const noProductsAdded = () => {
     return (
       <View style={styles.emptyContainer}>
@@ -100,27 +127,27 @@ const Cart = ({ navigation, route }) => {
     )
   }
 
-  const editAddress = () => {
-    const updatedData = cartItems?.map(item => ({
-      ...item.item,
-      qty: item.qty
-    }));
-    MutatePostAddCart({ product: updatedData, cartid: cart_id });
+  const editAddress = async () => {
+    // const updatedData = cartItems?.map(item => ({
+    //   ...item.item,
+    //   qty: item.qty
+    // }));
+    let cartId = await storage.getStringAsync('cart_id');
+    MutatePostAddCart({ product: cartItems, cartid: cartId });
+
 
   }
 
-  const renderItem = useCallback(({ item, index }) => {
+  const renderItem = ({ item, index }) => {
     return (
 
       <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
-        {/* <Swipable> */}
-          <CartItemCard key={index} item={item} />
-        {/* </Swipable> */}
-
+        <CartCard key={index} item={item} increaseQuantity={increaseQuantity} decreaseQuantity={decreaseQuantity} removeItem={removeItem} />
+        {/* <CartItemCard key={index} item={item} /> */}
       </View>
 
     )
-  }, [data?.data?.data ?? [], cartItems ?? []])
+  }
 
   // const ListEmptyCompont = useCallback(()=>{
   //   return (
@@ -132,36 +159,6 @@ const Cart = ({ navigation, route }) => {
 
 
 
-  const renderRightActions = ({ ...props }) => {
-
-    reactotron.log({ ...props })
-    const opacity = interpolate(props.dragAnimatedValue, {
-      inputRange: [-150, 0],
-      outputRange: [1, 0],
-      extrapolate: 'clamp',
-    });
-
-    reactotron.log({ opacity })
-    // Ensure dragAnimatedValue is not NaN
-    // const opacity = interpolate(dragAnimatedValue, {
-    //   inputRange: [-150, 0],
-    //   outputRange: [1, 0],
-    //   extrapolate: 'clamp',
-    // });
-
-    return (
-      <Animated.View style={styles.swipedRow}>
-        <View style={styles.swipedConfirmationContainer}>
-          <Text style={styles.deleteConfirmationText}>Are you sure?</Text>
-        </View>
-        <Animated.View style={[styles.deleteButton]}>
-          <TouchableOpacity>
-            <Text style={styles.deleteButtonText}>Delete</Text>
-          </TouchableOpacity>
-        </Animated.View>
-      </Animated.View>
-    );
-  };
 
 
 
@@ -182,8 +179,25 @@ const Cart = ({ navigation, route }) => {
   }
 
 
+  const increaseQuantity = useCallback((item) => {
+    //reactotron.log({cartItems})
+    addItemToCart({
+      ...item,
+      qty: item?.qty + 1
+    })
+  }, [cartItems])
+
+  const decreaseQuantity = useCallback((item) => {
+    //reactotron.log({cartItems})
+    addItemToCart({
+      ...item,
+      qty: item?.qty - 1
+    })
+  }, [cartItems])
+
+
   return (
-    <View style={styles.container}>
+    <GestureHandlerRootView style={styles.container}>
       <Header />
       <CommonHeader heading={"Cart"} backBtn />
 
@@ -205,6 +219,7 @@ const Cart = ({ navigation, route }) => {
           windowSize={10}
           getItemLayout={(data, index) => ({ length: 80, offset: 80 * index, index })}
           ListEmptyComponent={noProductsAdded}
+          extraData={cartItems}
         />
 
         {cartItems?.length > 0 ? (<View style={styles.innerContainer}>
@@ -212,7 +227,7 @@ const Cart = ({ navigation, route }) => {
         </View>) : null}
       </View>
 
-    </View >
+    </ GestureHandlerRootView>
   )
 }
 
@@ -237,27 +252,5 @@ const styles = StyleSheet.create({
     width: 251,
     height: 318
   },
-  swipedRow: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    backgroundColor: '#fff',
-  },
-  swipedConfirmationContainer: {
-    marginRight: 10,
-  },
-  deleteConfirmationText: {
-    color: '#333',
-  },
-  deleteButton: {
-    backgroundColor: 'red',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 5,
-  },
-  deleteButtonText: {
-    color: '#fff',
-  },
+
 })

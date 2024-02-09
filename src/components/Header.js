@@ -61,15 +61,16 @@ const Header = memo(({ onPress, text }) => {
     }, [navigation]);
 
     const cartPage = useCallback(() => {
-        if (cartItems?.length > 0) {
-            const updatedData = cartItems?.map((item) => ({
-                ...item.item,
-                qty: item.qty,
-            }));
-            mutate({ product: updatedData, cartId: cart_id ? cart_id : null });
-        } else {
-            navigation.navigate('Cart', { cart_id: null });
-        }
+        navigation.navigate('Cart', { cart_id: null });
+        // if (cartItems?.length > 0) {
+        //     const updatedData = cartItems?.map((item) => ({
+        //         ...item.item,
+        //         qty: item.qty,
+        //     }));
+        //     //mutate({ product: updatedData, cartId: cart_id ? cart_id : null });
+        // } else {
+        //     navigation.navigate('Cart', { cart_id: null });
+        // }
     }, [navigation, cartItems, cart_id]);
 
     const textLeng = location?.address?.length;

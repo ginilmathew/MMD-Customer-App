@@ -1,5 +1,5 @@
 import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { memo, useCallback, useRef, useState } from 'react'
+import React, { memo, useCallback, useContext, useRef, useState } from 'react'
 import Header from '../../components/Header'
 import CommonHeader from '../../components/CommonHeader'
 import ItemCard from '../../components/ItemCard'
@@ -10,8 +10,15 @@ import useRefreshOnFocus from '../../hooks/useRefetch'
 import reactotron from 'reactotron-react-native'
 import { COLORS } from '../../constants/COLORS'
 import NoData from '../../components/NoData'
+import ProductCard from '../../components/ProductCard'
+import CartContext from '../../context/cart'
+import { useFocusEffect } from '@react-navigation/native'
+import moment from 'moment'
 
 const AllProducts = ({ navigation }) => {
+
+    const { cartItems } = useContext(CartContext);
+    const [time, setTime] = useState(moment().unix())
 
     const {
         data,
@@ -35,6 +42,12 @@ const AllProducts = ({ navigation }) => {
 
 
 
+
+    useFocusEffect(
+        useCallback(() => {
+            setTime(moment().unix())
+        }, [])
+    )
 
 
 
@@ -64,10 +77,10 @@ const AllProducts = ({ navigation }) => {
     const renderItem = useCallback(({ item, index }) => {
         return (
             <Animated.View entering={AnimatedStyle(index)} style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
-                <ItemCard item={item} key={item?._id} />
+                <ProductCard key={index} item={item} cartItems={cartItems} time={time} />
             </Animated.View>
         )
-    }, [data])
+    }, [time])
 
     const ListFooterComponents = memo(() => {
         return (
@@ -99,8 +112,6 @@ const AllProducts = ({ navigation }) => {
                 onEndReachedThreshold={.1}
                 ListEmptyComponent={emptyScreen}
             />
-
-
         </View>
     )
 }

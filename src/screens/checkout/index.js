@@ -22,6 +22,7 @@ import ChooseDate from './ChooseDate'
 import SlotContext from '../../context/slot'
 import { UpdateOrder } from '../../api/updateOrder'
 import CheckoutItemCard from '../../components/CheckoutItemCard'
+import CheckoutCard from '../../components/CheckoutCard'
 
 
 const Checkout = ({ route }) => {
@@ -73,7 +74,7 @@ const Checkout = ({ route }) => {
 
   useRefetch(refetch)
 
-  reactotron.log(data, "Discount")
+
 
   // let mainData = {
   //   orderId: orderData?.data?.data?.orderId,
@@ -197,7 +198,7 @@ const Checkout = ({ route }) => {
         <View >
           <View style={{ paddingHorizontal: 15 }}>
           {cartItems?.map(item => (
-            <CheckoutItemCard item={item} />
+            <CheckoutCard item={item} />
           ))}
           </View>
 

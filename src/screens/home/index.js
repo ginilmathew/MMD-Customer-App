@@ -25,6 +25,8 @@ import Header from '../../components/Header'
 import CartContext from '../../context/cart'
 import reactotron from 'reactotron-react-native'
 import { useFocusNotifyOnChangeProps } from '../../hooks/useFocusNotifyOnChangeProps'
+import ProductCard from '../../components/ProductCard'
+import moment from 'moment'
 
 
 
@@ -36,10 +38,11 @@ const Home = ({ navigation, route }) => {
     const { currentLoc, setMode, getLocation, mode, setHomeFocus, location } = useContext(LocationContext)
     const checkLocRef = useRef(null)
     const [cart_id] = useMMKVStorage('cart_id', storage);
-    const { cartItems, setCartItems } = useContext(CartContext);
+    const [time, setTime] = useState(moment().unix())
+    const { cartItems, setCartItems, cartChanges, cartTotal } = useContext(CartContext);
     const notifyOnChangeProps = useFocusNotifyOnChangeProps()
 
-    //reactotron.log({currentLoc, location})
+    reactotron.log({cartTotal, cartItems})
 
 
     let payload = {
@@ -67,10 +70,9 @@ const Home = ({ navigation, route }) => {
 
 
     useFocusEffect(useCallback(() => {
-        // reactotron.log({location})
-        // setHomeFocus(true);
-        // if (location?.coord?.latitude !== checkLocRef?.current?.latitude) {
-        //     checkLocRef.current = currentLoc?.coord;
+
+        setTime(moment().unix())
+
         if (location?.address) {
             refetch()
         }
@@ -124,7 +126,7 @@ const Home = ({ navigation, route }) => {
             };
         });
 
-        setCartItems(updatedCartItems);
+        //setCartItems(updatedCartItems);
     }, [data?.data?.data]);
 
 
@@ -170,16 +172,19 @@ const Home = ({ navigation, route }) => {
         );
     }, [data?.data?.data]);
 
+    
 
-    const renderItem = useCallback(({ item, index }) => {
+
+    const renderItem = ({ item, index }) => {
         return (
             <>
                 <Animated.View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
-                    <ItemCard key={index} item={item} />
+                    {/* <ItemCard key={index} item={item} /> */}
+                    <ProductCard key={index} item={item} cartItems={cartItems} time={time} />
                 </Animated.View>
             </>
         )
-    }, [data?.data?.data])
+    }
 
 
     const ListFooterComponent = useCallback(() => {
@@ -228,7 +233,7 @@ const Home = ({ navigation, route }) => {
 
     }
 
-
+    reactotron.log({cartChanges})
 
     const addLeng = currentLoc?.address?.length;
 
@@ -268,6 +273,7 @@ const Home = ({ navigation, route }) => {
                 windowSize={10}
                 getItemLayout={(data, index) => ({ length: 80, offset: 80 * index, index })}
                 ListEmptyComponent={<NoData heights={500} />}
+                extraData={cartTotal}
             />
         </View>
     )

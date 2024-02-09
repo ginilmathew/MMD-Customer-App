@@ -195,7 +195,7 @@ const MapAddress = ({ navigation, route }) => {
                                                 color: COLORS.light,
                                                 fontFamily: 'Poppins-SemiBold',
 
-                                            }}>{location?.address?.main?.length > 25 ? location?.address?.main?.slice(0, 25) + '...' : location?.address?.main}</Text>
+                                            }}>{location?.address > 25 ? location?.address?.slice(0, 25) + '...' : location?.address}</Text>
 
                                             <Text style={{
                                                 color: COLORS.dark,
@@ -342,7 +342,7 @@ const MapAddress = ({ navigation, route }) => {
                 <CommonButton
                     w='85%'
                     mt={mode === 'address' && 60}
-                    onPress={mode === "map" ? changeMode : handleSubmit(onSubmit)}
+                    onPress={(mode === "map" || route?.params?.mode === "map") ? changeMode : handleSubmit(onSubmit)}
                     text={`CONFIRM ${mode === "map" ? "LOCATION" : ""}`}
                     loading={isLoading}
                 />

@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, FlatList, ScrollView, useWindowDimensions } from 'react-native'
-import React, { memo, useCallback, useState } from 'react'
+import React, { memo, useCallback, useContext, useState } from 'react'
 import Header from '../../components/Header'
 import CommonHeader from '../../components/CommonHeader'
 import Animated, { FadeInDown } from 'react-native-reanimated'
@@ -12,10 +12,16 @@ import useRefetch from '../../hooks/useRefetch'
 import { getCatProducts } from '../../api/IndividualCategory'
 import { postcategorybySub } from '../../api/category'
 import NoData from '../../components/NoData'
+import CartContext from '../../context/cart'
+import moment from 'moment'
+import { useFocusEffect } from '@react-navigation/native'
+import ProductCard from '../../components/ProductCard'
 
 const SingleCategory = ({ route }) => {
 
     const {height} = useWindowDimensions();
+    const { cartItems } = useContext(CartContext);
+    const [time, setTime] = useState(moment().unix())
 
     const item = route?.params;
 
@@ -42,6 +48,12 @@ const SingleCategory = ({ route }) => {
         }
 
     })
+
+    useFocusEffect(
+        useCallback(() => {
+            setTime(moment().unix())
+        }, [])
+    )
 
     useRefetch(refetch)
 
@@ -78,10 +90,10 @@ const SingleCategory = ({ route }) => {
     const renderItem = useCallback(({ item, index }) => {
         return (
             <>
-                <MainRenderMemo AnimatedStyle={AnimatedStyles} item={item} index={index} />
+                <MainRenderMemo AnimatedStyle={AnimatedStyles} item={item} index={index} cartItems={cartItems} time={time} />
             </>
         )
-    }, [AnimatedStyles, data?.data?.data])
+    }, [AnimatedStyles, data?.data?.data, time])
 
     const ListFooterComponent = useCallback(() => {
         return (
@@ -152,11 +164,12 @@ const RenderHeaderMemo = memo(({ LIST, AnimatedStyle, onPress, subList }) => {
     )
 })
 
-const MainRenderMemo = memo(({ item, AnimatedStyle, index }) => {
+const MainRenderMemo = memo(({ item, AnimatedStyle, index, cartItems, time }) => {
     return (
         <Animated.View entering={AnimatedStyle(index, 100)} >
             <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
-                <ItemCard item={item} key={item._id} />
+                {/* <ItemCard item={item} key={item._id} /> */}
+                <ProductCard key={item._id} item={item} cartItems={cartItems} time={time} />
             </View>
         </Animated.View>
 
