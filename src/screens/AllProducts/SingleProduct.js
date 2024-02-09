@@ -423,7 +423,7 @@ const SingleProduct = ({ navigation, route }) => {
 
 
     return (
-        <View style={[styles.mainContainer, { height: height - 80, }]}>
+        <View style={[styles.mainContainer, { flexGrow: 1 }]}>
             <Header />
             <CommonHeader heading={item?.name?.length > 18 ? item?.name?.slice(0, 18) + "..." : item?.name} backBtn />
             <ScrollView
