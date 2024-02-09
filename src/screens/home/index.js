@@ -202,7 +202,7 @@ const Home = ({ navigation, route }) => {
                             <ItemBox onPress={() => NavigateToFeatured(res)} key={res?._id} item={res} index={index} />
                         ))}
                     </View>
-                    <View style={{ marginBottom: 40 }} />
+                    {/* <View style={{ marginBottom: 40 }} /> */}
                 </View>
             )
         );

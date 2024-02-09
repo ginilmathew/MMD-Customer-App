@@ -8,7 +8,6 @@ import {
     Text,
     TouchableOpacity,
     View,
-    useWindowDimensions,
 } from 'react-native';
 import Header from '../../components/Header';
 import CommonHeader from '../../components/CommonHeader';
@@ -37,22 +36,13 @@ const SingleProduct = ({ navigation, route }) => {
     const [variantsList, setVariantsList] = useState([])
     const [unitList, setUnitList] = useState([])
     const [product, setProduct] = useState(null)
-    const { height } = useWindowDimensions()
     const [price, setPrice] = useState(null)
     const [quantity, setQuantity] = useState(0)
 
 
 
-
-
-
-    reactotron.log({ price })
-
-    const [cart_id] = useMMKVStorage('cart_id', storage);
-
-
     const [qty, setQty] = useState(null)
-    const { cartItems, setCartItems, addItemToCart, cartsDatas } = useContext(CartContext);
+    const { cartItems, addItemToCart } = useContext(CartContext);
     const { data, refetch } = useQuery({
         queryKey: 'single-product',
         initialData: item,
@@ -418,7 +408,7 @@ const SingleProduct = ({ navigation, route }) => {
 
 
     return (
-        <View style={[styles.mainContainer, { flexGrow: 1 }]}>
+        <View style={[styles.mainContainer, { flexShrink: 1 }]}>
             <Header />
             <CommonHeader heading={item?.name?.length > 18 ? item?.name?.slice(0, 18) + "..." : item?.name} backBtn />
             <ScrollView
@@ -527,17 +517,17 @@ const SingleProduct = ({ navigation, route }) => {
                 {product?.description ? <DescriptionSection item={product} /> : null}
 
             </ScrollView>
+
             <View style={{
                 flexDirection: 'row',
                 justifyContent: 'center',
                 height: 60,
-                paddingHorizontal: 10,
                 position: 'absolute',
-                bottom: 10,
-                left: 0,
-                right: 0,
+                bottom: 0,
+                width: '100%',
+                backgroundColor: COLORS.white,
+                paddingHorizontal: 10,
             }}>
-
                 {/* Button */}
                 {quantity > 0 && <View style={{
                     flexDirection: 'row',
@@ -582,7 +572,6 @@ const SingleProduct = ({ navigation, route }) => {
                     loading={isLoading}
                     onPress={changeQty}
                 />}
-
             </View>
         </View>
     );

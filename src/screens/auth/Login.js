@@ -41,6 +41,7 @@ const Login = ({ navigation }) => {
         await storage.setMapAsync('user', data);
         const token = await messaging().getToken();
         tokenMutate(token)
+        storage.setString('success', 'Login successful')
 
         // try {
 
