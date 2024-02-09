@@ -29,16 +29,35 @@ import useRefetch from '../../hooks/useRefetch'
 import { useFocusEffect } from '@react-navigation/native';
 import { storage } from '../../../App';
 import { useMMKVStorage } from 'react-native-mmkv-storage';
+import moment from 'moment';
 
 
 const SingleProduct = ({ navigation, route }) => {
 
     const { item } = route.params;
+
+    reactotron.log({item})
+    const [selectedUnit, setSelectedUnit] = useState(null)
+    const [selectedVariant, setSelectedVariant] = useState(null)
+    const [variantsList, setVariantsList] = useState([])
+    const [unitList, setUnitList] = useState([])
+    const [product, setProduct] = useState(null)
+    const { height } = useWindowDimensions()
+    const [price, setPrice] = useState(null)
+    const [quantity, setQuantity] = useState(0)
+
+
+
+
+
+
+    reactotron.log({ price })
+
     const [cart_id] = useMMKVStorage('cart_id', storage);
 
 
     const [qty, setQty] = useState(null)
-    const { cartItems, setCartItems, } = useContext(CartContext);
+    const { cartItems, setCartItems, addItemToCart, cartsDatas } = useContext(CartContext);
     const { data, refetch } = useQuery({
         queryKey: 'single-product',
         initialData: item,
@@ -50,23 +69,120 @@ const SingleProduct = ({ navigation, route }) => {
         keepPreviousData: false
     })
 
-    const [unit, setUnit] = useState("")
-    const [unitList, setUnitList] = useState([])
-    const { height } = useWindowDimensions()
-    const [price, setPrice] = useState(0)
-    const [selectedValue, setSelectedValue] = useState('')
+    //reactotron.log({ selectedVariant, variantsList })
+
+    useEffect(() => {
+
+        async function setInitialDatas(product) {
+            reactotron.log({ initialData: product })
+
+            setSelectedUnit(product?.units?.[0])
+            setUnitList(product?.units?.map(unit => unit?.name))
+
+            setVariantsList(product?.units?.[0]?.variants?.map(vari => vari?.name))
+            //reactotron.log("in")
+            setSelectedVariant(product?.units?.[0]?.variants?.[0])
+
+
+
+            //let quanti = cartsDatas?.find(cart => cart?._id === product?._id && cart?.unit?.id === product?.units?.[0]?.id && product?.units?.[0]?.variants?.[0]?.name === cart?.variant?.name)
+            
+            //if (quanti) {
+                setQuantity(route?.params?.quantity)
+            //}
+
+            
+        }
+
+        if (data?.data?.data?.product) {
+            let product = data?.data?.data?.product
+            setProduct(product)
+            setInitialDatas(product)
+        }
+    }, [data?.data?.data?.product?._id])
+
+
+
+    useEffect(() => {
+        if(selectedVariant && selectedUnit){
+            let price;
+            let tax = product?.subcategories?.tax ? product?.subcategories?.tax : product?.categories?.tax
+            const { offerPrice, fromDate, toDate, sellingPrice, costPrice } = selectedVariant
+    
+            if (fromDate && toDate && offerPrice) {
+    
+                let startDate = moment(fromDate, "YYY-MM-DD").add(-1, 'day');
+                let endDate = moment(toDate, "YYYY-MM-DD").add(1, 'day')
+                if (moment().isBetween(startDate, endDate)) {
+                    price = {
+                        ...selectedVariant,
+                        finalPrice: offerPrice,
+                        hasOfferPrice: true,
+                        discount: parseFloat(sellingPrice) - parseFloat(offerPrice),
+                        discountPercentage: (100 * (parseFloat(costPrice) - parseFloat(offerPrice)) / parseFloat(costPrice)).toFixed(2) * 1,
+                        unitName: selectedUnit?.name,
+                        tax,
+                        taxValue: (offerPrice / 100) * tax
+                    }
+    
+    
+                }
+                else {
+                    price = {
+                        ...selectedVariant,
+                        finalPrice: sellingPrice,
+                        hasOfferPrice: false,
+                        discount: 0,
+                        discountPercentage: (100 * (parseFloat(costPrice) - parseFloat(sellingPrice)) / parseFloat(costPrice)).toFixed(2) * 1,
+                        unitName: selectedUnit?.name,
+                        tax,
+                        taxValue: (sellingPrice / 100) * tax
+                    };
+                }
+            }
+            else {
+    
+                price = {
+                    ...selectedVariant,
+                    finalPrice: sellingPrice,
+                    hasOfferPrice: false,
+                    discount: 0,
+                    discountPercentage: (100 * (parseFloat(costPrice) - parseFloat(sellingPrice)) / parseFloat(costPrice)).toFixed(2) * 1,
+                    unitName: selectedUnit.name,
+                    tax,
+                    taxValue: (sellingPrice / 100) * tax
+                };
+    
+                reactotron.log({ price })
+            }
+
+            setPrice(price)
+        }
+    }, [selectedVariant, selectedUnit])
+    
+
+
+    // function calculatePrice() {
+        
+    // }
+
+
+    // const [unit, setUnit] = useState("")
+    // const [unitList, setUnitList] = useState([])
+
+    // const [selectedValue, setSelectedValue] = useState('')
 
     const variantRef = useRef(null);
     const unitRef = useRef(null);
-    useRefetch(refetch)
+    // useRefetch(refetch)
 
-    useFocusEffect(useCallback(() => {
-        setQty(null)
-        variantRef?.current?.reset()
-        unitRef?.current?.reset()
-        setUnit('')
-        setSelectedValue('')
-    }, []))
+    // useFocusEffect(useCallback(() => {
+    //     setQty(null)
+    //     variantRef?.current?.reset()
+    //     unitRef?.current?.reset()
+    //     setUnit('')
+    //     setSelectedValue('')
+    // }, []))
 
     // useEffect(() => {
     //     const focus = navigation.addListener('focus', () => {
@@ -85,24 +201,24 @@ const SingleProduct = ({ navigation, route }) => {
     //     };
     // }, [data])
 
-    useEffect(() => {
-        if (data) {
-            const list = item.units?.filter(({ name }) => name === unit)?.[0]?.variants?.map(({ name }) => name);
-            setUnitList(list)
-        }
-    }, [unit, data])
+    // useEffect(() => {
+    //     if (data) {
+    //         const list = item.units?.filter(({ name }) => name === unit)?.[0]?.variants?.map(({ name }) => name);
+    //         setUnitList(list)
+    //     }
+    // }, [unit, data])
 
 
 
-    useEffect(() => {
-        if (data) {
-            let total = item.units?.[0]?.variants?.map(item => (
-                item.offerPrice ? item.offerPrice ?? 0 : item.sellingPrice ?? 0
-            ))
-            let lowestPrice = Math.min(...total);
-            setPrice(lowestPrice)
-        }
-    }, [data])
+    // useEffect(() => {
+    //     if (data) {
+    //         let total = item.units?.[0]?.variants?.map(item => (
+    //             item.offerPrice ? item.offerPrice ?? 0 : item.sellingPrice ?? 0
+    //         ))
+    //         let lowestPrice = Math.min(...total);
+    //         setPrice(lowestPrice)
+    //     }
+    // }, [data])
 
 
     const { mutate, isLoading } = useMutation({
@@ -118,76 +234,196 @@ const SingleProduct = ({ navigation, route }) => {
                     item: { ...res }
                 }
             ))
-            setCartItems(myStructure)
+            //setCartItems(myStructure)
             storage.setString('success', 'Successfully added to cart')
         }
     })
 
 
-    const defaultVal = useMemo(() => {
-        if (data) {
-            const initialQty = cartItems?.find(({ _id }) => _id === item?._id);
+    // const defaultVal = useMemo(() => {
+    //     if (data) {
+    //         const initialQty = cartItems?.find(({ _id }) => _id === item?._id);
 
-            if (initialQty) {
-                return { unit: initialQty?.item?.unit, variant: initialQty?.item?.variant?.name };
-            } else {
-                return { unit: item.units[0]?.name, variant: item.units[0]?.variants[0]?.name }
+    //         if (initialQty) {
+    //             return { unit: initialQty?.item?.unit, variant: initialQty?.item?.variant?.name };
+    //         } else {
+    //             return { unit: item.units[0]?.name, variant: item.units[0]?.variants[0]?.name }
+    //         }
+
+    //     }
+    // }, [data])
+
+
+    // const handleAddCart = useCallback(() => {
+
+    //     const unitId = item.units?.find(({ name }) => name === (unit || item.units[0]?.name))
+    //     const variant = unitId?.variants?.find(({ name }) => name === (selectedValue || unitId?.variants[0]?.name));
+    //     const { variants, ...unitWithoutVariants } = { unitId };
+
+    //     let selectedItem = {
+    //         ...data?.data?.data?.product,
+    //         _id: data?.data?.data?.product?._id,
+    //         qty,
+    //         image: Array.isArray(item?.image[0]) ? item?.image[0] : item?.image,
+    //         unit: { id: unitWithoutVariants?.unitId?.id, name: unitWithoutVariants?.unitId?.name },
+    //         variant: variant
+    //     };
+
+    //     // const productDetails = {
+    //     //     item: {
+    //     //         ...item,
+    //     //         unit: { id: unitId?.id, name: unitId?.name },
+    //     //         variant,
+    //     //         qty
+    //     //     },
+    //     //     unit_id: unitId?.id,
+    //     //     varientname: variant?.name,
+    //     //     qty
+    //     // }
+
+    //     let filtering = cartItems?.filter(({ _id }) => _id !== item?._id)?.map(({ item }) => {
+    //         if (item?.item) {
+    //             const { item, ...others } = item?.item;
+    //             return others;
+    //         }
+    //         return item;
+    //     })
+
+    //     mutate({
+    //         product: [selectedItem, ...filtering],
+    //         cartId: cart_id ? cart_id : null
+    //     })
+
+    //     storage.setString('success', 'Successfully added to cart')
+    // }, [qty, cartItems, unit, item, data, selectedValue])
+
+
+    const changeQty = () => {
+        setQuantity(1)
+    }
+
+
+    useEffect(() => {
+        if(product && price){
+            const { description, details, image, imageBasePath, status, units, updated_at, created_at, featuredList, variants, categories, subcategories, unit, ...other } = product
+
+
+            const { finalPrice, tax, taxValue, costPrice } = price
+    
+            let productObj = {
+                ...other,
+                unit: {
+                    id: selectedUnit?.id,
+                    name: selectedUnit?.name
+                },
+                variant: selectedVariant,
+                qty: quantity,
+                price: finalPrice,
+                image: `${imageBasePath}${image[0]}`,
+                tax, 
+                taxValue,
+                total: finalPrice + taxValue,
+                costPrice
+                //tax: 
             }
 
+            
+    
+            reactotron.log({productObj})
+            addItemToCart(productObj)
         }
-    }, [data])
+        
+
+    }, [quantity])
+    
 
 
-    const handleAddCart = useCallback(() => {
+    const changeUnit = async(index) => {
+        setSelectedUnit(product?.units?.[index])
+        setVariantsList(product?.units?.[index]?.variants?.map(vari => vari?.name))
+        setSelectedVariant(product?.units?.[index]?.variants?.[0])
 
-        const unitId = item.units?.find(({ name }) => name === (unit || item.units[0]?.name))
-        const variant = unitId?.variants?.find(({ name }) => name === (selectedValue || unitId?.variants[0]?.name));
-        const { variants, ...unitWithoutVariants } = { unitId };
+        let carts = [...cartItems]
+        let quanti = carts?.find(cart => cart?._id === product?._id && cart?.unit?.id === product?.units?.[index]?.id && product?.units?.[index]?.variants?.[0]?.name === cart?.variant?.name)
 
-        let selectedItem = {
-            ...data?.data?.data?.product,
-            _id: data?.data?.data?.product?._id,
-            qty,
-            image: Array.isArray(item?.image[0]) ? item?.image[0] : item?.image,
-            unit: { id: unitWithoutVariants?.unitId?.id, name: unitWithoutVariants?.unitId?.name },
-            variant: variant
-        };
+        if(quanti){
+            setQuantity(quanti?.qty)
+        }
+        else{
+            setQuantity(0)
+        }
+    }
 
-        // const productDetails = {
-        //     item: {
-        //         ...item,
-        //         unit: { id: unitId?.id, name: unitId?.name },
-        //         variant,
-        //         qty
-        //     },
-        //     unit_id: unitId?.id,
-        //     varientname: variant?.name,
-        //     qty
+
+    const changeVariant = async(index) => {
+        let selectedVariant = selectedUnit?.variants[index]
+        setSelectedVariant(selectedVariant)
+
+        let carts = [...cartItems]
+        let quanti = carts?.find(cart => cart?._id === product?._id && cart?.unit?.id === selectedUnit?.id && selectedVariant?.name === cart?.variant?.name)
+
+        if(quanti){
+            setQuantity(quanti?.qty)
+        }
+        else{
+            setQuantity(0)
+        }
+
+        // let price;
+
+        // const { offerPrice, fromDate, toDate, sellingPrice, costPrice } = selectedVariant
+
+        // if (fromDate && toDate && offerPrice) {
+
+        //     let startDate = moment(fromDate, "YYY-MM-DD").add(-1, 'day');
+        //     let endDate = moment(toDate, "YYYY-MM-DD").add(1, 'day')
+        //     if (moment().isBetween(startDate, endDate)) {
+        //         price = {
+        //             ...selectedVariant,
+        //             finalPrice: offerPrice,
+        //             hasOfferPrice: true,
+        //             discount: parseFloat(sellingPrice) - parseFloat(offerPrice),
+        //             discountPercentage: (100 * (parseFloat(costPrice) - parseFloat(offerPrice)) / parseFloat(costPrice)).toFixed(2) * 1,
+        //             unitName: selectedUnit?.name
+        //         }
+
+
+        //     }
+        //     else {
+        //         price = {
+        //             ...selectedVariant,
+        //             finalPrice: sellingPrice,
+        //             hasOfferPrice: false,
+        //             discount: 0,
+        //             discountPercentage: (100 * (parseFloat(costPrice) - parseFloat(sellingPrice)) / parseFloat(costPrice)).toFixed(2) * 1,
+        //             unitName: selectedUnit?.name
+        //         };
+        //     }
+        // }
+        // else {
+
+        //     price = {
+        //         ...selectedVariant,
+        //         finalPrice: sellingPrice,
+        //         hasOfferPrice: false,
+        //         discount: 0,
+        //         discountPercentage: (100 * (parseFloat(costPrice) - parseFloat(sellingPrice)) / parseFloat(costPrice)).toFixed(2) * 1,
+        //         unitName: selectedUnit?.name
+        //     };
+
+        //     reactotron.log({ price })
         // }
 
-        let filtering = cartItems?.filter(({ _id }) => _id !== item?._id)?.map(({ item }) => {
-            if (item?.item) {
-                const { item, ...others } = item?.item;
-                return others;
-            }
-            return item;
-        })
-
-        mutate({
-            product: [selectedItem, ...filtering],
-            cartId: cart_id ? cart_id : null
-        })
-
-        storage.setString('success', 'Successfully added to cart')
-    }, [qty, cartItems, unit, item, data, selectedValue])
+        // setPrice(price)
+    }
 
 
     const BASEPATHPRODCT = item?.imageBasePath || "";
-    const units = item.units?.map(({ name }) => name)
+    //const units = item?.units?.map(({ name }) => name)
 
 
     return (
-        <View style={[styles.mainContainer, { height: height, }]}>
+        <View style={[styles.mainContainer, { height: height - 80, }]}>
             <Header />
             <CommonHeader heading={item?.name?.length > 18 ? item?.name?.slice(0, 18) + "..." : item?.name} backBtn />
             <ScrollView
@@ -195,16 +431,7 @@ const SingleProduct = ({ navigation, route }) => {
                 scrollEnabled={true}
                 showsVerticalScrollIndicator={false}>
                 <Animated.Image source={{ uri: BASEPATHPRODCT + item?.image?.[0] || "" }} style={styles.mainImage} resizeMode="contain" sharedTransitionTag={item?._id} />
-                {/* <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.smallImagesContainer}
-                >
-                    {smallImages.map((image, index) => (
-                        <SmallImage key={index} image={image} onPress={handleImagePress} />
-                    ))}
-                </ScrollView> */}
-                <ProductData item={data?.data?.data?.product} price={price} />
+                <ProductData item={product} price={price} quantity={quantity} />
 
                 <View style={styles.dropdownContainer}>
 
@@ -235,9 +462,9 @@ const SingleProduct = ({ navigation, route }) => {
                                 // paddingRight: 10
                             }}>
                                 <SelectDropdown
-                                    ref={unitRef}
-                                    data={units}
-                                    defaultValue={defaultVal?.unit}
+                                    //ref={unitRef}
+                                    data={unitList}
+                                    defaultValue={selectedUnit?.name}
                                     buttonTextStyle={{
                                         fontSize: 13
                                     }}
@@ -248,8 +475,10 @@ const SingleProduct = ({ navigation, route }) => {
                                         backgroundColor: COLORS.primary_light
                                     }}
                                     onSelect={(selectedItem, index) => {
-                                        setUnit(selectedItem)
-                                        variantRef?.current?.reset()
+                                        changeUnit(index)
+                                        reactotron.log({ selectedItem, index })
+                                        // setUnit(selectedItem)
+                                        // variantRef?.current?.reset()
                                     }}
                                 />
 
@@ -274,8 +503,8 @@ const SingleProduct = ({ navigation, route }) => {
                             }}>
                                 <SelectDropdown
                                     ref={variantRef}
-                                    data={unitList}
-                                    defaultValue={defaultVal?.variant}
+                                    data={variantsList}
+                                    defaultValue={selectedVariant?.name}
                                     buttonTextStyle={{
                                         fontSize: 13,
                                     }}
@@ -286,9 +515,9 @@ const SingleProduct = ({ navigation, route }) => {
                                         borderRadius: 10,
                                         backgroundColor: COLORS.primary_light
                                     }}
-                                    disabled={unitList?.length === 0}
-                                    onSelect={(value) => {
-                                        setSelectedValue(value)
+                                    disabled={variantsList?.length === 0}
+                                    onSelect={(value, index) => {
+                                        changeVariant(index)
                                     }}
                                 />
 
@@ -299,24 +528,23 @@ const SingleProduct = ({ navigation, route }) => {
 
                 </View>
 
-                {data?.data?.data?.product?.details ? <AboutSection item={data?.data?.data?.product} /> : null}
-                {data?.data?.data?.product?.description ? <DescriptionSection item={data?.data?.data?.product} /> : null}
+                {product?.details ? <AboutSection item={product} /> : null}
+                {product?.description ? <DescriptionSection item={product} /> : null}
+
             </ScrollView>
-
-
             <View style={{
                 flexDirection: 'row',
-                justifyContent: 'space-between',
+                justifyContent: 'center',
                 height: 60,
                 paddingHorizontal: 10,
                 position: 'absolute',
-                bottom: 20,
+                bottom: 10,
                 left: 0,
                 right: 0,
             }}>
 
                 {/* Button */}
-                <View style={{
+                {quantity > 0 && <View style={{
                     flexDirection: 'row',
                     width: '40%',
                     alignSelf: 'center',
@@ -331,10 +559,7 @@ const SingleProduct = ({ navigation, route }) => {
                         padding: 10,
                         height: '100%',
                     }} onPress={() => {
-                        setQty(qty => {
-                            if (qty > 1) return qty - 1
-                            else return qty;
-                        })
+                        setQuantity(qty => qty - 1)
                     }}>
                         <Entypo name='minus' size={25} color='#fff' />
                     </TouchableOpacity>
@@ -344,23 +569,28 @@ const SingleProduct = ({ navigation, route }) => {
                         fontSize: 16,
                         fontWeight: 'bold',
                         color: COLORS.dark
-                    }}>{qty}</Text>
+                    }}>{quantity}</Text>
 
                     <TouchableOpacity style={{
                         backgroundColor: COLORS.primary,
                         padding: 10,
                         height: '100%',
                     }} onPress={() => {
-                        setQty(qty + 1)
+                        setQuantity(qty => qty + 1)
                     }}>
                         <Entypo name='plus' size={25} color='#fff' />
                     </TouchableOpacity>
 
-                </View>
+                </View>}
 
-                <BuyButton loading={isLoading} disabled={!unit || !selectedValue} onPress={handleAddCart} />
+                {quantity === 0 && <BuyButton
+                    loading={isLoading}
+                    onPress={changeQty}
+                />}
 
             </View>
+
+
         </View>
     );
 };
@@ -375,7 +605,7 @@ const SingleProduct = ({ navigation, route }) => {
 
 
 
-const ProductData = React.memo(({ item, price }) => {
+const ProductData = React.memo(({ item, price, quantity }) => {
     return (
         <View style={styles.containerProduct}>
             <View style={styles.leftSide}>
@@ -383,8 +613,9 @@ const ProductData = React.memo(({ item, price }) => {
                 <Text style={styles.subheading}>Category : {item?.category?.name}</Text>
             </View>
             <View style={styles.rightSide}>
-                <Text style={styles.price}>₹ {price}</Text>
-                {/* <Text style={styles.stock}>Stock</Text> */}
+                <Text style={styles.price}>₹ {quantity > 1 ? parseFloat(price?.finalPrice) * quantity : price?.finalPrice}</Text>
+                {price?.hasOfferPrice &&
+                    <Text style={styles.strikePrice}>₹ {quantity > 1 ? parseFloat(price?.sellingPrice) * parseInt(quantity) : price?.sellingPrice}</Text>}
             </View>
         </View>
     );
@@ -434,6 +665,7 @@ const styles = StyleSheet.create({
     container: {
         paddingHorizontal: 20,
         paddingVertical: 5,
+        //flex: 1
     },
     mainImage: {
         borderRadius: 6,
@@ -544,7 +776,14 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontFamily: 'Poppins-Regular',
     },
-
+    strikePrice: {
+        fontFamily: "Poppins-SemiBold",
+        fontSize: 12,
+        color: COLORS.light,
+        opacity: 0.5,
+        marginTop: -5,
+        textDecorationLine: 'line-through',
+    }
 });
 
 export default SingleProduct;

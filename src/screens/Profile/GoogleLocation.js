@@ -94,7 +94,7 @@ const GoogleLocation = ({ navigation, route }) => {
 				if(route?.params?.mode === "header" || mode === 'home'){
 					navigation.goBack()
 				}
-				else if(mode === "map"){
+				else if(mode === "map" || route?.params?.mode === "map"){
 		
 					navigationRef.navigate('MapPage', route?.params?.cartID && { cartID: route?.params?.cartID })
 				}
@@ -113,6 +113,9 @@ const GoogleLocation = ({ navigation, route }) => {
                 getLocation()
 				if(route?.params?.mode === "header"){
 					navigation.goBack()
+				}
+				else if(mode === "map" || route?.params?.mode === "map"){
+					navigationRef.navigate('MapPage', route?.params?.cartID && { cartID: route?.params?.cartID })
 				}
             }
             else{
@@ -143,10 +146,12 @@ const GoogleLocation = ({ navigation, route }) => {
 	return (
 		<>
 
-			{homeAdd && (<>
-				<Header />
+			{homeAdd || route?.params?.mode === "map" && (
+			<>
+				{/* <Header /> */}
 				<CommonHeader heading={'Place'} backBtn />
-			</>)}
+			</>
+			)}
 
 			<View style={styles.container}>
 

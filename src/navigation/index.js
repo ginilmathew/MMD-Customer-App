@@ -40,7 +40,7 @@ import reactotron from 'reactotron-react-native';
 import CartContext from '../context/cart';
 import { useAppState } from '../hooks/appStateManagement';
 import { useMutation } from 'react-query';
-import { PostAddToCart } from '../api/cart';
+import { PostAddToCart, getCartItems } from '../api/cart';
 import AuthNavigation from './AuthNavigation';
 
 
@@ -56,6 +56,7 @@ const Navigation = ({ location }) => {
     const [success] = useMMKVStorage('success', storage);
     const [homeAdd] = useMMKVStorage('homeAdd', storage, false)
     const { getLocation, location: locationData } = useContext(LocationContext)
+    
 
     const { cartItems, setCartItems } = useContext(CartContext);
     const { mutate } = useMutation({
@@ -67,29 +68,44 @@ const Navigation = ({ location }) => {
         }
     })
 
+    const { mutate: getCarts } = useMutation({
+        mutationKey: 'cartItems',
+        mutationFn: getCartItems,
+        onSuccess: (data) => {
+            if(data?.data?.data?.product){
+                setCartItems(data?.data?.data?.product)
+            }
+          
+        }
+      });
+
 
     const appState = useAppState();
 
-    //reactotron.log({appState})
+    reactotron.log({appState})
 
     useEffect(() => {
+        if(cart_id){
+            getCarts({ cartId: cart_id })
+        }
+
         if(location){
             getLocation()
         }
-    }, [location])
+    }, [cart_id, location])
     
 
 
     useEffect(() => {
-        if ((appState === "background" && cartItems?.length > 0)) {
+        if (((appState === "background" || appState === "inactive") && cartItems?.length > 0)) {
             //reactotron.log('BACKGROUND API')
             const postCart = async () => {
                 try {
-                    const updatedData = cartItems?.map(item => ({
-                        ...item.item,
-                        qty: item.qty
-                    }));
-                    mutate({ product: updatedData, cartId: cart_id })
+                    // const updatedData = cartItems?.map(item => ({
+                    //     ...item.item,
+                    //     qty: item.qty
+                    // }));
+                    mutate({ product: cartItems, cartId: cart_id })
 
 
                 } catch (err) {
