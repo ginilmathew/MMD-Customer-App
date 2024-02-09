@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Linking } from 'react-native'
 import React, { useCallback, useContext } from 'react'
 import { COLORS } from '../../constants/COLORS'
 import CommonHeader from '../../components/CommonHeader'
@@ -55,6 +55,10 @@ const Profile = ({ navigation }) => {
     // })
   }
 
+  const navToRefund = useCallback(() => {
+    Linking.openURL('https://digistoreapi.diginestsolutions.in/public/refund')
+  }, [])
+
   const handleLogout = useCallback(() => {
     Alert.alert('Logout', 'Are you sure you want to logout?', [
       {
@@ -81,6 +85,7 @@ const Profile = ({ navigation }) => {
         <ProfileButton text={'Edit Profile'} onPress={navToEdit} />
         <ProfileButton text={'Change Password'} onPress={navToPasswd} />
         <ProfileButton text={'Add Address'} onPress={navToAddress} />
+        <ProfileButton text={'Refund Policy'} onPress={navToRefund} />
 
         <TouchableOpacity style={styles.logout} onPress={handleLogout}>
           <Text style={styles.logText}>Logout</Text>

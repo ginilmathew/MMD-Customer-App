@@ -85,7 +85,7 @@ const AllProducts = ({ navigation }) => {
 
     const ListFooterComponents = memo(() => {
         return (
-            <View style={{ marginBottom: 100 }}>
+            <View style={{ marginBottom: 150 }}>
                 {isFetchingNextPage && <ActivityIndicator size="large" color={COLORS.primary} />}
             </View>
         )
