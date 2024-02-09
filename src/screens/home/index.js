@@ -193,7 +193,7 @@ const Home = ({ navigation, route }) => {
 
         return (
             allFeatures.length > 0 && (
-                <View style={{ marginBottom: 100 }}>
+                <View style={{ marginBottom: 130 }}>
                     <View style={{ marginTop: 20 }}>
                         <CustomHeading label={'HighLights'} hide={false} marginH={20} />
                     </View>

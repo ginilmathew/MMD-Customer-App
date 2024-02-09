@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList, RefreshControl, TouchableOpacity, Alert } from 'react-native'
+import { View, Text, StyleSheet, FlatList, RefreshControl, TouchableOpacity, Alert, Modal, ActivityIndicator } from 'react-native'
 import React, { memo, useCallback, useContext, useState } from 'react'
 import CustomInput from '../../components/CustomInput'
 import CommonButton from '../../components/CommonButton'
@@ -35,11 +35,10 @@ const AddAddress = ({ navigation }) => {
     },
   })
 
-  const { mutate: mutateDefault } = useMutation({
+  const { mutate: mutateDefault, isLoading } = useMutation({
     mutationKey: ['address-delet'],
     mutationFn: defaultAddrss,
     onSuccess() {
-      storage.setString('success', 'Success')
       refetch()
     }
   })
@@ -96,7 +95,7 @@ const AddAddress = ({ navigation }) => {
 
 
     return (
-      <View style={{paddingHorizontal: 5}}>
+      <View style={{ paddingHorizontal: 5 }}>
         <TouchableOpacity onPress={() => mutateDefault(item?._id)} style={styles.renderItem}>
           <View style={styles.end}>
             <IonIcons name='location' size={25} color={COLORS.blue} />
@@ -153,6 +152,21 @@ const AddAddress = ({ navigation }) => {
 
         <CommonButton text={'Add New Address'} mt='auto' onPress={addAddress} />
 
+        {
+          isLoading && (
+            <Modal visible={isLoading} transparent>
+              <View style={{
+                flex: 1,
+                backgroundColor: 'rgba(0,0,0,.4)',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}>
+                <ActivityIndicator animating color={COLORS.white} size={30} />
+              </View>
+            </Modal>
+          )
+        }
+
       </View>
     </>
   )
@@ -180,7 +194,7 @@ const styles = StyleSheet.create({
     color: COLORS.light,
     fontFamily: 'Poppins-Medium',
     fontSize: 12
-},
+  },
   header: {
     marginTop: 13
   },

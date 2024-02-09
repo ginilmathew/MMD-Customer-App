@@ -53,10 +53,10 @@ const MapAddress = ({ navigation, route }) => {
 
 
     const schema = yup.object({
-        pincode: yup.string().matches(/\d{6,}/, 'Please enter a valid value with at least 6 digits.').required('Pincode required'),
+        pincode: yup.string().matches(/\d{6,}/, 'Please enter a valid value with at least 6 digits.').nullable(),
         address: yup.string().required("Address is required"),
         mobile: yup.number().positive().required("Phone is required").typeError('Enter valid Phone number'),
-        landmark: yup.string().required("Land mark is required"),
+        landmark: yup.string().nullable(),
         comments: yup.string().nullable()
     });
 
