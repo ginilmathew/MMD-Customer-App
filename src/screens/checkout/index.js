@@ -175,11 +175,10 @@ const Checkout = ({ route }) => {
 
 
   const placeOrder = () => {
-    if (!useSlot?.date) {
-      storage.setString('error', "Delivery Date is required!");
-    } else if ( useSlot?.date && !useSlot?.idData?._id){
-      storage.setString('error', "Delivery Time is required!");
-    } else {
+    if (!useSlot) {
+      storage.setString('error', "Delivery Date & Time is required!");
+    } 
+    else {
       mutate({
         itemDetails: cartItems,
         billingAddress: item,
@@ -197,6 +196,7 @@ const Checkout = ({ route }) => {
         slot_id: useSlot?.idData?._id,
         slot_date: useSlot?.date
       })
+
     }
   }
 

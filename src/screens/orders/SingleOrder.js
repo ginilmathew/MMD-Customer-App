@@ -105,10 +105,6 @@ const SingleOrder = ({ route }) => {
                             <Text style={styles.priceBox}>₹ {item?.subTotal}</Text>
                         </View>
                         <View style={styles.textBox}>
-                            <Text style={styles.subBox}>Delivery Charge</Text>
-                            <Text style={styles.priceBox}>₹ {item?.delivery_charge}</Text>
-                        </View>
-                        <View style={styles.textBox}>
                             <Text style={styles.subBox}>GST</Text>
                             <Text style={styles.priceBox}>₹ {item?.tax}</Text>
                         </View>
