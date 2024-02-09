@@ -8,6 +8,7 @@ import {
     Text,
     TouchableOpacity,
     View,
+    useWindowDimensions,
 } from 'react-native';
 import Header from '../../components/Header';
 import CommonHeader from '../../components/CommonHeader';
@@ -30,7 +31,7 @@ import moment from 'moment';
 const SingleProduct = ({ navigation, route }) => {
 
     const { item } = route.params;
-
+  const {height}=useWindowDimensions()
     const [selectedUnit, setSelectedUnit] = useState(null)
     const [selectedVariant, setSelectedVariant] = useState(null)
     const [variantsList, setVariantsList] = useState([])
@@ -314,7 +315,7 @@ const SingleProduct = ({ navigation, route }) => {
 
 
 
-            reactotron.log({ productObj })
+
             addItemToCart(productObj)
         }
 
@@ -408,7 +409,8 @@ const SingleProduct = ({ navigation, route }) => {
 
 
     return (
-        <View style={[styles.mainContainer, { flexShrink: 1 }]}>
+        <View style={[styles.mainContainer, ]}>
+            <View style={{ height: height / 1.05 ,}}>
             <Header />
             <CommonHeader heading={item?.name?.length > 18 ? item?.name?.slice(0, 18) + "..." : item?.name} backBtn />
             <ScrollView
@@ -572,6 +574,7 @@ const SingleProduct = ({ navigation, route }) => {
                     loading={isLoading}
                     onPress={changeQty}
                 />}
+            </View>
             </View>
         </View>
     );
