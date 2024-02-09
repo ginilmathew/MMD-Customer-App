@@ -24,6 +24,9 @@ import NoData from '../../components/NoData'
 import Header from '../../components/Header'
 import CartContext from '../../context/cart'
 import reactotron from 'reactotron-react-native'
+import { useFocusNotifyOnChangeProps } from '../../hooks/useFocusNotifyOnChangeProps'
+import ProductCard from '../../components/ProductCard'
+import moment from 'moment'
 import CartButton from '../../components/CartButton'
 
 
@@ -31,40 +34,52 @@ import CartButton from '../../components/CartButton'
 
 const Home = ({ navigation, route }) => {
 
-    const { currentLoc, setMode, getLocation, mode, setHomeFocus } = useContext(LocationContext)
+    // const notifyOnChangeProps = useFocusNotifyOnChangeProps()
+
+    const { currentLoc, setMode, getLocation, mode, setHomeFocus, location } = useContext(LocationContext)
     const checkLocRef = useRef(null)
     const [cart_id] = useMMKVStorage('cart_id', storage);
-    const { cartItems, setCartItems } = useContext(CartContext);
+    const [time, setTime] = useState(moment().unix())
+    const { cartItems, setCartItems, cartChanges, cartTotal } = useContext(CartContext);
+    const notifyOnChangeProps = useFocusNotifyOnChangeProps()
+
+    reactotron.log({cartTotal, cartItems})
 
 
     let payload = {
         "coordinates": [
             8.5204866, 76.9371447
         ],
-        // coordinates: [currentLoc?.coord?.latitude, currentLoc?.coord?.longitude],
+        // coordinates: [location?.location?.latitude, location?.location?.longitude],
         cartId: cart_id,
 
     }
+
+
+    // reactotron.log({ payload })
 
     const { data, isLoading, refetch } = useQuery({
         queryKey: ['Home'],
         retry: false,
         queryFn: () => HomeApi({
-            // coordinates: [currentLoc?.coord?.latitude, currentLoc?.coord?.longitude]
-            ...payload
+            ...payload,
         }),
-        enabled: false
+        // notifyOnChangeProps,
+        enabled: !!location?.address,
     })
 
 
 
     useFocusEffect(useCallback(() => {
-        setHomeFocus(true);
-        if (currentLoc?.coord?.latitude !== checkLocRef?.current?.latitude) {
-            checkLocRef.current = currentLoc?.coord;
+
+        setTime(moment().unix())
+
+        if (location?.address) {
             refetch()
         }
-    }, [currentLoc]))
+
+        // }
+    }, [location?.address]))
 
 
     React.useEffect(() => {
@@ -94,103 +109,111 @@ const Home = ({ navigation, route }) => {
     }, [navigation])
 
     useEffect(() => {
-        if (data?.data?.data?.cart?.product?.length > 0) {
-            let myStructure = data?.data?.data?.cart?.product?.map((res) => (
-                {
-                    _id: res?._id,
-                    qty: res?.qty,
-                    unit_id: res?.unit?.id,
-                    varientname: res?.variant?.name,
-                    item: { ...res }
-                }
-            ))
-            setCartItems(myStructure)
+        const cartProducts = data?.data?.data?.cart?.product;
+
+        if (!cartProducts || cartProducts.length === 0) {
+            return; // No products or invalid data, no need to proceed further
         }
-    }, [data?.data?.data])
+
+        const updatedCartItems = cartProducts?.map(product => {
+            const { _id, qty, unit, variant } = product;
+
+            return {
+                _id,
+                qty,
+                unit_id: unit?.id,
+                varientname: variant?.name,
+                item: { ...product }
+            };
+        });
+
+        //setCartItems(updatedCartItems);
+    }, [data?.data?.data]);
 
 
-    const HeaderComponents = memo(({ data, NavigateToCategory }) => {
+
+    const HeaderComponents = useCallback(() => {
+        const sliders = data?.data?.data?.sliders || [];
+        const categories = data?.data?.data?.categories || [];
+        const featuredList = data?.data?.data?.featuredList?.[0]?.featured_list;
+
         return (
-            <Animated.View style={{ backgroundColor: '#fff' }}>
-                {
-                    data?.data?.data?.sliders?.length > 0 && (
-                        <View style={{ marginVertical: 4, marginBottom: 20 }}>
-                            <CustomSlider item={data?.data?.data?.sliders} />
-                        </View>
-                    )
-                }
-                {data?.data?.data?.categories?.length > 0 && (<>
-                    <CustomHeading label={'Categories'} hide={false} marginH={20} />
-                    <ScrollView
-                        horizontal={true}
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={styles.scrollViewContent}
-                    >
-                        {
-                            data?.data?.data?.categories?.map((res, index) => (
-                                <Animated.View style={{ marginRight: 8 }}>
-                                    <CategoryCard key={res?._id} item={res} />
-                                </Animated.View>
-                            ))
-                        }
-                        <TouchableOpacity style={styles.iconConatiner} onPress={NavigateToCategory}>
-                            <Text style={styles.text2}>{'View All'}</Text>
-                            <Ionicons name='arrow-forward' color={COLORS.primary} size={20} />
-                        </TouchableOpacity>
-                    </ScrollView>
-                </>)}
-                {
-                    data?.data?.data.featuredList?.[0]?.featured_list && (
-                        <View style={{ marginTop: 3 }}>
-                            <CustomHeading label={'Popular Products'} hide={true} onPress={NavigateToAllPages} marginH={20} />
-                        </View>
-                    )
-                }
-            </Animated.View>
+            <View style={{ backgroundColor: COLORS.white }}>
+                {sliders.length > 0 && (
+                    <View style={{ marginVertical: 4, marginBottom: 20 }}>
+                        <CustomSlider item={sliders} />
+                    </View>
+                )}
+                {categories.length > 0 && (
+                    <View style={{ marginTop: 5 }}>
+                        <CustomHeading label={'Categories'} hide={false} marginH={20} />
+                        <ScrollView
+                            horizontal={true}
+                            showsHorizontalScrollIndicator={false}
+                            contentContainerStyle={styles.scrollViewContent}
+                        >
+                            {categories.map((res) => (
+                                <View style={{ marginRight: 8 }} key={res?._id}>
+                                    <CategoryCard item={res} />
+                                </View>
+                            ))}
+                            <TouchableOpacity style={styles.iconConatiner} onPress={NavigateToCategory}>
+                                <Text style={styles.text2}>{'View All'}</Text>
+                                <Ionicons name='arrow-forward' color={COLORS.primary} size={18} />
+                            </TouchableOpacity>
+                        </ScrollView>
+                    </View>
+                )}
+                {featuredList && (
+                    <View style={{ marginTop: 3 }}>
+                        <CustomHeading label={'Popular Products'} hide={true} onPress={NavigateToAllPages} marginH={20} />
+                    </View>
+                )}
+            </View>
+        );
+    }, [data?.data?.data]);
 
-        )
-    })
+    
 
-    const renderItem = useCallback(({ item, index }) => {
+
+    const renderItem = ({ item, index }) => {
         return (
             <>
                 <Animated.View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
-                    <ItemCard key={index} item={item} />
+                    {/* <ItemCard key={index} item={item} /> */}
+                    <ProductCard key={index} item={item} cartItems={cartItems} time={time} />
                 </Animated.View>
             </>
         )
-    }, [data?.data?.data])
+    }
 
 
     const ListFooterComponent = useCallback(() => {
-        return data?.data?.data?.allFeatures?.length > 0 && (
-            <View style={{
-                marginBottom: 30
-            }}>
-                {/* <View style={{ marginBottom: 20 }}>
-                    <CustomSlider item={data?.data?.data?.sliders} />
-                </View> */}
-                <View style={{ marginTop: 20 }}>
-                    <CustomHeading label={'HighLights'} hide={false} marginH={20} />
-                </View>
-                <View style={[styles.boxItem, styles.footerBox]}>
-                    {data?.data?.data?.allFeatures?.map((res, index) => (
-                        <ItemBox onPress={() => NavigateToFeatured(res)} key={res?._id} item={res} index={index} />
-                    ))}
-                </View>
-                <View style={{ marginBottom: 80 }}>
-                </View>
-            </View>
-        )
-    }, [data?.data?.data])
+        const allFeatures = data?.data?.data?.allFeatures || [];
 
+        return (
+            allFeatures.length > 0 && (
+                <View style={{ marginBottom: 100 }}>
+                    <View style={{ marginTop: 20 }}>
+                        <CustomHeading label={'HighLights'} hide={false} marginH={20} />
+                    </View>
+                    <View style={[styles.boxItem, styles.footerBox]}>
+                        {allFeatures.map((res, index) => (
+                            <ItemBox onPress={() => NavigateToFeatured(res)} key={res?._id} item={res} index={index} />
+                        ))}
+                    </View>
+                    <View style={{ marginBottom: 40 }} />
+                </View>
+            )
+        );
+    }, [data?.data?.data, NavigateToFeatured]);
 
     const keyExtractor = useCallback((item) => {
         return item?._id;
     }, [data?.data?.data]);
 
 
-    if (isLoading) {
+    if (isLoading || !location?.address) {
         return (
             <>
                 <HomeLoader />
@@ -198,26 +221,27 @@ const Home = ({ navigation, route }) => {
         )
     }
 
-    const toCart = () => {
-        navigation.navigate('Profile')
-    }
+    // const toCart = () => {
+    //     navigation.navigate('Profile')
+    // }
 
-    const toNotification = () => {
-        navigation.navigate('Notification')
-    }
+    // const toNotification = () => {
+    //     navigation.navigate('Notification')
+    // }
 
 
     const changeAdd = () => {
 
     }
 
+    reactotron.log({cartChanges})
 
     const addLeng = currentLoc?.address?.length;
 
     return (
 
         <View style={{ backgroundColor: '#fff' }}>
-            {/* {currentLoc?.address && (
+            {currentLoc?.address && (
                 <TouchableOpacity onPress={changeAdd} style={{
                     flexDirection: 'row',
                     paddingLeft: 20,
@@ -234,11 +258,11 @@ const Home = ({ navigation, route }) => {
                         ?.concat(addLeng ? ' ...' : '')}</Text>
                 </TouchableOpacity>
             )
-            } */}
+            }
             <DummySearch press={NavigateToSearch} />
             <FlatList
-                data={data?.data?.data.featuredList?.[0]?.featured_list}
-                ListHeaderComponent={<HeaderComponents data={data} NavigateToCategory={NavigateToCategory} />}
+                data={data?.data?.data.featuredList?.[0]?.featured_list || []}
+                ListHeaderComponent={HeaderComponents}
                 renderItem={renderItem}
                 keyExtractor={keyExtractor}
                 showsVerticalScrollIndicator={false}
@@ -249,10 +273,11 @@ const Home = ({ navigation, route }) => {
                 maxToRenderPerBatch={10}
                 windowSize={10}
                 getItemLayout={(data, index) => ({ length: 80, offset: 80 * index, index })}
-                ListEmptyComponent={<NoData />}
+                ListEmptyComponent={<NoData heights={500} />}
+                extraData={cartTotal}
             />
 
-            <CartButton  />
+            <CartButton bottom={60} />
         </View>
     )
 }
@@ -265,16 +290,17 @@ const styles = StyleSheet.create({
         marginBottom: 20
     },
     text2: {
+        fontFamily: 'Poppins-Medium',
+        marginTop: 2,
         letterSpacing: 1,
         fontSize: 15, // Adjust the font size as needed
-        fontWeight: 'bold',
         color: COLORS.primary// Optional: Apply bold styling
     },
     iconConatiner: {
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'row',
-        gap: 2
+        gap: 5
     },
     footerBox: {
         paddingHorizontal: 18

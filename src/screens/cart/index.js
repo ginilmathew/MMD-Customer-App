@@ -12,11 +12,26 @@ import { useMutation, useQuery } from 'react-query'
 import useRefetch from '../../hooks/useRefetch'
 import Animated from 'react-native-reanimated'
 import CartItemCard from '../../components/cartItemCard'
+import { storage } from '../../../App'
 import LottieView from 'lottie-react-native'
+import CartCard from '../../components/CartCard'
+import moment from 'moment'
+import { useFocusEffect } from '@react-navigation/native'
 const Cart = ({ navigation, route }) => {
 
-  const { cartItems, setCartItems, } = useContext(CartContext);
+  const { cartItems, setCartItems, addItemToCart } = useContext(CartContext);
+  const [time, setTime] = useState(moment().unix())
+
+  useFocusEffect(
+    useCallback(() => {
+        setTime(moment().unix())
+    }, [])
+)
+
+
   const [clean, setClean] = useState(false)
+
+  reactotron.log({cartItems})
 
   const { cart_id } = route.params;
 
@@ -27,16 +42,7 @@ const Cart = ({ navigation, route }) => {
     mutationFn: getCartItems,
     onSuccess: (data) => {
       setClean(true)
-      let myStructure = data?.data?.data?.product?.map((res) => (
-        {
-          _id: res?._id,
-          qty: res?.qty,
-          unit_id: res?.unit?.id,
-          varientname: res?.variant?.name,
-          item: { ...res }
-        }
-      ))
-      setCartItems(myStructure)
+      setCartItems(data?.data?.data?.product)
     }
   });
 
@@ -46,25 +52,26 @@ const Cart = ({ navigation, route }) => {
     mutationKey: 'addToCart_query',
     mutationFn: PostAddToCart,
 
-    onSuccess: (data) => {
-      let myStructure = data?.data?.data?.product.map((res) => (
-        {
-          _id: res?._id,
-          qty: res?.qty,
-          unit_id: res?.unit?.id,
-          varientname: res?.variant?.name,
-          item: { ...res }
-        }
-      ))
-      setCartItems(myStructure)
-      navigation.navigate('EditAddress', { cartID: cart_id })
+    onSuccess: async(data) => {
+      // let myStructure = data?.data?.data?.product.map((res) => (
+      //   {
+      //     _id: res?._id,
+      //     qty: res?.qty,
+      //     unit_id: res?.unit?.id,
+      //     varientname: res?.variant?.name,
+      //     item: { ...res }
+      //   }
+      // ))
+      //setCartItems(myStructure)
+      await storage.setStringAsync('cart_id', data?.data?.data?._id);
+      navigation.navigate('EditAddress', { cartID: data?.data?.data?._id })
     }
   })
 
 
   useEffect(() => {
     if (cart_id) {
-      mutate({ cartId: cart_id })
+      //mutate({ cartId: cart_id })
 
     }
 
@@ -93,24 +100,27 @@ const Cart = ({ navigation, route }) => {
     )
   }
 
-  const editAddress = () => {
-    const updatedData = cartItems?.map(item => ({
-      ...item.item,
-      qty: item.qty
-    }));
-    MutatePostAddCart({ product: updatedData, cartid: cart_id });
+  const editAddress = async() => {
+    // const updatedData = cartItems?.map(item => ({
+    //   ...item.item,
+    //   qty: item.qty
+    // }));
+    let cartId = await storage.getStringAsync('cart_id');
+    MutatePostAddCart({ product: cartItems, cartid: cartId });
+    
    
   }
 
-  const renderItem = useCallback(({ item, index }) => {
+  const renderItem = ({ item, index }) => {
     return (
       <>
         <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
-          <CartItemCard key={index} item={item} />
+          <CartCard key={index} item={item} increaseQuantity={increaseQuantity} decreaseQuantity={decreaseQuantity} />
+          {/* <CartItemCard key={index} item={item} /> */}
         </View>
       </>
     )
-  }, [data?.data?.data, cartItems])
+  }
 
   // const ListEmptyCompont = useCallback(()=>{
   //   return (
@@ -137,6 +147,23 @@ const Cart = ({ navigation, route }) => {
   }
 
 
+  const increaseQuantity = useCallback((item) => {
+    //reactotron.log({cartItems})
+    addItemToCart({
+      ...item,
+      qty: item?.qty + 1
+    })
+  }, [cartItems])
+
+  const decreaseQuantity = useCallback((item) => {
+    //reactotron.log({cartItems})
+    addItemToCart({
+      ...item,
+      qty: item?.qty - 1
+    })
+  },[cartItems])
+
+
   return (
     <View style={styles.container}>
       <Header />
@@ -160,6 +187,7 @@ const Cart = ({ navigation, route }) => {
           windowSize={10}
           getItemLayout={(data, index) => ({ length: 80, offset: 80 * index, index })}
           ListEmptyComponent={noProductsAdded}
+          extraData={cartItems}
         />
 
         {cartItems?.length > 0 ? (<View style={styles.innerContainer}>

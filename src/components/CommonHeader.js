@@ -50,12 +50,12 @@ const styles = StyleSheet.create({
         marginTop: -5
     },
     borderStyle: {
-        // paddingBottom: 10,
-        backgroundColor: COLORS.white,
-        borderBottomWidth: 2,
-        borderBottomColor: COLORS.border_color,
-        opacity: 0.1,
+        borderBottomWidth: 0.5,
+        borderBottomColor: "#F1F1F1",
         width: "100%",
-        backgroundColor: "#FFF"
+        shadowColor: "#646464",
+        elevation: 3,
+        zIndex: 99
+        
     }
 })

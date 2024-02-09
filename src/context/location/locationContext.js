@@ -1,4 +1,4 @@
-import { Alert, Linking, PermissionsAndroid } from 'react-native'
+import { Alert, Linking, PermissionsAndroid, Platform } from 'react-native'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import Geolocation from '@react-native-community/geolocation';
 import { useMutation } from 'react-query';
@@ -9,25 +9,27 @@ import LocationContext from './index'
 import { navigationRef } from '../../navigation/RootNavigation';
 import { useMMKVStorage } from 'react-native-mmkv-storage';
 import { storage } from '../../../App';
-import { PERMISSIONS, check, RESULTS } from 'react-native-permissions'
+import { PERMISSIONS, check, RESULTS, request } from 'react-native-permissions'
+import reactotron from 'reactotron-react-native';
 
 
 
 
 const locationContext = ({ children }) => {
 
-
-    const [location, setLocation] = useState({})
+    const [cart_id] = useMMKVStorage('cart_id', storage);
+    const [location, setLocation] = useState(null)
     const [mode, setMode] = useState('')
     const [currentLoc, setCurrentLoc] = useState('')
     const [homeAdd, setHomeAdd] = useMMKVStorage('homeAdd', storage);
     const [modal, setModal] = useState(false)
     const [homeFocus, setHomeFocus] = useState(false)
 
-    
+
     const onSuccess = async ({ data }) => {
 
-        if(mode === 'map') {
+        console.log(mode);
+        if(mode === 'map' || mode === 'edit') {
             setLocation(location => ({
                 ...location,
                 address: {
@@ -36,15 +38,21 @@ const locationContext = ({ children }) => {
                 },
             }));
 
-            navigationRef.navigate('MapPage')
-        } else if (mode === 'home') {
+            navigationRef.navigate('MapPage', mode === 'edit' && { cartID: cart_id })
+        } 
+        else if (mode === 'home') {
             if(!homeAdd) {
                 setHomeAdd(true);
             }
 
+            reactotron.log({location: {
+                coord: { ...location?.location },
+                address: data?.results?.[0]?.formatted_address
+            }})
+
             setCurrentLoc({
                 coord: { ...location?.location },
-                address: data?.results[3]?.formatted_address
+                address: data?.results?.[0]?.formatted_address
             })
 
             navigationRef.reset({
@@ -78,26 +86,43 @@ const locationContext = ({ children }) => {
 
     const { mutate } = useMutation({
         mutationFn: locationApi,
-        onSuccess
+        onSuccess: (data) => {
+            let address = data?.data?.results?.[0]?.formatted_address
+            let coords =  data?.data?.results?.[0]?.geometry?.location;
+
+            setLocation({
+                location: { latitude: coords?.lat, longitude: coords?.lng },
+                address : address
+            })
+        }
         // onError // need to hide error
     });
 
 
     const requestLocationPermisson = async () => {
+        getOneTimeLocation()
 
-
-            try {
-                const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
-                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                    //To Check, If Permission is granted
-                    getOneTimeLocation();
-                    subscribeLocationLocation();
-                } else {
-                    // setmo
-                }
-            } catch (err) {
-                // console.warn(err);
-            }
+            // try {
+            //     if(Platform.OS === 'android'){
+            //         const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+            //         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            //             //To Check, If Permission is granted
+            //             getOneTimeLocation();
+            //             //subscribeLocationLocation();
+            //         } else {
+            //             // setmo
+            //         }
+            //     }
+            //     else{
+            //         let location = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+            //         if(location === RESULTS.GRANTED){
+            //             getOneTimeLocation();
+            //             //subscribeLocationLocation();
+            //         }
+            //     }
+            // } catch (err) {
+            //     // console.warn(err);
+            // }
     }
 
     const getOneTimeLocation = () => {
@@ -105,12 +130,11 @@ const locationContext = ({ children }) => {
             //Will give you the current location
             (position) => {
 
+                reactotron.log({position})
+
                 const { latitude, longitude } = position.coords;
 
-                setLocation(({address}) => ({
-                    location: { latitude, longitude },
-                    address
-                }))
+                
 
                 mutate(position.coords)
             },
@@ -133,28 +157,28 @@ const locationContext = ({ children }) => {
     };
 
 
-    const subscribeLocationLocation = () => {
-        watchID = Geolocation.watchPosition(
-            (position) => {
+    // const subscribeLocationLocation = () => {
+    //     watchID = Geolocation.watchPosition(
+    //         (position) => {
 
-                const { latitude, longitude } = position.coords
+    //             const { latitude, longitude } = position.coords
 
-                setLocation(({ address }) => ({
-                    location: { latitude, longitude },
-                    address
-                }))
-            },
-            (error) => {
-                if (error?.message === "No location provider available.") {
-                    // Alert.alert(t('location_msg'))
-                }
-            },
-            {
-                enableHighAccuracy: true,
-                maximumAge: 1000
-            },
-        );
-    };
+    //             setLocation(({ address }) => ({
+    //                 location: { latitude, longitude },
+    //                 address
+    //             }))
+    //         },
+    //         (error) => {
+    //             if (error?.message === "No location provider available.") {
+    //                 // Alert.alert(t('location_msg'))
+    //             }
+    //         },
+    //         {
+    //             enableHighAccuracy: true,
+    //             maximumAge: 1000
+    //         },
+    //     );
+    // };
 
     return (
         <LocationContext.Provider

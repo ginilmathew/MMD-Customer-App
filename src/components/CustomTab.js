@@ -9,7 +9,7 @@ const CustomTab = ({ onPress, label, subList }) => {
   }, [onPress, label]);
   return (
     <TouchableOpacity onPress={memoizedOnPress} style={[styles.container, { backgroundColor: subList?.name === label ? COLORS.primary : '#f2f2f2' }]}>
-      <Text style={[styles.textStyle,{color:subList?.name === label ?  '#f2f2f2' : COLORS.dark}]}>{label}</Text>
+      <Text style={[styles.textStyle, { color: subList?.name === label ? '#fff' : COLORS.light }]}>{label}</Text>
     </TouchableOpacity>
   )
 }
@@ -26,11 +26,9 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   textStyle: {
-    fontFamily: 'Poppins-Italic',
-    letterSpacing:.5,
-    fontWeight: 'bold',
-    fontSize: 12,
-    
+    fontFamily: 'Poppins-Medium',
+    letterSpacing: 0.5,
+    fontSize: 10,
   }
 
 })

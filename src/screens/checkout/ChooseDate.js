@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import DatePicker from 'react-native-date-picker'
 import reactotron from 'reactotron-react-native'
 import moment from 'moment'
@@ -36,22 +36,6 @@ const ChooseDate = ({slotSelected}) => {
         }
     }
 
-    // const data = [
-    //     {
-    //         "_id": "65c1d6af7dab38aeda08f272",
-    //         "day": "Tuesday",
-    //         "fromTime": "15:00",
-    //         "toTime": "17:00",
-    //     },
-    //     {
-    //         "_id": "65c1d6af7dab38aeda08f272",
-    //         "day": "wed",
-    //         "fromTime": "15:00",
-    //         "toTime": "17:00",
-    //     },
-    //     // Add more data objects as needed
-    // ];
-
     const { mutate, refetch: postsubrefetch } = useMutation({
         mutationKey: 'SlotPlace',
         mutationFn: ChooseSlot,
@@ -76,8 +60,17 @@ const ChooseDate = ({slotSelected}) => {
         reactotron.log(value, "VAlUE")
         setSelectedValue(value);
         setVisible(false);
-        setUseSlot(value)
     };
+
+    useEffect(() => {
+      if(chosenDate && selectedValue) {
+        setUseSlot({
+            date: chosenDate,
+            idData : selectedValue
+        })
+      }
+    }, [chosenDate, selectedValue])
+    
 
     return (
         <View style={{ width: "100%" }}>
@@ -94,7 +87,7 @@ const ChooseDate = ({slotSelected}) => {
                         modal
                         open={open}
                         mode='date'
-                        //minimumDate={new Date()}
+                        minimumDate={new Date()}
                         date={date}
                         onConfirm={handleDateChange}
                         onCancel={() => {
@@ -109,8 +102,8 @@ const ChooseDate = ({slotSelected}) => {
             {chosenDate && (
                 <View style={styles.container}>
                     <TouchableOpacity onPress={handleToggleDropdown} style={styles.button}>
-                        <Text style={styles.buttonText}>{selectedValue?.fromTime ? selectedValue.fromTime + "~" + selectedValue.toTime  : 'Select an option'}</Text>
-                        <Ionicons name="chevron-down" size={20} color="black" />
+                        <Text style={styles.buttonText}>{selectedValue?.fromTime ? selectedValue.fromTime + " ~ " + selectedValue.toTime  : 'Select an option'}</Text>
+                        <Ionicons name="chevron-down" size={20} color={COLORS.primary} />
                     </TouchableOpacity>
 
                     {visible && (
@@ -144,7 +137,9 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15
     },
     txtBtn: {
-        fontFamily: "Poppins-Italic"
+        fontFamily: "Poppins-Italic",
+        color: COLORS.light,
+        opacity: 0.8
     },
     container: {
         position: 'relative',
@@ -156,21 +151,23 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 10,
         borderWidth: 1,
-        borderColor: '#ccc',
+        borderColor: '#e8e8e8',
         borderRadius: 12,
+        height: 55
     },
     buttonText: {
         flex: 1,
         marginRight: 10,
-        fontFamily: "Poppins-Medium"
+        fontFamily: "Poppins-Medium",
+        color: COLORS.light
     },
     dropdown: {
-
         width: '100%',
         borderWidth: 0.5,
         borderColor: '#f2f2f2',
         borderRadius: 12,
         backgroundColor: "#e8e8e8",
+        marginTop: 5
     },
     option: {
         zIndex: 100,

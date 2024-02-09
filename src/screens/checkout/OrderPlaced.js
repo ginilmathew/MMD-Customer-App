@@ -10,9 +10,8 @@ import moment from 'moment';
 
 const OrderPlaced = ({ route }) => {
 
+
     const item = route?.params
-
-
 
     const navigation = useNavigation();
 
@@ -22,7 +21,7 @@ const OrderPlaced = ({ route }) => {
             navigation.navigate('Orders')
         }, 2000);
 
-    }, [navigation])
+    }, [])
 
     let today = new Date();
 

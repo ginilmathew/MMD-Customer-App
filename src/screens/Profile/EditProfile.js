@@ -12,6 +12,7 @@ import { storage } from '../../../App'
 import { useMutation } from 'react-query'
 import { updateProfile } from '../../api/Profile'
 import Header from '../../components/Header'
+import LocationContext from '../../context/location'
 
 
 const EditProfile = ({ navigation }) => {
@@ -68,7 +69,7 @@ const EditProfile = ({ navigation }) => {
                     type={'number-pad'}
                 />
 
-                <CommonButton text={'update'} mt='auto' onPress={handleSubmit(mutate)} />
+                <CommonButton text={'Update'} mt='auto' onPress={handleSubmit(mutate)} />
             </View >
         </>
 
@@ -79,7 +80,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: COLORS.white,
-        padding: 30
+        paddingHorizontal: 16,
+        paddingTop: 15,
+        paddingBottom: 30
     }
 })
 

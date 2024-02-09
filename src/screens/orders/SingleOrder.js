@@ -14,28 +14,43 @@ const SingleOrder = ({route}) => {
     reactotron.log(item, "SINGLE")
 
     const statusColor = () => {
-        if (item?.orderStatus === "created") {
-            return (
-                <Text style={[styles.statusText, { color: COLORS.status_created }]}>{item?.orderStatus}</Text>
-            )
-        } else if (item?.orderStatus === "Accept") {
-            return (
-                <Text style={[styles.statusText, { color: COLORS.status_accepted }]}>{item?.orderStatus}</Text>
-            )
-        } else if (item?.orderStatus === "Out for delivery") {
-            return (
-                <Text style={[styles.statusText, { color: COLORS.status_out }]}>{item?.orderStatus}</Text>
-            )
-        } else if (item?.orderStatus === "Delivered") {
-            return (
-                <Text style={[styles.statusText, { color: COLORS.status_completed }]}>{item?.orderStatus}</Text>
-            )
-        } else if (item?.orderStatus === "Cancelled") {
-            return (
-                <Text style={[styles.statusText, { color: COLORS.status_cancelled }]}>{item?.orderStatus}</Text>
-            )
+        let color;
+        switch (item?.orderStatus) {
+            case "created":
+                color = COLORS.status_created;
+                break;
+            case "Accept":
+                color = COLORS.status_accepted;
+                break;
+            case "Out for delivery":
+                color = COLORS.status_out;
+                break;
+            case "Delivered":
+                color = COLORS.status_completed;
+                break;
+            case "Cancelled":
+                color = COLORS.status_cancelled;
+                break;
+            case "paid":
+                color = COLORS.status_paid;
+                break;
+            default:
+                color = COLORS.default_color; // Assuming you have a default color defined
+                break;
         }
+        return (
+            <Text style={[styles.statusText, { color: color }]}>{item?.orderStatus}</Text>
+        );
     }
+
+    // const statusColor = () => {
+    //     const status = item?.orderStatus;
+    //     const color = COLORS[status.toLowerCase()] || COLORS.light;
+    
+    //     return (
+    //         <Text style={[styles.statusText, { color: color }]}>{status}</Text>
+    //     );
+    // }
 
     return (
         <View style={styles.mainStyle}>
@@ -59,14 +74,14 @@ const SingleOrder = ({route}) => {
                     {item?.itemDetails?.map(item => (
                    <View style={styles.imgContainer} key={item?._id}>
                         <View style={styles.boxStyle}>
-                            <Image source={{ uri: item?.item?.imageBasePath + item?.item?.image?.[0] }} style={styles.imgStyle} />
+                            <Image source={{ uri: item?.image }} style={styles.imgStyle} />
                             <View style={styles.imgSection}>
-                                <Text style={styles.productName}>{item?.item?.name}</Text>
-                                <Text style={styles.categoryName}>Category : {item?.item?.category?.name}</Text>
+                                <Text style={styles.productName}>{item?.name}</Text>
+                                <Text style={styles.categoryName}>Category : {item?.category?.name}</Text>
                             </View>
                         </View>
                         <View style={styles.qtyBox}>
-                            <Text style={styles.price}>₹ {item?.item?.variant?.offerPrice ? item?.item?.variant?.offerPrice : item?.item?.variant?.sellingPrice}</Text>
+                            <Text style={styles.price}>₹ {item?.variant?.offerPrice ? item?.variant?.offerPrice : item?.variant?.sellingPrice}</Text>
                             <Text style={styles.qty}>Qty x {item?.qty}</Text>
                         </View>
                     </View>
@@ -76,6 +91,10 @@ const SingleOrder = ({route}) => {
                         <View style={styles.textBox}>
                             <Text style={styles.subBox}>Sub-Total</Text>
                             <Text style={styles.priceBox}>₹ {item?.subTotal}</Text>
+                        </View>
+                        <View style={styles.textBox}>
+                            <Text style={styles.subBox}>Delivery Charge</Text>
+                            <Text style={styles.priceBox}>₹ {item?.delivery_charge}</Text>
                         </View>
                         <View style={styles.textBox}>
                             <Text style={styles.subBox}>GST</Text>

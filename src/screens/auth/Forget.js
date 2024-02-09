@@ -33,8 +33,9 @@ const Forget = ({ navigation }) => {
 
   const onSuccessOtp = ({ data }) => {
     storage.setString('success', 'Verification Successful')
+    navigation.navigate("ChangePasswd", { user: data?.data })
   
-    navigation.navigate('HomeNavigator', { screen: 'ProfileNavigator', params: { screen: 'ChangePasswd', params: { user: data?.data } }})
+   
   }
 
   const { mutate } = useMutation({
@@ -43,7 +44,7 @@ const Forget = ({ navigation }) => {
     onSuccess: onSuccessForget
   })
 
-  const { mutate: mutateOtp } = useMutation({
+  const { mutate: mutateOtp, isLoading } = useMutation({
     mutationKey: ['otp-query'],
     mutationFn: otpApi,
     onSuccess: onSuccessOtp
@@ -60,11 +61,11 @@ const Forget = ({ navigation }) => {
   }
 
   return (
-    <Background headline={forget ? 'FORGET' : 'OTP'}
+    <Background headline={forget ? 'FORGET PASSWORD' : 'OTP'}
       subhead={forget ? 'Enter your registered email address' : 'Enter the OTP sent to your registered email'}
       onPress={goBack}
       description={forget ? 'Remember your password?' : 'Something wrong?'}
-      link={forget ? 'Login' : 'Go Back'}
+      link={forget ? 'Go To Login' : 'Go Back'}
     >
 
       {
@@ -105,7 +106,7 @@ const Forget = ({ navigation }) => {
         )
       }
 
-      <CommonButton text={forget ? 'Confirm' : 'Proceed'} mt={!forget && 30} onPress={handleSubmit(forget ? mutate : otpSubmit)} />
+      <CommonButton text={forget ? 'Confirm' : 'Proceed'} loading={isLoading} mt={!forget && 30} onPress={handleSubmit(forget ? mutate : otpSubmit)} />
 
     </Background>
   )

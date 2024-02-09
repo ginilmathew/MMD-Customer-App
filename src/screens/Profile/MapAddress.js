@@ -27,7 +27,7 @@ const MapAddress = ({ navigation, route }) => {
     const [defaultVal, setDefaultVal] = useState(false)
     const [user] = useMMKVStorage('user', storage)
 
-    const { location, setLocation, changeLocation } = useContext(locationContext)
+    const { location, setLocation, changeLocation, setMode: accessMode } = useContext(locationContext)
 
 
     const { mutate, isLoading } = useMutation({
@@ -47,7 +47,7 @@ const MapAddress = ({ navigation, route }) => {
 
             //     return;
             // }
-            navigation.navigate('Address')
+            navigation.navigate(route?.params?.cartID ? 'EditAddress' : 'Address', route?.params?.cartID && { cartID: route?.params?.cartID })
         }
     })
 
@@ -63,14 +63,15 @@ const MapAddress = ({ navigation, route }) => {
 
     const { control, handleSubmit } = useForm({
         resolver: yupResolver(schema), defaultValues: {
-            address: location?.address?.secondary,
+            address: location?.address,
             mobile: user?.user?.mobile,
             landmark: ""
         }
     });
 
     const toLocation = useCallback(() => {
-        navigation.navigate("GoogleLocation", route?.params?.mode && { mode: true })
+        accessMode('map')
+        navigation.navigate("GoogleLocation", route?.params?.cartID && { cartID: route?.params?.cartID })
     }, [route?.params])
 
 
@@ -172,51 +173,63 @@ const MapAddress = ({ navigation, route }) => {
 
                             <View style={{ padding: 13, backgroundColor: COLORS.white, marginTop: "auto" }}>
                                 <Text style={{
-                                    color: COLORS.light,
+                                    color: COLORS.dark,
                                     fontFamily: 'Poppins-Bold',
-                                    marginBottom: 2
-                                }}>SELECT DELIVERY LOCATION</Text>
+                                    marginBottom: 2,
+                                    letterSpacing: 0.5
+                                }}>DELIVERY LOCATION</Text>
 
                                 <View style={{
                                     flexDirection: 'row',
-                                    justifyContent: 'space-between'
+                                    justifyContent: 'space-between',
+
                                 }}>
                                     <View style={{
                                         flexDirection: 'row',
-                                        alignItems: 'center'
+                                        alignItems: 'flex-start',
+                                        width: "80%",
                                     }}>
                                         <EvilIcons name='location' size={23} color={COLORS.primary} />
-                                        <Text style={{
-                                            color: COLORS.light,
-                                            fontFamily: 'Poppins-Bold',
-                                            marginBottom: 2,
-                                            marginLeft: 20
-                                        }}>{location?.address?.main}</Text>
-                                    </View>
+                                        <View style={{ marginLeft: 5 }}>
+                                            <Text style={{
+                                                color: COLORS.light,
+                                                fontFamily: 'Poppins-SemiBold',
 
-                                    <TouchableOpacity style={{
-                                        flexDirection: 'row',
-                                        justifyContent: 'space-between',
-                                        backgroundColor: COLORS.gray,
-                                        borderColor: COLORS.primary,
-                                        borderWidth: 1,
-                                        padding: 4,
-                                        borderRadius: 10,
-                                        alignItems: 'center'
-                                    }} onPress={toLocation}>
-                                        <Text style={{
-                                            color: COLORS.primary,
-                                            fontWeight: '600',
-                                            fontSize: 10
-                                        }}>CHANGE</Text>
-                                    </TouchableOpacity>
+                                            }}>{location?.address > 25 ? location?.address?.slice(0, 25) + '...' : location?.address}</Text>
+
+                                            <Text style={{
+                                                color: COLORS.dark,
+
+                                                fontSize: 11,
+                                                fontFamily: "Poppins-Regular"
+                                            }}>{location?.address?.secondary}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                    <View>
+                                        <TouchableOpacity style={{
+                                            flexDirection: 'row',
+                                            backgroundColor: COLORS.gray,
+                                            borderColor: COLORS.primary,
+                                            borderWidth: 1,
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            borderRadius: 5,
+                                            width: 60,
+                                            padding: 5
+
+                                        }} onPress={toLocation}>
+                                            <Text style={{
+                                                color: COLORS.primary,
+                                                fontFamily: "Poppins-SemiBold",
+                                                fontSize: 10,
+                                                letterSpacing: 0.5
+                                            }}>CHANGE</Text>
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
 
-                                <Text style={{
-                                    color: COLORS.dark,
-                                    width: '80%'
-                                }}>{location?.address?.secondary}
-                                </Text>
+
 
                             </View>
                         </>
@@ -231,7 +244,7 @@ const MapAddress = ({ navigation, route }) => {
                                 marginBottom: 20,
                             }}>
                                 <Text style={{
-                                    fontFamily: 'Poppins-Light',
+                                    fontFamily: 'Poppins-Regular',
                                     fontSize: 11,
                                     color: COLORS.light,
                                     marginRight: 10
@@ -305,7 +318,9 @@ const MapAddress = ({ navigation, route }) => {
                                 }}>
                                     {checkBox(0)}
                                     <Text style={{
-                                        color: COLORS.light
+                                        color: COLORS.light,
+                                        marginLeft: 5,
+                                        fontFamily: "Poppins-Medium"
                                     }}>Home</Text>
                                 </View>
                                 <View style={{
@@ -313,7 +328,9 @@ const MapAddress = ({ navigation, route }) => {
                                 }}>
                                     {checkBox(1)}
                                     <Text style={{
-                                        color: COLORS.light
+                                        color: COLORS.light,
+                                        marginLeft: 5,
+                                        fontFamily: "Poppins-Medium"
                                     }}>Office</Text>
                                 </View>
                             </View>
@@ -322,11 +339,11 @@ const MapAddress = ({ navigation, route }) => {
                     )
                 }
 
-                <CommonButton 
-                    w='85%' 
-                    mt={mode === 'address' && 60} 
-                    onPress={mode === "map" ? changeMode : handleSubmit(onSubmit)} 
-                    text={`CONFIRM ${mode === "map" ? "LOCATION" : ""}`} 
+                <CommonButton
+                    w='85%'
+                    mt={mode === 'address' && 60}
+                    onPress={(mode === "map" || route?.params?.mode === "map") ? changeMode : handleSubmit(onSubmit)}
+                    text={`CONFIRM ${mode === "map" ? "LOCATION" : ""}`}
                     loading={isLoading}
                 />
 

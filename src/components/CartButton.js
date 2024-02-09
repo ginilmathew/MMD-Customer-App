@@ -1,72 +1,52 @@
-import { View, TouchableOpacity, Image, Text, StyleSheet } from 'react-native'
-import React, { useCallback, useMemo, useState } from 'react'
+import { View, TouchableOpacity, Text, StyleSheet } from 'react-native'
+import React, { useCallback, useContext } from 'react'
 import { useMMKVStorage } from 'react-native-mmkv-storage'
 import { storage } from '../../App';
 import IonIcon from 'react-native-vector-icons/Ionicons'
+import { COLORS } from '../constants/COLORS';
+import CartContext from '../context/cart';
+import { useNavigation } from '@react-navigation/native';
 
 
-const CartButton = ({ onPress: callback, toCart, grand, w }) => {
+const CartButton = ({ bottom }) => {
 
-    const [disable, setDisable] = useState(false);
-
-    // const [products] = useMMKVStorage('products', storage, (storage.getMap('products') || {})); // cart items
-    // const minimum = Object.keys(products)?.filter(key => products[key]?.quantity && products[key]?.price).length;
-    const minimum = 0
-    const user = storage.getMap('user');
-    const total = 0;
-    // const total = useMemo(() => {
-    //     let sum = 0;
-    //     for (const key in products) {
-    //         if (products[key]?.quantity && products[key]?.price) {
-    //             sum += products[key].quantity * products[key].price
-    //         }
-    //     }
-
-    //     return !isNaN(sum) ? sum.toFixed(2) : sum;
-    // }, [products])
-
+    const { cartItems } = useContext(CartContext);
+    const [cart_id] = useMMKVStorage('cart_id', storage)
+    const navigation = useNavigation()
 
     const onPress = useCallback(() => {
-        if (!disable) {
-            setDisable(true);
-            callback();
-        }
-    }, [disable, callback])
+        navigation.navigate('Cart', { cart_id: cart_id ?? null });
+    }, [cart_id, navigation])
+    
 
-    if (!user || (toCart && minimum <= 0)) {
-        return null;
-    }
+    const total = cartItems?.reduce((acc, curr) => {
+        return acc + parseFloat(curr?.price) * parseFloat(curr?.qty)
+    }, 0)
+
+
+    if(cartItems?.length < 1) return;
 
     return (
         <TouchableOpacity
-            disabled={grand ? disable : null}
-            onPress={grand ? onPress : callback}
+            onPress={onPress}
             activeOpacity={0.8}
-            style={styles.container}
+            style={[styles.container, { bottom }]}
         >
             <View style={styles.leftContainer}>
                 <IonIcon
-                    color="#fff" 
+                    color="#fff"
                     name='cart'
+                    size={30}
                 />
-                {/* <Image
-                    source={grand ? require('../assets/images/wallet.png') : require('../assets/images/cart.png')}
-                    resizeMode='contain'
-                    style={styles.icon}
-                /> */}
                 <View style={styles.textContainer}>
                     <Text style={styles.mainText}>{"Go to Cart"}</Text>
-                    {/* <View style={styles.subTextContainer}>
-                        <Text style={styles.subText}>{minimum}</Text>
-                        <Text style={styles.subText}>{`${minimum > 1 ? 'items' : 'item'}`}</Text>
-                    </View> */}
+                    <Text style={styles.items}>{cartItems?.length} Items</Text>
                 </View>
             </View>
             <View style={styles.rightContainer}>
-                <Text style={styles.totalText}>{grand ? "grand_total" : 'total'}</Text>
+                <Text style={styles.totalText}>{'total'}</Text>
                 <View style={styles.priceContainer}>
-                    <Text style={styles.price}>{grand || total}</Text>
-                    <Text style={styles.currency}>SAR</Text>
+                    <Text style={styles.price}>₹ {total}</Text>
                 </View>
             </View>
         </TouchableOpacity>
@@ -75,7 +55,6 @@ const CartButton = ({ onPress: callback, toCart, grand, w }) => {
 
 const styles = StyleSheet.create({
     container: {
-        bottom: 60,
         flexDirection: 'row',
         alignSelf: 'center',
         justifyContent: 'space-between',
@@ -83,15 +62,14 @@ const styles = StyleSheet.create({
         height: 60,
         marginHorizontal: 20,
         position: 'absolute',
-        backgroundColor: 'red',
         borderRadius: 10
     },
     leftContainer: {
         borderTopLeftRadius: 10,
         borderBottomLeftRadius: 10,
+        backgroundColor: '#b1bd9f',
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: 'blue',
         paddingLeft: 10,
         flex: 3
     },
@@ -101,16 +79,23 @@ const styles = StyleSheet.create({
         marginRight: 10
     },
     textContainer: {
+        marginLeft: 20,
         justifyContent: 'center',
         flexShrink: 1
     },
     mainText: {
         fontFamily: 'Quicksand-Bold',
         color: 'white',
-        fontSize: 16
+        fontSize: 16,
+        textAlign: 'center'
+    },
+    items: {
+        color: 'white',
+        fontSize: 12
     },
     subTextContainer: {
         flexDirection: 'row',
+
         marginTop: 2
     },
     subText: {
@@ -118,13 +103,14 @@ const styles = StyleSheet.create({
         marginRight: 5
     },
     rightContainer: {
-        backgroundColor: 'red',
+        backgroundColor: COLORS.primary,
         flex: 1,
         paddingTop: 2,
         paddingBottom: 2,
         paddingRight: 8,
         paddingLeft: 8,
-        borderRadius: 10,
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
         alignItems: 'center',
         justifyContent: 'center'
     },
