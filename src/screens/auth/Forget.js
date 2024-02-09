@@ -38,7 +38,7 @@ const Forget = ({ navigation }) => {
    
   }
 
-  const { mutate } = useMutation({
+  const { mutate, isLoading: loading } = useMutation({
     mutationKey: ['forget-query'],
     mutationFn: forgetApi,
     onSuccess: onSuccessForget
@@ -106,7 +106,7 @@ const Forget = ({ navigation }) => {
         )
       }
 
-      <CommonButton text={forget ? 'Confirm' : 'Proceed'} loading={isLoading} mt={!forget && 30} onPress={handleSubmit(forget ? mutate : otpSubmit)} />
+      <CommonButton text={forget ? 'Confirm' : 'Proceed'} loading={loading || isLoading} mt={!forget && 30} onPress={handleSubmit(forget ? mutate : otpSubmit)} />
 
     </Background>
   )

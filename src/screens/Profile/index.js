@@ -45,6 +45,7 @@ const Profile = ({ navigation }) => {
     queryClient.resetQueries();
     storage.clearStore();
     setMode('');
+    storage.setString('success', 'Logout successful')
 
 
     // navigation.reset({

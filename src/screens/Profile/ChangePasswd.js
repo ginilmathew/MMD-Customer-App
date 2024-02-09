@@ -16,7 +16,7 @@ import Header from '../../components/Header'
 
 const ChangePasswd = ({ navigation, route }) => {
 
-  const { mutate } = useMutation({
+  const { mutate, isLoading } = useMutation({
     mutationKey: 'change-query',
     mutationFn: changePasswd,
     onSuccess({ data }) {
@@ -70,7 +70,7 @@ const ChangePasswd = ({ navigation, route }) => {
           passwd
         />
 
-        <CommonButton text={'Update'} mt='auto' onPress={handleSubmit(mutate)} />
+        <CommonButton text={'Update'} mt='auto' loading={isLoading} onPress={handleSubmit(mutate)} />
       </View>
     </>
   )
