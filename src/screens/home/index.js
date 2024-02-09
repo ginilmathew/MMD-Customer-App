@@ -25,7 +25,8 @@ import Header from '../../components/Header'
 import CartContext from '../../context/cart'
 import reactotron from 'reactotron-react-native'
 import { useFocusNotifyOnChangeProps } from '../../hooks/useFocusNotifyOnChangeProps'
-
+import ProductCard from '../../components/ProductCard'
+import moment from 'moment'
 
 
 
@@ -34,41 +35,50 @@ const Home = ({ navigation, route }) => {
 
     // const notifyOnChangeProps = useFocusNotifyOnChangeProps()
 
-    const { currentLoc, setMode, getLocation, mode, setHomeFocus } = useContext(LocationContext)
+    const { currentLoc, setMode, getLocation, mode, setHomeFocus, location } = useContext(LocationContext)
     const checkLocRef = useRef(null)
     const [cart_id] = useMMKVStorage('cart_id', storage);
-    const { cartItems, setCartItems } = useContext(CartContext);
+    const [time, setTime] = useState(moment().unix())
+    const { cartItems, setCartItems, cartChanges, cartTotal } = useContext(CartContext);
+    const notifyOnChangeProps = useFocusNotifyOnChangeProps()
+
+    reactotron.log({cartTotal, cartItems})
 
 
     let payload = {
-        "coordinates": [
-            8.5204866, 76.9371447
-        ],
-        // coordinates: [currentLoc?.coord?.latitude, currentLoc?.coord?.longitude],
+        // "coordinates": [
+        //     8.5204866, 76.9371447
+        // ],
+        coordinates: [location?.location?.latitude, location?.location?.longitude],
         cartId: cart_id,
 
     }
+
+
+    // reactotron.log({ payload })
 
     const { data, isLoading, refetch } = useQuery({
         queryKey: ['Home'],
         retry: false,
         queryFn: () => HomeApi({
-            // coordinates: [currentLoc?.coord?.latitude, currentLoc?.coord?.longitude]
-            ...payload
+            ...payload,
         }),
         // notifyOnChangeProps,
-        enabled: false,
+        enabled: !!location?.address,
     })
 
 
 
     useFocusEffect(useCallback(() => {
-        setHomeFocus(true);
-        if (currentLoc?.coord?.latitude !== checkLocRef?.current?.latitude) {
-            checkLocRef.current = currentLoc?.coord;
+
+        setTime(moment().unix())
+
+        if (location?.address) {
             refetch()
         }
-    }, [currentLoc]))
+
+        // }
+    }, [location?.address]))
 
 
     React.useEffect(() => {
@@ -116,12 +126,12 @@ const Home = ({ navigation, route }) => {
             };
         });
 
-        setCartItems(updatedCartItems);
+        //setCartItems(updatedCartItems);
     }, [data?.data?.data]);
 
 
 
-    const HeaderComponents = memo(({ data, NavigateToCategory }) => {
+    const HeaderComponents = useCallback(() => {
         const sliders = data?.data?.data?.sliders || [];
         const categories = data?.data?.data?.categories || [];
         const featuredList = data?.data?.data?.featuredList?.[0]?.featured_list;
@@ -134,7 +144,7 @@ const Home = ({ navigation, route }) => {
                     </View>
                 )}
                 {categories.length > 0 && (
-                    <View style={{marginTop : 5}}>
+                    <View style={{ marginTop: 5 }}>
                         <CustomHeading label={'Categories'} hide={false} marginH={20} />
                         <ScrollView
                             horizontal={true}
@@ -160,18 +170,21 @@ const Home = ({ navigation, route }) => {
                 )}
             </View>
         );
-    });
+    }, [data?.data?.data]);
+
+    
 
 
-    const renderItem = useCallback(({ item, index }) => {
+    const renderItem = ({ item, index }) => {
         return (
             <>
                 <Animated.View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
-                    <ItemCard key={index} item={item} />
+                    {/* <ItemCard key={index} item={item} /> */}
+                    <ProductCard key={index} item={item} cartItems={cartItems} time={time} />
                 </Animated.View>
             </>
         )
-    }, [data?.data?.data])
+    }
 
 
     const ListFooterComponent = useCallback(() => {
@@ -188,7 +201,7 @@ const Home = ({ navigation, route }) => {
                             <ItemBox onPress={() => NavigateToFeatured(res)} key={res?._id} item={res} index={index} />
                         ))}
                     </View>
-                    <View style={{ marginBottom: 80 }} />
+                    <View style={{ marginBottom: 40 }} />
                 </View>
             )
         );
@@ -199,7 +212,7 @@ const Home = ({ navigation, route }) => {
     }, [data?.data?.data]);
 
 
-    if (isLoading) {
+    if (isLoading || !location?.address) {
         return (
             <>
                 <HomeLoader />
@@ -216,17 +229,18 @@ const Home = ({ navigation, route }) => {
     // }
 
 
-    // const changeAdd = () => {
+    const changeAdd = () => {
 
-    // }
+    }
 
+    reactotron.log({cartChanges})
 
-    // const addLeng = currentLoc?.address?.length;
+    const addLeng = currentLoc?.address?.length;
 
     return (
 
         <View style={{ backgroundColor: '#fff' }}>
-            {/* {currentLoc?.address && (
+            {currentLoc?.address && (
                 <TouchableOpacity onPress={changeAdd} style={{
                     flexDirection: 'row',
                     paddingLeft: 20,
@@ -243,11 +257,11 @@ const Home = ({ navigation, route }) => {
                         ?.concat(addLeng ? ' ...' : '')}</Text>
                 </TouchableOpacity>
             )
-            } */}
+            }
             <DummySearch press={NavigateToSearch} />
             <FlatList
                 data={data?.data?.data.featuredList?.[0]?.featured_list || []}
-                ListHeaderComponent={<HeaderComponents data={data} NavigateToCategory={NavigateToCategory} />}
+                ListHeaderComponent={HeaderComponents}
                 renderItem={renderItem}
                 keyExtractor={keyExtractor}
                 showsVerticalScrollIndicator={false}
@@ -258,7 +272,8 @@ const Home = ({ navigation, route }) => {
                 maxToRenderPerBatch={10}
                 windowSize={10}
                 getItemLayout={(data, index) => ({ length: 80, offset: 80 * index, index })}
-                ListEmptyComponent={<NoData />}
+                ListEmptyComponent={<NoData heights={500} />}
+                extraData={cartTotal}
             />
         </View>
     )

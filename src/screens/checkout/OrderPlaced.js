@@ -13,8 +13,6 @@ const OrderPlaced = ({ route }) => {
 
     const item = route?.params
 
-reactotron.log(item, "ORPLA")
-
     const navigation = useNavigation();
 
     useEffect(() => {
@@ -23,7 +21,7 @@ reactotron.log(item, "ORPLA")
             navigation.navigate('Orders')
         }, 2000);
 
-    }, [navigation])
+    }, [])
 
     let today = new Date();
 

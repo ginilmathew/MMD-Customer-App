@@ -2,13 +2,66 @@ import { StyleSheet, Text, View } from 'react-native';
 import React, { useState, useMemo } from 'react';
 import CartContext from './index';
 import reactotron from 'reactotron-react-native';
+import { storage } from '../../../App';
+import { useMMKVStorage } from 'react-native-mmkv-storage';
+import moment from 'moment';
 
 const CartProvider = ({ children }) => {
 
 
     const [cartItems, setCartItems] = useState([]);
+    const [cartsDatas, setCartDatas] = useMMKVStorage('cart', storage, []);
+    const [cartTotal, setCartTotal] = useState(0)
 
- reactotron.log({cartItems})
+    //reactotron.log({cartsDatas})
+
+    const addItemToCart = async(item) => {
+        reactotron.log({cartItems})
+        //let carts = [...cartsDatas]
+
+        //let cartss = await storage.getArrayAsync("cart")
+        let carts = [...cartItems]
+
+
+        //reactotron.log({carts})
+        
+        let exists = await carts?.findIndex(cart => cart?._id === item?._id && cart?.unit?.id === item?.unit?.id && item?.variant?.name === cart?.variant?.name);
+
+        reactotron.log({exists})
+
+        if(exists > -1){
+            if(item?.qty === 0){
+                carts?.splice(exists, 1);
+            }
+            else{
+                carts[exists] = item
+            }
+            setCartItems(carts)
+            //await storage.setArrayAsync("cart", carts);
+            //setCartChages(moment().unix())
+            //setCartDatas(cartsDatas)
+        }
+        else{
+            //setCartDatas([...cartsDatas, item])
+            if(item?.qty > 0){
+                setCartItems([...carts, item])
+                //await storage.setArrayAsync("cart", [...carts, item]);
+                //setCartChages(moment().unix())
+            }
+            
+        }
+
+        let total = cartItems?.reduce((total, item) => total + parseInt(item.qty) + parseFloat(item?.price), 0)
+        //if(total === 0){
+            setCartTotal(moment().unix())
+        //}
+        
+    }
+
+
+
+
+ 
 
     const addToCart = ({ _id: itemId, ...items }) => {
         setCartItems((prevItems) => {
@@ -97,7 +150,8 @@ const CartProvider = ({ children }) => {
             incrementItem,
             decrementItem,
             DeleteItem,
-        
+            addItemToCart,
+            cartTotal
         };
     }, [cartItems]); // Re-create the context value only when cartItems change
 

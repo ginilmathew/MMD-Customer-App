@@ -21,6 +21,8 @@ import RazorpayCheckout from 'react-native-razorpay';
 import ChooseDate from './ChooseDate'
 import SlotContext from '../../context/slot'
 import { UpdateOrder } from '../../api/updateOrder'
+import CheckoutItemCard from '../../components/CheckoutItemCard'
+import CheckoutCard from '../../components/CheckoutCard'
 
 
 const Checkout = ({ route }) => {
@@ -90,11 +92,12 @@ const Checkout = ({ route }) => {
     onSuccess: async (data) => {
       setOrderData(data?.data?.data)
       await storage.setStringAsync('order_id', data?.data?.data?.orderId);
-      setCartItems([])
-      await storage.getBoolAsync('cart_id', null);
-      setUseSlot()
+      
       if (radioBtnStatus === 0) {
         navigation.navigate('OrderPlaced', { item: data?.data?.data })
+        setCartItems([])
+        await storage.setMapAsync('cart_id', null);
+        setUseSlot()
       } else {
         // setOrderData(orderNewData)
         // setTimeout(() => {
@@ -192,20 +195,12 @@ const Checkout = ({ route }) => {
       <CommonHeader heading={"Checkout"} backBtn />
       <ScrollView contentContainerStyle={styles.innerContainer}>
 
-        <View>
-          {cartItems?.map(item => (<View style={styles.imgContainer} key={item?._id}>
-            <View style={styles.boxStyle}>
-              <Image source={{ uri: item?.item?.imageBasePath + item?.item?.image?.[0] }} style={styles.imgStyle} />
-              <View style={styles.imgSection}>
-                <Text style={styles.productName}>{item?.item?.name}</Text>
-                <Text style={styles.categoryName}>Category : {item?.item?.category?.name}</Text>
-              </View>
-            </View>
-            <View style={styles.qtyBox}>
-              <Text style={styles.price}>₹ {(item?.item?.variant?.offerPrice && item?.item?.variant?.offerPrice < item?.item?.variant?.sellingPrice) ? (item?.item?.variant?.offerPrice) : (item?.item?.variant?.sellingPrice)}</Text>
-            </View>
-          </View>
+        <View >
+          <View style={{ paddingHorizontal: 15 }}>
+          {cartItems?.map(item => (
+            <CheckoutCard item={item} />
           ))}
+          </View>
 
           <View style={styles.locationBox}>
             <View style={styles.shipping}>
