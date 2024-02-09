@@ -84,10 +84,6 @@ const Checkout = ({ route }) => {
 
   useRefetch(refetch)
 
-<<<<<<< HEAD
-
-=======
->>>>>>> dipin
 
   // let mainData = {
   //   orderId: orderData?.data?.data?.orderId,
