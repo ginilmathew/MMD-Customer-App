@@ -8,12 +8,16 @@ import { Controller } from 'react-hook-form'
 import { useMutation } from 'react-query'
 import { ChooseSlot } from '../../api/ChooseSlot'
 import SlotContext from '../../context/slot'
+import reactotron from 'reactotron-react-native'
 
 const ChooseDate = ({ slotSelected }) => {
     const [date, setDate] = useState(new Date())
     const [open, setOpen] = useState(false)
     const [chosenDate, setChosenDate] = useState(null)
     const [storeData, setStoreData] = useState(null)
+
+
+    reactotron.log(storeData, "storeData")
 
     const { setUseSlot } = useContext(SlotContext);
 
@@ -41,6 +45,8 @@ const ChooseDate = ({ slotSelected }) => {
 
     const [visible, setVisible] = useState(false);
     const [selectedValue, setSelectedValue] = useState(null);
+
+    reactotron.log(selectedValue, "select")
 
     const handleToggleDropdown = () => {
         setVisible(!visible);
@@ -103,7 +109,7 @@ const ChooseDate = ({ slotSelected }) => {
                     </>
                 )} /> */}
 
-            {chosenDate && (
+            {chosenDate && storeData?.data?.data?.length > 0 && (
                 <View style={styles.container}>
                     <TouchableOpacity onPress={handleToggleDropdown} style={styles.button}>
                         <Text style={styles.buttonText}>{selectedValue?.fromTime ? selectedValue.fromTime + " ~ " + selectedValue.toTime : 'Select an option'}</Text>
