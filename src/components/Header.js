@@ -29,7 +29,6 @@ const Header = memo(({ onPress, text }) => {
     const animateBadgeJump = useCallback(() => {
         // Get the position of the button
         const buttonPositionY = 0; 
-     
         // Calculate the initial position of the badge
         const initialPosition = buttonPositionY - 20; // Adjust the initial position as needed
         // Animate the badge to the top of the badge

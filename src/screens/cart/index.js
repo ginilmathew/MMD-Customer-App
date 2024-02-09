@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, FlatList } from 'react-native'
+import { StyleSheet, Text, View, Image, FlatList, TouchableOpacity } from 'react-native'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import Header from '../../components/Header'
 import CommonHeader from '../../components/CommonHeader'
@@ -10,10 +10,15 @@ import reactotron from 'reactotron-react-native'
 import { PostAddToCart, addToCart, getCartItems } from '../../api/cart'
 import { useMutation, useQuery } from 'react-query'
 import useRefetch from '../../hooks/useRefetch'
-import Animated from 'react-native-reanimated'
+
 import CartItemCard from '../../components/cartItemCard'
 import { storage } from '../../../App'
 import LottieView from 'lottie-react-native'
+import Animated, { interpolate, Extrapolate, clamp } from 'react-native-reanimated';
+import { Swipeable } from 'react-native-gesture-handler'
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import Swipable from '../../components/swipable'
+
 const Cart = ({ navigation, route }) => {
 
   const { cartItems, setCartItems, } = useContext(CartContext);
@@ -47,7 +52,7 @@ const Cart = ({ navigation, route }) => {
     mutationKey: 'addToCart_query',
     mutationFn: PostAddToCart,
 
-    onSuccess: async(data) => {
+    onSuccess: async (data) => {
       let myStructure = data?.data?.data?.product.map((res) => (
         {
           _id: res?._id,
@@ -101,18 +106,21 @@ const Cart = ({ navigation, route }) => {
       qty: item.qty
     }));
     MutatePostAddCart({ product: updatedData, cartid: cart_id });
-   
+
   }
 
   const renderItem = useCallback(({ item, index }) => {
     return (
-      <>
-        <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
+
+      <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
+        {/* <Swipable> */}
           <CartItemCard key={index} item={item} />
-        </View>
-      </>
+        {/* </Swipable> */}
+
+      </View>
+
     )
-  }, [data?.data?.data, cartItems])
+  }, [data?.data?.data ?? [], cartItems ?? []])
 
   // const ListEmptyCompont = useCallback(()=>{
   //   return (
@@ -122,7 +130,42 @@ const Cart = ({ navigation, route }) => {
   //   )
   // },[])
 
-  if(isLoading) {
+
+
+  const renderRightActions = ({ ...props }) => {
+
+    reactotron.log({ ...props })
+    const opacity = interpolate(props.dragAnimatedValue, {
+      inputRange: [-150, 0],
+      outputRange: [1, 0],
+      extrapolate: 'clamp',
+    });
+
+    reactotron.log({ opacity })
+    // Ensure dragAnimatedValue is not NaN
+    // const opacity = interpolate(dragAnimatedValue, {
+    //   inputRange: [-150, 0],
+    //   outputRange: [1, 0],
+    //   extrapolate: 'clamp',
+    // });
+
+    return (
+      <Animated.View style={styles.swipedRow}>
+        <View style={styles.swipedConfirmationContainer}>
+          <Text style={styles.deleteConfirmationText}>Are you sure?</Text>
+        </View>
+        <Animated.View style={[styles.deleteButton]}>
+          <TouchableOpacity>
+            <Text style={styles.deleteButtonText}>Delete</Text>
+          </TouchableOpacity>
+        </Animated.View>
+      </Animated.View>
+    );
+  };
+
+
+
+  if (isLoading) {
     return (
       <View style={{
         flex: 1,
@@ -193,5 +236,28 @@ const styles = StyleSheet.create({
   emptyCart: {
     width: 251,
     height: 318
-  }
+  },
+  swipedRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    backgroundColor: '#fff',
+  },
+  swipedConfirmationContainer: {
+    marginRight: 10,
+  },
+  deleteConfirmationText: {
+    color: '#333',
+  },
+  deleteButton: {
+    backgroundColor: 'red',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 5,
+  },
+  deleteButtonText: {
+    color: '#fff',
+  },
 })
