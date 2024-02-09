@@ -1,29 +1,23 @@
-import { AppState, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { memo, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import CustomSlider from '../../components/CustomSlider'
 import CustomHeading from '../../components/CustomHeading'
 import CategoryCard from '../../components/CategoryCard'
-import ItemCard from '../../components/ItemCard'
 import { COLORS } from '../../constants/COLORS'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import DummySearch from '../../components/DummySearch'
 import ItemBox from '../../components/ItemBox'
-import locationContext from '../../context/location'
 import { useQuery } from 'react-query'
-import useRefetch from '../../hooks/useRefetch'
 import { HomeApi } from '../../api/home'
 import HomeLoader from '../../components/Loading/Home/HomeLoader'
-import { AnimatedView } from 'react-native-reanimated/lib/typescript/reanimated2/component/View'
-import Animated, { FadeInDown } from 'react-native-reanimated'
+import Animated from 'react-native-reanimated'
 import LocationContext from '../../context/location'
 import { useMMKVStorage } from 'react-native-mmkv-storage'
 import { storage } from '../../../App'
 import IonIcon from 'react-native-vector-icons/Ionicons'
 import { useFocusEffect } from '@react-navigation/native'
 import NoData from '../../components/NoData'
-import Header from '../../components/Header'
 import CartContext from '../../context/cart'
-import reactotron from 'reactotron-react-native'
 import { useFocusNotifyOnChangeProps } from '../../hooks/useFocusNotifyOnChangeProps'
 import ProductCard from '../../components/ProductCard'
 import moment from 'moment'
@@ -43,8 +37,6 @@ const Home = ({ navigation, route }) => {
     const { cartItems, setCartItems, cartChanges, cartTotal } = useContext(CartContext);
     const notifyOnChangeProps = useFocusNotifyOnChangeProps()
 
-    reactotron.log({cartTotal, cartItems})
-
 
     let payload = {
         // "coordinates": [
@@ -55,8 +47,6 @@ const Home = ({ navigation, route }) => {
 
     }
 
-
-    // reactotron.log({ payload })
 
     const { data, isLoading, refetch } = useQuery({
         queryKey: ['Home'],
@@ -234,7 +224,6 @@ const Home = ({ navigation, route }) => {
 
     }
 
-    reactotron.log({cartChanges})
 
     const addLeng = currentLoc?.address?.length;
 

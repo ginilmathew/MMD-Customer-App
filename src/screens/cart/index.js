@@ -4,7 +4,6 @@ import Header from '../../components/Header'
 import CommonHeader from '../../components/CommonHeader'
 import { COLORS } from '../../constants/COLORS'
 import CommonButton from '../../components/CommonButton'
-import ItemCard from '../../components/ItemCard'
 import CartContext from '../../context/cart'
 import reactotron from 'reactotron-react-native'
 import { PostAddToCart, addToCart, getCartItems } from '../../api/cart'
@@ -179,7 +178,6 @@ const Cart = ({ navigation, route }) => {
 
 
   const increaseQuantity = useCallback((item) => {
-    //reactotron.log({cartItems})
     addItemToCart({
       ...item,
       qty: item?.qty + 1
@@ -187,7 +185,6 @@ const Cart = ({ navigation, route }) => {
   }, [cartItems])
 
   const decreaseQuantity = useCallback((item) => {
-    //reactotron.log({cartItems})
     addItemToCart({
       ...item,
       qty: item?.qty - 1

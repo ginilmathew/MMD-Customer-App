@@ -1,4 +1,3 @@
-import { View, Text } from 'react-native'
 import React, { useCallback } from 'react'
 import Background from './Background'
 import { useForm } from 'react-hook-form'

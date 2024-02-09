@@ -3,9 +3,7 @@ import React, { useEffect } from 'react'
 import LottieView from 'lottie-react-native';
 import { COLORS } from '../../constants/COLORS';
 import Header from '../../components/Header';
-import CommonHeader from '../../components/CommonHeader';
 import { useNavigation } from '@react-navigation/native';
-import reactotron from 'reactotron-react-native';
 import moment from 'moment';
 
 const OrderPlaced = ({ route }) => {

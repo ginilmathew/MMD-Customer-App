@@ -1,8 +1,6 @@
-import React, { useState, useCallback, useEffect, useReducer, useContext, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import {
     ActivityIndicator,
-    Dimensions,
-    Image,
     ScrollView,
     StyleSheet,
     Text,
@@ -12,10 +10,15 @@ import {
 } from 'react-native';
 import Header from '../../components/Header';
 import CommonHeader from '../../components/CommonHeader';
+<<<<<<< HEAD
 import { COLORS } from '../../constants/COLORS'
 import reactotron from 'reactotron-react-native';
 import Animated, { interpolate } from 'react-native-reanimated';
 import { AddToCart } from '../../components/ItemCard';
+=======
+import { COLORS } from '../../constants/COLORS';
+import Animated from 'react-native-reanimated';
+>>>>>>> dipin
 import Entypo from 'react-native-vector-icons/Entypo'
 import { useMutation, useQuery } from 'react-query';
 import { PostAddToCart } from '../../api/cart';
@@ -31,7 +34,11 @@ import moment from 'moment';
 const SingleProduct = ({ navigation, route }) => {
 
     const { item } = route.params;
+<<<<<<< HEAD
   const {height}=useWindowDimensions()
+=======
+
+>>>>>>> dipin
     const [selectedUnit, setSelectedUnit] = useState(null)
     const [selectedVariant, setSelectedVariant] = useState(null)
     const [variantsList, setVariantsList] = useState([])
@@ -40,7 +47,11 @@ const SingleProduct = ({ navigation, route }) => {
     const [price, setPrice] = useState(null)
     const [quantity, setQuantity] = useState(0)
 
+<<<<<<< HEAD
 
+=======
+    const [cart_id] = useMMKVStorage('cart_id', storage);
+>>>>>>> dipin
 
     const [qty, setQty] = useState(null)
     const { cartItems, addItemToCart } = useContext(CartContext);
@@ -55,18 +66,14 @@ const SingleProduct = ({ navigation, route }) => {
         keepPreviousData: false
     })
 
-    //reactotron.log({ selectedVariant, variantsList })
-
     useEffect(() => {
 
         async function setInitialDatas(product) {
-            reactotron.log({ initialData: product })
 
             setSelectedUnit(product?.units?.[0])
             setUnitList(product?.units?.map(unit => unit?.name))
 
             setVariantsList(product?.units?.[0]?.variants?.map(vari => vari?.name))
-            //reactotron.log("in")
             setSelectedVariant(product?.units?.[0]?.variants?.[0])
 
 
@@ -138,8 +145,12 @@ const SingleProduct = ({ navigation, route }) => {
                     tax,
                     taxValue: (sellingPrice / 100) * tax
                 };
+<<<<<<< HEAD
 
                 reactotron.log({ price })
+=======
+    
+>>>>>>> dipin
             }
 
             setPrice(price)
@@ -396,8 +407,6 @@ const SingleProduct = ({ navigation, route }) => {
         //         discountPercentage: (100 * (parseFloat(costPrice) - parseFloat(sellingPrice)) / parseFloat(costPrice)).toFixed(2) * 1,
         //         unitName: selectedUnit?.name
         //     };
-
-        //     reactotron.log({ price })
         // }
 
         // setPrice(price)
@@ -463,7 +472,6 @@ const SingleProduct = ({ navigation, route }) => {
                                     }}
                                     onSelect={(selectedItem, index) => {
                                         changeUnit(index)
-                                        reactotron.log({ selectedItem, index })
                                         // setUnit(selectedItem)
                                         // variantRef?.current?.reset()
                                     }}

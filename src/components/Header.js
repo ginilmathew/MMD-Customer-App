@@ -13,7 +13,6 @@ import Animated, {
     useSharedValue,
     useAnimatedStyle,
     withSpring,
-    FadeInDown,
 } from 'react-native-reanimated';
 import { storage } from '../../App';
 

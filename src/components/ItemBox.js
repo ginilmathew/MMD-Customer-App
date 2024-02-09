@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import { COLORS } from '../constants/COLORS';
-import Animated, { FadeIn, FadeInDown, FadeOut } from 'react-native-reanimated';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 const ItemBox = ({ onPress, key, item, index }) => {
     return (
         <Animated.View key={key} entering={FadeInDown.delay(index * 300).duration(400).springify().damping(12)}>

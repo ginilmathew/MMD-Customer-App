@@ -1,7 +1,6 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import React, { useState, useMemo } from 'react';
 import CartContext from './index';
-import reactotron from 'reactotron-react-native';
 import { storage } from '../../../App';
 import { useMMKVStorage } from 'react-native-mmkv-storage';
 import moment from 'moment';
@@ -13,21 +12,13 @@ const CartProvider = ({ children }) => {
     const [cartsDatas, setCartDatas] = useMMKVStorage('cart', storage, []);
     const [cartTotal, setCartTotal] = useState(0)
 
-    //reactotron.log({cartsDatas})
-
     const addItemToCart = async(item) => {
-        reactotron.log({cartItems})
         //let carts = [...cartsDatas]
 
         //let cartss = await storage.getArrayAsync("cart")
         let carts = [...cartItems]
-
-
-        //reactotron.log({carts})
         
         let exists = await carts?.findIndex(cart => cart?._id === item?._id && cart?.unit?.id === item?.unit?.id && item?.variant?.name === cart?.variant?.name);
-
-        reactotron.log({exists})
 
         if(exists > -1){
             if(item?.qty === 0){
@@ -134,7 +125,6 @@ const CartProvider = ({ children }) => {
             });
             let find = updatedItems?.find((res) => res?.qty === 0);
             let final = updatedItems?.filter((res) => res?._id !== find?._id);
-            // reactotron.log({ find }, 'FINAL')
             return final
         });
     };

@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { COLORS } from '../constants/COLORS'
 import Ionicons from 'react-native-vector-icons/Ionicons'

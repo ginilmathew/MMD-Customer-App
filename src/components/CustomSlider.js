@@ -1,7 +1,6 @@
 import React, { memo, useCallback } from 'react';
 import { StyleSheet, View, TouchableOpacity, useWindowDimensions, Image } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
-import reactotron from 'reactotron-react-native';
 
 const CustomSlider = memo(({ item }) => {
   const { width, height } = useWindowDimensions();

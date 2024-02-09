@@ -1,14 +1,12 @@
-import { StyleSheet, Text, View, useWindowDimensions } from 'react-native'
+import { StyleSheet, View, useWindowDimensions } from 'react-native'
 import React from 'react'
 
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { COLORS } from '../../../constants/COLORS'
 import useOpacityAnimation from '../../../hooks/animationHook'
-import Animated, { FadeInDown, useAnimatedStyle } from 'react-native-reanimated'
+import Animated, { FadeInDown } from 'react-native-reanimated'
 import CustomHeading from '../../CustomHeading'
 import SkeletonItemCard from './ItemSkelton'
-
-
 
 const HomeLoader = () => {
 

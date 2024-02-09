@@ -1,11 +1,8 @@
-import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import React, { useContext } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { COLORS } from '../constants/COLORS';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import CartContext from '../context/cart';
-import { useNavigation } from '@react-navigation/core';
-import reactotron from 'reactotron-react-native';
-import moment from 'moment';
 import AddToCart from './AddToCart';
 import { Swipeable } from 'react-native-gesture-handler';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'

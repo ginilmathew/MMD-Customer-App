@@ -10,7 +10,6 @@ import { useQuery } from 'react-query'
 import { getProfile } from '../../api/Profile'
 import useRefetch from '../../hooks/useRefetch'
 import LocationContext from '../../context/location'
-import { navigationRef } from '../../navigation/RootNavigation'
 
 
 const Profile = ({ navigation }) => {

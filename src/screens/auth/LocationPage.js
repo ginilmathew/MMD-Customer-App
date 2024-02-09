@@ -3,10 +3,8 @@ import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { COLORS } from '../../constants/COLORS'
 import CommonButton from '../../components/CommonButton'
 import locationContext from '../../context/location'
-import { navigate } from '../../navigation/RootNavigation'
 import { PERMISSIONS, request } from 'react-native-permissions'
 import { storage } from '../../../App'
-import reactotron from 'reactotron-react-native'
 import Entypo from 'react-native-vector-icons/Entypo'
 
 
@@ -35,7 +33,6 @@ const LocationPage = ({ navigation }) => {
 
 
     const getLocationPermission = async() => {
-        reactotron.log("in")
         let permissions;
         if(Platform.OS === 'android'){
             permissions = await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
@@ -44,7 +41,6 @@ const LocationPage = ({ navigation }) => {
                 navigation.navigate('HomeNavigator')
             }
             else{
-                reactotron.log({permissions})
                 if(permissions === "blocked"){
                     setModal(true)
                 }
@@ -58,7 +54,6 @@ const LocationPage = ({ navigation }) => {
                 navigation.navigate('HomeNavigator')
             }
             else{
-                reactotron.log({permissions})
                 storage.setString("error", `Location Permission ${permissions} by the user`)
             }
         }
