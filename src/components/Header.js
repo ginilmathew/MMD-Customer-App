@@ -13,11 +13,14 @@ import Animated, {
     useSharedValue,
     useAnimatedStyle,
     withSpring,
-    FadeInDown,
 } from 'react-native-reanimated';
 import { storage } from '../../App';
+import { navigationRef } from '../navigation/RootNavigation';
+
+
 
 const Header = memo(({ onPress, text }) => {
+
     const { cartItems, setCartItems } = useContext(CartContext);
     const { setMode, location } = useContext(LocationContext);
     const [user] = useMMKVStorage('user', storage);
@@ -29,7 +32,6 @@ const Header = memo(({ onPress, text }) => {
     const animateBadgeJump = useCallback(() => {
         // Get the position of the button
         const buttonPositionY = 0; 
-     
         // Calculate the initial position of the badge
         const initialPosition = buttonPositionY - 20; // Adjust the initial position as needed
         // Animate the badge to the top of the badge
@@ -62,15 +64,16 @@ const Header = memo(({ onPress, text }) => {
     }, [navigation]);
 
     const cartPage = useCallback(() => {
-        if (cartItems?.length > 0) {
-            const updatedData = cartItems?.map((item) => ({
-                ...item.item,
-                qty: item.qty,
-            }));
-            mutate({ product: updatedData, cartId: cart_id ? cart_id : null });
-        } else {
-            navigation.navigate('Cart', { cart_id: null });
-        }
+        navigation.navigate('Cart', { cart_id: null });
+        // if (cartItems?.length > 0) {
+        //     const updatedData = cartItems?.map((item) => ({
+        //         ...item.item,
+        //         qty: item.qty,
+        //     }));
+        //     //mutate({ product: updatedData, cartId: cart_id ? cart_id : null });
+        // } else {
+        //     navigation.navigate('Cart', { cart_id: null });
+        // }
     }, [navigation, cartItems, cart_id]);
 
     const textLeng = location?.address?.length;
@@ -126,17 +129,21 @@ const Header = memo(({ onPress, text }) => {
 
                 {user && (
                     <View style={styles.iconContainer}>
-                        <TouchableOpacity onPress={cartPage}>
-                            <IonIcons name="cart" size={20} color={COLORS.light} />
-                            <Animated.View
-                                style={[
-                                    styles.cartBadge,
-                                    { opacity: cartItems.length > 0 ? 1 : 0 },
-                                    badgeAnimatedStyle,
-                                ]}>
-                                <Text style={styles.countStyle}>{cartItems?.length}</Text>
-                            </Animated.View>
-                        </TouchableOpacity>
+                    { 
+                            navigationRef.getCurrentRoute()?.name !== 'SingleProduct' && (
+                                <TouchableOpacity onPress={cartPage}>
+                                    <IonIcons name="cart" size={20} color={COLORS.light} />
+                                    <Animated.View
+                                        style={[
+                                            styles.cartBadge,
+                                            { opacity: cartItems.length > 0 ? 1 : 0 },
+                                            badgeAnimatedStyle,
+                                        ]}>
+                                        <Text style={styles.countStyle}>{cartItems?.length}</Text>
+                                    </Animated.View>
+                                </TouchableOpacity>
+                            )
+                    }
                         <TouchableOpacity onPress={notPage}>
                             <View style={styles.badgeStyle} />
                             <IonIcons name="notifications" size={20} color={COLORS.light} />

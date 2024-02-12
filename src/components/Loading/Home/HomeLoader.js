@@ -1,14 +1,12 @@
-import { StyleSheet, Text, View, useWindowDimensions } from 'react-native'
+import { StyleSheet, View, useWindowDimensions } from 'react-native'
 import React from 'react'
 
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { COLORS } from '../../../constants/COLORS'
 import useOpacityAnimation from '../../../hooks/animationHook'
-import Animated, { FadeInDown, useAnimatedStyle } from 'react-native-reanimated'
+import Animated, { FadeInDown } from 'react-native-reanimated'
 import CustomHeading from '../../CustomHeading'
 import SkeletonItemCard from './ItemSkelton'
-
-
 
 const HomeLoader = () => {
 
@@ -26,7 +24,8 @@ const HomeLoader = () => {
         </Animated.View>
         <Animated.View style={[styles.sliderBox, { opacity }]} entering={FadeInDown.easing().delay(200)}>
         </Animated.View>
-        <CustomHeading label={'Categories'} hide={false} marginH={0} />
+        <View style={{marginVertical:5}}></View>
+        {/* <CustomHeading label={'Categories'} hide={false} marginH={0} /> */}
         <View style={[styles.categorymain]}>
           {Array(5).fill()?.map((_, index) => {
             const uniqueKey = `category_${index}`; // Generate a unique key
@@ -35,7 +34,8 @@ const HomeLoader = () => {
             );
           })}
         </View>
-        <CustomHeading label={'Popular Products'} hide={false} marginH={0} />
+        <View style={{marginVertical:5}}></View>
+        {/* <CustomHeading label={'Popular Products'} hide={false} marginH={0} /> */}
         {Array(3).fill()?.map((_, index) => {
           const uniqueKey = `skeleton_${index}`; // Generate a unique key
           return (

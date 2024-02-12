@@ -1,30 +1,26 @@
-import { AppState, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { memo, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import CustomSlider from '../../components/CustomSlider'
 import CustomHeading from '../../components/CustomHeading'
 import CategoryCard from '../../components/CategoryCard'
-import ItemCard from '../../components/ItemCard'
 import { COLORS } from '../../constants/COLORS'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import DummySearch from '../../components/DummySearch'
 import ItemBox from '../../components/ItemBox'
-import locationContext from '../../context/location'
 import { useQuery } from 'react-query'
-import useRefetch from '../../hooks/useRefetch'
 import { HomeApi } from '../../api/home'
 import HomeLoader from '../../components/Loading/Home/HomeLoader'
-import { AnimatedView } from 'react-native-reanimated/lib/typescript/reanimated2/component/View'
-import Animated, { FadeInDown } from 'react-native-reanimated'
+import Animated from 'react-native-reanimated'
 import LocationContext from '../../context/location'
 import { useMMKVStorage } from 'react-native-mmkv-storage'
 import { storage } from '../../../App'
 import IonIcon from 'react-native-vector-icons/Ionicons'
 import { useFocusEffect } from '@react-navigation/native'
 import NoData from '../../components/NoData'
-import Header from '../../components/Header'
 import CartContext from '../../context/cart'
-import reactotron from 'reactotron-react-native'
 import { useFocusNotifyOnChangeProps } from '../../hooks/useFocusNotifyOnChangeProps'
+import ProductCard from '../../components/ProductCard'
+import moment from 'moment'
 import CartButton from '../../components/CartButton'
 
 
@@ -37,10 +33,9 @@ const Home = ({ navigation, route }) => {
     const { currentLoc, setMode, getLocation, mode, setHomeFocus, location } = useContext(LocationContext)
     const checkLocRef = useRef(null)
     const [cart_id] = useMMKVStorage('cart_id', storage);
-    const { cartItems, setCartItems } = useContext(CartContext);
+    const [time, setTime] = useState(moment().unix())
+    const { cartItems, setCartItems, cartChanges, cartTotal } = useContext(CartContext);
     const notifyOnChangeProps = useFocusNotifyOnChangeProps()
-
-    //reactotron.log({currentLoc, location})
 
 
     let payload = {
@@ -52,8 +47,6 @@ const Home = ({ navigation, route }) => {
 
     }
 
-
-    // reactotron.log({ payload })
 
     const { data, isLoading, refetch } = useQuery({
         queryKey: ['Home'],
@@ -68,10 +61,9 @@ const Home = ({ navigation, route }) => {
 
 
     useFocusEffect(useCallback(() => {
-        // reactotron.log({location})
-        // setHomeFocus(true);
-        // if (location?.coord?.latitude !== checkLocRef?.current?.latitude) {
-        //     checkLocRef.current = currentLoc?.coord;
+
+        setTime(moment().unix())
+
         if (location?.address) {
             refetch()
         }
@@ -79,14 +71,6 @@ const Home = ({ navigation, route }) => {
         // }
     }, [location?.address]))
 
-
-    React.useEffect(() => {
-        const unsubscribe = navigation.addListener('blur', () => {
-            setHomeFocus(false);
-        });
-
-        return unsubscribe;
-    }, [navigation]);
 
 
     const NavigateToCategory = useCallback(() => {
@@ -125,7 +109,7 @@ const Home = ({ navigation, route }) => {
             };
         });
 
-        setCartItems(updatedCartItems);
+        //setCartItems(updatedCartItems);
     }, [data?.data?.data]);
 
 
@@ -171,16 +155,19 @@ const Home = ({ navigation, route }) => {
         );
     }, [data?.data?.data]);
 
+    
 
-    const renderItem = useCallback(({ item, index }) => {
+
+    const renderItem = ({ item, index }) => {
         return (
             <>
                 <Animated.View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
-                    <ItemCard key={index} item={item} />
+                    {/* <ItemCard key={index} item={item} /> */}
+                    <ProductCard key={index} item={item} cartItems={cartItems} time={time} />
                 </Animated.View>
             </>
         )
-    }, [data?.data?.data])
+    }
 
 
     const ListFooterComponent = useCallback(() => {
@@ -189,7 +176,7 @@ const Home = ({ navigation, route }) => {
 
         return (
             allFeatures.length > 0 && (
-                <View style={{ marginBottom: 90 }}>
+                <View style={{ marginBottom: 130 }}>
                     <View style={{ marginTop: 20 }}>
                         <CustomHeading label={'HighLights'} hide={false} marginH={20} />
                     </View>
@@ -198,7 +185,7 @@ const Home = ({ navigation, route }) => {
                             <ItemBox onPress={() => NavigateToFeatured(res)} key={res?._id} item={res} index={index} />
                         ))}
                     </View>
-                    <View style={{ marginBottom: 40 }} />
+                    {/* <View style={{ marginBottom: 40 }} /> */}
                 </View>
             )
         );
@@ -224,6 +211,11 @@ const Home = ({ navigation, route }) => {
     // const toNotification = () => {
     //     navigation.navigate('Notification')
     // }
+
+
+    const changeAdd = () => {
+
+    }
 
 
     const addLeng = currentLoc?.address?.length;
@@ -264,6 +256,7 @@ const Home = ({ navigation, route }) => {
                 windowSize={10}
                 getItemLayout={(data, index) => ({ length: 80, offset: 80 * index, index })}
                 ListEmptyComponent={<NoData heights={500} />}
+                extraData={cartTotal}
             />
 
             <CartButton bottom={60} />

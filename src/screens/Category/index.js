@@ -1,9 +1,9 @@
 import React, { memo, useCallback } from 'react';
-import { FlatList, StyleSheet, View, Dimensions, useWindowDimensions } from 'react-native';
+import { FlatList, StyleSheet, View, Dimensions } from 'react-native';
 import CategoryCard from '../../components/CategoryCard';
 import Header from '../../components/Header';
 import CommonHeader from '../../components/CommonHeader';
-import Animated, { batch, FadeInDown } from 'react-native-reanimated';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 import { getCategory } from '../../api/category';
 import useRefetch from '../../hooks/useRefetch'
 import { useQuery } from 'react-query';

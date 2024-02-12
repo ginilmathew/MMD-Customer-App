@@ -1,10 +1,9 @@
 import React, { memo, useCallback, useContext, useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { COLORS } from '../constants/COLORS';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import CartContext from '../context/cart';
 import { useNavigation } from '@react-navigation/core';
-import reactotron from 'reactotron-react-native';
 import moment from 'moment';
 
 const CartItemCard = ({ onPress, item, key }) => {
@@ -14,9 +13,6 @@ const CartItemCard = ({ onPress, item, key }) => {
     let products = item.products ? item.products[0] : item?.item;
     // let unitID = products?.unit.id;
     // let varientName = products?.variant?.name;
-     
-    // reactotron.log({unitID})
-    // reactotron.log({varientName})
 
 
     const BASEURL = products?.imageBasePath ?? null;
@@ -127,51 +123,6 @@ const CartItemCard = ({ onPress, item, key }) => {
     const NavigateToSingleProduct = useCallback(() => {
         navigation.navigate('SingleProduct', { item: item?.item })
     }, [navigation])
-
-
-
-
-
-
-
-  
-    // TouchableOpacity onPress={NavigateToSingleProduct}
-
-    // useEffect(() => {
-    //     if (item) {
-    //         let products = item.products ? item.products[0].units[0].variants.map(item => (
-    //             item
-    //         )) : item?.units?.[0]?.variants?.map(item => (
-    //             item
-    //         ));
-
-    //         let productsWithOffer = products.filter(product => product.offerPrice !== null);
-
-    //         // If there are products with offer prices, find the one with the lowest offer price
-    //         if (productsWithOffer.length > 0) {
-    //             let lowestOfferProduct = productsWithOffer.reduce((prev, current) => {
-    //                 return parseFloat(prev.offerPrice) < parseFloat(current.offerPrice) ? prev : current;
-    //             });
-    //             setPrice({
-    //                 sellingPrice: lowestOfferProduct?.sellingPrice,
-    //                 offerPrice: lowestOfferProduct?.offerPrice === "" ? null : lowestOfferProduct?.offerPrice,
-    //                 costPrice: lowestOfferProduct?.costPrice
-    //             });
-    //         } else {
-    //             // If there are no products with offer prices, find the one with the lowest selling price
-    //             let lowestSellingProduct = products.reduce((prev, current) => {
-    //                 return parseFloat(prev.sellingPrice) < parseFloat(current.sellingPrice) ? prev : current;
-    //             });
-    //             setPrice({
-    //                 sellingPrice: lowestSellingProduct?.sellingPrice,
-    //                 offerPrice: lowestSellingProduct?.offerPrice === "" ? null : lowestSellingProduct?.offerPrice,
-    //                 costPrice: lowestSellingProduct?.costPrice
-    //             });
-    //         }
-    //     }
-    // }, [item])
-
-
 
 
  

@@ -1,21 +1,24 @@
-import { ActivityIndicator, FlatList, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
-import React, { useCallback, useState } from 'react'
+import { ActivityIndicator, FlatList, StyleSheet, View, useWindowDimensions } from 'react-native'
+import React, { useCallback, useContext, useState } from 'react'
 import Header from '../../components/Header'
 import CommonHeader from '../../components/CommonHeader'
 import CustomSearch from '../../components/CustomSearch'
 import { COLORS } from '../../constants/COLORS'
-import { useMutation, useQuery } from 'react-query'
+import { useMutation } from 'react-query'
 import { getSearchList } from '../../api/Search'
-import useRefetch from '../../hooks/useRefetch'
-import reactotron from 'reactotron-react-native'
 import Animated, { FadeInDown } from 'react-native-reanimated'
-import ItemCard from '../../components/ItemCard'
 import NoData from '../../components/NoData'
+import CartContext from '../../context/cart'
+import moment from 'moment'
+import { useFocusEffect } from '@react-navigation/native'
+import ProductCard from '../../components/ProductCard'
 
 const Search = () => {
 
 
     const [value, setValue] = useState('')
+    const { cartItems } = useContext(CartContext);
+    const [time, setTime] = useState(moment().unix())
 
     const { height } = useWindowDimensions()
 
@@ -35,6 +38,12 @@ const Search = () => {
         }, 2000);
     }, [value]);
 
+    useFocusEffect(
+        useCallback(() => {
+            setTime(moment().unix())
+        }, [])
+    )
+
 
     const AnimatedStyle = useCallback((index)=>{
         return FadeInDown.delay(index * 300).duration(200).springify().damping(12);
@@ -45,11 +54,12 @@ const Search = () => {
         return (
             <>
                 <Animated.View entering={AnimatedStyle(index)} style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
-                    <ItemCard key={index} item={item} />
+                    {/* <ItemCard key={index} item={item} /> */}
+                    <ProductCard key={item._id} item={item} cartItems={cartItems} time={time} />
                 </Animated.View>
             </>
         )
-    }, [data?.data?.data])
+    }, [time])
 
 
     const ListFooter = () => {

@@ -1,28 +1,21 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import DatePicker from 'react-native-date-picker'
-import reactotron from 'reactotron-react-native'
 import moment from 'moment'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import CustomInput from '../../components/CustomInput'
 import { COLORS } from '../../constants/COLORS'
-import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
-import CustomDropdown from '../../components/CommonDropDown'
+import { Controller } from 'react-hook-form'
 import { useMutation } from 'react-query'
 import { ChooseSlot } from '../../api/ChooseSlot'
 import SlotContext from '../../context/slot'
 
-const ChooseDate = ({slotSelected}) => {
+const ChooseDate = ({ slotSelected }) => {
     const [date, setDate] = useState(new Date())
     const [open, setOpen] = useState(false)
     const [chosenDate, setChosenDate] = useState(null)
     const [storeData, setStoreData] = useState(null)
 
     const { setUseSlot } = useContext(SlotContext);
-
-    reactotron.log(storeData?.data?.data, "storeData")
 
     const handleDateChange = (selectedDate) => {
         const formattedDate = moment(`${moment(selectedDate).format("YYYY-MM-DD")} ${moment().format("HH:mm")}`, "YYYY-MM-DD HH:mm").format("YYYY-MM-DD HH:mm")
@@ -40,69 +33,80 @@ const ChooseDate = ({slotSelected}) => {
         mutationKey: 'SlotPlace',
         mutationFn: ChooseSlot,
         onSuccess: (data) => {
-            reactotron.log(data, "DAYS")
             setStoreData(data)
         }
     })
 
-    
+
 
     const [visible, setVisible] = useState(false);
     const [selectedValue, setSelectedValue] = useState(null);
-
-    reactotron.log(selectedValue, "selectedValue")
 
     const handleToggleDropdown = () => {
         setVisible(!visible);
     };
 
     const handleSelectOption = (value) => {
-        reactotron.log(value, "VAlUE")
         setSelectedValue(value);
         setVisible(false);
     };
 
     useEffect(() => {
-      if(chosenDate && selectedValue) {
-        setUseSlot({
-            date: chosenDate,
-            idData : selectedValue
-        })
-      }
+        if (chosenDate && selectedValue) {
+            setUseSlot({
+                date: chosenDate,
+                idData: selectedValue
+            })
+        }
     }, [chosenDate, selectedValue])
-    
+
 
     return (
         <View style={{ width: "100%" }}>
-            <TouchableOpacity title="Open" onPress={() => setOpen(true)} style={styles.input}>
-                <View>
-                    {chosenDate ? (
-                        <Text style={styles.txtBtn}>{moment(chosenDate).format("DD-MM-YYYY")}</Text>
-                    ) : (
-                        <Text style={styles.txtBtn}>Choose Delivery Date</Text>
-                    )}
+            {/* <Controller
+                control={control}
+                name={name}
+                rules={{
+                    required: true
+                }}
+                render={({ fieldState: { error }, field: { onChange, value } }) => (
+                    <> */}
+                        <TouchableOpacity title="Open" onPress={() => setOpen(true)} style={styles.input}>
+                            <View>
+                                {chosenDate ? (
+                                    <Text style={styles.txtBtn}>{moment(chosenDate).format("DD-MM-YYYY")}</Text>
+                                ) : (
+                                    <Text style={styles.txtBtn}>Choose Delivery Date</Text>
+                                )}
 
 
-                    <DatePicker
-                        modal
-                        open={open}
-                        mode='date'
-                        minimumDate={new Date()}
-                        date={date}
-                        onConfirm={handleDateChange}
-                        onCancel={() => {
-                            setOpen(false)
-                        }}
-                    />
-                </View>
+                                <DatePicker
+                                    modal
+                                    open={open}
+                                    mode='date'
+                                    minimumDate={new Date()}
+                                    date={date}
+                                    onConfirm={handleDateChange} // Update local state for chosenDate
+                                    //   onConfirm={date => {
+                                    //     handleDateChange(date); // Update local state for chosenDate
+                                    //     onChange(date); // Update form value
+                                    //   }}
+                                    onCancel={() => {
+                                        setOpen(false)
+                                    }}
+                                />
+                            </View>
 
-                <Ionicons name="calendar" size={20} color="black" />
-            </TouchableOpacity>
+                            <Ionicons name="calendar" size={20} color="black" />
+                        </TouchableOpacity>
+                        {/* {error && <Text style={styles.error}>{error?.message}</Text>}
+                    </>
+                )} /> */}
 
             {chosenDate && (
                 <View style={styles.container}>
                     <TouchableOpacity onPress={handleToggleDropdown} style={styles.button}>
-                        <Text style={styles.buttonText}>{selectedValue?.fromTime ? selectedValue.fromTime + " ~ " + selectedValue.toTime  : 'Select an option'}</Text>
+                        <Text style={styles.buttonText}>{selectedValue?.fromTime ? selectedValue.fromTime + " ~ " + selectedValue.toTime : 'Select an option'}</Text>
                         <Ionicons name="chevron-down" size={20} color={COLORS.primary} />
                     </TouchableOpacity>
 
@@ -110,13 +114,14 @@ const ChooseDate = ({slotSelected}) => {
                         <View style={styles.dropdown}>
                             {storeData?.data?.data?.map((item, index) => (
                                 <TouchableOpacity key={index} style={styles.option} onPress={() => handleSelectOption(item)}>
-                                    <Text style={{color: COLORS.light, fontFamily: "Poppins-Medium" }}>{item?.fromTime} ~ {item?.toTime}</Text>
+                                    <Text style={{ color: COLORS.light, fontFamily: "Poppins-Medium" }}>{item?.fromTime} ~ {item?.toTime}</Text>
                                 </TouchableOpacity>
                             ))}
                         </View>
                     )}
                 </View>
             )}
+            {/* {chosenDate && !selectedValue && <Text style={styles.error}>Please select an option</Text>} */}
 
         </View>
     )
@@ -173,4 +178,11 @@ const styles = StyleSheet.create({
         zIndex: 100,
         padding: 10,
     },
+    error: {
+        marginTop: 5,
+        fontSize: 12,
+        color: COLORS.red,
+        textAlign: 'left',
+        fontFamily: "Poppins-Regular"
+    }
 })

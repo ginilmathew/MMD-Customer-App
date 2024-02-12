@@ -1,7 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { memo, useCallback } from 'react'
 import { COLORS } from '../../constants/COLORS'
-import reactotron from 'reactotron-react-native'
 import moment from 'moment'
 import { useNavigation } from '@react-navigation/native'
 
@@ -9,35 +8,20 @@ const OrderCard = ({ item }) => {
 
     const navigation = useNavigation();
 
-
-
     const statusColor = () => {
-        let color;
-        switch (item?.orderStatus) {
-            case "created":
-                color = COLORS.status_created;
-                break;
-            case "Accept":
-                color = COLORS.status_accepted;
-                break;
-            case "Out for delivery":
-                color = COLORS.status_out;
-                break;
-            case "Delivered":
-                color = COLORS.status_completed;
-                break;
-            case "Cancelled":
-                color = COLORS.status_cancelled;
-                break;
-            case "paid":
-                color = COLORS.status_paid;
-                break;
-            default:
-                color = COLORS.light; // Assuming you have a default color defined
-                break;
-        }
+        const statusMapping = {
+            "created": COLORS.status_created,
+            "Accept": COLORS.status_accepted,
+            "Out for delivery": COLORS.status_out,
+            "Delivered": COLORS.status_completed,
+            "Cancelled": COLORS.status_cancelled,
+            "paid": COLORS.status_paid,
+        };
+    
+        const color = statusMapping[item?.orderStatus] || COLORS.light;
+    
         return (
-            <Text style={[styles.statusText, { color: color }]}>{item?.orderStatus}</Text>
+            <Text style={[styles.statusText, { color }]}>{item?.orderStatus}</Text>
         );
     }
 

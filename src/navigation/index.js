@@ -1,46 +1,25 @@
-import { StyleSheet, Text, View, Modal, useWindowDimensions, Image, AppState, TouchableOpacity } from 'react-native'
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import { StyleSheet, View, Modal, useWindowDimensions, Image } from 'react-native'
+import React, { useCallback, useContext, useEffect } from 'react'
 import { navigationRef } from './RootNavigation';
 import SplashScreen from 'react-native-splash-screen'
 import Login from '../screens/auth/Login';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NavigationContainer, useNavigation, NavigationState, useRoute } from '@react-navigation/native';
-import HomeNavigation from './HomeNavigation';
+import { NavigationContainer } from '@react-navigation/native';
 import Register from '../screens/auth/Register';
 import Forget from '../screens/auth/Forget';
-import Category from '../screens/Category';
-import AllProducts from '../screens/AllProducts';
-import SingleCategory from '../screens/Category/singleCategory';
-import SingleOrder from '../screens/orders/SingleOrder';
-import NotificationPage from '../screens/notification';
-import Cart from '../screens/cart';
-import { FadeIn } from 'react-native-reanimated';
-import Search from '../screens/search';
-import SingleProduct from '../screens/AllProducts/SingleProduct';
 import { useMMKVStorage } from 'react-native-mmkv-storage';
 import { storage } from '../../App';
 import { useNetInfo } from '@react-native-community/netinfo';
 import Toast from '../components/Toast';
-import FeaturedProduct from '../screens/featuredProducts';
-import Checkout from '../screens/checkout';
 import LocationPage from '../screens/auth/LocationPage';
 import { COLORS } from '../constants/COLORS';
-import EditProfile from '../screens/Profile/EditProfile';
-import AddAddress from '../screens/Profile/AddAddress';
 import ChangePasswd from '../screens/Profile/ChangePasswd';
 import GoogleLocation from '../screens/Profile/GoogleLocation';
-import MapAddress from '../screens/Profile/MapAddress';
 import LocationContext from '../context/location';
-import Entypo from 'react-native-vector-icons/Entypo'
-import { PERMISSIONS, RESULTS, check } from 'react-native-permissions';
-import OrderPlaced from '../screens/checkout/OrderPlaced';
-import EditAddress from '../screens/checkout/EditAddress';
-import ProcessingOrder from '../screens/checkout/ProcessingOrder';
-import reactotron from 'reactotron-react-native';
 import CartContext from '../context/cart';
 import { useAppState } from '../hooks/appStateManagement';
 import { useMutation } from 'react-query';
-import { PostAddToCart } from '../api/cart';
+import { PostAddToCart, getCartItems } from '../api/cart';
 import AuthNavigation from './AuthNavigation';
 
 
@@ -52,10 +31,11 @@ const Navigation = ({ location }) => {
     const [cart_id, setCartId] = useMMKVStorage('cart_id', storage);
     const { isConnected } = useNetInfo();
     const [user] = useMMKVStorage('user', storage);
-    const [error] = useMMKVStorage('error', storage)
-    const [success] = useMMKVStorage('success', storage);
+    const [error] = useMMKVStorage('error', storage, '')
+    const [success] = useMMKVStorage('success', storage, '');
     const [homeAdd] = useMMKVStorage('homeAdd', storage, false)
     const { getLocation, location: locationData } = useContext(LocationContext)
+
 
     const { cartItems, setCartItems } = useContext(CartContext);
     const { mutate } = useMutation({
@@ -67,30 +47,44 @@ const Navigation = ({ location }) => {
         }
     })
 
+    const { mutate: getCarts } = useMutation({
+        mutationKey: 'cartItems',
+        mutationFn: getCartItems,
+        onSuccess: (data) => {
+            if(data?.data?.data?.product){
+                setCartItems(data?.data?.data?.product)
+            }
+          
+        }
+      });
+
 
     const appState = useAppState();
 
-    //reactotron.log({appState})
-
     useEffect(() => {
+        if(cart_id && user){
+            getCarts({ cartId: cart_id })
+        } else if(cart_id) {
+            storage.setString('cart_id', '')
+        }
+
         if(location){
             getLocation()
         }
-    }, [location])
+    }, [cart_id, location])
     
 
 
     useEffect(() => {
-        if ((appState === "background" && cartItems?.length > 0)) {
-            //reactotron.log('BACKGROUND API')
+        if (((appState === "background" || appState === "inactive") && cartItems?.length > 0)) {
             const postCart = async () => {
                 try {
-                    const updatedData = cartItems?.map(item => ({
-                        ...item.item,
-                        qty: item.qty
-                    }));
-                    mutate({ product: updatedData, cartId: cart_id })
-
+                    // const updatedData = cartItems?.map(item => ({
+                    //     ...item.item,
+                    //     qty: item.qty
+                    // }));
+                   if(user) mutate({ product: cartItems, cartId: cart_id })
+                   else await storage.setStringAsync('cart_id', '')
 
                 } catch (err) {
 
@@ -131,6 +125,27 @@ const Navigation = ({ location }) => {
                         <Stack.Screen name='ChangePasswd' component={ChangePasswd} />
                     </Stack.Navigator>
                 </NavigationContainer>
+
+
+                {
+                    isConnected !== null && !isConnected && (
+                        <Modal visible transparent>
+                            <View style={{ height, width, flex: 1, backgroundColor: COLORS.white, justifyContent: 'center', alignItems: 'center' }}>
+                                <Image
+                                    style={{ height: 293, width: 250, resizeMode: 'contain' }}
+                                    source={require('../images/no_internet.jpg')}
+                                />
+                            </View>
+                        </Modal>
+
+                    )
+                }
+
+                <Modal visible={!!error || !!success} transparent>
+                    <View style={{ backgroundColor: 'rgba(0,0,0,.1)', flex: 1 }}>
+                        <Toast error={error} success={success} />
+                    </View>
+                </Modal>
             </>
         )
     }
@@ -152,7 +167,7 @@ const Navigation = ({ location }) => {
                         <Stack.Screen name='GoogleLocation' component={GoogleLocation} />
                     </Stack.Navigator>
                 </NavigationContainer>
-
+                
                 {
                     isConnected !== null && !isConnected && (
                         <Modal visible transparent>
@@ -172,7 +187,6 @@ const Navigation = ({ location }) => {
                         <Toast error={error} success={success} />
                     </View>
                 </Modal>
-                
             </>
         )
     }
