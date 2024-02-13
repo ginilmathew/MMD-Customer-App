@@ -204,7 +204,7 @@ const Checkout = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <Header />
+      <Header icon={true}/>
       <CommonHeader heading={"Checkout"} backBtn />
       <ScrollView contentContainerStyle={styles.innerContainer}>
 

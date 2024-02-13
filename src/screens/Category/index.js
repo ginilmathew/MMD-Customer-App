@@ -40,7 +40,7 @@ const Category = () => {
     const ListHeaderComponent = memo(() => {
         return (
             <View>
-                <Header />
+             <Header icon={true}/>
                 <CommonHeader heading={"Categories"} backBtn={true} />
             </View>
         )

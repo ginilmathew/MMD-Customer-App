@@ -18,7 +18,7 @@ import CartButton from '../../components/CartButton'
 
 const SingleCategory = ({ route }) => {
 
-    const {height} = useWindowDimensions();
+    const { height } = useWindowDimensions();
     const { cartItems } = useContext(CartContext);
     const [time, setTime] = useState(moment().unix())
 
@@ -72,7 +72,7 @@ const SingleCategory = ({ route }) => {
     const ListHeaderComponents = useCallback(({ _, index }) => {
         return (
             <View style={{ backgroundColor: COLORS.white }}>
-                <Header />
+                <Header icon={true} />
                 <CommonHeader heading={data?.data?.data?.category?.name || []} backBtn />
                 <ScrollView
                     horizontal={true}
@@ -84,7 +84,7 @@ const SingleCategory = ({ route }) => {
             </View>
         )
 
-    }, [AnimatedStyles, data?.data?.data, subList,listItem])
+    }, [AnimatedStyles, data?.data?.data, subList, listItem])
 
     const renderItem = useCallback(({ item, index }) => {
         return (

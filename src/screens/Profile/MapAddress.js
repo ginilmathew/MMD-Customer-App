@@ -117,7 +117,7 @@ const MapAddress = ({ navigation, route }) => {
 
     return (
         <>
-            <Header />
+           <Header icon={true}/>
             <CommonHeader heading={'Add Address'} backBtn />
 
             <ScrollView contentContainerStyle={mode === 'map' && { flex: 1 }} style={styles.container} keyboardShouldPersistTaps='always'>

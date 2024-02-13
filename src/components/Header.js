@@ -19,7 +19,7 @@ import { navigationRef } from '../navigation/RootNavigation';
 
 
 
-const Header = memo(({ onPress, text }) => {
+const Header = memo(({ onPress, text, icon }) => {
 
     const { cartItems, setCartItems } = useContext(CartContext);
     const { setMode, location } = useContext(LocationContext);
@@ -31,7 +31,7 @@ const Header = memo(({ onPress, text }) => {
 
     const animateBadgeJump = useCallback(() => {
         // Get the position of the button
-        const buttonPositionY = 0; 
+        const buttonPositionY = 0;
         // Calculate the initial position of the badge
         const initialPosition = buttonPositionY - 20; // Adjust the initial position as needed
         // Animate the badge to the top of the badge
@@ -129,8 +129,8 @@ const Header = memo(({ onPress, text }) => {
 
                 {user && (
                     <View style={styles.iconContainer}>
-                    { 
-                            navigationRef.getCurrentRoute()?.name !== 'SingleProduct' && (
+                        {
+                            icon && (
                                 <TouchableOpacity onPress={cartPage}>
                                     <IonIcons name="cart" size={20} color={COLORS.light} />
                                     <Animated.View
@@ -143,7 +143,7 @@ const Header = memo(({ onPress, text }) => {
                                     </Animated.View>
                                 </TouchableOpacity>
                             )
-                    }
+                        }
                         <TouchableOpacity onPress={notPage}>
                             <View style={styles.badgeStyle} />
                             <IonIcons name="notifications" size={20} color={COLORS.light} />

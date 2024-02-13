@@ -26,7 +26,7 @@ const OrderPlaced = ({ route }) => {
 
     return (
         <View style={styles.container}>
-            <Header />
+             <Header icon={true}/>
             <View style={styles.innerContainer}>
                 <LottieView source={require('../../lottie/orderPlaced.json')} autoPlay loop style={styles.lottieStyle} />
                 <View style={styles.idStyle}>

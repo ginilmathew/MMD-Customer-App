@@ -35,7 +35,7 @@ const NotificationPage = () => {
 
     return (
         <View style={styles.container}>
-            <Header />
+           <Header icon={true}/>
             <CommonHeader heading={"Notifications"} backBtn />
             <View style={styles.innerContainer}>
                 <FlatList

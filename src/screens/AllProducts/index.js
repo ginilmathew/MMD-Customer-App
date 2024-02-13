@@ -96,7 +96,7 @@ const AllProducts = ({ navigation }) => {
 
     return (
         <View style={{ backgroundColor: '#fff' }}>
-            <Header />
+            <Header icon={true}/>
             <CommonHeader heading={"Products"} backBtn={true} />
             <FlatList
                 data={data?.pages?.map(page => page?.data?.data?.data)?.flat()}

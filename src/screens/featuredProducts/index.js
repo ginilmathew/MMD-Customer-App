@@ -39,7 +39,7 @@ const FeaturedProduct = ({ route }) => {
     const ListHeaderComponents = useCallback(() => {
         return (
             <>
-                <Header />
+                <Header icon={true}/>
                 <CommonHeader heading={name} backBtn />
             </>
         )
