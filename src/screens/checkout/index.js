@@ -1,4 +1,4 @@
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useContext, useState } from 'react'
 import { COLORS } from '../../constants/COLORS'
 import CommonHeader from '../../components/CommonHeader'
@@ -7,7 +7,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import SubHeading from '../../components/SubHeading'
 import CommonButton from '../../components/CommonButton'
 import { useNavigation } from '@react-navigation/native'
-import reactotron from 'reactotron-react-native'
 import CartContext from '../../context/cart'
 import { useMutation, useQuery } from 'react-query'
 import useRefetch from '../../hooks/useRefetch'
@@ -21,7 +20,12 @@ import RazorpayCheckout from 'react-native-razorpay';
 import ChooseDate from './ChooseDate'
 import SlotContext from '../../context/slot'
 import { UpdateOrder } from '../../api/updateOrder'
-import CheckoutItemCard from '../../components/CheckoutItemCard'
+import CheckoutCard from '../../components/CheckoutCard'
+import { useForm } from 'react-hook-form'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup';
+import reactotron from 'reactotron-react-native'
+
 
 
 const Checkout = ({ route }) => {
@@ -33,10 +37,17 @@ const Checkout = ({ route }) => {
   const [razorRes, setRazorRes] = useState("")
   const [orderData, setOrderData] = useState("")
 
-  reactotron.log({ order_id }, "orderDataAAAA")
+  reactotron.log(useSlot, "USEDLOT")
 
 
+  // const schema = yup.object({
+  //   slot: yup.string().required('Delivery Slot is required'),
+  //   slot_time: yup.object().nullable().required('Please select an option'),
+  // })
 
+  // const { control, handleSubmit, setError } = useForm({
+  //   resolver: yupResolver(schema)
+  // })
 
 
 
@@ -73,7 +84,6 @@ const Checkout = ({ route }) => {
 
   useRefetch(refetch)
 
-  reactotron.log(data, "Discount")
 
   // let mainData = {
   //   orderId: orderData?.data?.data?.orderId,
@@ -83,15 +93,13 @@ const Checkout = ({ route }) => {
   // }
 
 
-
-
   const { mutate, refetch: postsubrefetch, data: orderNewData, isLoading: placeLoading } = useMutation({
     mutationKey: 'placedOrder',
     mutationFn: PlaceOrder,
     onSuccess: async (data) => {
       setOrderData(data?.data?.data)
       await storage.setStringAsync('order_id', data?.data?.data?.orderId);
-      
+
       if (radioBtnStatus === 0) {
         navigation.navigate('OrderPlaced', { item: data?.data?.data })
         setCartItems([])
@@ -114,8 +122,7 @@ const Checkout = ({ route }) => {
     mutationKey: 'UpdateOrderdata',
     mutationFn: UpdateOrder,
     onSuccess: (data) => {
-      //reactotron.log(data, "OR")
-      navigation.navigate('OrderPlaced', { item: data?.data?.data})
+      navigation.navigate('OrderPlaced', { item: data?.data?.data })
     }
   })
 
@@ -156,7 +163,7 @@ const Checkout = ({ route }) => {
     RazorpayCheckout.open(options).then((data) => {
       data.orderId = order_id;
 
-   
+
       //setRazorRes(data)
       updateMutation(data)
       //navigation.navigate('Processing')
@@ -166,39 +173,46 @@ const Checkout = ({ route }) => {
     });
   }
 
-  const placeOrder = () => {
 
-    mutate({
-      itemDetails: cartItems,
-      billingAddress: item,
-      shippingAddress: item,
-      orderDate: moment(today).format("DD-MM-YYYY"),
-      subTotal: data?.data?.data?.subtotal,
-      discount: data?.data?.data.discount,
-      tax: data?.data?.data?.tax,
-      delivery_charge: data?.data?.data?.deliveryCharge,
-      total: data?.data?.data?.total,
-      paymentType: radioBtnStatus === 0 ? "cod" : "online",
-      paymentStatus: radioBtnStatus === 0 ? "pending" : "completed",
-      customer_id: user?.user?._id,
-      cartId: cart_id,
-      slot_id: useSlot?.idData?._id,
-      slot_date: useSlot?.date
-    })
+  const placeOrder = () => {
+    if (!useSlot) {
+      storage.setString('error', "Delivery Date & Time is required!");
+    } 
+    else {
+      mutate({
+        itemDetails: cartItems,
+        billingAddress: item,
+        shippingAddress: item,
+        orderDate: moment(today).format("DD-MM-YYYY"),
+        subTotal: data?.data?.data?.subtotal,
+        discount: data?.data?.data.discount,
+        tax: data?.data?.data?.tax,
+        delivery_charge: data?.data?.data?.deliveryCharge,
+        total: data?.data?.data?.total,
+        paymentType: radioBtnStatus === 0 ? "cod" : "online",
+        paymentStatus: radioBtnStatus === 0 ? "pending" : "completed",
+        customer_id: user?.user?._id,
+        cartId: cart_id,
+        slot_id: useSlot?.idData?._id,
+        slot_date: useSlot?.date
+      })
+
+    }
   }
+
 
 
   return (
     <View style={styles.container}>
-      <Header />
+      <Header icon={true}/>
       <CommonHeader heading={"Checkout"} backBtn />
       <ScrollView contentContainerStyle={styles.innerContainer}>
 
         <View >
           <View style={{ paddingHorizontal: 15 }}>
-          {cartItems?.map(item => (
-            <CheckoutItemCard item={item} />
-          ))}
+            {cartItems?.map(item => (
+              <CheckoutCard item={item} />
+            ))}
           </View>
 
           <View style={styles.locationBox}>
@@ -258,7 +272,7 @@ const Checkout = ({ route }) => {
         </View>
 
         <View style={{ paddingHorizontal: 22, marginTop: 20 }}>
-          <CommonButton text={"Place Order"} onPress={placeOrder} loading={placeLoading}/>
+          <CommonButton text={"Place Order"} onPress={placeOrder} loading={placeLoading} />
         </View>
 
       </ScrollView>

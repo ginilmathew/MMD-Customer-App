@@ -6,7 +6,6 @@ import { COLORS } from '../constants/COLORS'
 
 const Toast = ({ error, success }) => {
 
-
     useEffect(() => {
         if (error || success) {
             setTimeout(() => {

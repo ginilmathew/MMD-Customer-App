@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, Image, Text, StyleSheet, KeyboardAvoidingView, ScrollView, ImageBackground } from 'react-native'
+import { View, TouchableOpacity, Text, StyleSheet, ScrollView } from 'react-native'
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
@@ -13,7 +13,7 @@ import { COLORS } from '../../constants/COLORS'
 import CommonHeader from '../../components/CommonHeader'
 import { useMMKVStorage } from 'react-native-mmkv-storage'
 import { storage } from '../../../App'
-import { useMutation, useQuery } from 'react-query'
+import { useMutation } from 'react-query'
 import { addAddress } from '../../api/Profile'
 import Header from '../../components/Header'
 
@@ -53,10 +53,10 @@ const MapAddress = ({ navigation, route }) => {
 
 
     const schema = yup.object({
-        pincode: yup.string().matches(/\d{6,}/, 'Please enter a valid value with at least 6 digits.').required('Pincode required'),
+        pincode: yup.string().matches(/\d{6,}/, 'Please enter a valid value with at least 6 digits.').nullable(),
         address: yup.string().required("Address is required"),
         mobile: yup.number().positive().required("Phone is required").typeError('Enter valid Phone number'),
-        landmark: yup.string().required("Land mark is required"),
+        landmark: yup.string().nullable(),
         comments: yup.string().nullable()
     });
 
@@ -117,7 +117,7 @@ const MapAddress = ({ navigation, route }) => {
 
     return (
         <>
-            <Header />
+           <Header icon={true}/>
             <CommonHeader heading={'Add Address'} backBtn />
 
             <ScrollView contentContainerStyle={mode === 'map' && { flex: 1 }} style={styles.container} keyboardShouldPersistTaps='always'>
@@ -195,7 +195,7 @@ const MapAddress = ({ navigation, route }) => {
                                                 color: COLORS.light,
                                                 fontFamily: 'Poppins-SemiBold',
 
-                                            }}>{location?.address?.main?.length > 25 ? location?.address?.main?.slice(0, 25) + '...' : location?.address?.main}</Text>
+                                            }}>{location?.address > 25 ? location?.address?.slice(0, 25) + '...' : location?.address}</Text>
 
                                             <Text style={{
                                                 color: COLORS.dark,
@@ -342,7 +342,7 @@ const MapAddress = ({ navigation, route }) => {
                 <CommonButton
                     w='85%'
                     mt={mode === 'address' && 60}
-                    onPress={mode === "map" ? changeMode : handleSubmit(onSubmit)}
+                    onPress={(mode === "map" || route?.params?.mode === "map") ? changeMode : handleSubmit(onSubmit)}
                     text={`CONFIRM ${mode === "map" ? "LOCATION" : ""}`}
                     loading={isLoading}
                 />

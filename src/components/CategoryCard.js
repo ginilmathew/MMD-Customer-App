@@ -1,9 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { memo, useCallback } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import React, { useCallback } from 'react';
+import { StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { COLORS } from '../constants/COLORS';
-import reactotron from 'reactotron-react-native';
 
 const CategoryCard = ({ key,item }) => {
 

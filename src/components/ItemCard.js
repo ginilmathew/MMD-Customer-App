@@ -1,10 +1,9 @@
 import React, { memo, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { COLORS } from '../constants/COLORS';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import CartContext from '../context/cart';
 import { useNavigation } from '@react-navigation/core';
-import reactotron from 'reactotron-react-native';
 import moment from 'moment';
 
 const CustomItemCard = memo(({ onPress, item, key }) => {
@@ -88,9 +87,6 @@ const CustomItemCard = memo(({ onPress, item, key }) => {
             }
 
             setPrice(product)
-
-            reactotron.log({product})
-
 
             // const getFinalPrices = (products) => {
             //     return products?.map((product) => {

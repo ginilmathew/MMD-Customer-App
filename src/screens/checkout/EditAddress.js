@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList, RefreshControl, TouchableOpacity, Alert } from 'react-native'
+import { View, Text, StyleSheet, FlatList, RefreshControl, TouchableOpacity, Alert, Modal, ActivityIndicator } from 'react-native'
 import React, { memo, useCallback, useContext, useState, useEffect } from 'react'
 import CustomInput from '../../components/CustomInput'
 import CommonButton from '../../components/CommonButton'
@@ -15,9 +15,6 @@ import useRefetch from '../../hooks/useRefetch'
 import Header from '../../components/Header'
 import { storage } from '../../../App'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { useMMKVStorage } from 'react-native-mmkv-storage'
-import locationContext from '../../context/location/locationContext'
-import reactotron from 'reactotron-react-native'
 import LocationContext from '../../context/location'
 
 
@@ -25,8 +22,7 @@ const EditAddress = ({ navigation, route }) => {
 
     const { setMode } = useContext(LocationContext)
     const { cartID } = route?.params;
-
-    reactotron.log(cartID, "ID")
+    const [loader, setloader] = useState(false)
 
     const [refresh, setRefresh] = useState(false);
     const [defaultAddress, setDefaultAddress] = useState("");
@@ -48,23 +44,35 @@ const EditAddress = ({ navigation, route }) => {
         setDefaultAddress(defaultAddressData);
     }, [defaultAddress, data]);
 
-    const { mutate: mutateDefault } = useMutation({
+    const { mutate: mutateDefault, isLoading } = useMutation({
         mutationKey: ['address-delet'],
         mutationFn: defaultAddrss,
         onSuccess(data) {
+            const timeoutID = setTimeout(() => {
+                setloader(true)
+            }, 2000);
             storage.setString('success', 'Success')
             refetch()
+            // Return a cleanup function to clear the timeout when the component unmounts
+            return () => {
+                setloader(false)
+                clearTimeout(timeoutID);
+            };
+
+
         }
     })
 
     const { mutate: mutateDlt } = useMutation({
-        mutationKey: ['address-delet'],
+        mutationKey: ['address-delete'],
         mutationFn: deletAddrss,
         onSuccess() {
             storage.setString('success', 'Address deleted')
             refetch()
         }
     })
+
+
 
     useRefetch(refetch)
 
@@ -82,7 +90,7 @@ const EditAddress = ({ navigation, route }) => {
 
     const addAddress = useCallback(() => {
         setMode('map')
-        navigation.navigate('GoogleLocation', { cartID: route?.params?.cartID })
+        navigation.navigate('GoogleLocation', { cartID: route?.params?.cartID, mode: 'map' })
     }, [navigation])
 
     const goToCheckout = useCallback(() => {
@@ -156,7 +164,7 @@ const EditAddress = ({ navigation, route }) => {
     return (
         <>
 
-            <Header />
+            <Header icon={true} />
             <CommonHeader heading={'Edit Address'} backBtn />
 
             <View style={styles.container}>
@@ -177,7 +185,21 @@ const EditAddress = ({ navigation, route }) => {
                 </View>
 
                 <CommonButton text={'Proceed'} mt='auto' onPress={goToCheckout} />
+                {
+                    (isLoading && loader) && (
+                        <Modal visible={(isLoading && loader)} transparent>
+                            <View style={{
+                                flex: 1,
+                                backgroundColor: 'rgba(0,0,0,.4)',
+                                justifyContent: 'center',
+                                alignItems: 'center'
+                            }}>
 
+                                <ActivityIndicator animating color={COLORS.white} size={30} />
+                            </View>
+                        </Modal>
+                    )
+                }
             </View>
         </>
     )

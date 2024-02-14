@@ -1,18 +1,22 @@
-import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { memo, useCallback, useRef, useState } from 'react'
+import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native'
+import React, { memo, useCallback, useContext, useState } from 'react'
 import Header from '../../components/Header'
 import CommonHeader from '../../components/CommonHeader'
-import ItemCard from '../../components/ItemCard'
 import Animated, { FadeInDown } from 'react-native-reanimated'
 import { getAllProducts } from '../../api/allProducts'
-import { useInfiniteQuery, useQuery } from 'react-query'
-import useRefreshOnFocus from '../../hooks/useRefetch'
-import reactotron from 'reactotron-react-native'
+import { useInfiniteQuery } from 'react-query'
 import { COLORS } from '../../constants/COLORS'
 import NoData from '../../components/NoData'
+import ProductCard from '../../components/ProductCard'
+import CartContext from '../../context/cart'
+import { useFocusEffect } from '@react-navigation/native'
+import moment from 'moment'
 import CartButton from '../../components/CartButton'
 
 const AllProducts = ({ navigation }) => {
+
+    const { cartItems } = useContext(CartContext);
+    const [time, setTime] = useState(moment().unix())
 
     const {
         data,
@@ -36,6 +40,12 @@ const AllProducts = ({ navigation }) => {
 
 
 
+
+    useFocusEffect(
+        useCallback(() => {
+            setTime(moment().unix())
+        }, [])
+    )
 
 
 
@@ -65,14 +75,14 @@ const AllProducts = ({ navigation }) => {
     const renderItem = useCallback(({ item, index }) => {
         return (
             <Animated.View entering={AnimatedStyle(index)} style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
-                <ItemCard item={item} key={item?._id} />
+                <ProductCard key={index} item={item} cartItems={cartItems} time={time} />
             </Animated.View>
         )
-    }, [data])
+    }, [time])
 
     const ListFooterComponents = memo(() => {
         return (
-            <View style={{ marginBottom: 100 }}>
+            <View style={{ marginBottom: 150 }}>
                 {isFetchingNextPage && <ActivityIndicator size="large" color={COLORS.primary} />}
             </View>
         )
@@ -86,7 +96,7 @@ const AllProducts = ({ navigation }) => {
 
     return (
         <View style={{ backgroundColor: '#fff' }}>
-            <Header />
+            <Header icon={true}/>
             <CommonHeader heading={"Products"} backBtn={true} />
             <FlatList
                 data={data?.pages?.map(page => page?.data?.data?.data)?.flat()}
@@ -101,7 +111,7 @@ const AllProducts = ({ navigation }) => {
                 ListEmptyComponent={emptyScreen}
             />
 
-            <CartButton bottom={120} />
+            <CartButton bottom={120}/>
         </View>
     )
 }

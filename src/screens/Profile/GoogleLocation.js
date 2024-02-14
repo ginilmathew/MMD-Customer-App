@@ -1,8 +1,7 @@
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Linking, Modal, PermissionsAndroid, Platform } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Linking, Modal, Platform } from 'react-native'
 import React, { useCallback, useContext, useState } from 'react'
 import { COLORS } from '../../constants/COLORS'
 import CommonHeader from '../../components/CommonHeader'
-import ProfileButton from '../../components/ProfileButton'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import locationContext from '../../context/location/index'
@@ -10,11 +9,8 @@ import { GOOGLE_API } from '../../constants/API'
 import { useMMKVStorage } from 'react-native-mmkv-storage'
 import { storage } from '../../../App'
 import { navigationRef } from '../../navigation/RootNavigation'
-import Header from '../../components/Header'
-import LocationContext from '../../context/location/index'
 import { PERMISSIONS, request } from 'react-native-permissions'
 import Entypo from 'react-native-vector-icons/Entypo'
-import reactotron from 'reactotron-react-native'
 
 
 
@@ -85,7 +81,6 @@ const GoogleLocation = ({ navigation, route }) => {
 	}, [route?.params?.cartID])
 
 	const getLocationPermission = async() => {
-		reactotron.log({mode})
         let permissions;
         if(Platform.OS === 'android'){
             permissions = await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
@@ -94,13 +89,12 @@ const GoogleLocation = ({ navigation, route }) => {
 				if(route?.params?.mode === "header" || mode === 'home'){
 					navigation.goBack()
 				}
-				else if(mode === "map"){
+				else if(mode === "map" || route?.params?.mode === "map"){
 		
 					navigationRef.navigate('MapPage', route?.params?.cartID && { cartID: route?.params?.cartID })
 				}
             }
             else{
-                reactotron.log({permissions})
                 if(permissions === "blocked"){
                     setModals(true)
                 }
@@ -114,9 +108,11 @@ const GoogleLocation = ({ navigation, route }) => {
 				if(route?.params?.mode === "header"){
 					navigation.goBack()
 				}
+				else if(mode === "map" || route?.params?.mode === "map"){
+					navigationRef.navigate('MapPage', route?.params?.cartID && { cartID: route?.params?.cartID })
+				}
             }
             else{
-                reactotron.log({permissions})
                 storage.setString("error", `Location Permission ${permissions} by the user`)
             }
         }
@@ -143,10 +139,12 @@ const GoogleLocation = ({ navigation, route }) => {
 	return (
 		<>
 
-			{homeAdd && (<>
-				<Header />
+			{homeAdd || route?.params?.mode === "map" && (
+			<>
+				{/* <Header /> */}
 				<CommonHeader heading={'Place'} backBtn />
-			</>)}
+			</>
+			)}
 
 			<View style={styles.container}>
 

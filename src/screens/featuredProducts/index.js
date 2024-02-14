@@ -1,23 +1,36 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native'
-import React, { useCallback } from 'react'
+import { FlatList, StyleSheet, View } from 'react-native'
+import React, { useCallback, useContext, useState } from 'react'
 import Header from '../../components/Header';
 import CommonHeader from '../../components/CommonHeader';
 import { getfeaturedProduct } from '../../api/featuredProducts';
 import { useQuery } from 'react-query';
-import ItemCard from '../../components/ItemCard';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import NoData from '../../components/NoData';
+import ProductCard from '../../components/ProductCard';
+import CartContext from '../../context/cart';
+import moment from 'moment';
+import { useFocusEffect } from '@react-navigation/native';
 import CartButton from '../../components/CartButton';
 
 
 const FeaturedProduct = ({ route }) => {
     const { id, name } = route.params;
+    const { cartItems } = useContext(CartContext);
+    const [time, setTime] = useState(moment().unix())
+
+
 
     const { data, isLoading, refetch } = useQuery({
         queryKey: ['featuredProduct'],
         queryFn: () => getfeaturedProduct(id),
         enabled: true
     })
+
+    useFocusEffect(
+        useCallback(() => {
+            setTime(moment().unix())
+        }, [])
+    )
 
 
 
@@ -26,7 +39,7 @@ const FeaturedProduct = ({ route }) => {
     const ListHeaderComponents = useCallback(() => {
         return (
             <>
-                <Header />
+                <Header icon={true}/>
                 <CommonHeader heading={name} backBtn />
             </>
         )
@@ -41,11 +54,12 @@ const FeaturedProduct = ({ route }) => {
     const renderItem = useCallback(({ item, index }) => {
         return (
             <Animated.View entering={AnimatedStyle(index)} style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
-                <ItemCard key={index} item={item} />
+                {/* <ItemCard key={index} item={item} /> */}
+                <ProductCard key={index} item={item} cartItems={cartItems} time={time} />
             </Animated.View>
         )
 
-    }, [])
+    }, [time])
 
     const ListFooterComponent = () => {
         return (
@@ -77,7 +91,7 @@ const FeaturedProduct = ({ route }) => {
                 ListEmptyComponent={emptyScreen}
             />
 
-            <CartButton bottom={10} />
+            <CartButton bottom={25} />
         </>
     )
 }
@@ -86,7 +100,7 @@ export default FeaturedProduct
 
 const styles = StyleSheet.create({
     footer: {
-        marginBottom: 80
+        marginBottom: 90
     },
     flatlistContainer: {
         backgroundColor: '#fff',

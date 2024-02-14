@@ -1,14 +1,12 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { COLORS } from '../../constants/COLORS'
-import reactotron from 'reactotron-react-native'
 import moment from 'moment'
 import { useNavigation } from '@react-navigation/native'
 
 const NotificationCard = ({data}) => {
 
     const navigation = useNavigation();
-    reactotron.log(data, "NOT")
 
     // const pressEffect = () => {
     //     if(item?.type === "page") {

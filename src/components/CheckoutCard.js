@@ -1,111 +1,40 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import CartContext from '../context/cart';
 import { COLORS } from '../constants/COLORS';
-import moment from 'moment';
 
 
-const CheckoutItemCard = ({ item }) => {
-
-    const [price, setPrice] = useState(null)
-    let products = item.products ? item.products[0] : item?.item;
-
-    const BASEURL = products?.imageBasePath ?? null;
-    const IMAGE = products?.image?.[0];
-
-    const getFinalPrices = () => {
-        if (!products?.variant) {
-            return null;
-        }
-        const { offerPrice, fromDate, toDate, sellingPrice, costPrice } = products.variant;
-
-        let product;
-
-        if (fromDate && toDate && offerPrice) {
-            let startDate = moment(fromDate, "YYY-MM-DD").add(-1, 'day');
-            let endDate = moment(toDate, "YYYY-MM-DD").add(1, 'day')
-            if (moment().isBetween(startDate, endDate)) {
-                product = {
-                    ...products.variant,
-                    finalPrice: offerPrice,
-                    hasOfferPrice: true,
-                    discount: parseFloat(sellingPrice) - parseFloat(offerPrice),
-                    discountPercentage: (100 * (parseFloat(costPrice) - parseFloat(offerPrice)) / parseFloat(costPrice)).toFixed(2) * 1,
-                    unitName: products?.unit?.name
-                }
-            }
-            else {
-                product = {
-                    ...products.variant,
-                    finalPrice: sellingPrice,
-                    hasOfferPrice: false,
-                    discount: 0,
-                    discountPercentage: (100 * (parseFloat(costPrice) - parseFloat(sellingPrice)) / parseFloat(costPrice)).toFixed(2) * 1,
-                    unitName: products?.unit?.name
-                };
-            }
-        }
-        else {
-            product = {
-                ...products.variant,
-                finalPrice: sellingPrice,
-                hasOfferPrice: false,
-                discount: 0,
-                discountPercentage: (100 * (parseFloat(costPrice) - parseFloat(sellingPrice)) / parseFloat(costPrice)).toFixed(2) * 1,
-                unitName: products?.unit?.name
-            };
-        }
-
-        setPrice(product)
-    };
-
-    useEffect(() => {
-        if (products?.variant) {
-            getFinalPrices()
-        }
-    }, [products]);
-
-    const { cartItems } = useContext(CartContext);
-
-
-
-    const isCartAdded = cartItems?.some(cartItem => cartItem._id === products._id);
-
-
-    const cartItem = cartItems?.find(cartItem => cartItem._id === products._id);
-
+const CheckoutCard = ({item}) => {
     const AnimatedStyle = FadeInDown.easing().delay(300);
-
 
     return (
         <Animated.View entering={AnimatedStyle}>
             <TouchableOpacity activeOpacity={0.9} style={styles.container}>
                 {/* Left Side */}
                 <Animated.View style={styles.leftContainer}>
-                {BASEURL && <Animated.Image
-                        source={{ uri: BASEURL + IMAGE }}
+                {item?.image && <Animated.Image
+                        source={{ uri: item?.image }}
                         style={styles.leftImage}
-                        sharedTransitionTag={item?.product_id}
+                        sharedTransitionTag={item?._id}
                     /> }
                     
                 </Animated.View>
 
                 {/* Center Content */}
                 <View style={styles.centerContainer}>
-                    <Text style={styles.heading}>{products?.name}</Text>
-                    <Text style={styles.subHeading}>Category: {products?.category?.name}</Text>
-                    <Text style={styles.subHeading}>{`${price?.name} ${price?.unitName} * ${cartItem.qty}`}</Text>
-                    {price?.hasOfferPrice ? (<View style={styles.offerBox}>
+                    <Text style={styles.heading}>{item?.name}</Text>
+                    <Text style={styles.subHeading}>Category: {item?.category?.name}</Text>
+                    <Text style={styles.subHeading}>{`${item?.variant?.name} ${item?.unit?.name} * ${item.qty}`}</Text>
+                    {/* {price?.hasOfferPrice ? (<View style={styles.offerBox}>
                         <Text style={styles.offerText}>Up to 10% off!</Text>
-                    </View>) : null}
+                    </View>) : null} */}
                 </View>
 
                 {/* Right Side */}
                 <View style={styles.rightContainer}>
-                <Text style={styles.topPrice}>₹ {parseFloat(price?.finalPrice) * parseInt(cartItem.qty)}</Text>
-                {price?.hasOfferPrice &&
-                    <Text style={styles.strikePrice}>₹ {parseFloat(price?.sellingPrice) * parseInt(cartItem.qty)}</Text>}
+                <Text style={styles.topPrice}>₹ {parseFloat(item?.price) * parseInt(item?.qty)}</Text>
+                {/* {price?.hasOfferPrice &&
+                    <Text style={styles.strikePrice}>₹ {parseFloat(price?.sellingPrice) * parseInt(cartItem.qty)}</Text>} */}
             </View>
             </TouchableOpacity>
 
@@ -113,7 +42,7 @@ const CheckoutItemCard = ({ item }) => {
     )
 }
 
-export default CheckoutItemCard
+export default CheckoutCard
 
 const styles = StyleSheet.create({
     container: {

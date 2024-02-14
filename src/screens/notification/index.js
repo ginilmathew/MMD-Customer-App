@@ -5,7 +5,6 @@ import Header from '../../components/Header'
 import { COLORS } from '../../constants/COLORS'
 import NotificationCard from './NotificationCard'
 import { getNotifications } from '../../api/NotificationList'
-import reactotron from 'reactotron-react-native'
 import { useQuery } from 'react-query'
 import useRefetch from '../../hooks/useRefetch'
 import NoData from '../../components/NoData'
@@ -36,7 +35,7 @@ const NotificationPage = () => {
 
     return (
         <View style={styles.container}>
-            <Header />
+           <Header icon={true}/>
             <CommonHeader heading={"Notifications"} backBtn />
             <View style={styles.innerContainer}>
                 <FlatList
