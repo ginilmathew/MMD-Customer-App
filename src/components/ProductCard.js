@@ -6,6 +6,7 @@ import AddToCart from './AddToCart';
 import { useNavigation } from '@react-navigation/native';
 import { COLORS } from '../constants/COLORS';
 import moment from 'moment';
+import reactotron from 'reactotron-react-native';
 
 
 const ProductCard = ({ item, key, time }) => {
@@ -15,6 +16,7 @@ const ProductCard = ({ item, key, time }) => {
     const navigation = useNavigation()
     let products = item?.products ? item?.products[0] : item;
     const [price, setPrice] = useState(null)
+    
 
     useEffect(() => {
         setQuantity(0)
@@ -45,16 +47,18 @@ const ProductCard = ({ item, key, time }) => {
         const { offerPrice, fromDate, toDate, sellingPrice, costPrice } = variant
 
         if (fromDate && toDate && offerPrice) {
+            reactotron.log(fromDate, "STR")
+            let startDate = moment(`${moment(fromDate, "YYYY-MM-DD").format("YYYY-MM-DD")} 00:00:00`, "YYYY-MM-DD HH:mm:ss");
+            let endDate = moment(`${moment(toDate, "YYYY-MM-DD").format("YYYY-MM-DD")} 23:59:59`, "YYYY-MM-DD HH:mm:ss");
 
-            let startDate = moment(fromDate, "YYY-MM-DD").add(-1, 'day');
-            let endDate = moment(toDate, "YYYY-MM-DD").add(1, 'day')
+            reactotron.log(startDate, "STR")
             if (moment().isBetween(startDate, endDate)) {
                 price = {
                     ...variant,
                     finalPrice: offerPrice,
                     hasOfferPrice: true,
                     discount: parseFloat(sellingPrice) - parseFloat(offerPrice),
-                    discountPercentage: (100 * (parseFloat(costPrice) - parseFloat(offerPrice)) / parseFloat(costPrice)).toFixed(2) * 1,
+                    discountPercentage: (100 * (parseFloat(sellingPrice) - parseFloat(offerPrice)) / parseFloat(sellingPrice)).toFixed(2) * 1,
                     unitName: products?.units[0]?.name,
                     tax,
                     taxValue: (offerPrice / 100) * tax
@@ -128,7 +132,7 @@ const ProductCard = ({ item, key, time }) => {
                 image: `${imageBasePath}${image[0]}`,
                 tax,
                 taxValue,
-                total: finalPrice + taxValue,
+                total: finalPrice * 1 + taxValue * 1,
                 costPrice
                 //tax: 
             }

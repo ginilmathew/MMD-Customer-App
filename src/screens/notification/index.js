@@ -33,13 +33,19 @@ const NotificationPage = () => {
         )
     }
 
+    const isoToTimestamp = (isoTimestamp) => {
+        return new Date(isoTimestamp).getTime();
+    };
+
+    const sortedNotList = data?.data?.data?.slice().sort((a, b) => isoToTimestamp(b.updated_at) - isoToTimestamp(a.updated_at));
+
     return (
         <View style={styles.container}>
            <Header icon={true}/>
             <CommonHeader heading={"Notifications"} backBtn />
             <View style={styles.innerContainer}>
                 <FlatList
-                    data={data?.data?.data}
+                    data={sortedNotList}
                     keyExtractor={(item) => item._id}
                     renderItem={renderItem}
                     refreshing={isLoading}
