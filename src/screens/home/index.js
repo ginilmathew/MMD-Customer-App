@@ -98,28 +98,6 @@ const Home = ({ navigation, route }) => {
         navigation.navigate('FeaturedProduct', { id: res._id, name: res.name })
     }, [navigation])
 
-    useEffect(() => {
-        const cartProducts = data?.data?.data?.cart?.product;
-
-        if (!cartProducts || cartProducts.length === 0) {
-            return; // No products or invalid data, no need to proceed further
-        }
-
-        const updatedCartItems = cartProducts?.map(product => {
-            const { _id, qty, unit, variant } = product;
-
-            return {
-                _id,
-                qty,
-                unit_id: unit?.id,
-                varientname: variant?.name,
-                item: { ...product }
-            };
-        });
-
-        //setCartItems(updatedCartItems);
-    }, [data?.data?.data]);
-
 
 
     const HeaderComponents = useCallback(() => {

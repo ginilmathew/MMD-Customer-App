@@ -105,9 +105,6 @@ const ProductCard = ({ item, key, time }) => {
 
 
 
-
-
-
     const NavigateToSingleProduct = useCallback(() => {
         navigation.navigate('SingleProduct', { item: item?.products ? item?.products?.[0] : item , quantity })
     }, [item, quantity])
@@ -154,6 +151,7 @@ const ProductCard = ({ item, key, time }) => {
 
     //setPrice(price)
 
+
     return (
         <Animated.View entering={AnimatedStyle} key={key}>
             <TouchableOpacity onPress={NavigateToSingleProduct} style={styles?.container}>
@@ -175,7 +173,7 @@ const ProductCard = ({ item, key, time }) => {
                         <Text style={styles.subHeading}>{`${price?.name} ${price?.unitName}`}</Text>
                     </View>
                     {price?.hasOfferPrice && <View style={styles.offerBox}>
-                        <Text style={styles.offerText}>Up to 10% off!</Text>
+                        <Text style={styles.offerText}>Up to {price?.discountPercentage}% off!</Text>
                     </View>}
                 </View>
 

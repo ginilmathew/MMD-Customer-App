@@ -12,11 +12,14 @@ import { loginApi, tokenApi } from '../../api/auth';
 import { storage } from '../../../App';
 import locationContext from '../../context/location';
 import messaging from '@react-native-firebase/messaging';
+import CartContext from '../../context/cart';
 
 
 const Login = ({ navigation }) => {
 
     const { getLocation, setMode } = useContext(locationContext)
+    const { setCartItems } = useContext(CartContext)
+
     const { mutate: tokenMutate } = useMutation({
         mutationKey: 'token-key',
         mutationFn: tokenApi
@@ -33,10 +36,28 @@ const Login = ({ navigation }) => {
     })
 
     const onSuccess = async ({ data }) => {
+        const cartProducts = data?.getCart?.product;
+
+        if (cartProducts?.length > 0) {
+            // const updatedCartItems = cartProducts?.map(product => {
+            //     const { _id, qty, unit, variant } = product;
+
+            //     return {
+            //         _id,
+            //         qty,
+            //         unit_id: unit?.id,
+            //         varientname: variant?.name,
+            //         item: { ...product }
+            //     };
+            // });
+
+            setCartItems(cartProducts);
+        }
         await storage.setMapAsync('user', data);
         const token = await messaging().getToken();
         tokenMutate(token)
         storage.setString('success', 'Login successful')
+
 
         // try {
 
@@ -107,7 +128,7 @@ const Login = ({ navigation }) => {
                 <Text style={styles.link}>{'Forget Password?'}</Text>
             </TouchableOpacity>
 
-            <CommonButton text={'Login'} onPress={handleSubmit(mutate)} loading={isLoading}/>
+            <CommonButton text={'Login'} onPress={handleSubmit(mutate)} loading={isLoading} />
 
 
         </Background>
