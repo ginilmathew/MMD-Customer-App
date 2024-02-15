@@ -39,13 +39,13 @@ const Home = ({ navigation, route }) => {
 
 
     let payload = {
-        // "coordinates": [
-        //     8.5204866, 76.9371447
-        // ],
-        coordinates: [location?.location?.latitude, location?.location?.longitude],
-        cartId: cart_id,
-
+        "coordinates": [
+            8.5204866, 76.9371447
+        ],
+        // coordinates: [location?.location?.latitude, location?.location?.longitude],
+        // cartId: cart_id,
     }
+
 
 
     const { data, isLoading, refetch } = useQuery({

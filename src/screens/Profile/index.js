@@ -29,7 +29,7 @@ const Profile = ({ navigation }) => {
       queryClient.resetQueries();
       storage.clearStore();
       setMode('');
-      setLocation(null)
+      //setLocation(null)
       setCurrentLoc('')
       setCartItems([])
       storage.setString('success', 'Logout successful')

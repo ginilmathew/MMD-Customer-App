@@ -23,7 +23,6 @@ const CartButton = ({ bottom }) => {
         return acc + parseFloat(curr?.price) * parseFloat(curr?.qty)
     }, 0)
 
-
     if(cartItems?.length < 1) return;
 
     return (

@@ -44,6 +44,7 @@ const App = () => {
 
         if (Platform.OS === 'android') {
             let permissions = await requestMultiple([PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION, PERMISSIONS.ANDROID.POST_NOTIFICATIONS])
+			console.log(permissions, 'checking');
 			if(permissions?.['android.permission.POST_NOTIFICATIONS'] === "granted"){
 				await notifee?.createChannel({
 					id: 'sound',

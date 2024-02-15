@@ -32,7 +32,7 @@ const ChangePasswd = ({ navigation, route }) => {
   })
 
   const schema = yup.object({
-    password: yup.string().matches(/{6,}/, 'The password must be at least 6 characters').required('Password is required'),
+    password: yup.string().matches(/{6}/, 'The password must be at least 6 characters').required('Password is required'),
     confPasswd: yup.string().oneOf([yup.ref('password'), null], 'Password must match').required('Confirm Password required.'),
     user_id: yup.string().nullable()
   });

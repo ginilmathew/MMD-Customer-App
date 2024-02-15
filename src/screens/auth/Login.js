@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity } from 'react-native'
+import { Platform, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import React, { useCallback, useContext } from 'react'
 import Background from './Background';
 import CommonButton from '../../components/CommonButton';
@@ -13,6 +13,7 @@ import { storage } from '../../../App';
 import locationContext from '../../context/location';
 import messaging from '@react-native-firebase/messaging';
 import CartContext from '../../context/cart';
+import { PERMISSIONS, request } from 'react-native-permissions';
 
 
 const Login = ({ navigation }) => {
@@ -36,21 +37,18 @@ const Login = ({ navigation }) => {
     })
 
     const onSuccess = async ({ data }) => {
+
+        // let permission = "denied";
+
+        // permission = await request(Platform.OS === 'ios' ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+
+        // if(permission === 'granted') {
+        //     getLocation()
+        // } 
+
         const cartProducts = data?.getCart?.product;
 
         if (cartProducts?.length > 0) {
-            // const updatedCartItems = cartProducts?.map(product => {
-            //     const { _id, qty, unit, variant } = product;
-
-            //     return {
-            //         _id,
-            //         qty,
-            //         unit_id: unit?.id,
-            //         varientname: variant?.name,
-            //         item: { ...product }
-            //     };
-            // });
-
             setCartItems(cartProducts);
         }
         await storage.setMapAsync('user', data);

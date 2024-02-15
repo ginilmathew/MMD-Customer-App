@@ -9,6 +9,7 @@ import { useMutation } from 'react-query'
 import { ChooseSlot } from '../../api/ChooseSlot'
 import SlotContext from '../../context/slot'
 import reactotron from 'reactotron-react-native'
+import { storage } from '../../../App'
 
 const ChooseDate = ({ slotSelected }) => {
     const [date, setDate] = useState(new Date())
@@ -33,10 +34,13 @@ const ChooseDate = ({ slotSelected }) => {
         }
     }
 
-    const { mutate, refetch: postsubrefetch } = useMutation({
+    const { mutate } = useMutation({
         mutationKey: 'SlotPlace',
         mutationFn: ChooseSlot,
         onSuccess: (data) => {
+            if(data?.data?.data?.length < 1) {
+                storage.setString('error', 'No slot available.')
+            }
             setStoreData(data)
         }
     })

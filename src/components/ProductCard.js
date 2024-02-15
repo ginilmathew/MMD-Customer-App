@@ -54,7 +54,7 @@ const ProductCard = ({ item, key, time }) => {
                     finalPrice: offerPrice,
                     hasOfferPrice: true,
                     discount: parseFloat(sellingPrice) - parseFloat(offerPrice),
-                    discountPercentage: (100 * (parseFloat(costPrice) - parseFloat(offerPrice)) / parseFloat(costPrice)).toFixed(2) * 1,
+                    discountPercentage: (100 * (parseFloat(sellingPrice) - parseFloat(offerPrice)) / parseFloat(sellingPrice)).toFixed(2) * 1,
                     unitName: products?.units[0]?.name,
                     tax,
                     taxValue: (offerPrice / 100) * tax
@@ -68,7 +68,7 @@ const ProductCard = ({ item, key, time }) => {
                     finalPrice: sellingPrice,
                     hasOfferPrice: false,
                     discount: 0,
-                    discountPercentage: (100 * (parseFloat(costPrice) - parseFloat(sellingPrice)) / parseFloat(costPrice)).toFixed(2) * 1,
+                    discountPercentage: (100 * (parseFloat(sellingPrice) - parseFloat(offerPrice)) / parseFloat(sellingPrice)).toFixed(2) * 1,
                     unitName: products?.units[0]?.name,
                     tax,
                     taxValue: (sellingPrice / 100) * tax

@@ -19,7 +19,7 @@ const LocationPage = ({ navigation }) => {
     }, [])
 
     const onPress = useCallback(() => {
-        navigation.navigate('GoogleLocation')
+        navigation.navigate('GoogleLocation', { mode: 'home' })
     }, [])
 
 
