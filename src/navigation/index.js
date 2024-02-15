@@ -76,7 +76,7 @@ const Navigation = ({ location }) => {
 
 
     useEffect(() => {
-        if (((appState === "background" || appState === "inactive") && cartItems?.length > 0)) {
+        if (((appState === "background" || appState === "inactive"))) {
             const postCart = async () => {
                 try {
                     // const updatedData = cartItems?.map(item => ({

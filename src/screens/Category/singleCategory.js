@@ -14,10 +14,11 @@ import CartContext from '../../context/cart'
 import moment from 'moment'
 import { useFocusEffect } from '@react-navigation/native'
 import ProductCard from '../../components/ProductCard'
+import CartButton from '../../components/CartButton'
 
 const SingleCategory = ({ route }) => {
 
-    const {height} = useWindowDimensions();
+    const { height } = useWindowDimensions();
     const { cartItems } = useContext(CartContext);
     const [time, setTime] = useState(moment().unix())
 
@@ -71,7 +72,7 @@ const SingleCategory = ({ route }) => {
     const ListHeaderComponents = useCallback(({ _, index }) => {
         return (
             <View style={{ backgroundColor: COLORS.white }}>
-                <Header />
+                <Header icon={true} />
                 <CommonHeader heading={data?.data?.data?.category?.name || []} backBtn />
                 <ScrollView
                     horizontal={true}
@@ -83,7 +84,7 @@ const SingleCategory = ({ route }) => {
             </View>
         )
 
-    }, [AnimatedStyles, data?.data?.data, subList,listItem])
+    }, [AnimatedStyles, data?.data?.data, subList, listItem])
 
     const renderItem = useCallback(({ item, index }) => {
         return (
@@ -95,7 +96,7 @@ const SingleCategory = ({ route }) => {
 
     const ListFooterComponent = useCallback(() => {
         return (
-            <View style={{ marginBottom: 30 }} />
+            <View style={{ marginBottom: 80 }} />
         )
     }, [])
 
@@ -114,21 +115,24 @@ const SingleCategory = ({ route }) => {
 
     return (
 
+        <>
+            <FlatList
+                stickyHeaderIndices={[0]}
+                data={listItem}
+                ListHeaderComponent={ListHeaderComponents}
+                renderItem={renderItem}
+                keyExtractor={item => item._id}
+                initialNumToRender={10}
+                refreshing={isLoading}
+                onRefresh={mainRefetch}
+                showsVerticalScrollIndicator={false}
+                ListFooterComponent={ListFooterComponent}
+                ListEmptyComponent={emptyScreen}
+                contentContainerStyle={{ backgroundColor: COLORS.white, flexGrow: 1 }}
+            />
 
-        <FlatList
-            stickyHeaderIndices={[0]}
-            data={listItem}
-            ListHeaderComponent={ListHeaderComponents}
-            renderItem={renderItem}
-            keyExtractor={item => item._id}
-            initialNumToRender={10}
-            refreshing={isLoading}
-            onRefresh={mainRefetch}
-            showsVerticalScrollIndicator={false}
-            ListFooterComponent={ListFooterComponent}
-            ListEmptyComponent={emptyScreen}
-            contentContainerStyle={{ backgroundColor: COLORS.white,flexGrow:1 }}
-        />
+            <CartButton bottom={20} />
+        </>
 
     )
 }

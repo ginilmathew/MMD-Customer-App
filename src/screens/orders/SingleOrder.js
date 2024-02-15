@@ -59,7 +59,7 @@ const SingleOrder = ({ route }) => {
 
     return (
         <View style={styles.mainStyle}>
-            <Header />
+          <Header icon={true}/>
             <CommonHeader heading={`Order ID : ${item?.order_id}`} backBtn />
             <ScrollView contentContainerStyle={styles.innerContainer}>
 

@@ -9,6 +9,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 const CartCard = ({ item, increaseQuantity, decreaseQuantity, key, removeItem }) => {
 
     const { cartItems } = useContext(CartContext);
+    console.log(cartItems);
 
     const AnimatedStyle = FadeInDown.easing().delay(300);
 

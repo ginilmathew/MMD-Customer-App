@@ -164,7 +164,7 @@ const EditAddress = ({ navigation, route }) => {
     return (
         <>
 
-            <Header />
+            <Header icon={true} />
             <CommonHeader heading={'Edit Address'} backBtn />
 
             <View style={styles.container}>
@@ -194,8 +194,8 @@ const EditAddress = ({ navigation, route }) => {
                                 justifyContent: 'center',
                                 alignItems: 'center'
                             }}>
-                                
-                                <ActivityIndicator animating color={COLORS.white} size={30}  />
+
+                                <ActivityIndicator animating color={COLORS.white} size={30} />
                             </View>
                         </Modal>
                     )

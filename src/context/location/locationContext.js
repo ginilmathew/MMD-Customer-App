@@ -28,7 +28,6 @@ const locationContext = ({ children }) => {
 
     const onSuccess = async ({ data }) => {
 
-        console.log(mode);
         if(mode === 'map' || mode === 'edit') {
             setLocation(location => ({
                 ...location,

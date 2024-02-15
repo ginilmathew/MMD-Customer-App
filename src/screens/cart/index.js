@@ -194,7 +194,7 @@ const Cart = ({ navigation, route }) => {
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <Header />
+    <Header icon={true}/>
       <CommonHeader heading={"Cart"} backBtn />
 
       {/* <View style={styles.innerContainer}>
