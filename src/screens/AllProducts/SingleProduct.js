@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import {
     ActivityIndicator,
+    Platform,
     ScrollView,
     StyleSheet,
     Text,
@@ -132,7 +133,7 @@ const SingleProduct = ({ navigation, route }) => {
                     taxValue: (sellingPrice / 100) * tax
                 };
 
-                reactotron.log({ price })
+                //reactotron.log({ price })
             }
 
             setPrice(price)
@@ -515,7 +516,7 @@ const SingleProduct = ({ navigation, route }) => {
                 justifyContent: 'center',
                 height: 60,
                 position: 'absolute',
-                bottom: 0,
+                bottom: Platform.OS === 'ios' ? 50 : 0,
                 width: '100%',
                 backgroundColor: COLORS.white,
                 paddingHorizontal: 10,

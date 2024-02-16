@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity } from 'react-native'
+import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import React, { useCallback, useContext } from 'react'
 import Background from './Background';
 import CommonButton from '../../components/CommonButton';
@@ -77,40 +77,42 @@ const Login = ({ navigation }) => {
 
 
     return (
-        <Background
+        
+            <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1 }}>
+                <Background
             headline={'LOGIN'}
             subhead={'To your registered account'}
             onPress={navToRegister}
             link={'Register Here'}
             description={"Don't have an account yet?"}
         >
+            <ScrollView contentContainerStyle={{ flexGrow: 1 }}  keyboardShouldPersistTaps='always'>
+                <CustomInput
+                    control={control}
+                    name={'email'}
+                    placeholder='Email Address'
+                    left={'mail'}
+                    color={COLORS.blue}
+                    type={'email-address'}
+                />
 
-            <CustomInput
-                control={control}
-                name={'email'}
-                placeholder='Email Address'
-                left={'mail'}
-                color={COLORS.blue}
-                type={'email-address'}
-            />
+                <CustomInput
+                    control={control}
+                    name={'password'}
+                    placeholder='Password'
+                    left={'lock-closed'}
+                    color={COLORS.blue}
+                    passwd
+                />
 
-            <CustomInput
-                control={control}
-                name={'password'}
-                placeholder='Password'
-                left={'lock-closed'}
-                color={COLORS.blue}
-                passwd
-            />
+                <TouchableOpacity onPress={navToForget} style={styles.linkBox}>
+                    <Text style={styles.link}>{'Forget Password?'}</Text>
+                </TouchableOpacity>
 
-            <TouchableOpacity onPress={navToForget} style={styles.linkBox}>
-                <Text style={styles.link}>{'Forget Password?'}</Text>
-            </TouchableOpacity>
-
-            <CommonButton text={'Login'} onPress={handleSubmit(mutate)} loading={isLoading}/>
-
-
-        </Background>
+                <CommonButton text={'Login'} onPress={handleSubmit(mutate)} loading={isLoading} mb={20} />
+                </ScrollView>
+                </Background>
+            </KeyboardAvoidingView>
     );
 
 }
