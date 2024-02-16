@@ -1,5 +1,5 @@
 import { FlatList, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import CommonHeader from '../../components/CommonHeader'
 import Header from '../../components/Header'
 import { COLORS } from '../../constants/COLORS'
@@ -8,22 +8,26 @@ import { getNotifications } from '../../api/NotificationList'
 import { useQuery } from 'react-query'
 import useRefetch from '../../hooks/useRefetch'
 import NoData from '../../components/NoData'
+import NotificationContext from '../../context/notification'
 
 const NotificationPage = () => {
 
+    const { setCount } = useContext(NotificationContext);
     const { data, isLoading, refetch } = useQuery({
         queryKey: ['notify-query'],
         queryFn: () => getNotifications(),
-        enabled: true
+        enabled: true,
+        onSuccess(data) {
+            setCount(data?.data?.count);
+        }
     })
 
     useRefetch(refetch)
 
 
-
     const renderItem = ({ item, index }) => {
         return (
-            <NotificationCard data={item} key={index}/>
+            <NotificationCard data={item} key={index} refetch={refetch} />
         )
     }
 
@@ -33,11 +37,7 @@ const NotificationPage = () => {
         )
     }
 
-    const isoToTimestamp = (isoTimestamp) => {
-        return new Date(isoTimestamp).getTime();
-    };
-
-    const sortedNotList = data?.data?.data?.slice().sort((a, b) => isoToTimestamp(b.updated_at) - isoToTimestamp(a.updated_at));
+    
 
     return (
         <View style={styles.container}>
@@ -45,7 +45,7 @@ const NotificationPage = () => {
             <CommonHeader heading={"Notifications"} backBtn />
             <View style={styles.innerContainer}>
                 <FlatList
-                    data={sortedNotList}
+                    data={data?.data?.data}
                     keyExtractor={(item) => item._id}
                     renderItem={renderItem}
                     refreshing={isLoading}

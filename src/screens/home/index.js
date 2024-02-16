@@ -22,6 +22,7 @@ import { useFocusNotifyOnChangeProps } from '../../hooks/useFocusNotifyOnChangeP
 import ProductCard from '../../components/ProductCard'
 import moment from 'moment'
 import CartButton from '../../components/CartButton'
+import NotificationContext from '../../context/notification'
 
 
 
@@ -36,6 +37,7 @@ const Home = ({ navigation, route }) => {
     const [time, setTime] = useState(moment().unix())
     const { cartItems, setCartItems, cartChanges, cartTotal } = useContext(CartContext);
     const notifyOnChangeProps = useFocusNotifyOnChangeProps()
+    const { setCount } = useContext(NotificationContext);
 
 
     let payload = {
@@ -58,7 +60,11 @@ const Home = ({ navigation, route }) => {
         enabled: !!location?.address,
     })
 
-
+    useEffect(() => {
+        if (data?.data?.data) {
+            setCount(data?.data?.data?.count);
+        }
+    }, [data])
 
     useFocusEffect(useCallback(() => {
 

@@ -513,62 +513,61 @@ const SingleProduct = ({ navigation, route }) => {
                     {product?.description ? <DescriptionSection item={product} /> : null}
 
                 </ScrollView>
-            </View>
 
-            <View style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                position: 'absolute',
-                height: 60,
-                bottom: 70,
-                width: '100%',
-                backgroundColor: COLORS.white,
-                paddingHorizontal: 10,
-            }}>
-                {/* Button */}
-                {quantity > 0 && <View style={{
+                <View style={{
                     flexDirection: 'row',
-                    width: '40%',
-                    alignSelf: 'center',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    borderRadius: 10,
-                    overflow: 'hidden',
-                    backgroundColor: COLORS.gray
+                    justifyContent: 'center',
+                    alignItems: "flex-start",
+                    width: '100%',
+                    // backgroundColor: COLORS.red,
+                    height: Platform.OS === 'android' ? 60 : 100,
+                    // marginTop: Platform.OS === 'android' ? 0 : -50
                 }}>
-                    <TouchableOpacity style={{
-                        backgroundColor: COLORS.primary,
-                        padding: 10,
-                        height: '100%',
-                    }} onPress={() => {
-                        setQuantity(qty => qty - 1)
+                    {/* Button */}
+                    {quantity > 0 && <View style={{
+                        flexDirection: 'row',
+                        width: '40%',
+                        alignSelf: 'flex-start',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        borderRadius: 10,
+                        overflow: 'hidden',
+                        backgroundColor: COLORS.gray
                     }}>
-                        <Entypo name='minus' size={25} color='#fff' />
-                    </TouchableOpacity>
+                        <TouchableOpacity style={{
+                            backgroundColor: COLORS.primary,
+                            padding: 10,
+                            height: '100%',
+                        }} onPress={() => {
+                            setQuantity(qty => qty - 1)
+                        }}>
+                            <Entypo name='minus' size={25} color='#fff' />
+                        </TouchableOpacity>
 
-                    <Text style={{
-                        fontFamily: 'Poppins-Regular',
-                        fontSize: 16,
-                        fontWeight: 'bold',
-                        color: COLORS.dark
-                    }}>{quantity}</Text>
+                        <Text style={{
+                            fontFamily: 'Poppins-Regular',
+                            fontSize: 16,
+                            fontWeight: 'bold',
+                            color: COLORS.dark
+                        }}>{quantity}</Text>
 
-                    <TouchableOpacity style={{
-                        backgroundColor: COLORS.primary,
-                        padding: 10,
-                        height: '100%',
-                    }} onPress={() => {
-                        setQuantity(qty => qty + 1)
-                    }}>
-                        <Entypo name='plus' size={25} color='#fff' />
-                    </TouchableOpacity>
+                        <TouchableOpacity style={{
+                            backgroundColor: COLORS.primary,
+                            padding: 10,
+                            height: '100%',
+                        }} onPress={() => {
+                            setQuantity(qty => qty + 1)
+                        }}>
+                            <Entypo name='plus' size={25} color='#fff' />
+                        </TouchableOpacity>
 
-                </View>}
+                    </View>}
 
-                {quantity === 0 && <BuyButton
-                    loading={isLoading}
-                    onPress={changeQty}
-                />}
+                    {quantity === 0 && <BuyButton
+                        loading={isLoading}
+                        onPress={changeQty}
+                    />}
+                </View>
             </View>
         </View>
     );
@@ -742,8 +741,6 @@ const styles = StyleSheet.create({
     buttonContainer: {
         alignItems: 'center',
         justifyContent: 'center',
-        paddingVertical: 10,
-
     },
     button: {
         backgroundColor: COLORS.primary,

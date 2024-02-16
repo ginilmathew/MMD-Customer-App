@@ -16,12 +16,14 @@ import Animated, {
 } from 'react-native-reanimated';
 import { storage } from '../../App';
 import { navigationRef } from '../navigation/RootNavigation';
+import NotificationContext from '../context/notification';
 
 
 
 const Header = memo(({ onPress, text, icon }) => {
 
     const { cartItems, setCartItems } = useContext(CartContext);
+    const { count } = useContext(NotificationContext);
     const { setMode, location } = useContext(LocationContext);
     const [user] = useMMKVStorage('user', storage);
     const [cart_id] = useMMKVStorage('cart_id', storage);
@@ -145,7 +147,11 @@ const Header = memo(({ onPress, text, icon }) => {
                             )
                         }
                         <TouchableOpacity onPress={notPage}>
-                            <View style={styles.badgeStyle} />
+                            {count > 0 &&
+                                <View style={[styles.badgeStyle, styles.cartBadge, { backgroundColor: COLORS.red }]}>
+                                    <Text style={[styles.countStyle]}>{count}</Text>
+                                </View>
+                            }
                             <IonIcons name="notifications" size={20} color={COLORS.light} />
                         </TouchableOpacity>
                     </View>
@@ -181,17 +187,21 @@ const styles = StyleSheet.create({
         height: 50,
         resizeMode: 'contain',
     },
+    count: {
+        color: COLORS.white,
+        fontWeight: '700',
+    },
     badgeStyle: {
-        width: 10,
-        height: 10,
         backgroundColor: COLORS.red,
         borderRadius: 100,
         position: 'absolute',
         zIndex: 1,
-        right: -1,
-        top: -1,
+        right: 1,
+        top: -6,
+        paddingHorizontal: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        flex: 1,
     },
     countStyle: {
         fontFamily: 'Poppins-SemiBold',

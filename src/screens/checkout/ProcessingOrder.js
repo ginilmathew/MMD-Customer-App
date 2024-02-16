@@ -9,14 +9,18 @@ import { RAZORPAY_KEY } from '../../constants/API'
 import { useMMKVStorage } from 'react-native-mmkv-storage'
 import { storage } from '../../../App'
 import CartContext from '../../context/cart'
+import SlotContext from '../../context/slot';
+import NotificationContext from '../../context/notification';
 
 
 const ProcessingOrder = ({route, navigation}) => {
 
-    const { data, chk } = route?.params;
+  const { data, chk } = route?.params;
   const [user] = useMMKVStorage('user', storage);
   const [order_id] = useMMKVStorage('order_id', storage);
   const { setCartItems } = useContext(CartContext);
+  const { setUseSlot } = useContext(SlotContext)
+  const { setCount } = useContext(NotificationContext);
 
     useEffect(() => {
         if(data){
@@ -60,6 +64,8 @@ const ProcessingOrder = ({route, navigation}) => {
         mutationKey: 'UpdateOrderdata',
         mutationFn: UpdateOrder,
         onSuccess: async(data) => {
+          setUseSlot('')
+          setCount(count => count + 1);
           setCartItems([])
           await storage.setMapAsync('cart_id', null);
           navigation.navigate('OrderPlaced', { item: data?.data?.data})
