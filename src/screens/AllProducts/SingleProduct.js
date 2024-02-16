@@ -513,12 +513,11 @@ const SingleProduct = ({ navigation, route }) => {
                 <View style={{
                     flexDirection: 'row',
                     justifyContent: 'center',
-                    height: 60,
-                    position: 'absolute',
-                    bottom: 0,
+                    alignItems: "flex-start",
                     width: '100%',
                     backgroundColor: COLORS.white,
-                    paddingHorizontal: 10,
+                    height: 120,
+                    marginTop: -50
                 }}>
                     {/* Button */}
                     {quantity > 0 && <View style={{
