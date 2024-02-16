@@ -125,6 +125,7 @@ const locationContext = ({ children }) => {
     }
 
     const getOneTimeLocation = () => {
+        console.log('callingg.....');
         Geolocation.getCurrentPosition(
             //Will give you the current location
             (position) => {
@@ -135,14 +136,16 @@ const locationContext = ({ children }) => {
             },
             (error) => {
                 if (error?.message === "No location provider available.") {
-                    navigationRef.navigate('LocationPage')
+                    // navigationRef.navigate('LocationPage')
 
                     LocationServicesDialogBox.checkLocationServicesIsEnabled({
                         message: "GPS is disabled in your device. Would you like to enable it?",
                         ok: "enable",
                         cancel: "cancel"
-                    }).then((res) => {
-
+                    }).then(function (success) {
+                        getOneTimeLocation()
+                    }).catch((error) => {
+                        console.log(error.message);
                     });
                 }
             },
