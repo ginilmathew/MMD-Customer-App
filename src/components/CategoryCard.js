@@ -44,6 +44,6 @@ const styles = StyleSheet.create({
         fontFamily: "Poppins-Regular",
         color:COLORS.light,
         opacity: 0.8,
-        textAlign: "center"
+        textAlign: "center",
     },
 });

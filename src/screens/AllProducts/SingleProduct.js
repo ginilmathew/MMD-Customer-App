@@ -402,7 +402,7 @@ const SingleProduct = ({ navigation, route }) => {
     return (
         <View style={[styles.mainContainer,]}>
             <View style={{ height: height / 1.05 }}>
-                <Header icon={false} />
+                <Header icon={true} />
                 <CommonHeader heading={item?.name?.length > 18 ? item?.name?.slice(0, 18) + "..." : item?.name} backBtn />
                 <ScrollView
                     contentContainerStyle={[styles.container]}
@@ -515,9 +515,7 @@ const SingleProduct = ({ navigation, route }) => {
                     justifyContent: 'center',
                     alignItems: "flex-start",
                     width: '100%',
-                    backgroundColor: COLORS.white,
                     height: 120,
-                    marginTop: -50
                 }}>
                     {/* Button */}
                     {quantity > 0 && <View style={{
