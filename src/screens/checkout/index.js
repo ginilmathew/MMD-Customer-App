@@ -21,10 +21,7 @@ import ChooseDate from './ChooseDate'
 import SlotContext from '../../context/slot'
 import { UpdateOrder } from '../../api/updateOrder'
 import CheckoutCard from '../../components/CheckoutCard'
-import { useForm } from 'react-hook-form'
-import * as yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup';
-import reactotron from 'reactotron-react-native'
+import NotificationContext from '../../context/notification'
 
 
 
@@ -36,8 +33,6 @@ const Checkout = ({ route }) => {
   const { useSlot, setUseSlot } = useContext(SlotContext);
   const [razorRes, setRazorRes] = useState("")
   const [orderData, setOrderData] = useState("")
-
-  reactotron.log(useSlot, "USEDLOT")
 
 
   // const schema = yup.object({
@@ -54,6 +49,7 @@ const Checkout = ({ route }) => {
   const { item, cart_ID } = route?.params;
 
   const { cartItems, setCartItems } = useContext(CartContext);
+  const { setCount } = useContext(NotificationContext);
 
 
   const navigation = useNavigation();
@@ -98,6 +94,9 @@ const Checkout = ({ route }) => {
     mutationFn: PlaceOrder,
     onSuccess: async (data) => {
       setOrderData(data?.data?.data)
+      if (data?.data?.data?.data?.paymentType === 'cod') {
+        setCount(count => count + 1)
+      }
       await storage.setStringAsync('order_id', data?.data?.data?.orderId);
 
       if (radioBtnStatus === 0) {
@@ -118,22 +117,24 @@ const Checkout = ({ route }) => {
 
 
 
-  const { mutate: reMutation, refetch: newRefetch } = useMutation({
-    mutationKey: 'UpdateOrderdata',
-    mutationFn: UpdateOrder,
-    onSuccess: (data) => {
-      navigation.navigate('OrderPlaced', { item: data?.data?.data })
-    }
-  })
+  // const { mutate: reMutation, refetch: newRefetch } = useMutation({
+  //   mutationKey: 'UpdateOrderdata',
+  //   mutationFn: UpdateOrder,
+  //   onSuccess: (data) => {
+  //     setCount(count => count + 1);
 
-  const updateMutation = (data) => {
-    reMutation({
-      orderId: data?.orderId,
-      payment_id: data?.razorpay_payment_id,
-      razorpayOrderId: data?.razorpay_order_id,
-      signature: data?.razorpay_signature
-    })
-  }
+  //     navigation.navigate('OrderPlaced', { item: data?.data?.data })
+  //   }
+  // })
+
+  // const updateMutation = (data) => {
+  //   reMutation({
+  //     orderId: data?.orderId,
+  //     payment_id: data?.razorpay_payment_id,
+  //     razorpayOrderId: data?.razorpay_order_id,
+  //     signature: data?.razorpay_signature
+  //   })
+  // }
 
 
 
@@ -144,42 +145,41 @@ const Checkout = ({ route }) => {
     </TouchableOpacity>
   )
 
-  const handlePayment = (data) => {
-    var options = {
-      description: '',
-      image: 'https://mmdcartadmin.diginestsolutions.in/static/media/logo.5a3a4acf9425f0097cef.png',
-      currency: 'INR',
-      key: RAZORPAY_KEY,
-      amount: chk?.data?.data?.total * 100,
-      name: 'DG Cart',
-      order_id: data?.data?.data?.razorPayId,//Replace this with an order_id created using Orders API.
-      prefill: {
-        email: user?.user?.email,
-        contact: user?.user?.mobile,
-        name: user?.user?.name
-      },
-      theme: { color: '#53a20e' }
-    }
-    RazorpayCheckout.open(options).then((data) => {
-      data.orderId = order_id;
+  // const handlePayment = (data) => {
+  //   var options = {
+  //     description: '',
+  //     image: 'https://mmdcartadmin.diginestsolutions.in/static/media/logo.5a3a4acf9425f0097cef.png',
+  //     currency: 'INR',
+  //     key: RAZORPAY_KEY,
+  //     amount: chk?.data?.data?.total * 100,
+  //     name: 'DG Cart',
+  //     order_id: data?.data?.data?.razorPayId,//Replace this with an order_id created using Orders API.
+  //     prefill: {
+  //       email: user?.user?.email,
+  //       contact: user?.user?.mobile,
+  //       name: user?.user?.name
+  //     },
+  //     theme: { color: '#53a20e' }
+  //   }
+  //   RazorpayCheckout.open(options).then((data) => {
+  //     data.orderId = order_id;
 
 
-      //setRazorRes(data)
-      updateMutation(data)
-      //navigation.navigate('Processing')
-      //alert(`Success: ${data.razorpay_payment_id}`);
-    }).catch((error) => {
-      //alert(`Error: ${error.code} | ${error.description}`);
-    });
-  }
+  //     //setRazorRes(data)
+  //     updateMutation(data)
+  //     //navigation.navigate('Processing')
+  //     //alert(`Success: ${data.razorpay_payment_id}`);
+  //   }).catch((error) => {
+  //     //alert(`Error: ${error.code} | ${error.description}`);
+  //   });
+  // }
 
 
   const placeOrder = () => {
-    if (!useSlot?.date) {
-      storage.setString('error', "Delivery Date is required!");
-    } else if ( useSlot?.date && !useSlot?.idData?._id){
-      storage.setString('error', "Delivery Time is required!");
-    } else {
+    if (!useSlot) {
+      storage.setString('error', "Delivery Date & Time is required!");
+    }
+    else {
       mutate({
         itemDetails: cartItems,
         billingAddress: item,
@@ -197,6 +197,7 @@ const Checkout = ({ route }) => {
         slot_id: useSlot?.idData?._id,
         slot_date: useSlot?.date
       })
+
     }
   }
 
@@ -204,7 +205,7 @@ const Checkout = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <Header />
+      <Header icon={true} />
       <CommonHeader heading={"Checkout"} backBtn />
       <ScrollView contentContainerStyle={styles.innerContainer}>
 

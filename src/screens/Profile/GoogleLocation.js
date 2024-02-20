@@ -86,13 +86,16 @@ const GoogleLocation = ({ navigation, route }) => {
             permissions = await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
             if(permissions === "granted"){
                 getLocation()
-				if(route?.params?.mode === "header" || mode === 'home'){
+				if (route?.params?.mode === 'home') {
+					navigation.navigate('HomeNavigator')
+				}
+				else if(route?.params?.mode === "header" || mode === 'home'){
 					navigation.goBack()
 				}
 				else if(mode === "map" || route?.params?.mode === "map"){
 		
 					navigationRef.navigate('MapPage', route?.params?.cartID && { cartID: route?.params?.cartID })
-				}
+				} 
             }
             else{
                 if(permissions === "blocked"){

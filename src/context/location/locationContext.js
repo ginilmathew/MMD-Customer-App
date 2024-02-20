@@ -28,7 +28,6 @@ const locationContext = ({ children }) => {
 
     const onSuccess = async ({ data }) => {
 
-        console.log(mode);
         if(mode === 'map' || mode === 'edit') {
             setLocation(location => ({
                 ...location,
@@ -60,6 +59,7 @@ const locationContext = ({ children }) => {
         // navigationRef.navigate('HomeNavigator', { screen: 'Home' })
     }
 
+
     const handleModal = useCallback(async () => {
         try {
             const result = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
@@ -75,8 +75,12 @@ const locationContext = ({ children }) => {
     }, [])
 
     const openSettings = useCallback(() => {
-        Linking.openSettings()
-        setModal(true);
+        setModal(false);
+        if(Platform.OS === 'ios') {
+            Linking.openURL('App-Prefs:WIFI')
+        } else {
+            Linking.openSettings()
+        } 
     }, [])
 
     const { mutate } = useMutation({
@@ -131,13 +135,15 @@ const locationContext = ({ children }) => {
             },
             (error) => {
                 if (error?.message === "No location provider available.") {
+                    // navigationRef.navigate('LocationPage')
+
                     LocationServicesDialogBox.checkLocationServicesIsEnabled({
                         message: "GPS is disabled in your device. Would you like to enable it?",
                         ok: "enable",
                         cancel: "cancel"
-                    }).then(() => {
-                        // console.log('hslkdfj');
-                        // Perform your location-related task
+                    }).then(function (success) {
+                        getOneTimeLocation()
+                    }).catch((error) => {
                     });
                 }
             },

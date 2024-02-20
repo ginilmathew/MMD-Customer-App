@@ -1,4 +1,4 @@
-import { StyleSheet, View, Modal, useWindowDimensions, Image } from 'react-native'
+import { StyleSheet, View, Modal, useWindowDimensions, Image, Platform } from 'react-native'
 import React, { useCallback, useContext, useEffect } from 'react'
 import { navigationRef } from './RootNavigation';
 import SplashScreen from 'react-native-splash-screen'
@@ -26,7 +26,7 @@ import AuthNavigation from './AuthNavigation';
 
 const Stack = createNativeStackNavigator();
 const Navigation = ({ location }) => {
-
+    
 
     const [cart_id, setCartId] = useMMKVStorage('cart_id', storage);
     const { isConnected } = useNetInfo();
@@ -68,6 +68,7 @@ const Navigation = ({ location }) => {
             storage.setString('cart_id', '')
         }
 
+
         if(location){
             getLocation()
         }
@@ -76,7 +77,7 @@ const Navigation = ({ location }) => {
 
 
     useEffect(() => {
-        if (((appState === "background" || appState === "inactive") && cartItems?.length > 0)) {
+        if (((appState === "background" || appState === "inactive"))) {
             const postCart = async () => {
                 try {
                     // const updatedData = cartItems?.map(item => ({
@@ -122,7 +123,9 @@ const Navigation = ({ location }) => {
                         <Stack.Screen name="Login" component={Login} />
                         <Stack.Screen name="Register" component={Register} />
                         <Stack.Screen name="Forget" component={Forget} />
-                        <Stack.Screen name='ChangePasswd' component={ChangePasswd} />
+                        <Stack.Screen name='ChangePasswd' component={ChangePasswd} />        
+                        {/* <Stack.Screen name='LocationPage' component={LocationPage} />
+                        <Stack.Screen name='GoogleLocation' component={GoogleLocation} /> */}
                     </Stack.Navigator>
                 </NavigationContainer>
 
@@ -150,7 +153,7 @@ const Navigation = ({ location }) => {
         )
     }
 
-    if(!locationData){
+    if(!location){
         <View />
     }
     
@@ -160,10 +163,10 @@ const Navigation = ({ location }) => {
             <>
                 <NavigationContainer ref={navigationRef} onReady={onReady}>
                     <Stack.Navigator
-                        initialRouteName={location ? 'HomeNavigator' : 'LocationPage'}
+                        initialRouteName={location === true ? 'HomeNavigator' : 'LocationPage'}
                         screenOptions={{ headerShown: false }}>
-                        <Stack.Screen name="HomeNavigator" component={AuthNavigation} />
                         <Stack.Screen name='LocationPage' component={LocationPage} />
+                        <Stack.Screen name="HomeNavigator" component={AuthNavigation} />
                         <Stack.Screen name='GoogleLocation' component={GoogleLocation} />
                     </Stack.Navigator>
                 </NavigationContainer>

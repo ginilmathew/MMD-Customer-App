@@ -16,6 +16,7 @@ import Header from '../../components/Header'
 import { storage } from '../../../App'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import LocationContext from '../../context/location'
+import reactotron from 'reactotron-react-native'
 
 
 const EditAddress = ({ navigation, route }) => {
@@ -26,6 +27,8 @@ const EditAddress = ({ navigation, route }) => {
 
     const [refresh, setRefresh] = useState(false);
     const [defaultAddress, setDefaultAddress] = useState("");
+
+    reactotron.log(defaultAddress, "defa")
 
     const { refetch, data } = useQuery({
         queryKey: ['address-query'],
@@ -94,7 +97,12 @@ const EditAddress = ({ navigation, route }) => {
     }, [navigation])
 
     const goToCheckout = useCallback(() => {
-        navigation.navigate('Checkout', { item: defaultAddress, cart_ID: cartID })
+        if(defaultAddress){
+            navigation.navigate('Checkout', { item: defaultAddress, cart_ID: cartID })
+        } else {
+            storage.setString('error', "Address is required to proceed!");
+        }
+        
     }, [navigation, defaultAddress])
 
 
@@ -164,7 +172,7 @@ const EditAddress = ({ navigation, route }) => {
     return (
         <>
 
-            <Header />
+            <Header icon={true} />
             <CommonHeader heading={'Edit Address'} backBtn />
 
             <View style={styles.container}>
@@ -194,8 +202,8 @@ const EditAddress = ({ navigation, route }) => {
                                 justifyContent: 'center',
                                 alignItems: 'center'
                             }}>
-                                
-                                <ActivityIndicator animating color={COLORS.white} size={30}  />
+
+                                <ActivityIndicator animating color={COLORS.white} size={30} />
                             </View>
                         </Modal>
                     )

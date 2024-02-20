@@ -22,6 +22,7 @@ import { useFocusNotifyOnChangeProps } from '../../hooks/useFocusNotifyOnChangeP
 import ProductCard from '../../components/ProductCard'
 import moment from 'moment'
 import CartButton from '../../components/CartButton'
+import NotificationContext from '../../context/notification'
 
 
 
@@ -36,16 +37,17 @@ const Home = ({ navigation, route }) => {
     const [time, setTime] = useState(moment().unix())
     const { cartItems, setCartItems, cartChanges, cartTotal } = useContext(CartContext);
     const notifyOnChangeProps = useFocusNotifyOnChangeProps()
+    const { setCount } = useContext(NotificationContext);
 
 
     let payload = {
-        // "coordinates": [
-        //     8.5204866, 76.9371447
-        // ],
-        coordinates: [location?.location?.latitude, location?.location?.longitude],
-        cartId: cart_id,
-
+        "coordinates": [
+            8.5204866, 76.9371447
+        ],
+        // coordinates: [location?.location?.latitude, location?.location?.longitude],
+        // cartId: cart_id,
     }
+
 
 
     const { data, isLoading, refetch } = useQuery({
@@ -58,7 +60,11 @@ const Home = ({ navigation, route }) => {
         enabled: !!location?.address,
     })
 
-
+    useEffect(() => {
+        if (data?.data?.data) {
+            setCount(data?.data?.data?.count);
+        }
+    }, [data])
 
     useFocusEffect(useCallback(() => {
 
@@ -89,28 +95,6 @@ const Home = ({ navigation, route }) => {
     const NavigateToFeatured = useCallback((res) => {
         navigation.navigate('FeaturedProduct', { id: res._id, name: res.name })
     }, [navigation])
-
-    useEffect(() => {
-        const cartProducts = data?.data?.data?.cart?.product;
-
-        if (!cartProducts || cartProducts.length === 0) {
-            return; // No products or invalid data, no need to proceed further
-        }
-
-        const updatedCartItems = cartProducts?.map(product => {
-            const { _id, qty, unit, variant } = product;
-
-            return {
-                _id,
-                qty,
-                unit_id: unit?.id,
-                varientname: variant?.name,
-                item: { ...product }
-            };
-        });
-
-        //setCartItems(updatedCartItems);
-    }, [data?.data?.data]);
 
 
 
@@ -291,7 +275,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         gap: 15,
-        justifyContent: 'space-between',
+        // justifyContent: 'space-between',
         marginTop: 3
     }
 

@@ -81,7 +81,7 @@ function HomeNavigation({ navigation }) {
     return (
         <>
 
-            {/* <Header toCart={toCart}  toNotification={toNotification} /> */}
+            <Header toCart={toCart} text={homeFocus ? currentLoc?.address : null} icon={true}  toNotification={toNotification} />
 
             <Tab.Navigator
                 screenOptions={({ route }) => {

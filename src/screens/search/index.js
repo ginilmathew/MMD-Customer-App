@@ -74,7 +74,7 @@ const Search = () => {
     if (isLoading) {
         return (
             <View style={{ flex: 1, backgroundColor: COLORS.white }}>
-                <Header />
+               <Header icon={true}/>
                 <CommonHeader heading={'Search'} backBtn />
                 <View>
                     <CustomSearch values={value} onChangeText={onChangeProduct} />
@@ -88,7 +88,7 @@ const Search = () => {
     if (!data?.data?.data || data?.data?.data.length === 0) {
         return (
             <View style={{ flex: 1, backgroundColor: COLORS.white }}>
-                <Header />
+               <Header icon={true}/>
                 <CommonHeader heading={'Search'} backBtn />
                 <View>
                     <CustomSearch values={value} onChangeText={onChangeProduct} />
@@ -107,7 +107,7 @@ const Search = () => {
     return (
 
         <View style={{ flex: 1, backgroundColor: COLORS.white }}>
-            <Header />
+             <Header icon={true}/>
             <CommonHeader heading={'Search'} backBtn />
             <View style={styles.searchcontainer}>
                 <CustomSearch values={value} onChangeText={onChangeProduct} placeholder={"Search Products..."}/>

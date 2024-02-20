@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import {
     ActivityIndicator,
+    Platform,
     ScrollView,
     StyleSheet,
     Text,
@@ -24,12 +25,13 @@ import IonIcon from 'react-native-vector-icons/AntDesign'
 import { storage } from '../../../App';
 import { useMMKVStorage } from 'react-native-mmkv-storage';
 import moment from 'moment';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 
 const SingleProduct = ({ navigation, route }) => {
 
     const { item } = route.params;
-  const {height}=useWindowDimensions()
+    const { height } = useWindowDimensions()
     const [selectedUnit, setSelectedUnit] = useState(null)
     const [selectedVariant, setSelectedVariant] = useState(null)
     const [variantsList, setVariantsList] = useState([])
@@ -37,6 +39,8 @@ const SingleProduct = ({ navigation, route }) => {
     const [product, setProduct] = useState(null)
     const [price, setPrice] = useState(null)
     const [quantity, setQuantity] = useState(0)
+    const insets = useSafeAreaInsets();
+
 
 
     const [qty, setQty] = useState(null)
@@ -400,171 +404,170 @@ const SingleProduct = ({ navigation, route }) => {
 
 
     return (
-        <View style={[styles.mainContainer, ]}>
-            <View style={{ height: height / 1.05 ,}}>
-            <Header />
-            <CommonHeader heading={item?.name?.length > 18 ? item?.name?.slice(0, 18) + "..." : item?.name} backBtn />
-            <ScrollView
-                contentContainerStyle={[styles.container]}
-                scrollEnabled={true}
-                showsVerticalScrollIndicator={false}>
-                <Animated.Image source={{ uri: BASEPATHPRODCT + item?.image?.[0] || "" }} style={styles.mainImage} resizeMode="contain" sharedTransitionTag={item?._id} />
-                <ProductData item={product} price={price} quantity={quantity} />
+        <View style={[styles.mainContainer,]}>
+            <View style={{ height: height / 1.05, }}>
+                <Header icon={false} />
+                <CommonHeader heading={item?.name?.length > 18 ? item?.name?.slice(0, 18) + "..." : item?.name} backBtn />
+                <ScrollView
+                    contentContainerStyle={[styles.container]}
+                    scrollEnabled={true}
+                    showsVerticalScrollIndicator={false}>
+                    <Animated.Image source={{ uri: BASEPATHPRODCT + item?.image?.[0] || "" }} style={styles.mainImage} resizeMode="contain" sharedTransitionTag={item?._id} />
+                    <ProductData item={product} price={price} quantity={quantity} />
 
-                <View style={styles.dropdownContainer}>
+                    <View style={styles.dropdownContainer}>
 
-                    <View style={{
-                        width: 80,
-                        justifyContent: 'space-between',
-                        flexDirection: 'row',
-                        marginLeft: 'auto'
-                    }}>
-                    </View>
-
-
-                    <View style={styles.dropDown}>
                         <View style={{
-                            width: '45%'
+                            width: 80,
+                            justifyContent: 'space-between',
+                            flexDirection: 'row',
+                            marginLeft: 'auto'
                         }}>
-                            <Text style={{
-                                fontSize: 16,
-                                color: '#000',
-                                marginBottom: 10,
-                            }}>Unit</Text>
+                        </View>
+
+
+                        <View style={styles.dropDown}>
+                            <View style={{
+                                width: '45%'
+                            }}>
+                                <Text style={{
+                                    fontSize: 16,
+                                    color: '#000',
+                                    marginBottom: 10,
+                                }}>Unit</Text>
+
+                                <View style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    backgroundColor: COLORS.primary_light,
+                                    borderRadius: 10,
+                                    // paddingRight: 10
+                                }}>
+                                    <SelectDropdown
+                                        //ref={unitRef}
+                                        data={unitList}
+                                        defaultValue={selectedUnit?.name}
+                                        buttonTextStyle={{
+                                            fontSize: 13
+                                        }}
+                                        defaultButtonText={'Select'}
+                                        buttonStyle={{
+                                            width: '90%',
+                                            borderRadius: 10,
+                                            backgroundColor: COLORS.primary_light
+                                        }}
+                                        onSelect={(selectedItem, index) => {
+                                            changeUnit(index)
+                                            // setUnit(selectedItem)
+                                            // variantRef?.current?.reset()
+                                        }}
+                                    />
+
+                                    {/* <IonIcon name='arrowright' color={COLORS.blue} size={20} /> */}
+                                </View>
+                            </View>
 
                             <View style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                backgroundColor: COLORS.primary_light,
-                                borderRadius: 10,
-                                // paddingRight: 10
+                                width: '45%'
                             }}>
-                                <SelectDropdown
-                                    //ref={unitRef}
-                                    data={unitList}
-                                    defaultValue={selectedUnit?.name}
-                                    buttonTextStyle={{
-                                        fontSize: 13
-                                    }}
-                                    defaultButtonText={'Select'}
-                                    buttonStyle={{
-                                        width: '90%',
-                                        borderRadius: 10,
-                                        backgroundColor: COLORS.primary_light
-                                    }}
-                                    onSelect={(selectedItem, index) => {
-                                        changeUnit(index)
-                                        // setUnit(selectedItem)
-                                        // variantRef?.current?.reset()
-                                    }}
-                                />
+                                <Text style={{
+                                    fontSize: 16,
+                                    color: '#000',
+                                    marginBottom: 10,
+                                }}>Variant</Text>
+                                <View style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    borderRadius: 10,
+                                    backgroundColor: COLORS.primary_light,
+                                    // paddingRight: 10
+                                }}>
+                                    <SelectDropdown
+                                        ref={variantRef}
+                                        data={variantsList}
+                                        defaultValue={selectedVariant?.name}
+                                        buttonTextStyle={{
+                                            fontSize: 13,
+                                        }}
+                                        defaultButtonText={'Select'}
+                                        renderSearchInputLeftIcon={() => <IonIcon name='home' size={23} />}
+                                        buttonStyle={{
+                                            width: '90%',
+                                            borderRadius: 10,
+                                            backgroundColor: COLORS.primary_light
+                                        }}
+                                        disabled={variantsList?.length === 0}
+                                        onSelect={(value, index) => {
+                                            changeVariant(index)
+                                        }}
+                                    />
 
-                                {/* <IonIcon name='arrowright' color={COLORS.blue} size={20} /> */}
+                                    {/* <IonIcon name='arrowright' color={COLORS.blue} size={20} /> */}
+                                </View>
                             </View>
                         </View>
 
-                        <View style={{
-                            width: '45%'
-                        }}>
-                            <Text style={{
-                                fontSize: 16,
-                                color: '#000',
-                                marginBottom: 10,
-                            }}>Variant</Text>
-                            <View style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                borderRadius: 10,
-                                backgroundColor: COLORS.primary_light,
-                                // paddingRight: 10
-                            }}>
-                                <SelectDropdown
-                                    ref={variantRef}
-                                    data={variantsList}
-                                    defaultValue={selectedVariant?.name}
-                                    buttonTextStyle={{
-                                        fontSize: 13,
-                                    }}
-                                    defaultButtonText={'Select'}
-                                    renderSearchInputLeftIcon={() => <IonIcon name='home' size={23} />}
-                                    buttonStyle={{
-                                        width: '90%',
-                                        borderRadius: 10,
-                                        backgroundColor: COLORS.primary_light
-                                    }}
-                                    disabled={variantsList?.length === 0}
-                                    onSelect={(value, index) => {
-                                        changeVariant(index)
-                                    }}
-                                />
-
-                                {/* <IonIcon name='arrowright' color={COLORS.blue} size={20} /> */}
-                            </View>
-                        </View>
                     </View>
 
-                </View>
+                    {product?.details ? <AboutSection item={product} /> : null}
+                    {product?.description ? <DescriptionSection item={product} /> : null}
 
-                {product?.details ? <AboutSection item={product} /> : null}
-                {product?.description ? <DescriptionSection item={product} /> : null}
+                </ScrollView>
 
-            </ScrollView>
-
-            <View style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                height: 60,
-                position: 'absolute',
-                bottom: 0,
-                width: '100%',
-                backgroundColor: COLORS.white,
-                paddingHorizontal: 10,
-            }}>
-                {/* Button */}
-                {quantity > 0 && <View style={{
+                <View style={{
                     flexDirection: 'row',
-                    width: '40%',
-                    alignSelf: 'center',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    borderRadius: 10,
-                    overflow: 'hidden',
-                    backgroundColor: COLORS.gray
+                    justifyContent: 'center',
+                    alignItems: "flex-start",
+                    width: '100%',
+                    // backgroundColor: COLORS.red,
+                    height: Platform.OS === 'android' ? 60 : 100,
+                    // marginTop: Platform.OS === 'android' ? 0 : -50
                 }}>
-                    <TouchableOpacity style={{
-                        backgroundColor: COLORS.primary,
-                        padding: 10,
-                        height: '100%',
-                    }} onPress={() => {
-                        setQuantity(qty => qty - 1)
+                    {/* Button */}
+                    {quantity > 0 && <View style={{
+                        flexDirection: 'row',
+                        width: '40%',
+                        alignSelf: 'flex-start',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        borderRadius: 10,
+                        overflow: 'hidden',
+                        backgroundColor: COLORS.gray
                     }}>
-                        <Entypo name='minus' size={25} color='#fff' />
-                    </TouchableOpacity>
+                        <TouchableOpacity style={{
+                            backgroundColor: COLORS.primary,
+                            padding: 10,
+                            height: '100%',
+                        }} onPress={() => {
+                            setQuantity(qty => qty - 1)
+                        }}>
+                            <Entypo name='minus' size={25} color='#fff' />
+                        </TouchableOpacity>
 
-                    <Text style={{
-                        fontFamily: 'Poppins-Regular',
-                        fontSize: 16,
-                        fontWeight: 'bold',
-                        color: COLORS.dark
-                    }}>{quantity}</Text>
+                        <Text style={{
+                            fontFamily: 'Poppins-Regular',
+                            fontSize: 16,
+                            fontWeight: 'bold',
+                            color: COLORS.dark
+                        }}>{quantity}</Text>
 
-                    <TouchableOpacity style={{
-                        backgroundColor: COLORS.primary,
-                        padding: 10,
-                        height: '100%',
-                    }} onPress={() => {
-                        setQuantity(qty => qty + 1)
-                    }}>
-                        <Entypo name='plus' size={25} color='#fff' />
-                    </TouchableOpacity>
+                        <TouchableOpacity style={{
+                            backgroundColor: COLORS.primary,
+                            padding: 10,
+                            height: '100%',
+                        }} onPress={() => {
+                            setQuantity(qty => qty + 1)
+                        }}>
+                            <Entypo name='plus' size={25} color='#fff' />
+                        </TouchableOpacity>
 
-                </View>}
+                    </View>}
 
-                {quantity === 0 && <BuyButton
-                    loading={isLoading}
-                    onPress={changeQty}
-                />}
-            </View>
+                    {quantity === 0 && <BuyButton
+                        loading={isLoading}
+                        onPress={changeQty}
+                    />}
+                </View>
             </View>
         </View>
     );
@@ -640,6 +643,7 @@ const styles = StyleSheet.create({
     container: {
         paddingHorizontal: 20,
         paddingVertical: 5,
+        paddingBottom: 100
         //flex: 1
     },
     mainImage: {
@@ -715,7 +719,7 @@ const styles = StyleSheet.create({
         textAlign: 'right',
     },
     descriptionContainer: {
-        marginBottom: 60,
+        marginBottom: 20,
     },
     aboutContainer: {
         marginBottom: 10,
@@ -737,8 +741,6 @@ const styles = StyleSheet.create({
     buttonContainer: {
         alignItems: 'center',
         justifyContent: 'center',
-        paddingVertical: 10,
-
     },
     button: {
         backgroundColor: COLORS.primary,

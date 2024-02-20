@@ -17,6 +17,7 @@ import { useAppState } from './src/hooks/appStateManagement'
 import SlotProvider from './src/context/slot/slotContext'
 import { PERMISSIONS, request, requestMultiple } from 'react-native-permissions'
 import reactotron from 'reactotron-react-native'
+import NotificationContext from './src/context/notification/notificationCount'
 
 
 
@@ -38,13 +39,13 @@ const App = () => {
 
 	async function requestUserPermission() {
 
-        
 
 
 
-        if (Platform.OS === 'android') {
-            let permissions = await requestMultiple([PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION, PERMISSIONS.ANDROID.POST_NOTIFICATIONS])
-			if(permissions?.['android.permission.POST_NOTIFICATIONS'] === "granted"){
+
+		if (Platform.OS === 'android') {
+			let permissions = await requestMultiple([PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION, PERMISSIONS.ANDROID.POST_NOTIFICATIONS])
+			if (permissions?.['android.permission.POST_NOTIFICATIONS'] === "granted") {
 				await notifee?.createChannel({
 					id: 'sound',
 					name: 'pressable channel',
@@ -53,46 +54,46 @@ const App = () => {
 				})
 			}
 
-			if(permissions?.['android.permission.ACCESS_FINE_LOCATION'] === "granted"){
+			if (permissions?.['android.permission.ACCESS_FINE_LOCATION'] === "granted") {
 				setLocationPermission(true)
 				setLoading(false)
 			}
-			else{
+			else {
 				setLoading(false)
 			}
 
-            // const status = await PermissionsAndroid.requestMultiple([PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION]);
-            
-        }
-        else{
-            let location = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+			// const status = await PermissionsAndroid.requestMultiple([PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION]);
 
-			if(location === "granted"){
+		}
+		else {
+			let location = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+
+			if (location === "granted") {
 				setLocationPermission(true)
 				setLoading(false)
 			}
-			else{
+			else {
 				setLoading(false)
 			}
 
-            const authStatus = await messaging().requestPermission();
-            const enabled =
-                authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-                authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-    
-            if (enabled) {
+			const authStatus = await messaging().requestPermission();
+			const enabled =
+				authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+				authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+			if (enabled) {
 				await notifee?.createChannel({
 					id: 'sound',
 					name: 'pressable channel',
 					importance: AndroidImportance.HIGH,
 					sound: 'custom'
 				})
-            }
-            //const status = await Geolocation.requestAuthorization('whenInUse');
-        }
-       
-        //getCurrentLocation()
-    }
+			}
+			//const status = await Geolocation.requestAuthorization('whenInUse');
+		}
+
+		//getCurrentLocation()
+	}
 
 	// async function requestUserPermission() {
 
@@ -123,7 +124,7 @@ const App = () => {
 	// 		}
 	// 	}
 
-		
+
 	// }
 
 
@@ -180,8 +181,8 @@ const App = () => {
 	}, [])
 
 
-	if(loading){
-		return(
+	if (loading) {
+		return (
 			<View />
 		)
 	}
@@ -193,11 +194,13 @@ const App = () => {
 		<QueryClientProvider client={queryClient}>
 			<SafeAreaView style={styles.safeArea}>
 				<LocationContext>
-					<CartProvider>
-						<SlotProvider>
-							<Navigation location={locationPermission} />
-						</SlotProvider>
-					</CartProvider>
+					<NotificationContext>
+						<CartProvider>
+							<SlotProvider>
+								<Navigation location={locationPermission} />
+							</SlotProvider>
+						</CartProvider>
+					</NotificationContext>
 				</LocationContext>
 			</SafeAreaView>
 		</QueryClientProvider>

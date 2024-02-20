@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity } from 'react-native'
+import { Platform, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import React, { useCallback, useContext } from 'react'
 import Background from './Background';
 import CommonButton from '../../components/CommonButton';
@@ -12,11 +12,15 @@ import { loginApi, tokenApi } from '../../api/auth';
 import { storage } from '../../../App';
 import locationContext from '../../context/location';
 import messaging from '@react-native-firebase/messaging';
+import CartContext from '../../context/cart';
+import { PERMISSIONS, request } from 'react-native-permissions';
 
 
 const Login = ({ navigation }) => {
 
     const { getLocation, setMode } = useContext(locationContext)
+    const { setCartItems } = useContext(CartContext)
+
     const { mutate: tokenMutate } = useMutation({
         mutationKey: 'token-key',
         mutationFn: tokenApi
@@ -33,10 +37,25 @@ const Login = ({ navigation }) => {
     })
 
     const onSuccess = async ({ data }) => {
+
+        // let permission = "denied";
+
+        // permission = await request(Platform.OS === 'ios' ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+
+        // if(permission === 'granted') {
+        //     getLocation()
+        // } 
+
+        const cartProducts = data?.getCart?.product;
+
+        if (cartProducts?.length > 0) {
+            setCartItems(cartProducts);
+        }
         await storage.setMapAsync('user', data);
         const token = await messaging().getToken();
         tokenMutate(token)
         storage.setString('success', 'Login successful')
+
 
         // try {
 
@@ -107,7 +126,7 @@ const Login = ({ navigation }) => {
                 <Text style={styles.link}>{'Forget Password?'}</Text>
             </TouchableOpacity>
 
-            <CommonButton text={'Login'} onPress={handleSubmit(mutate)} loading={isLoading}/>
+            <CommonButton text={'Login'} onPress={handleSubmit(mutate)} loading={isLoading} />
 
 
         </Background>

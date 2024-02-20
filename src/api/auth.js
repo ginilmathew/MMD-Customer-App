@@ -1,6 +1,6 @@
 import customAxios from "../customAxios";
 
-export const loginApi = async (data) => customAxios.post('public/api/auth/login', { ...data, role: 'customer' })
+export const loginApi = async (data) => customAxios.post('public/api/auth/login', { ...data, email: data?.email.toLowerCase(), role: 'customer' })
 
 export const registerApi = async (data) => customAxios.post('public/api/auth/register', { ...data, role: 'customer' })
 

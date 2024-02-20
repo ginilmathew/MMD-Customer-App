@@ -59,7 +59,7 @@ const SingleOrder = ({ route }) => {
 
     return (
         <View style={styles.mainStyle}>
-            <Header />
+          <Header icon={true}/>
             <CommonHeader heading={`Order ID : ${item?.order_id}`} backBtn />
             <ScrollView contentContainerStyle={styles.innerContainer}>
 
@@ -103,10 +103,6 @@ const SingleOrder = ({ route }) => {
                         <View style={styles.textBox}>
                             <Text style={styles.subBox}>Sub-Total</Text>
                             <Text style={styles.priceBox}>₹ {item?.subTotal}</Text>
-                        </View>
-                        <View style={styles.textBox}>
-                            <Text style={styles.subBox}>Delivery Charge</Text>
-                            <Text style={styles.priceBox}>₹ {item?.delivery_charge}</Text>
                         </View>
                         <View style={styles.textBox}>
                             <Text style={styles.subBox}>GST</Text>
