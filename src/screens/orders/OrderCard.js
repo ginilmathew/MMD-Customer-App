@@ -26,7 +26,7 @@ const OrderCard = ({ item }) => {
     }
 
     const orderPage = useCallback(() => {
-        navigation.navigate('SingleOrder', {item : item })
+        navigation.navigate('SingleOrder', {id : item?._id })
     }, [navigation])
 
     return (

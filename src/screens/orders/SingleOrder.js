@@ -1,14 +1,29 @@
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { ActivityIndicator, Image, Modal, ScrollView, StyleSheet, Text, View } from 'react-native'
+import React, { useCallback } from 'react'
 import CommonHeader from '../../components/CommonHeader'
 import Header from '../../components/Header'
 import { COLORS } from '../../constants/COLORS'
 import SubHeading from '../../components/SubHeading'
 import moment from 'moment'
+import { useFocusEffect } from '@react-navigation/native'
+import { useMutation } from 'react-query'
+import { singleOrder } from '../../api/Orders'
 
 const SingleOrder = ({ route }) => {
 
-    const { item } = route.params;
+    let item;
+    const { mutate, data, isLoading } = useMutation({
+        mutationKey: 'single-order',
+        mutationFn: singleOrder
+    })
+
+    if(data?.data) {
+        item = data?.data?.data
+    }
+
+    useFocusEffect(useCallback(() => {
+        mutate(route?.params?.id)
+    }, [route?.params?.id]))
 
     // const statusColor = () => {
     //     let color;
@@ -56,6 +71,7 @@ const SingleOrder = ({ route }) => {
             <Text style={[styles.statusText, { color }]}>{item?.orderStatus}</Text>
         );
     }
+
 
     return (
         <View style={styles.mainStyle}>
@@ -129,6 +145,22 @@ const SingleOrder = ({ route }) => {
                 </View>
 
             </ScrollView>
+
+            {
+                (isLoading) && (
+                    <Modal visible={isLoading} transparent>
+                        <View style={{
+                            flex: 1,
+                            backgroundColor: 'rgba(0,0,0,.4)',
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }}>
+
+                            <ActivityIndicator animating color={COLORS.white} size={30} />
+                        </View>
+                    </Modal>
+                )
+            }
         </View>
     )
 }

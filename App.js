@@ -37,23 +37,20 @@ const App = () => {
 		});
 	});
 
+
 	async function requestUserPermission() {
-
-
-
-
 
 		if (Platform.OS === 'android') {
 			let permissions = await requestMultiple([PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION, PERMISSIONS.ANDROID.POST_NOTIFICATIONS])
-			console.log(permissions, 'checking');
-			if (permissions?.['android.permission.POST_NOTIFICATIONS'] === "granted") {
+			// if (permissions?.['android.permission.POST_NOTIFICATIONS'] === "granted") {
+			// 	console.log('yess');
 				await notifee?.createChannel({
-					id: 'sound',
-					name: 'pressable channel',
+					id: 'default',
+					name: 'Default Channel',
 					importance: AndroidImportance.HIGH,
-					sound: 'custom'
+					sound: 'sound'
 				})
-			}
+			// }
 
 			if (permissions?.['android.permission.ACCESS_FINE_LOCATION'] === "granted") {
 				setLocationPermission(true)
@@ -84,10 +81,10 @@ const App = () => {
 
 			if (enabled) {
 				await notifee?.createChannel({
-					id: 'sound',
-					name: 'pressable channel',
+					id: 'default',
+					name: 'Default Channel',
 					importance: AndroidImportance.HIGH,
-					sound: 'custom'
+					sound: 'sound'
 				})
 			}
 			//const status = await Geolocation.requestAuthorization('whenInUse');
@@ -131,6 +128,8 @@ const App = () => {
 
 	async function onMessageReceived(message) {
 
+		console.log(message);
+
 		// Display Notification
 		await notifee.displayNotification({
 			id: message?.messageId,
@@ -138,7 +137,7 @@ const App = () => {
 			body: message.notification.body,
 			data: message?.data,
 			android: {
-				channelId: 'sound',
+				channelId: 'default',
 				importance: AndroidImportance.HIGH,
 				pressAction: {
 					id: message?.messageId,
@@ -153,7 +152,6 @@ const App = () => {
 	useEffect(() => {
 
 		return notifee.onForegroundEvent(({ type, detail }) => {
-
 			// console.log(detail.notification.data);
 
 			switch (type) {
@@ -169,6 +167,7 @@ const App = () => {
 			}
 		});
 	}, []);
+
 
 
 	useEffect(() => {

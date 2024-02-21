@@ -146,7 +146,10 @@ const Header = memo(({ onPress, text, icon }) => {
                                 </TouchableOpacity>
                             )
                         }
-                        <TouchableOpacity onPress={notPage}>
+
+                        <TouchableOpacity style={{
+                            zIndex: 10
+                        }} onPress={notPage}>
                             {count > 0 &&
                                 <View style={[styles.badgeStyle, styles.cartBadge, { backgroundColor: COLORS.red }]}>
                                     <Text style={[styles.countStyle]}>{count}</Text>

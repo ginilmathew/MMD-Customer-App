@@ -15,7 +15,7 @@ const NotificationCard = ({data, refetch}) => {
         onSuccess() {
             refetch();
             if(data?.subtype === 'order') {
-                navigation.navigate('SingleOrder', { item: data?.order })
+                navigation.navigate('SingleOrder', { id: data?.order?._id })
             }
         }
     })

@@ -125,7 +125,6 @@ const locationContext = ({ children }) => {
     }
 
     const getOneTimeLocation = () => {
-        console.log('callingg.....');
         Geolocation.getCurrentPosition(
             //Will give you the current location
             (position) => {

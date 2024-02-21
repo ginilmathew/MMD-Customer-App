@@ -27,8 +27,6 @@ import AuthNavigation from './AuthNavigation';
 const Stack = createNativeStackNavigator();
 const Navigation = ({ location }) => {
 
-    console.log(location);
-
 
     const [cart_id, setCartId] = useMMKVStorage('cart_id', storage);
     const { isConnected } = useNetInfo();
@@ -70,10 +68,8 @@ const Navigation = ({ location }) => {
             storage.setString('cart_id', '')
         }
 
-        console.log('called');
 
         if(location){
-            console.log('calling');
             getLocation()
         }
     }, [cart_id, location])
