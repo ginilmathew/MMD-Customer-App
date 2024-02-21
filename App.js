@@ -18,6 +18,7 @@ import SlotProvider from './src/context/slot/slotContext'
 import { PERMISSIONS, request, requestMultiple } from 'react-native-permissions'
 import reactotron from 'reactotron-react-native'
 import NotificationContext from './src/context/notification/notificationCount'
+import { navigationRef } from './src/navigation/RootNavigation'
 
 
 
@@ -158,9 +159,10 @@ const App = () => {
 				case EventType.DISMISSED:
 					break;
 				case EventType.PRESS:
-					const { type } = detail?.notification?.data;
-					if (type === 'product') {
-						// navigation.navigate(HOME_NAVIGATOR, { screen: JOB_NAVIGATOR, params: { jobId: detail?.notification?.data?.Id } })
+					const data = detail?.notification?.data;
+
+					if (data?.order_id) {
+						navigationRef.navigate('SingleOrder', { id: data?.order_id })
 					}
 
 					break;

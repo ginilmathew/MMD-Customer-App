@@ -5,7 +5,6 @@ import { COLORS } from '../../constants/COLORS';
 
 const Background = ({ headline, subhead, children, onPress, link, description }) => {
 
-
     const handlePress = useCallback(() => {
         Keyboard.dismiss();
         onPress();
