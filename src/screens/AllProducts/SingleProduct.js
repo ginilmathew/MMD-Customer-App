@@ -12,7 +12,6 @@ import {
 import Header from '../../components/Header';
 import CommonHeader from '../../components/CommonHeader';
 import { COLORS } from '../../constants/COLORS'
-import reactotron from 'reactotron-react-native';
 import Animated, { interpolate } from 'react-native-reanimated';
 import { AddToCart } from '../../components/ItemCard';
 import Entypo from 'react-native-vector-icons/Entypo'
@@ -136,7 +135,7 @@ const SingleProduct = ({ navigation, route }) => {
                     taxValue: (sellingPrice / 100) * tax
                 };
 
-                reactotron.log({ price })
+
             }
 
             setPrice(price)

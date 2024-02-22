@@ -6,7 +6,6 @@ import AddToCart from './AddToCart';
 import { useNavigation } from '@react-navigation/native';
 import { COLORS } from '../constants/COLORS';
 import moment from 'moment';
-import reactotron from 'reactotron-react-native';
 
 
 const ProductCard = ({ item, key, time }) => {
@@ -47,11 +46,8 @@ const ProductCard = ({ item, key, time }) => {
         const { offerPrice, fromDate, toDate, sellingPrice, costPrice } = variant
 
         if (fromDate && toDate && offerPrice) {
-            reactotron.log(fromDate, "STR")
             let startDate = moment(`${moment(fromDate, "YYYY-MM-DD").format("YYYY-MM-DD")} 00:00:00`, "YYYY-MM-DD HH:mm:ss");
             let endDate = moment(`${moment(toDate, "YYYY-MM-DD").format("YYYY-MM-DD")} 23:59:59`, "YYYY-MM-DD HH:mm:ss");
-
-            reactotron.log(startDate, "STR")
             if (moment().isBetween(startDate, endDate)) {
                 price = {
                     ...variant,

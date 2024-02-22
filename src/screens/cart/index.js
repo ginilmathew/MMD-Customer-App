@@ -5,7 +5,6 @@ import CommonHeader from '../../components/CommonHeader'
 import { COLORS } from '../../constants/COLORS'
 import CommonButton from '../../components/CommonButton'
 import CartContext from '../../context/cart'
-import reactotron from 'reactotron-react-native'
 import { PostAddToCart, addToCart, getCartItems } from '../../api/cart'
 import { useMutation, useQuery } from 'react-query'
 import useRefetch from '../../hooks/useRefetch'
@@ -34,7 +33,7 @@ const Cart = ({ navigation, route }) => {
 
 
 
-  // reactotron.log({animatedStyle: animatedStyle ?? null})
+
 
 
   useFocusEffect(
