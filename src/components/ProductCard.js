@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
         marginBottom: 4,
     },
     offerBox: {
-        width: 85,
+        width: 90,
         backgroundColor: COLORS.Offer_box,
         padding: 2,
         borderRadius: 6,
