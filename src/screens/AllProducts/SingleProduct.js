@@ -514,24 +514,7 @@ const SingleProduct = ({ navigation, route }) => {
 
                 </ScrollView>
 
-<<<<<<< HEAD
-            </ScrollView>
-
-            <View style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                height: 60,
-                position: 'absolute',
-                bottom: Platform.OS === 'ios' ? 50 : 0,
-                width: '100%',
-                backgroundColor: COLORS.white,
-                paddingHorizontal: 10,
-            }}>
-                {/* Button */}
-                {quantity > 0 && <View style={{
-=======
                 <View style={{
->>>>>>> nazim
                     flexDirection: 'row',
                     justifyContent: 'center',
                     alignItems: "flex-start",
