@@ -6,7 +6,7 @@ export const env = "fashion"
 
 const URLS = {
     fashion: "https://digifashionapi.diginestsolutions.in/",
-    resto: "https:/digirestoapi.diginestsolutions.in/",
+    resto: "https://digirestoapi.diginestsolutions.in/",
     dev: "https://digistoreapi.diginestsolutions.in/"
 }
 

@@ -184,7 +184,7 @@ const Checkout = ({ route }) => {
         itemDetails: cartItems,
         billingAddress: item,
         shippingAddress: item,
-        orderDate: moment(today).format("DD-MM-YYYY"),
+        orderDate: moment(today).format("YYYY-MM-DD"),
         subTotal: data?.data?.data?.subtotal,
         discount: data?.data?.data.discount,
         tax: data?.data?.data?.tax,
