@@ -202,7 +202,6 @@ const Checkout = ({ route }) => {
   }
 
 
-
   return (
     <View style={styles.container}>
       <Header icon={true} />
@@ -254,19 +253,19 @@ const Checkout = ({ route }) => {
             <View style={styles.totalContainer}>
               <View style={styles.textBox}>
                 <Text style={styles.subBox}>Sub-Total</Text>
-                <Text style={styles.priceBox}>₹ {data?.data?.data?.subtotal}</Text>
+                <Text style={styles.priceBox}>₹ {parseFloat(data?.data?.data?.subtotal)?.toFixed(2)}</Text>
               </View>
               <View style={styles.textBox}>
                 <Text style={styles.subBox}>GST</Text>
-                <Text style={styles.priceBox}>₹ {data?.data?.data?.tax}</Text>
+                <Text style={styles.priceBox}>₹ {parseFloat(data?.data?.data?.tax)?.toFixed(2)}</Text>
               </View>
               <View style={styles.textBox}>
                 <Text style={styles.subBox}>Delivery Charge</Text>
-                <Text style={styles.priceBox}>₹ {data?.data?.data.deliveryCharge}</Text>
+                <Text style={styles.priceBox}>₹ {parseFloat(data?.data?.data.deliveryCharge)?.toFixed(2)}</Text>
               </View>
               <View style={styles.containerTwo}>
                 <Text style={styles.textStyle}>Grand Total</Text>
-                <Text style={styles.priceBox}>₹ {data?.data?.data?.total}</Text>
+                <Text style={styles.priceBox}>₹ {parseFloat(data?.data?.data?.total)?.toFixed(2)}</Text>
               </View>
             </View>
           </View>

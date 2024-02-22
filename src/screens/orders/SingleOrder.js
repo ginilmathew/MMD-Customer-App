@@ -118,23 +118,23 @@ const SingleOrder = ({ route }) => {
                     <View style={styles.totalContainer}>
                         <View style={styles.textBox}>
                             <Text style={styles.subBox}>Sub-Total</Text>
-                            <Text style={styles.priceBox}>₹ {item?.subTotal}</Text>
+                            <Text style={styles.priceBox}>₹ {parseFloat(item?.subTotal)?.toFixed(2)}</Text>
                         </View>
                         <View style={styles.textBox}>
                             <Text style={styles.subBox}>GST</Text>
-                            <Text style={styles.priceBox}>₹ {item?.tax}</Text>
+                            <Text style={styles.priceBox}>₹ {parseFloat(item?.tax)?.toFixed(2)}</Text>
                         </View>
                         {item?.discount ? <View style={styles.textBox}>
                             <Text style={styles.subBox}>Discount</Text>
-                            <Text style={styles.priceBox}>- ₹ {item?.discount}</Text>
+                            <Text style={styles.priceBox}>- ₹ {parseFloat(item?.discount)?.toFixed(2)}</Text>
                         </View> : null}
                         <View style={styles.textBox}>
                             <Text style={styles.subBox}>Delivery Charge</Text>
-                            <Text style={styles.priceBox}>₹ {item?.delivery_charge}</Text>
+                            <Text style={styles.priceBox}>₹ {parseFloat(item?.delivery_charge)?.toFixed(2)}</Text>
                         </View>
                         <View style={styles.containerTwo}>
                             <Text style={styles.textStyle}>Grand Total</Text>
-                            <Text style={[styles.priceBox, { fontFamily: "Poppins-Bold" }]}>₹ {item?.total}</Text>
+                            <Text style={[styles.priceBox, { fontFamily: "Poppins-Bold" }]}>₹ {parseFloat(item?.total)?.toFixed(2)}</Text>
                         </View>
                     </View>
                 </View>

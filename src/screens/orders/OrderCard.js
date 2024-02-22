@@ -47,7 +47,7 @@ const OrderCard = ({ item }) => {
                     </View>
                     <View style={styles.orderTwoStyle}>
                         <Text style={styles.subText}>Total Amount : </Text>
-                        <Text style={styles.mainText}>₹ {item?.total}</Text>
+                        <Text style={styles.mainText}>₹ {parseFloat(item?.total)?.toFixed(2)}</Text>
                     </View>
                 </View>
                 <View style={styles.statusContainer}>
