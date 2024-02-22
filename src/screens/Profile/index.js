@@ -6,16 +6,47 @@ import ProfileButton from '../../components/ProfileButton'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { queryClient, storage } from '../../../App'
 import { useMMKVStorage } from 'react-native-mmkv-storage'
-import { useQuery } from 'react-query'
-import { getProfile } from '../../api/Profile'
+import { useMutation, useQuery } from 'react-query'
+import { getProfile, logoutApi } from '../../api/Profile'
 import useRefetch from '../../hooks/useRefetch'
 import LocationContext from '../../context/location'
+import CartContext from '../../context/cart'
+import customAxios from '../../customAxios'
+import messaging from '@react-native-firebase/messaging';
+import { PostAddToCart } from '../../api/cart'
 
 
 const Profile = ({ navigation }) => {
 
   const [user, setUser] = useMMKVStorage('user', storage)
-  const { setMode } = useContext(LocationContext)
+  const { setMode, setLocation, setCurrentLoc, setModal, setHomeFocus } = useContext(LocationContext)
+  const { setCartItems, cartItems } = useContext(CartContext)
+
+  const { mutate: logoutMutate } = useMutation({
+    mutationKey: 'logout-key',
+    mutationFn: logoutApi,
+    onSuccess(data) {
+
+      queryClient.resetQueries();
+      storage.clearStore();
+      setMode('');
+      //setLocation(null)
+      setCurrentLoc('')
+      setCartItems([])
+      storage.setString('success', data?.data?.message)
+    }
+  })
+
+
+  const { mutate } = useMutation({
+    mutationKey: 'post-cart',
+    mutationFn: PostAddToCart,
+    async onSuccess(data) {
+
+      const token = await messaging().getToken();
+      logoutMutate(token);
+    }
+  })
 
 
   const { data, refetch } = useQuery('profile-query', {
@@ -40,20 +71,6 @@ const Profile = ({ navigation }) => {
   }, [navigation])
 
 
-  const logout = () => {
-    queryClient.resetQueries();
-    storage.clearStore();
-    setMode('');
-    storage.setString('success', 'Logout successful')
-
-
-    // navigation.reset({
-    //   index: 0,
-    //   routes: [
-    //     { name: 'Login' },
-    //   ]
-    // })
-  }
 
   const navToRefund = useCallback(() => {
     Linking.openURL('https://digistoreapi.diginestsolutions.in/public/refund')
@@ -66,7 +83,7 @@ const Profile = ({ navigation }) => {
         style: 'cancel',
       },
       {
-        text: 'logout', onPress: logout
+        text: 'logout', onPress: () => mutate({ product: cartItems })
       },
     ]);
   }, [navigation])

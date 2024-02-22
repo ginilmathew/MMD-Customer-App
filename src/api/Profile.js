@@ -25,3 +25,5 @@ export const addressList = async (data) => customAxios.get('public/api/customer/
 export const defaultAddrss = async (data) => customAxios.post('public/api/customer/set-default', { id: data })
 
 export const deletAddrss = async (data) => customAxios.delete('public/api/customer/delete-address/' + data)
+
+export const logoutApi = async (token) => customAxios.post('public/api/auth/logout', { token })

@@ -6,6 +6,7 @@ import AddToCart from './AddToCart';
 import { useNavigation } from '@react-navigation/native';
 import { COLORS } from '../constants/COLORS';
 import moment from 'moment';
+import reactotron from 'reactotron-react-native';
 
 
 const ProductCard = ({ item, key, time }) => {
@@ -15,6 +16,7 @@ const ProductCard = ({ item, key, time }) => {
     const navigation = useNavigation()
     let products = item?.products ? item?.products[0] : item;
     const [price, setPrice] = useState(null)
+    
 
     useEffect(() => {
         setQuantity(0)
@@ -45,16 +47,18 @@ const ProductCard = ({ item, key, time }) => {
         const { offerPrice, fromDate, toDate, sellingPrice, costPrice } = variant
 
         if (fromDate && toDate && offerPrice) {
+            reactotron.log(fromDate, "STR")
+            let startDate = moment(`${moment(fromDate, "YYYY-MM-DD").format("YYYY-MM-DD")} 00:00:00`, "YYYY-MM-DD HH:mm:ss");
+            let endDate = moment(`${moment(toDate, "YYYY-MM-DD").format("YYYY-MM-DD")} 23:59:59`, "YYYY-MM-DD HH:mm:ss");
 
-            let startDate = moment(fromDate, "YYY-MM-DD").add(-1, 'day');
-            let endDate = moment(toDate, "YYYY-MM-DD").add(1, 'day')
+            reactotron.log(startDate, "STR")
             if (moment().isBetween(startDate, endDate)) {
                 price = {
                     ...variant,
                     finalPrice: offerPrice,
                     hasOfferPrice: true,
                     discount: parseFloat(sellingPrice) - parseFloat(offerPrice),
-                    discountPercentage: (100 * (parseFloat(costPrice) - parseFloat(offerPrice)) / parseFloat(costPrice)).toFixed(2) * 1,
+                    discountPercentage: (100 * (parseFloat(sellingPrice) - parseFloat(offerPrice)) / parseFloat(sellingPrice)).toFixed(2) * 1,
                     unitName: products?.units[0]?.name,
                     tax,
                     taxValue: (offerPrice / 100) * tax
@@ -68,7 +72,7 @@ const ProductCard = ({ item, key, time }) => {
                     finalPrice: sellingPrice,
                     hasOfferPrice: false,
                     discount: 0,
-                    discountPercentage: (100 * (parseFloat(costPrice) - parseFloat(sellingPrice)) / parseFloat(costPrice)).toFixed(2) * 1,
+                    discountPercentage: (100 * (parseFloat(sellingPrice) - parseFloat(offerPrice)) / parseFloat(sellingPrice)).toFixed(2) * 1,
                     unitName: products?.units[0]?.name,
                     tax,
                     taxValue: (sellingPrice / 100) * tax
@@ -105,9 +109,6 @@ const ProductCard = ({ item, key, time }) => {
 
 
 
-
-
-
     const NavigateToSingleProduct = useCallback(() => {
         navigation.navigate('SingleProduct', { item: item?.products ? item?.products?.[0] : item , quantity })
     }, [item, quantity])
@@ -131,7 +132,7 @@ const ProductCard = ({ item, key, time }) => {
                 image: `${imageBasePath}${image[0]}`,
                 tax,
                 taxValue,
-                total: finalPrice + taxValue,
+                total: finalPrice * 1 + taxValue * 1,
                 costPrice
                 //tax: 
             }
@@ -154,6 +155,7 @@ const ProductCard = ({ item, key, time }) => {
 
     //setPrice(price)
 
+
     return (
         <Animated.View entering={AnimatedStyle} key={key}>
             <TouchableOpacity onPress={NavigateToSingleProduct} style={styles?.container}>
@@ -175,7 +177,7 @@ const ProductCard = ({ item, key, time }) => {
                         <Text style={styles.subHeading}>{`${price?.name} ${price?.unitName}`}</Text>
                     </View>
                     {price?.hasOfferPrice && <View style={styles.offerBox}>
-                        <Text style={styles.offerText}>Up to 10% off!</Text>
+                        <Text style={styles.offerText}>Up to {price?.discountPercentage}% off!</Text>
                     </View>}
                 </View>
 
@@ -236,7 +238,7 @@ const styles = StyleSheet.create({
         marginBottom: 4,
     },
     offerBox: {
-        width: 85,
+        width: 90,
         backgroundColor: COLORS.Offer_box,
         padding: 2,
         borderRadius: 6,

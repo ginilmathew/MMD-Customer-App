@@ -1,13 +1,18 @@
-import { ImageBackground, StyleSheet, Image, View, Text, TouchableOpacity, ScrollView } from 'react-native'
-import React from 'react'
+import { ImageBackground, StyleSheet, Image, View, Text, TouchableOpacity, ScrollView, Keyboard } from 'react-native'
+import React, { useCallback } from 'react'
 import { COLORS } from '../../constants/COLORS';
 
 
 const Background = ({ headline, subhead, children, onPress, link, description }) => {
 
+    const handlePress = useCallback(() => {
+        Keyboard.dismiss();
+        onPress();
+    }, [])
+
     return (
         <ImageBackground source={require('../../images/login.png')} resizeMode="cover" style={styles.bg}>
-            <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps='always'>
+            <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps='handled'>
 
                 <View style={styles.img}>
                     <Image source={require('../../images/LogoMain.png')} style={styles.image} />
@@ -25,7 +30,7 @@ const Background = ({ headline, subhead, children, onPress, link, description })
                     <Text style={styles.description}>{description}</Text>
                     <View style={styles.line} />
 
-                    <TouchableOpacity onPress={onPress}>
+                    <TouchableOpacity onPress={handlePress}>
                         <Text style={styles.link}>{link}</Text>
                     </TouchableOpacity>
                 </View>

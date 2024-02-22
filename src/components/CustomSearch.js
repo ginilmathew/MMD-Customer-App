@@ -36,7 +36,9 @@ const CustomSearch = ({ placeholder, placeHoldeColor, keyboardType, onPress, onC
                     margin: 1,
                     justifyContent: 'space-between',
                     marginHorizontal: 20,
-                    marginTop: 10
+                    marginTop: 10,
+                    paddingVertical: 10,
+                    paddingHorizontal: 5
                 }}
             >
                 <TextInput

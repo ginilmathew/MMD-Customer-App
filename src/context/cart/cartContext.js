@@ -9,7 +9,6 @@ const CartProvider = ({ children }) => {
 
 
     const [cartItems, setCartItems] = useState([]);
-    const [cartsDatas, setCartDatas] = useMMKVStorage('cart', storage, []);
     const [cartTotal, setCartTotal] = useState(0)
 
     const addItemToCart = async(item) => {

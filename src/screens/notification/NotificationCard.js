@@ -1,24 +1,32 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useCallback } from 'react'
 import { COLORS } from '../../constants/COLORS'
 import moment from 'moment'
 import { useNavigation } from '@react-navigation/native'
+import { useMutation } from 'react-query'
+import { notStatus } from '../../api/NotificationList'
 
-const NotificationCard = ({data}) => {
+const NotificationCard = ({data, refetch}) => {
 
     const navigation = useNavigation();
+    const { mutate } = useMutation({
+        mutationKey: 'change-status',
+        mutationFn: notStatus,
+        onSuccess() {
+            refetch();
+            if(data?.subtype === 'order') {
+                navigation.navigate('SingleOrder', { id: data?.order?._id })
+            }
+        }
+    })
 
-    // const pressEffect = () => {
-    //     if(item?.type === "page") {
-    //         navigation.navigate('PAGENAME')
-    //     } else if (item?.type === "product") {
-    //         navigation.navigate('PRODUCTPAGE')
-    //     }
-    // }
+    const pressEffect = useCallback(() => {
+        mutate({ id: data?._id })
+    }, [data])
 
     return (
         <TouchableOpacity style={styles.container} 
-        //onPress={pressEffect}
+        onPress={pressEffect}
         >
             <View style={styles.heading}>
                 <Text style={styles.text1}>{data?.name}</Text>
@@ -26,7 +34,7 @@ const NotificationCard = ({data}) => {
             </View>
             <View style={styles.heading2}>
                 <Text style={styles.text3}>{data?.description}</Text>
-                {/* <View style={styles.dotStyle}/> */}
+                {data?.status === 'active' && <View style={styles.dotStyle} />}
             </View>
         </TouchableOpacity>
     )

@@ -4,20 +4,18 @@ import DatePicker from 'react-native-date-picker'
 import moment from 'moment'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { COLORS } from '../../constants/COLORS'
-import { Controller } from 'react-hook-form'
 import { useMutation } from 'react-query'
 import { ChooseSlot } from '../../api/ChooseSlot'
 import SlotContext from '../../context/slot'
-import reactotron from 'reactotron-react-native'
+import { storage } from '../../../App'
 
 const ChooseDate = ({ slotSelected }) => {
     const [date, setDate] = useState(new Date())
     const [open, setOpen] = useState(false)
     const [chosenDate, setChosenDate] = useState(null)
     const [storeData, setStoreData] = useState(null)
-
-
-    //reactotron.log(storeData, "storeData")
+    const [visible, setVisible] = useState(false);
+    const [selectedValue, setSelectedValue] = useState(null);
 
     const { setUseSlot } = useContext(SlotContext);
 
@@ -25,6 +23,7 @@ const ChooseDate = ({ slotSelected }) => {
         const formattedDate = moment(`${moment(selectedDate).format("YYYY-MM-DD")} ${moment().format("HH:mm")}`, "YYYY-MM-DD HH:mm").format("YYYY-MM-DD HH:mm")
         setDate(selectedDate)
         setChosenDate(formattedDate)
+        setSelectedValue("")
         setOpen(false)
         if (selectedDate) {
             mutate({
@@ -33,20 +32,16 @@ const ChooseDate = ({ slotSelected }) => {
         }
     }
 
-    const { mutate, refetch: postsubrefetch } = useMutation({
+    const { mutate } = useMutation({
         mutationKey: 'SlotPlace',
         mutationFn: ChooseSlot,
         onSuccess: (data) => {
+            if(data?.data?.data?.length < 1) {
+                storage.setString('error', 'No slot available.')
+            }
             setStoreData(data)
         }
     })
-
-
-
-    const [visible, setVisible] = useState(false);
-    const [selectedValue, setSelectedValue] = useState(null);
-
-    //reactotron.log(selectedValue, "select")
 
     const handleToggleDropdown = () => {
         setVisible(!visible);
