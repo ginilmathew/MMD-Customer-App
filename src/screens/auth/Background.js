@@ -1,9 +1,13 @@
 import { ImageBackground, StyleSheet, Image, View, Text, TouchableOpacity, ScrollView, Keyboard } from 'react-native'
 import React, { useCallback } from 'react'
 import { COLORS } from '../../constants/COLORS';
+import { useMMKVStorage } from 'react-native-mmkv-storage';
+import { storage } from '../../../App';
 
 
 const Background = ({ headline, subhead, children, onPress, link, description }) => {
+
+    const [logo] = useMMKVStorage('dynamicLogo', storage)
 
     const handlePress = useCallback(() => {
         Keyboard.dismiss();
@@ -15,7 +19,7 @@ const Background = ({ headline, subhead, children, onPress, link, description })
             <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps='handled'>
 
                 <View style={styles.img}>
-                    <Image source={require('../../images/LogoMain.png')} style={styles.image} />
+                    <Image source={{ uri: logo?.image }} style={styles.image} />
                 </View>
 
                 <View style={styles.headline}>
@@ -54,9 +58,10 @@ const styles = StyleSheet.create({
     },
     image: {
         height: 73,
-        width: '100%',
-        resizeMode: 'contain',
-        marginTop: 'auto'
+        width: '50%',
+        resizeMode: 'cover',
+        marginTop: 'auto',
+        alignSelf: "center"
     },
 
     content: {

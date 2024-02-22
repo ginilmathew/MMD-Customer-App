@@ -19,6 +19,9 @@ import { PERMISSIONS, request, requestMultiple } from 'react-native-permissions'
 import reactotron from 'reactotron-react-native'
 import NotificationContext from './src/context/notification/notificationCount'
 import { navigationRef } from './src/navigation/RootNavigation'
+import useRefetch from './src/hooks/useRefetch'
+import customAxios from './src/customAxios'
+import { COLORS } from './src/constants/COLORS'
 
 
 
@@ -27,8 +30,34 @@ export const storage = new MMKVLoader().initialize()
 
 const App = () => {
 
+
+
 	const [locationPermission, setLocationPermission] = useState(false)
 	const [loading, setLoading] = useState(true)
+	const [logo] = useMMKVStorage('dynamicLogo', storage)
+
+	reactotron.log(logo,"Fdsafsdf")
+
+	const getLogo = async () => {
+
+		try {
+			const res = await customAxios.get('public/api/auth/logo')
+			if (res?.data?.message === "Success") {
+				await storage.setMapAsync('dynamicLogo', res?.data)
+			} else {
+				throw "Internal server error"
+			}
+		} catch (error) {
+			storage.setString("error", `${error}`)
+		}
+	}
+
+	useEffect(() => {
+		if (!logo) {
+			getLogo()
+		}
+	}, [logo])
+
 
 
 
@@ -39,17 +68,18 @@ const App = () => {
 	});
 
 
+
 	async function requestUserPermission() {
 
 		if (Platform.OS === 'android') {
 			let permissions = await requestMultiple([PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION, PERMISSIONS.ANDROID.POST_NOTIFICATIONS])
 			// if (permissions?.['android.permission.POST_NOTIFICATIONS'] === "granted") {
-				await notifee?.createChannel({
-					id: 'default',
-					name: 'Default Channel',
-					importance: AndroidImportance.HIGH,
-					sound: 'sound'
-				})
+			await notifee?.createChannel({
+				id: 'default',
+				name: 'Default Channel',
+				importance: AndroidImportance.HIGH,
+				sound: 'sound'
+			})
 			// }
 
 			if (permissions?.['android.permission.ACCESS_FINE_LOCATION'] === "granted") {
@@ -93,6 +123,7 @@ const App = () => {
 		//getCurrentLocation()
 	}
 
+
 	// async function requestUserPermission() {
 
 	// 	const token = await messaging().getToken();
@@ -126,9 +157,10 @@ const App = () => {
 	// }
 
 
+
 	async function onMessageReceived(message) {
 
-	
+
 
 		// Display Notification
 		await notifee.displayNotification({
@@ -187,7 +219,6 @@ const App = () => {
 			<View />
 		)
 	}
-
 
 
 
