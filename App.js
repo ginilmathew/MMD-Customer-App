@@ -44,7 +44,6 @@ const App = () => {
 		if (Platform.OS === 'android') {
 			let permissions = await requestMultiple([PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION, PERMISSIONS.ANDROID.POST_NOTIFICATIONS])
 			// if (permissions?.['android.permission.POST_NOTIFICATIONS'] === "granted") {
-			// 	console.log('yess');
 				await notifee?.createChannel({
 					id: 'default',
 					name: 'Default Channel',
@@ -129,7 +128,7 @@ const App = () => {
 
 	async function onMessageReceived(message) {
 
-		console.log(message);
+	
 
 		// Display Notification
 		await notifee.displayNotification({

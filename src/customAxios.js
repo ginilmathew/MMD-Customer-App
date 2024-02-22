@@ -25,7 +25,7 @@ customAxios.interceptors.request.use(async function (config) {
         return Promise.resolve(config);
 
     } catch (error) {
-        console.log({ error, success });
+        //console.log({ error, success });
         storage.setBool('loading', false);
     }
 }, (err) => {
