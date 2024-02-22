@@ -37,7 +37,7 @@ const Checkout = ({ route }) => {
   const [razorRes, setRazorRes] = useState("")
   const [orderData, setOrderData] = useState("")
 
-  reactotron.log(useSlot, "USEDLOT")
+  //reactotron.log(useSlot, "USEDLOT")
 
 
   // const schema = yup.object({

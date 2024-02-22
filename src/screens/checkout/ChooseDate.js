@@ -17,7 +17,7 @@ const ChooseDate = ({ slotSelected }) => {
     const [storeData, setStoreData] = useState(null)
 
 
-    reactotron.log(storeData, "storeData")
+    //reactotron.log(storeData, "storeData")
 
     const { setUseSlot } = useContext(SlotContext);
 
@@ -46,7 +46,7 @@ const ChooseDate = ({ slotSelected }) => {
     const [visible, setVisible] = useState(false);
     const [selectedValue, setSelectedValue] = useState(null);
 
-    reactotron.log(selectedValue, "select")
+    //reactotron.log(selectedValue, "select")
 
     const handleToggleDropdown = () => {
         setVisible(!visible);
