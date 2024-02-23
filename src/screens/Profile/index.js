@@ -53,10 +53,11 @@ const Profile = ({ navigation }) => {
     queryFn: getProfile,
     onSuccess({ data }) {
       setUser({ ...user, user: data })
-    }
+    },
+    enabled: false
   })
 
-  useRefetch(refetch)
+  useRefetch(user && refetch)
 
   const navToEdit = useCallback(() => {
     navigation.navigate('EditProfile')

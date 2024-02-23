@@ -56,7 +56,7 @@ const AllProducts = ({ navigation }) => {
 
     return (
         <View style={{ backgroundColor: '#fff' }}>
-            <CommonHeader heading={"Offer Products"} backBtn={true} />
+            <CommonHeader heading={"Offer Products"}  />
             <FlatList
                 data={data?.data?.data}
                 ListFooterComponent={ListFooterComponents}

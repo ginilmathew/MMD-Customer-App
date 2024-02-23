@@ -15,7 +15,7 @@ import notifee, { AndroidImportance, EventType } from '@notifee/react-native'
 import CartProvider from './src/context/cart/cartContext'
 import { useAppState } from './src/hooks/appStateManagement'
 import SlotProvider from './src/context/slot/slotContext'
-import { PERMISSIONS, request, requestMultiple } from 'react-native-permissions'
+import { PERMISSIONS, check, request, requestMultiple } from 'react-native-permissions'
 import reactotron from 'reactotron-react-native'
 import NotificationContext from './src/context/notification/notificationCount'
 import { navigationRef } from './src/navigation/RootNavigation'
@@ -42,17 +42,19 @@ const App = () => {
 	async function requestUserPermission() {
 
 		if (Platform.OS === 'android') {
-			let permissions = await requestMultiple([PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION, PERMISSIONS.ANDROID.POST_NOTIFICATIONS])
+			let permissions = await request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS)
+			const location = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+	
 			// if (permissions?.['android.permission.POST_NOTIFICATIONS'] === "granted") {
-				await notifee?.createChannel({
-					id: 'default',
-					name: 'Default Channel',
-					importance: AndroidImportance.HIGH,
-					sound: 'sound'
-				})
+			await notifee?.createChannel({
+				id: 'default',
+				name: 'Default Channel',
+				importance: AndroidImportance.HIGH,
+				sound: 'sound'
+			})
 			// }
 
-			if (permissions?.['android.permission.ACCESS_FINE_LOCATION'] === "granted") {
+			if (location === "granted") {
 				setLocationPermission(true)
 				setLoading(false)
 			}
@@ -64,15 +66,6 @@ const App = () => {
 
 		}
 		else {
-			let location = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
-
-			if (location === "granted") {
-				setLocationPermission(true)
-				setLoading(false)
-			}
-			else {
-				setLoading(false)
-			}
 
 			const authStatus = await messaging().requestPermission();
 			const enabled =
@@ -87,6 +80,17 @@ const App = () => {
 					sound: 'sound'
 				})
 			}
+			
+			let location = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+
+			if (location === "granted") {
+				setLocationPermission(true)
+				setLoading(false)
+			}
+			else {
+				setLoading(false)
+			}
+
 			//const status = await Geolocation.requestAuthorization('whenInUse');
 		}
 
@@ -128,7 +132,7 @@ const App = () => {
 
 	async function onMessageReceived(message) {
 
-	
+
 
 		// Display Notification
 		await notifee.displayNotification({

@@ -4,7 +4,7 @@ import Orders from '../screens/orders';
 import Profile from '../screens/Profile';
 import IonIcons from 'react-native-vector-icons/Ionicons'
 import { useCallback, useContext } from 'react';
-import { StyleSheet, TouchableOpacity, View, useWindowDimensions } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View, useWindowDimensions } from 'react-native';
 import { COLORS } from '../constants/COLORS';
 import Header from '../components/Header';
 import Animated, { FadeInUp } from 'react-native-reanimated';
@@ -107,13 +107,30 @@ function HomeNavigation({ navigation }) {
                                 }]}>
 
                                     <View style={styles.icon}>
-                                        <IonIcons name={route?.name === "Home" ?
-                                            focused ? 'home' : 'home-outline'
-                                            : route?.name === "Orders" ?
-                                                focused ? 'basket' : 'basket-outline'
-                                                : route?.name === 'Offer' ?
-                                                    focused ? 'pricetag' : 'pricetag-outline'
-                                                    : focused ? 'person-circle' : 'person-circle-outline'} color={focused ? COLORS.primary : COLORS.light} size={25} />
+                                        {
+                                            route?.name !== 'Offer' ? (
+                                                <IonIcons name={route?.name === "Home" ?
+                                                    focused ? 'home' : 'home-outline'
+                                                    : route?.name === "Orders" ?
+                                                        focused ? 'basket' : 'basket-outline'
+                                                        : focused ? 'person-circle' : 'person-circle-outline'} color={focused ? COLORS.primary : COLORS.light} size={25} />
+                                            ) : (
+                                                <View>
+                                                    <Image
+                                                        source={require('../images/discount.png')}
+                                                        style={{
+                                                            resizeMode: 'contain',
+                                                            height: 21,
+                                                            width: 21,
+                                                            position: 'absolute',
+                                                            right: -6,
+                                                            zIndex: 50
+                                                        }}
+                                                    />
+                                                        <IonIcons name={focused ? 'pricetag' : 'pricetag-outline'} color={focused ? COLORS.primary : COLORS.light} size={25} />
+                                                </View>
+                                            )
+                                        }
                                     </View>
 
                                 </TouchableOpacity>

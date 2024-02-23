@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, Text, StyleSheet, ScrollView } from 'react-native'
+import { View, TouchableOpacity, Text, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
@@ -117,238 +117,240 @@ const MapAddress = ({ navigation, route }) => {
 
     return (
         <>
-           <Header icon={true}/>
+            <Header icon={true} />
             <CommonHeader heading={'Add Address'} backBtn />
 
-            <ScrollView contentContainerStyle={mode === 'map' && { flex: 1 }} style={styles.container} keyboardShouldPersistTaps='always'>
+            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1}}>
+                <ScrollView contentContainerStyle={mode === 'map' && { flex: 1 }} style={styles.container}>
 
-                {
-                    mode === "map" ? (
-                        <>
-                            <MapView
-                                style={{
-                                    flex: 1
-                                }}
-                                ref={mapRef}
-                                onPress={(e) => {
-                                    if (location)
-                                        setLocation((location) => {
-                                            if (location.location.latitude !== e.nativeEvent.coordinate.latitude) {
-                                                changeLocation(e.nativeEvent.coordinate)
-                                            }
+                    {
+                        mode === "map" ? (
+                            <>
+                                <MapView
+                                    style={{
+                                        flex: 1
+                                    }}
+                                    ref={mapRef}
+                                    onPress={(e) => {
+                                        if (location)
+                                            setLocation((location) => {
+                                                if (location.location.latitude !== e.nativeEvent.coordinate.latitude) {
+                                                    changeLocation(e.nativeEvent.coordinate)
+                                                }
 
-                                            return { ...location, location: { ...e.nativeEvent.coordinate } }
+                                                return { ...location, location: { ...e.nativeEvent.coordinate } }
+                                            })
+                                        mapRef.current.animateToRegion({
+                                            ...e.nativeEvent.coordinate,
+                                            latitudeDelta: 0.02,
+                                            longitudeDelta: 0.02
                                         })
-                                    mapRef.current.animateToRegion({
-                                        ...e.nativeEvent.coordinate,
-                                        latitudeDelta: 0.02,
-                                        longitudeDelta: 0.02
-                                    })
-                                }}
-                                showsUserLocation
-                                showsMyLocationButton
-                                followsUserLocation
-                                showsCompass
-                                scrollEnabled
-                                zoomEnabled
-                                pitchEnabled
-                                rotateEnabled
-                                moveOnMarkerPress
-                                initialRegion={{
-                                    ...location?.location,
-                                    latitudeDelta: 0.02,
-                                    longitudeDelta: 0.02,
-                                }}
-                            >
-                                <Marker
-                                    title='Yor are here'
-                                    description='This is a description'
-                                    coordinate={{
+                                    }}
+                                    showsUserLocation
+                                    showsMyLocationButton
+                                    followsUserLocation
+                                    showsCompass
+                                    scrollEnabled
+                                    zoomEnabled
+                                    pitchEnabled
+                                    rotateEnabled
+                                    moveOnMarkerPress
+                                    initialRegion={{
                                         ...location?.location,
-                                        latitudeDelta: 0.0922,
-                                        longitudeDelta: 0.0421,
-                                    }} />
-                            </MapView>
+                                        latitudeDelta: 0.02,
+                                        longitudeDelta: 0.02,
+                                    }}
+                                >
+                                    <Marker
+                                        title='Yor are here'
+                                        description='This is a description'
+                                        coordinate={{
+                                            ...location?.location,
+                                            latitudeDelta: 0.0922,
+                                            longitudeDelta: 0.0421,
+                                        }} />
+                                </MapView>
 
 
-                            <View style={{ padding: 13, backgroundColor: COLORS.white, marginTop: "auto" }}>
-                                <Text style={{
-                                    color: COLORS.dark,
-                                    fontFamily: 'Poppins-Bold',
-                                    marginBottom: 2,
-                                    letterSpacing: 0.5
-                                }}>DELIVERY LOCATION</Text>
+                                <View style={{ padding: 13, backgroundColor: COLORS.white, marginTop: "auto" }}>
+                                    <Text style={{
+                                        color: COLORS.dark,
+                                        fontFamily: 'Poppins-Bold',
+                                        marginBottom: 2,
+                                        letterSpacing: 0.5
+                                    }}>DELIVERY LOCATION</Text>
+
+                                    <View style={{
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-between',
+
+                                    }}>
+                                        <View style={{
+                                            flexDirection: 'row',
+                                            alignItems: 'flex-start',
+                                            width: "80%",
+                                        }}>
+                                            <EvilIcons name='location' size={23} color={COLORS.primary} />
+                                            <View style={{ marginLeft: 5 }}>
+                                                <Text style={{
+                                                    color: COLORS.light,
+                                                    fontFamily: 'Poppins-SemiBold',
+
+                                                }}>{location?.address > 25 ? location?.address?.slice(0, 25) + '...' : location?.address}</Text>
+
+                                                <Text style={{
+                                                    color: COLORS.dark,
+
+                                                    fontSize: 11,
+                                                    fontFamily: "Poppins-Regular"
+                                                }}>{location?.address?.secondary}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                        <View>
+                                            <TouchableOpacity style={{
+                                                flexDirection: 'row',
+                                                backgroundColor: COLORS.gray,
+                                                borderColor: COLORS.primary,
+                                                borderWidth: 1,
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                borderRadius: 5,
+                                                width: 60,
+                                                padding: 5
+
+                                            }} onPress={toLocation}>
+                                                <Text style={{
+                                                    color: COLORS.primary,
+                                                    fontFamily: "Poppins-SemiBold",
+                                                    fontSize: 10,
+                                                    letterSpacing: 0.5
+                                                }}>CHANGE</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+
+
+
+                                </View>
+                            </>
+                        ) : (
+                            <View style={{ padding: 20 }}>
+
+                                <View style={{
+                                    alignSelf: 'flex-end',
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    height: 27,
+                                    marginBottom: 20,
+                                }}>
+                                    <Text style={{
+                                        fontFamily: 'Poppins-Regular',
+                                        fontSize: 11,
+                                        color: COLORS.light,
+                                        marginRight: 10
+                                    }}>DEFAULT</Text>
+                                    <TouchableOpacity activeOpacity={.8} onPress={handleToggle} style={{
+                                        width: 45, height: '100%', backgroundColor: defaultVal ? COLORS.primary : COLORS.text, borderRadius: 50,
+                                        justifyContent: 'center',
+                                        paddingHorizontal: 5
+                                    }}>
+                                        <View style={{
+                                            height: 20,
+                                            width: 20,
+                                            borderRadius: 30,
+                                            marginVertical: -2.5,
+                                            backgroundColor: COLORS.white,
+                                            ...(defaultVal ? { marginLeft: 'auto' } : { marginRight: 'auto' })
+                                        }} />
+                                    </TouchableOpacity>
+                                </View>
+
+                                <CustomInput
+                                    control={control}
+                                    name={'address'}
+                                    left={'location'}
+                                    color={COLORS.blue}
+                                    placeholder='Address'
+                                />
+
+                                <CustomInput
+                                    control={control}
+                                    name={'mobile'}
+                                    type={"number-pad"}
+                                    left={'call'}
+                                    color={COLORS.blue}
+                                    placeholder='Phone'
+                                />
+
+                                <CustomInput
+                                    control={control}
+                                    name={'landmark'}
+                                    autoFocus
+                                    color={COLORS.blue}
+                                    placeholder='Landmark'
+                                    left={'map'}
+                                />
+
+                                <CustomInput
+                                    control={control}
+                                    name={'pincode'}
+                                    color={COLORS.blue}
+                                    placeholder='Pincode'
+                                    left={'pin'}
+                                    type={'number-pad'}
+                                />
+
+                                <CustomInput
+                                    control={control}
+                                    name={'comments'}
+                                    multi
+                                    placeholder='Comments'
+                                />
 
                                 <View style={{
                                     flexDirection: 'row',
-                                    justifyContent: 'space-between',
-
+                                    justifyContent: 'space-evenly',
+                                    marginVertical: 4
                                 }}>
                                     <View style={{
                                         flexDirection: 'row',
-                                        alignItems: 'flex-start',
-                                        width: "80%",
+                                        justifyContent: 'center'
                                     }}>
-                                        <EvilIcons name='location' size={23} color={COLORS.primary} />
-                                        <View style={{ marginLeft: 5 }}>
-                                            <Text style={{
-                                                color: COLORS.light,
-                                                fontFamily: 'Poppins-SemiBold',
-
-                                            }}>{location?.address > 25 ? location?.address?.slice(0, 25) + '...' : location?.address}</Text>
-
-                                            <Text style={{
-                                                color: COLORS.dark,
-
-                                                fontSize: 11,
-                                                fontFamily: "Poppins-Regular"
-                                            }}>{location?.address?.secondary}
-                                            </Text>
-                                        </View>
+                                        {checkBox(0)}
+                                        <Text style={{
+                                            color: COLORS.light,
+                                            marginLeft: 5,
+                                            fontFamily: "Poppins-Medium"
+                                        }}>Home</Text>
                                     </View>
-                                    <View>
-                                        <TouchableOpacity style={{
-                                            flexDirection: 'row',
-                                            backgroundColor: COLORS.gray,
-                                            borderColor: COLORS.primary,
-                                            borderWidth: 1,
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            borderRadius: 5,
-                                            width: 60,
-                                            padding: 5
-
-                                        }} onPress={toLocation}>
-                                            <Text style={{
-                                                color: COLORS.primary,
-                                                fontFamily: "Poppins-SemiBold",
-                                                fontSize: 10,
-                                                letterSpacing: 0.5
-                                            }}>CHANGE</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-
-
-
-                            </View>
-                        </>
-                    ) : (
-                        <View style={{ padding: 20 }}>
-
-                            <View style={{
-                                alignSelf: 'flex-end',
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                height: 27,
-                                marginBottom: 20,
-                            }}>
-                                <Text style={{
-                                    fontFamily: 'Poppins-Regular',
-                                    fontSize: 11,
-                                    color: COLORS.light,
-                                    marginRight: 10
-                                }}>DEFAULT</Text>
-                                <TouchableOpacity activeOpacity={.8} onPress={handleToggle} style={{
-                                    width: 45, height: '100%', backgroundColor: defaultVal ? COLORS.primary : COLORS.text, borderRadius: 50,
-                                    justifyContent: 'center',
-                                    paddingHorizontal: 5
-                                }}>
                                     <View style={{
-                                        height: 20,
-                                        width: 20,
-                                        borderRadius: 30,
-                                        marginVertical: -2.5,
-                                        backgroundColor: COLORS.white,
-                                        ...(defaultVal ? { marginLeft: 'auto' } : { marginRight: 'auto' })
-                                    }} />
-                                </TouchableOpacity>
-                            </View>
-
-                            <CustomInput
-                                control={control}
-                                name={'address'}
-                                left={'location'}
-                                color={COLORS.blue}
-                                placeholder='Address'
-                            />
-
-                            <CustomInput
-                                control={control}
-                                name={'mobile'}
-                                type={"number-pad"}
-                                left={'call'}
-                                color={COLORS.blue}
-                                placeholder='Phone'
-                            />
-
-                            <CustomInput
-                                control={control}
-                                name={'landmark'}
-                                autoFocus
-                                color={COLORS.blue}
-                                placeholder='Landmark'
-                                left={'map'}
-                            />
-
-                            <CustomInput
-                                control={control}
-                                name={'pincode'}
-                                color={COLORS.blue}
-                                placeholder='Pincode'
-                                left={'pin'}
-                                type={'number-pad'}
-                            />
-
-                            <CustomInput
-                                control={control}
-                                name={'comments'}
-                                multi
-                                placeholder='Comments'
-                            />
-
-                            <View style={{
-                                flexDirection: 'row',
-                                justifyContent: 'space-evenly',
-                                marginVertical: 4
-                            }}>
-                                <View style={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'center'
-                                }}>
-                                    {checkBox(0)}
-                                    <Text style={{
-                                        color: COLORS.light,
-                                        marginLeft: 5,
-                                        fontFamily: "Poppins-Medium"
-                                    }}>Home</Text>
-                                </View>
-                                <View style={{
-                                    flexDirection: 'row'
-                                }}>
-                                    {checkBox(1)}
-                                    <Text style={{
-                                        color: COLORS.light,
-                                        marginLeft: 5,
-                                        fontFamily: "Poppins-Medium"
-                                    }}>Office</Text>
+                                        flexDirection: 'row'
+                                    }}>
+                                        {checkBox(1)}
+                                        <Text style={{
+                                            color: COLORS.light,
+                                            marginLeft: 5,
+                                            fontFamily: "Poppins-Medium"
+                                        }}>Office</Text>
+                                    </View>
                                 </View>
                             </View>
-                        </View>
 
-                    )
-                }
+                        )
+                    }
 
-                <CommonButton
-                    w='85%'
-                    mt={mode === 'address' && 60}
-                    onPress={(mode === "map" || route?.params?.mode === "map") ? changeMode : handleSubmit(onSubmit)}
-                    text={`CONFIRM ${mode === "map" ? "LOCATION" : ""}`}
-                    loading={isLoading}
-                />
+                    <CommonButton
+                        w='85%'
+                        mt={mode === 'address' && 60}
+                        onPress={(mode === "map" || route?.params?.mode === "map") ? changeMode : handleSubmit(onSubmit)}
+                        text={`CONFIRM ${mode === "map" ? "LOCATION" : ""}`}
+                        loading={isLoading}
+                    />
 
 
-            </ScrollView>
+                </ScrollView>
+            </KeyboardAvoidingView>
 
         </>
     )
