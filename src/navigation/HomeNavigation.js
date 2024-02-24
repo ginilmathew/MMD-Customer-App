@@ -9,6 +9,7 @@ import { COLORS } from '../constants/COLORS';
 import Header from '../components/Header';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 import LocationContext from '../context/location';
+import Offer from '../screens/offer';
 
 
 
@@ -17,7 +18,7 @@ const Tab = createBottomTabNavigator();
 function HomeNavigation({ navigation }) {
 
     const { width } = useWindowDimensions()
-    const { homeFocus, currentLoc  } = useContext(LocationContext)
+    const { homeFocus, currentLoc } = useContext(LocationContext)
 
 
     const navToHome = useCallback(() => {
@@ -30,6 +31,10 @@ function HomeNavigation({ navigation }) {
 
     const navToProfile = useCallback(() => {
         navigation.navigate("Profile")
+    }, [navigation]);
+
+    const navToOffer = useCallback(() => {
+        navigation.navigate("Offer")
     }, [navigation]);
 
     const FixedComponent = () => {
@@ -50,30 +55,30 @@ function HomeNavigation({ navigation }) {
         navigation.navigate('Notification')
     }, [navigation])
 
-//     const animatedValue = useSharedValue(0);
+    //     const animatedValue = useSharedValue(0);
 
-//   const iconStyle = useAnimatedStyle(() => {
-//     return {
-//       transform: [
-//         {
-//           scale: withTiming(animatedValue.value, { duration: 300 }),
-//         },
-//       ],
-//     };
-//   });
+    //   const iconStyle = useAnimatedStyle(() => {
+    //     return {
+    //       transform: [
+    //         {
+    //           scale: withTiming(animatedValue.value, { duration: 300 }),
+    //         },
+    //       ],
+    //     };
+    //   });
 
-//   useEffect(() => {
-//     animatedValue.value = withSpring(1);
-//   }, [animatedValue]);
+    //   useEffect(() => {
+    //     animatedValue.value = withSpring(1);
+    //   }, [animatedValue]);
 
-//   useFocusEffect(
-//     useCallback(() => {
-//       return () => {
-//         // Clean up the animation when the screen is unfocused
-//         animatedValue.value = withTiming(0);
-//       };
-//     }, [animatedValue])
-//   );
+    //   useFocusEffect(
+    //     useCallback(() => {
+    //       return () => {
+    //         // Clean up the animation when the screen is unfocused
+    //         animatedValue.value = withTiming(0);
+    //       };
+    //     }, [animatedValue])
+    //   );
 
     // storage.removeItem('user')
 
@@ -81,7 +86,7 @@ function HomeNavigation({ navigation }) {
     return (
         <>
 
-            <Header toCart={toCart} text={homeFocus ? currentLoc?.address : null} icon={true}  toNotification={toNotification} />
+            <Header toCart={toCart} text={homeFocus ? currentLoc?.address : null} icon={true} toNotification={toNotification} />
 
             <Tab.Navigator
                 screenOptions={({ route }) => {
@@ -91,8 +96,8 @@ function HomeNavigation({ navigation }) {
                         tabBarHideOnKeyboard: true,
                         tabBarLabel: () => '',
                         tabBarIcon: ({ focused }) => (
-                              <Animated.View entering={FadeInUp.delay(200).duration(200).springify().damping(12)}>
-                                <TouchableOpacity onPress={route?.name === 'Home' ? navToHome : route?.name === "Orders" ? navToOrder : navToProfile} style={[{
+                            <Animated.View entering={FadeInUp.delay(200).duration(200).springify().damping(12)}>
+                                <TouchableOpacity onPress={route?.name === 'Home' ? navToHome : route?.name === "Orders" ? navToOrder : route?.name === 'Offer' ? navToOffer : navToProfile} style={[{
                                     width: Math.floor(width / 3),
                                     height: '100%',
                                     justifyContent: 'center',
@@ -102,9 +107,11 @@ function HomeNavigation({ navigation }) {
                                     <View style={[styles.icon, route?.name === "Orders" && { borderRightWidth: 2, borderLeftWidth: 2 }]}>
                                         <IonIcons name={route?.name === "Home" ?
                                             focused ? 'home' : 'home-outline'
+                                            : route?.name === "Offer" ?
+                                                focused ? 'globe' : 'globe'
                                             : route?.name === "Orders" ?
-                                                focused ? 'basket' : 'basket-outline'
-                                                : focused ? 'person-circle' : 'person-circle-outline'} color={focused ? COLORS.primary : COLORS.light} size={25} />
+                                                    focused ? 'basket' : 'basket-outline'
+                                                    : focused ? 'person-circle' : 'person-circle-outline'} color={focused ? COLORS.primary : COLORS.light} size={25} />
                                     </View>
 
                                 </TouchableOpacity>
@@ -115,6 +122,7 @@ function HomeNavigation({ navigation }) {
 
             >
                 <Tab.Screen name="Home" component={Home} />
+                <Tab.Screen name='Offer' component={Offer} />
                 <Tab.Screen name="Orders" component={Orders} />
                 <Tab.Screen name='Profile' component={Profile} />
 

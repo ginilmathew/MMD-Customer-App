@@ -8,7 +8,9 @@ const CheckoutCard = ({item}) => {
     const AnimatedStyle = FadeInDown.easing().delay(300);
 
     return (
-        <Animated.View entering={AnimatedStyle}>
+        <Animated.View entering={AnimatedStyle} style={{
+            marginVertical: 4
+        }}>
             <TouchableOpacity activeOpacity={0.9} style={styles.container}>
                 {/* Left Side */}
                 <Animated.View style={styles.leftContainer}>

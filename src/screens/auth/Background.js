@@ -5,10 +5,10 @@ import { COLORS } from '../../constants/COLORS';
 
 const Background = ({ headline, subhead, children, onPress, link, description }) => {
 
-    const hideKeyBoard = useCallback(() => {
-        Keyboard.dismiss()
+    const handlePress = useCallback(() => {
+        Keyboard.dismiss();
         onPress();
-    }, [onPress])
+    }, [])
 
     return (
         <ImageBackground source={require('../../images/login.png')} resizeMode="cover" style={styles.bg}>
@@ -30,7 +30,7 @@ const Background = ({ headline, subhead, children, onPress, link, description })
                     <Text style={styles.description}>{description}</Text>
                     <View style={styles.line} />
 
-                    <TouchableOpacity onPress={hideKeyBoard}>
+                    <TouchableOpacity onPress={handlePress}>
                         <Text style={styles.link}>{link}</Text>
                     </TouchableOpacity>
                 </View>

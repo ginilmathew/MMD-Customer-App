@@ -22,7 +22,6 @@ prepare_react_native_project!
 
 setup_permissions([
   'LocationAccuracy',
-  # 'LocationAlways',
   'LocationWhenInUse',
   'Notifications',
 ])

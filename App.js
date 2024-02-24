@@ -18,6 +18,7 @@ import SlotProvider from './src/context/slot/slotContext'
 import { PERMISSIONS, request, requestMultiple } from 'react-native-permissions'
 import reactotron from 'reactotron-react-native'
 import NotificationContext from './src/context/notification/notificationCount'
+import { navigationRef } from './src/navigation/RootNavigation'
 
 
 
@@ -37,22 +38,20 @@ const App = () => {
 		});
 	});
 
+
 	async function requestUserPermission() {
-
-
-
-
 
 		if (Platform.OS === 'android') {
 			let permissions = await requestMultiple([PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION, PERMISSIONS.ANDROID.POST_NOTIFICATIONS])
-			if (permissions?.['android.permission.POST_NOTIFICATIONS'] === "granted") {
+			// if (permissions?.['android.permission.POST_NOTIFICATIONS'] === "granted") {
+			// 	console.log('yess');
 				await notifee?.createChannel({
-					id: 'sound',
-					name: 'pressable channel',
+					id: 'default',
+					name: 'Default Channel',
 					importance: AndroidImportance.HIGH,
-					sound: 'custom'
+					sound: 'sound'
 				})
-			}
+			// }
 
 			if (permissions?.['android.permission.ACCESS_FINE_LOCATION'] === "granted") {
 				setLocationPermission(true)
@@ -83,10 +82,10 @@ const App = () => {
 
 			if (enabled) {
 				await notifee?.createChannel({
-					id: 'sound',
-					name: 'pressable channel',
+					id: 'default',
+					name: 'Default Channel',
 					importance: AndroidImportance.HIGH,
-					sound: 'custom'
+					sound: 'sound'
 				})
 			}
 			//const status = await Geolocation.requestAuthorization('whenInUse');
@@ -130,6 +129,8 @@ const App = () => {
 
 	async function onMessageReceived(message) {
 
+		console.log(message);
+
 		// Display Notification
 		await notifee.displayNotification({
 			id: message?.messageId,
@@ -137,7 +138,7 @@ const App = () => {
 			body: message.notification.body,
 			data: message?.data,
 			android: {
-				channelId: 'sound',
+				channelId: 'default',
 				importance: AndroidImportance.HIGH,
 				pressAction: {
 					id: message?.messageId,
@@ -152,22 +153,23 @@ const App = () => {
 	useEffect(() => {
 
 		return notifee.onForegroundEvent(({ type, detail }) => {
-
 			// console.log(detail.notification.data);
 
 			switch (type) {
 				case EventType.DISMISSED:
 					break;
 				case EventType.PRESS:
-					const { type } = detail?.notification?.data;
-					if (type === 'product') {
-						// navigation.navigate(HOME_NAVIGATOR, { screen: JOB_NAVIGATOR, params: { jobId: detail?.notification?.data?.Id } })
+					const data = detail?.notification?.data;
+
+					if (data?.order_id) {
+						navigationRef.navigate('SingleOrder', { id: data?.order_id })
 					}
 
 					break;
 			}
 		});
 	}, []);
+
 
 
 	useEffect(() => {
