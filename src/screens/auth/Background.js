@@ -22,7 +22,7 @@ const Background = ({ headline, subhead, children, onPress, link, description })
                 <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
 
                 <View style={styles.img}>
-                    <Image source={{ uri: logo?.image }} style={styles.image} />
+                    <Image source={{ uri: logo?.image }} style={styles.image} resizeMode='cover' />
                 </View>
 
                     <View style={styles.headline}>
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     },
     image: {
         height: 73,
-        width: '50%',
+        width: 73,
         resizeMode: 'cover',
         marginTop: 'auto',
         alignSelf: "center"

@@ -1,6 +1,6 @@
 import { storage } from "../../App"
 
-const colorNew = storage.getMap("dynamicLogo")
+const colorNew = storage?.getMap("dynamicLogo")
 
 export const COLORS = {
     primary: colorNew?.primary_color ? colorNew?.primary_color : '#8EBE44',

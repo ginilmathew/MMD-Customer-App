@@ -16,10 +16,10 @@ const CommonHeader = ({ heading, backBtn, onPress }) => {
         <>
             <View style={styles.container}>
                 <View style={styles.insideContainer}>
-                    {backBtn && <TouchableOpacity onPress={onPress ? onPress : goBack} style={styles.backBTN}>
-                        <Ionicons name={"chevron-back"} size={30} color='#000' />
+                    <TouchableOpacity activeOpacity={!backBtn} onPress={!backBtn ? null : onPress ? onPress : goBack} style={styles.backBTN}>
+                        {backBtn && <Ionicons name={"chevron-back"} size={30} color='#000' />}
                         <Text style={styles.headingStyle}>{heading}</Text>
-                    </TouchableOpacity>}
+                    </TouchableOpacity>
                 </View>
             </View>
             <View style={styles.borderStyle} />

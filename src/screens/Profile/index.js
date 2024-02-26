@@ -40,10 +40,10 @@ const Profile = ({ navigation }) => {
     mutationKey: 'post-cart',
     mutationFn: PostAddToCart,
     async onSuccess(data) {
-      // setMode('');
-      // setCurrentLoc('')
-      // setCartItems([])
-      // setUser(null);
+      setMode('');
+      setCurrentLoc('')
+      setCartItems([])
+      setUser(null);
 
       const token = await messaging().getToken();
       logoutMutate(token);
