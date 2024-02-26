@@ -33,6 +33,10 @@ function HomeNavigation({ navigation }) {
         navigation.navigate("Profile")
     }, [navigation]);
 
+    const navToOffer = useCallback(() => {
+        navigation.navigate("Offer")
+    }, [navigation]);
+
     const FixedComponent = () => {
         // Add your fixed component here
         return (
@@ -82,7 +86,6 @@ function HomeNavigation({ navigation }) {
     //   );
 
     // storage.removeItem('user')
-
 
 
     return (

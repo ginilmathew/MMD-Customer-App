@@ -27,7 +27,6 @@ import AuthNavigation from './AuthNavigation';
 const Stack = createNativeStackNavigator();
 const Navigation = ({ location }) => {
 
-
     const [cart_id, setCartId] = useMMKVStorage('cart_id', storage);
     const { isConnected } = useNetInfo();
     const [user] = useMMKVStorage('user', storage);
