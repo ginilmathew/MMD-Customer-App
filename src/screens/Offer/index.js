@@ -4,7 +4,7 @@ import Header from '../../components/Header'
 import CommonHeader from '../../components/CommonHeader'
 import Animated, { FadeInDown } from 'react-native-reanimated'
 import { getAllProducts, offerProducts } from '../../api/allProducts'
-import { useInfiniteQuery, useQuery } from 'react-query'
+import { useInfiniteQuery } from 'react-query'
 import { COLORS } from '../../constants/COLORS'
 import NoData from '../../components/NoData'
 import ProductCard from '../../components/ProductCard'
@@ -12,14 +12,11 @@ import CartContext from '../../context/cart'
 import { useFocusEffect } from '@react-navigation/native'
 import moment from 'moment'
 import CartButton from '../../components/CartButton'
-import useRefreshOnFocus from '../../hooks/useRefetch'
-import LocationContext from '../../context/location'
 
 const AllProducts = ({ navigation }) => {
 
     const { cartItems } = useContext(CartContext);
-    const { location } = useContext(LocationContext)
-
+    const [time, setTime] = useState(moment().unix())
 
     const {
         data,
@@ -35,7 +32,10 @@ const AllProducts = ({ navigation }) => {
     } = useInfiniteQuery({
         queryKey: ['offerproducts'],
         queryFn: () => offerProducts({
-            coordinates: [location?.location?.latitude, location?.location?.longitude]
+            "coordinates": [
+                8.5204866, 76.9371447
+            ],
+            // coordinates: [location?.location?.latitude, location?.location?.longitude],
         }),
         getNextPageParam: (lastPage, pages) => {
             if (lastPage.length === 0) return undefined;
@@ -44,21 +44,51 @@ const AllProducts = ({ navigation }) => {
     })
 
 
-    useRefreshOnFocus(refetch)
 
 
+    useFocusEffect(
+        useCallback(() => {
+            setTime(moment().unix())
+        }, [])
+    )
+
+
+
+    const last_Page = data?.pages[0]?.data?.data?.last_page;
+
+    const pageCount = data?.pages?.length;
+
+
+
+    const onEndReach = useCallback(() => {
+        if (!isFetching && !isFetchingNextPage && hasNextPage && (last_Page * 1 !== pageCount * 1)) {
+            fetchNextPage()
+        }
+    }, [!isFetching, !isFetchingNextPage, hasNextPage])
+
+    // const scrollToTop = () => {
+    //     if (flatListRef.current) {
+    //         flatListRef.current.scrollToOffset({ offset: 0, animated: true });
+    //     }
+    // };
+
+
+    const AnimatedStyle = useCallback((index) => {
+        return FadeInDown.delay(index * 100).duration(100).springify().damping(12);
+    }, [])
 
     const renderItem = useCallback(({ item, index }) => {
         return (
-            <View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
-                <ProductCard key={index} item={item} cartItems={cartItems}  />
-            </View>
+            <Animated.View entering={AnimatedStyle(index)} style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
+                <ProductCard key={index} item={item} cartItems={cartItems} time={time} />
+            </Animated.View>
         )
-    }, [])
+    }, [time])
 
     const ListFooterComponents = memo(() => {
         return (
             <View style={{ marginBottom: 150 }}>
+                {isFetchingNextPage && <ActivityIndicator size="large" color={COLORS.primary} />}
             </View>
         )
     },)
@@ -71,19 +101,21 @@ const AllProducts = ({ navigation }) => {
 
     return (
         <View style={{ backgroundColor: '#fff' }}>
-            <CommonHeader heading={"Offer Products"}  />
+            <CommonHeader heading={"Offer Products"} />
             <FlatList
-                data={data?.data?.data?.data}
+                data={data?.pages?.map(page => page?.data?.data?.data)?.flat()}
                 ListFooterComponent={ListFooterComponents}
                 renderItem={renderItem}
                 keyExtractor={item => item._id}
                 showsVerticalScrollIndicator={false}
+                onEndReached={onEndReach}
                 refreshing={isLoading}
                 onRefresh={refetch}
+                onEndReachedThreshold={.1}
                 ListEmptyComponent={emptyScreen}
             />
 
-            <CartButton bottom={20} />
+            <CartButton bottom={120} />
         </View>
     )
 }
