@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { COLORS } from '../constants/COLORS'
 
-const CommonHeader = ({ heading, backBtn, onPress, header }) => {
+const CommonHeader = ({ heading, backBtn, onPress }) => {
 
     const navigation = useNavigation()
 
