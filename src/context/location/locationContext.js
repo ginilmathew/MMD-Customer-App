@@ -144,7 +144,6 @@ const locationContext = ({ children }) => {
                     }).then(function (success) {
                         getOneTimeLocation()
                     }).catch((error) => {
-                        console.log(error.message);
                     });
                 }
             },

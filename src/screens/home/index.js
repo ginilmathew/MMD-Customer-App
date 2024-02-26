@@ -78,14 +78,6 @@ const Home = ({ navigation, route }) => {
     }, [location?.address]))
 
 
-    React.useEffect(() => {
-        const unsubscribe = navigation.addListener('blur', () => {
-            setHomeFocus(false);
-        });
-
-        return unsubscribe;
-    }, [navigation]);
-
 
     const NavigateToCategory = useCallback(() => {
         navigation.navigate('Category')
