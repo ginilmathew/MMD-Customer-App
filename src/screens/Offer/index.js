@@ -13,20 +13,35 @@ import { useFocusEffect } from '@react-navigation/native'
 import moment from 'moment'
 import CartButton from '../../components/CartButton'
 import useRefreshOnFocus from '../../hooks/useRefetch'
+import LocationContext from '../../context/location'
 
 const AllProducts = ({ navigation }) => {
 
     const { cartItems } = useContext(CartContext);
+    const { location } = useContext(LocationContext)
+
 
     const {
         data,
+        error,
+        fetchNextPage,
         refetch,
+        hasNextPage,
+        isFetching,
+        isFetchingNextPage,
+        status,
         isLoading,
-    } = useQuery({
+        remove: infiniteQueryRemove
+    } = useInfiniteQuery({
         queryKey: ['offerproducts'],
-        queryFn: offerProducts,
+        queryFn: () => offerProducts({
+            coordinates: [location?.location?.latitude, location?.location?.longitude]
+        }),
+        getNextPageParam: (lastPage, pages) => {
+            if (lastPage.length === 0) return undefined;
+            return pages?.length + 1
+        },
     })
-
 
 
     useRefreshOnFocus(refetch)
@@ -58,7 +73,7 @@ const AllProducts = ({ navigation }) => {
         <View style={{ backgroundColor: '#fff' }}>
             <CommonHeader heading={"Offer Products"}  />
             <FlatList
-                data={data?.data?.data}
+                data={data?.data?.data?.data}
                 ListFooterComponent={ListFooterComponents}
                 renderItem={renderItem}
                 keyExtractor={item => item._id}
@@ -68,7 +83,7 @@ const AllProducts = ({ navigation }) => {
                 ListEmptyComponent={emptyScreen}
             />
 
-            <CartButton bottom={50} />
+            <CartButton bottom={20} />
         </View>
     )
 }

@@ -2,7 +2,7 @@ import axios from "axios";
 import { BASE_URL } from "./constants/API";
 import { queryClient, storage } from "../App";
 import { fetch } from "@react-native-community/netinfo";
-import navRef from "./navigation/RootNavigation";
+import navRef, { getCurrentScreenPath } from "./navigation/RootNavigation";
 
 
 const customAxios = axios.create({
@@ -45,6 +45,10 @@ customAxios.interceptors.response.use(function (res) {
     if (err?.response?.status === 403) {
         queryClient.resetQueries();
         storage.clearStore();
+
+        if (getCurrentScreenPath() === 'login') {
+            return;
+        }
 
         navRef?.reset({
             index: 0,

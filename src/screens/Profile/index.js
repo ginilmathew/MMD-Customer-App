@@ -27,21 +27,23 @@ const Profile = ({ navigation }) => {
     mutationFn: logoutApi,
     onSuccess(data) {
 
-      queryClient.resetQueries();
-      storage.clearStore();
-      setMode('');
-      //setLocation(null)
-      setCurrentLoc('')
-      setCartItems([])
       storage.setString('success', data?.data?.message)
+      queryClient.resetQueries()
+      storage.clearStore();
+      //setLocation(null)
+      
     }
   })
-
+  
 
   const { mutate } = useMutation({
     mutationKey: 'post-cart',
     mutationFn: PostAddToCart,
     async onSuccess(data) {
+      // setMode('');
+      // setCurrentLoc('')
+      // setCartItems([])
+      // setUser(null);
 
       const token = await messaging().getToken();
       logoutMutate(token);
@@ -52,9 +54,9 @@ const Profile = ({ navigation }) => {
   const { data, refetch } = useQuery('profile-query', {
     queryFn: getProfile,
     onSuccess({ data }) {
-      setUser({ ...user, user: data })
+      // setUser({ ...user, user: data })
     },
-    enabled: false
+    enabled: !!user
   })
 
   useRefetch(user && refetch)

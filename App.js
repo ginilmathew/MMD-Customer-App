@@ -133,7 +133,6 @@ const App = () => {
 	async function onMessageReceived(message) {
 
 
-
 		// Display Notification
 		await notifee.displayNotification({
 			id: message?.messageId,
@@ -148,6 +147,10 @@ const App = () => {
 				},
 				sound: 'sound',
 			},
+			ios: {
+				channelId: 'default',
+				sound: 'sound'
+			}
 		});
 
 	}

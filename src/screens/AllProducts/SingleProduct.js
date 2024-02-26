@@ -135,7 +135,6 @@ const SingleProduct = ({ navigation, route }) => {
                     taxValue: (sellingPrice / 100) * tax
                 };
 
-
             }
 
             setPrice(price)

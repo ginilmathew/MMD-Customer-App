@@ -34,7 +34,9 @@ const Navigation = ({ location }) => {
     const [error] = useMMKVStorage('error', storage, '')
     const [success] = useMMKVStorage('success', storage, '');
     const [homeAdd] = useMMKVStorage('homeAdd', storage, false)
-    const { getLocation, location: locationData } = useContext(LocationContext)
+    const { getLocation, locationData } = useContext(LocationContext)
+
+    console.log(location);
 
 
     const { cartItems, setCartItems } = useContext(CartContext);
@@ -51,29 +53,29 @@ const Navigation = ({ location }) => {
         mutationKey: 'cartItems',
         mutationFn: getCartItems,
         onSuccess: (data) => {
-            if(data?.data?.data?.product){
+            if (data?.data?.data?.product) {
                 setCartItems(data?.data?.data?.product)
             }
-          
+
         }
-      });
+    });
 
 
     const appState = useAppState();
 
     useEffect(() => {
-        if(cart_id && user){
+        if (cart_id && user) {
             getCarts({ cartId: cart_id })
-        } else if(cart_id) {
+        } else if (cart_id) {
             storage.setString('cart_id', '')
         }
 
 
-        if(location){
+        if (location) {
             getLocation()
         }
     }, [cart_id, location])
-    
+
 
 
     useEffect(() => {
@@ -84,8 +86,8 @@ const Navigation = ({ location }) => {
                     //     ...item.item,
                     //     qty: item.qty
                     // }));
-                   if(user) mutate({ product: cartItems, cartId: cart_id })
-                   else await storage.setStringAsync('cart_id', '')
+                    if (user) mutate({ product: cartItems, cartId: cart_id })
+                    else await storage.setStringAsync('cart_id', '')
 
                 } catch (err) {
 
@@ -110,6 +112,9 @@ const Navigation = ({ location }) => {
     }, [])
 
 
+    if (!locationData) {
+        <View />
+    }
 
 
     if (!user) {
@@ -123,7 +128,7 @@ const Navigation = ({ location }) => {
                         <Stack.Screen name="Login" component={Login} />
                         <Stack.Screen name="Register" component={Register} />
                         <Stack.Screen name="Forget" component={Forget} />
-                        <Stack.Screen name='ChangePasswd' component={ChangePasswd} />        
+                        <Stack.Screen name='ChangePasswd' component={ChangePasswd} />
                         {/* <Stack.Screen name='LocationPage' component={LocationPage} />
                         <Stack.Screen name='GoogleLocation' component={GoogleLocation} /> */}
                     </Stack.Navigator>
@@ -151,14 +156,7 @@ const Navigation = ({ location }) => {
                 </Modal>
             </>
         )
-    }
-
-    if(!location){
-        <View />
-    }
-    
-
-    if (user) {
+    } else {
         return (
             <>
                 <NavigationContainer ref={navigationRef} onReady={onReady}>
@@ -170,7 +168,7 @@ const Navigation = ({ location }) => {
                         <Stack.Screen name='GoogleLocation' component={GoogleLocation} />
                     </Stack.Navigator>
                 </NavigationContainer>
-                
+
                 {
                     isConnected !== null && !isConnected && (
                         <Modal visible transparent>
@@ -193,6 +191,8 @@ const Navigation = ({ location }) => {
             </>
         )
     }
+
+
 }
 
 export default Navigation

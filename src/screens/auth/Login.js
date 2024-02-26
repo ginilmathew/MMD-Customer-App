@@ -38,14 +38,6 @@ const Login = ({ navigation }) => {
 
     const onSuccess = async ({ data }) => {
 
-        // let permission = "denied";
-
-        // permission = await request(Platform.OS === 'ios' ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
-
-        // if(permission === 'granted') {
-        //     getLocation()
-        // } 
-
         const cartProducts = data?.getCart?.product;
 
         if (cartProducts?.length > 0) {

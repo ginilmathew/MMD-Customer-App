@@ -4,4 +4,4 @@ export const getAllProducts = async ({ pageParam = 1 }) => customAxios.get(`publ
 
 export const singProduct = async (data) => customAxios.get('public/api/customer/product/'+ data)
 
-export const offerProducts = async (data) => customAxios.get('public/api/customer/offerproducts') 
+export const offerProducts = async (data) => customAxios.post('public/api/customer/offer-products', data) 
