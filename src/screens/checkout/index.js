@@ -22,6 +22,7 @@ import SlotContext from '../../context/slot'
 import { UpdateOrder } from '../../api/updateOrder'
 import CheckoutCard from '../../components/CheckoutCard'
 import NotificationContext from '../../context/notification'
+import reactotron from 'reactotron-react-native'
 
 
 
@@ -115,6 +116,8 @@ const Checkout = ({ route }) => {
 
   })
 
+  reactotron.log(data?.data?.data?.delivery_slot, "chk")
+
 
 
   // const { mutate: reMutation, refetch: newRefetch } = useMutation({
@@ -176,7 +179,7 @@ const Checkout = ({ route }) => {
 
 
   const placeOrder = () => {
-    if (!useSlot) {
+    if (data?.data?.data?.delivery_slot === 1 && !useSlot) {
       storage.setString('error', "Delivery Date & Time is required!");
     }
     else {
@@ -228,15 +231,18 @@ const Checkout = ({ route }) => {
             </View>
           </View>
 
-          <View style={styles.payBox}>
-            <SubHeading label={"Delivery Slots"} />
-            <View style={{ gap: 8, marginVertical: 10 }}>
-              <View style={styles.checkbox}>
-                {/* <Text style={styles.common}>DATE GOES HERE</Text> */}
-                <ChooseDate />
+          {
+            data?.data?.data?.delivery_slot === 1 ? (
+              <View style={styles.payBox}>
+                <SubHeading label={"Delivery Slots"} />
+                <View style={{ gap: 8, marginVertical: 10 }}>
+                  <View style={styles.checkbox}>
+                    <ChooseDate />
+                  </View>
+                </View>
               </View>
-            </View>
-          </View>
+            ) : null
+          }
 
           <View style={styles.payBox}>
             <SubHeading label={"Payment Method"} />

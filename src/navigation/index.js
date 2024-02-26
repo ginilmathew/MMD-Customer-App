@@ -21,6 +21,7 @@ import { useAppState } from '../hooks/appStateManagement';
 import { useMutation } from 'react-query';
 import { PostAddToCart, getCartItems } from '../api/cart';
 import AuthNavigation from './AuthNavigation';
+import reactotron from 'reactotron-react-native';
 
 
 
@@ -61,6 +62,8 @@ const Navigation = ({ location }) => {
 
 
     const appState = useAppState();
+
+    reactotron.log(appState, "SHOAS")
 
     useEffect(() => {
         if (cart_id && user) {

@@ -19,6 +19,9 @@ import { PERMISSIONS, check, request, requestMultiple } from 'react-native-permi
 import reactotron from 'reactotron-react-native'
 import NotificationContext from './src/context/notification/notificationCount'
 import { navigationRef } from './src/navigation/RootNavigation'
+import useRefetch from './src/hooks/useRefetch'
+import customAxios from './src/customAxios'
+import { COLORS } from './src/constants/COLORS'
 
 
 
@@ -27,8 +30,34 @@ export const storage = new MMKVLoader().initialize()
 
 const App = () => {
 
+
+
 	const [locationPermission, setLocationPermission] = useState(false)
 	const [loading, setLoading] = useState(true)
+	const [logo] = useMMKVStorage('dynamicLogo', storage)
+
+	reactotron.log(logo,"Fdsafsdf")
+
+	const getLogo = async () => {
+
+		try {
+			const res = await customAxios.get('public/api/auth/logo')
+			if (res?.data?.message === "Success") {
+				await storage.setMapAsync('dynamicLogo', res?.data)
+			} else {
+				throw "Internal server error"
+			}
+		} catch (error) {
+			storage.setString("error", `${error}`)
+		}
+	}
+
+	useEffect(() => {
+		if (!logo) {
+			getLogo()
+		}
+	}, [logo])
+
 
 
 
@@ -37,6 +66,7 @@ const App = () => {
 			setOnline(!!state.isConnected);
 		});
 	});
+
 
 
 	async function requestUserPermission() {
@@ -97,6 +127,7 @@ const App = () => {
 		//getCurrentLocation()
 	}
 
+
 	// async function requestUserPermission() {
 
 	// 	const token = await messaging().getToken();
@@ -128,6 +159,7 @@ const App = () => {
 
 
 	// }
+
 
 
 	async function onMessageReceived(message) {
@@ -194,7 +226,6 @@ const App = () => {
 			<View />
 		)
 	}
-
 
 
 
