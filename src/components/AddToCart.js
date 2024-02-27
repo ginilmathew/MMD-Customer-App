@@ -7,11 +7,11 @@ const AddToCart = ({ isCartAdded, handleDecrement, handleAddToCart, handleIncrem
     if (isCartAdded) {
         return (
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={[styles.incrementButton, { paddingHorizontal: 12 }]} onPress={handleDecrement}>
+                <TouchableOpacity style={[styles.incrementButton, { paddingHorizontal: 12, backgroundColor: COLORS.primary }]} onPress={handleDecrement}>
                     <Text style={styles.buttonText}>-</Text>
                 </TouchableOpacity>
                 <Text style={styles.countText}>{quantity}</Text>
-                <TouchableOpacity style={styles.incrementButton} onPress={handleIncrement}>
+                <TouchableOpacity style={[styles.incrementButton,{backgroundColor: COLORS.primary}]} onPress={handleIncrement}>
                     <Text style={styles.buttonText}>+</Text>
                 </TouchableOpacity>
             </View>
