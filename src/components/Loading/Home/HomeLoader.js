@@ -2,7 +2,7 @@ import { StyleSheet, View, useWindowDimensions } from 'react-native'
 import React from 'react'
 
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { COLORS } from '../../../constants/COLORS'
+import COLORS from '../../../constants/COLORS'
 import useOpacityAnimation from '../../../hooks/animationHook'
 import Animated, { FadeInDown } from 'react-native-reanimated'
 import CustomHeading from '../../CustomHeading'

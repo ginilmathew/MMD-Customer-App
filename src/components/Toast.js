@@ -1,7 +1,7 @@
 import { StyleSheet, View, Text } from 'react-native'
 import React, { useEffect } from 'react'
 import { storage } from '../../App'
-import { COLORS } from '../constants/COLORS'
+import COLORS from '../constants/COLORS'
 
 
 const Toast = ({ error, success }) => {

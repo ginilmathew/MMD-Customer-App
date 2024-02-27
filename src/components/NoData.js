@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Image, useWindowDimensions, StyleSheet } from 'react-native';
-import { COLORS } from '../constants/COLORS';
+import COLORS from '../constants/COLORS';
 
 const NoData = ({ heights }) => {
   const { height } = useWindowDimensions();

@@ -1,6 +1,6 @@
 import { ImageBackground, StyleSheet, Image, View, Text, TouchableOpacity, ScrollView, Keyboard } from 'react-native'
 import React, { useCallback } from 'react'
-import { COLORS } from '../../constants/COLORS';
+import COLORS from '../../constants/COLORS';
 import { useMMKVStorage } from 'react-native-mmkv-storage';
 import { storage } from '../../../App';
 

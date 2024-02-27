@@ -3,7 +3,7 @@ import React, { useCallback, useContext } from 'react'
 import { useMMKVStorage } from 'react-native-mmkv-storage'
 import { storage } from '../../App';
 import IonIcon from 'react-native-vector-icons/Ionicons'
-import { COLORS } from '../constants/COLORS';
+import COLORS from '../constants/COLORS';
 import CartContext from '../context/cart';
 import { useNavigation } from '@react-navigation/native';
 

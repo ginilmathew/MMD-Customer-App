@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity } from 'react-native'
 import React, { memo, useCallback } from 'react'
-import { COLORS } from '../constants/COLORS'
+import COLORS from '../constants/COLORS'
 
 const CustomTab = ({ onPress, label, subList }) => {
 

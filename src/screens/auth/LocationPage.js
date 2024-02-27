@@ -1,6 +1,6 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity, Platform, Linking, Modal } from 'react-native'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
-import { COLORS } from '../../constants/COLORS'
+import COLORS from '../../constants/COLORS'
 import CommonButton from '../../components/CommonButton'
 import locationContext from '../../context/location'
 import { PERMISSIONS, request } from 'react-native-permissions'

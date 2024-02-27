@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity, Alert, Linking } from 'react-native'
 import React, { useCallback, useContext } from 'react'
-import { COLORS } from '../../constants/COLORS'
+import COLORS from '../../constants/COLORS'
 import CommonHeader from '../../components/CommonHeader'
 import ProfileButton from '../../components/ProfileButton'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -95,7 +95,7 @@ const Profile = ({ navigation }) => {
       <View style={styles.container}>
 
         <View style={styles.user}>
-          <Text style={styles.name}>{data?.data?.name}</Text>
+          <Text style={[styles.name, {color: COLORS.primary}]}>{data?.data?.name}</Text>
           <Text style={styles.email}>{data?.data?.email}</Text>
         </View>
 

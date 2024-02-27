@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import { COLORS } from '../constants/COLORS'
+import COLORS from '../constants/COLORS'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 const DummySearch = ({ press }) => {
     return (

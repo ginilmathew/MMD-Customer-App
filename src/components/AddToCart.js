@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import { COLORS } from '../constants/COLORS'
+import COLORS from '../constants/COLORS'
 
 const AddToCart = ({ isCartAdded, handleDecrement, handleAddToCart, handleIncrement, quantity }) => {
 
@@ -19,7 +19,7 @@ const AddToCart = ({ isCartAdded, handleDecrement, handleAddToCart, handleIncrem
     }
 
     return (
-        <TouchableOpacity style={styles.button} onPress={handleAddToCart}>
+        <TouchableOpacity style={[styles.button,{backgroundColor: COLORS.primary}]} onPress={handleAddToCart}>
             <Text style={styles.buttonText}>Add To Cart</Text>
         </TouchableOpacity>
     )

@@ -21,7 +21,10 @@ import NotificationContext from './src/context/notification/notificationCount'
 import { navigationRef } from './src/navigation/RootNavigation'
 import useRefetch from './src/hooks/useRefetch'
 import customAxios from './src/customAxios'
-import { COLORS } from './src/constants/COLORS'
+import { COLORS, colorNew, setColors } from './src/constants/COLORS'
+import LogoContext from './src/context/logo&color'
+import LogoProvider from './src/context/logo&color/logoContext'
+
 
 
 
@@ -34,29 +37,37 @@ const App = () => {
 
 	const [locationPermission, setLocationPermission] = useState(false)
 	const [loading, setLoading] = useState(true)
+	const [logoLoading, setLogoLoading] = useState(true)
+	//const { setMainLogo } = useContext(LogoContext);
 	const [logo] = useMMKVStorage('dynamicLogo', storage)
 
-	reactotron.log(logo,"Fdsafsdf")
+	//reactotron.log(logo,"Fdsafsdf")
+
+	useEffect(() => {
+		getLogo()
+		//colorNew()
+	}, [])
 
 	const getLogo = async () => {
 
 		try {
 			const res = await customAxios.get('public/api/auth/logo')
 			if (res?.data?.message === "Success") {
+				setColors(res?.data)
 				await storage.setMapAsync('dynamicLogo', res?.data)
+				//setMainLogo(res?.data)
 			} else {
 				throw "Internal server error"
 			}
 		} catch (error) {
 			storage.setString("error", `${error}`)
 		}
+		finally {
+			setLogoLoading(false)
+		}
 	}
 
-	useEffect(() => {
-		if (!logo) {
-			getLogo()
-		}
-	}, [logo])
+
 
 
 
@@ -214,7 +225,7 @@ const App = () => {
 	}, [])
 
 
-	if (loading) {
+	if (loading || logoLoading) {
 		return (
 			<View />
 		)
@@ -225,15 +236,17 @@ const App = () => {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<SafeAreaView style={styles.safeArea}>
-				<LocationContext>
-					<NotificationContext>
-						<CartProvider>
-							<SlotProvider>
-								<Navigation location={locationPermission} />
-							</SlotProvider>
-						</CartProvider>
-					</NotificationContext>
-				</LocationContext>
+				<LogoProvider>
+					<LocationContext>
+						<NotificationContext>
+							<CartProvider>
+								<SlotProvider>
+									<Navigation location={locationPermission} />
+								</SlotProvider>
+							</CartProvider>
+						</NotificationContext>
+					</LocationContext>
+				</LogoProvider>
 			</SafeAreaView>
 		</QueryClientProvider>
 	)

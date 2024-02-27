@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import { COLORS } from '../constants/COLORS';
+import COLORS from '../constants/COLORS';
 
 
 const CheckoutCard = ({item}) => {

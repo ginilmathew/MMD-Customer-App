@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import Header from '../../components/Header';
 import CommonHeader from '../../components/CommonHeader';
-import { COLORS } from '../../constants/COLORS'
+import COLORS from '../../constants/COLORS'
 import Animated, { interpolate } from 'react-native-reanimated';
 import { AddToCart } from '../../components/ItemCard';
 import Entypo from 'react-native-vector-icons/Entypo'

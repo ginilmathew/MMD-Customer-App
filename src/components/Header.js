@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import React, { memo, useCallback, useContext, useEffect } from 'react';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
-import { COLORS } from '../constants/COLORS';
+import COLORS from '../constants/COLORS';
 import CartContext from '../context/cart';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import LocationContext from '../context/location';

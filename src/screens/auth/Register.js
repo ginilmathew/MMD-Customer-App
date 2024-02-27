@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup';
 import CustomInput from '../../components/CustomInput'
-import { COLORS } from '../../constants/COLORS'
+import COLORS from '../../constants/COLORS'
 import CommonButton from '../../components/CommonButton'
 import { useMutation } from 'react-query'
 import { registerApi } from '../../api/auth'

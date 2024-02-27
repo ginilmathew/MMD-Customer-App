@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { Dropdown } from 'react-native-element-dropdown';
-import { COLORS } from '../constants/COLORS';
+import COLORS from '../constants/COLORS';
 
 
 const CommonSelectDropdown = ({ topLabel, placeholder, value, setValue, changeValue, search, datas }) => {
