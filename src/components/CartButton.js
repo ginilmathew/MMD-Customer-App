@@ -42,7 +42,7 @@ const CartButton = ({ bottom }) => {
                     <Text style={styles.items}>{cartItems?.length} Items</Text>
                 </View>
             </View>
-            <View style={styles.rightContainer}>
+            <View style={[styles.rightContainer, {backgroundColor: COLORS.primary}]}>
                 <Text style={styles.totalText}>{'Total'}</Text>
                 <View style={styles.priceContainer}>
                     <Text style={styles.price}>₹ {total}</Text>
