@@ -21,12 +21,12 @@ import { useAppState } from '../hooks/appStateManagement';
 import { useMutation } from 'react-query';
 import { PostAddToCart, getCartItems } from '../api/cart';
 import AuthNavigation from './AuthNavigation';
-import reactotron from 'reactotron-react-native';
 
 
 
 const Stack = createNativeStackNavigator();
 const Navigation = ({ location }) => {
+
 
     const [cart_id, setCartId] = useMMKVStorage('cart_id', storage);
     const { isConnected } = useNetInfo();
@@ -34,9 +34,7 @@ const Navigation = ({ location }) => {
     const [error] = useMMKVStorage('error', storage, '')
     const [success] = useMMKVStorage('success', storage, '');
     const [homeAdd] = useMMKVStorage('homeAdd', storage, false)
-    const { getLocation, locationData } = useContext(LocationContext)
-
-    console.log(location);
+    const { getLocation, location: locationData } = useContext(LocationContext)
 
 
     const { cartItems, setCartItems } = useContext(CartContext);
@@ -62,8 +60,6 @@ const Navigation = ({ location }) => {
 
 
     const appState = useAppState();
-
-    reactotron.log(appState, "SHOAS")
 
     useEffect(() => {
         if (cart_id && user) {
@@ -114,9 +110,6 @@ const Navigation = ({ location }) => {
     }, [])
 
 
-    if (!locationData) {
-        <View />
-    }
 
 
     if (!user) {
@@ -158,7 +151,14 @@ const Navigation = ({ location }) => {
                 </Modal>
             </>
         )
-    } else {
+    }
+
+    if (!location) {
+        <View />
+    }
+
+
+    if (user) {
         return (
             <>
                 <NavigationContainer ref={navigationRef} onReady={onReady}>
@@ -193,8 +193,6 @@ const Navigation = ({ location }) => {
             </>
         )
     }
-
-
 }
 
 export default Navigation

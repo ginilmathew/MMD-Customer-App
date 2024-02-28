@@ -72,10 +72,9 @@ const App = () => {
 	async function requestUserPermission() {
 
 		if (Platform.OS === 'android') {
-			let permissions = await request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS)
-			const location = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
-	
+			let permissions = await requestMultiple([PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION, PERMISSIONS.ANDROID.POST_NOTIFICATIONS])
 			// if (permissions?.['android.permission.POST_NOTIFICATIONS'] === "granted") {
+			// 	console.log('yess');
 			await notifee?.createChannel({
 				id: 'default',
 				name: 'Default Channel',
@@ -84,7 +83,7 @@ const App = () => {
 			})
 			// }
 
-			if (location === "granted") {
+			if (permissions?.['android.permission.ACCESS_FINE_LOCATION'] === "granted") {
 				setLocationPermission(true)
 				setLoading(false)
 			}
@@ -96,6 +95,15 @@ const App = () => {
 
 		}
 		else {
+			let location = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+
+			if (location === "granted") {
+				setLocationPermission(true)
+				setLoading(false)
+			}
+			else {
+				setLoading(false)
+			}
 
 			const authStatus = await messaging().requestPermission();
 			const enabled =
@@ -110,23 +118,11 @@ const App = () => {
 					sound: 'sound'
 				})
 			}
-			
-			let location = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
-
-			if (location === "granted") {
-				setLocationPermission(true)
-				setLoading(false)
-			}
-			else {
-				setLoading(false)
-			}
-
 			//const status = await Geolocation.requestAuthorization('whenInUse');
 		}
 
 		//getCurrentLocation()
 	}
-
 
 	// async function requestUserPermission() {
 
