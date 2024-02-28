@@ -12,10 +12,14 @@ import CartContext from '../../context/cart'
 import { useFocusEffect } from '@react-navigation/native'
 import moment from 'moment'
 import CartButton from '../../components/CartButton'
+import LocationContext from '../../context/location'
+import reactotron from 'reactotron-react-native'
 
 const AllProducts = ({ navigation }) => {
 
     const styles = makeStyle(COLORS)
+    const { location } = useContext(LocationContext)
+
 
     const { cartItems } = useContext(CartContext);
     const [time, setTime] = useState(moment().unix())
@@ -33,17 +37,25 @@ const AllProducts = ({ navigation }) => {
         remove: infiniteQueryRemove
     } = useInfiniteQuery({
         queryKey: ['offerproducts'],
-        queryFn: () => offerProducts({
-            // "coordinates": [
-            //     8.5204866, 76.9371447
-            // ],
+        queryFn: ({pageParam = 1 }) => offerProducts(pageParam,{
             coordinates: [location?.location?.latitude, location?.location?.longitude],
         }),
         getNextPageParam: (lastPage, pages) => {
-            if (lastPage.length === 0) return undefined;
-            return pages?.length + 1
+            if(pages?.length > 0){
+                return pages?.length + 1
+            }
+            else{
+                return 1
+            }
+            //reactotron.log({lastPage, pages})
+            //if (lastPage.length === 0) return undefined;
+            //return pages?.length + 1
         },
+        
     })
+
+
+    //reactotron.log({hasNextPage})
 
 
 
@@ -62,11 +74,12 @@ const AllProducts = ({ navigation }) => {
 
 
 
-    const onEndReach = useCallback(() => {
-        if (!isFetching && !isFetchingNextPage && hasNextPage && (last_Page * 1 !== pageCount * 1)) {
+    const onEndReach = () => {
+        reactotron.log({data})
+        if(data?.pages?.length < data?.pages?.[0]?.data?.data?.last_page){
             fetchNextPage()
         }
-    }, [!isFetching, !isFetchingNextPage, hasNextPage])
+    }
 
     // const scrollToTop = () => {
     //     if (flatListRef.current) {
@@ -113,7 +126,6 @@ const AllProducts = ({ navigation }) => {
                 onEndReached={onEndReach}
                 refreshing={isLoading}
                 onRefresh={refetch}
-                onEndReachedThreshold={.1}
                 ListEmptyComponent={emptyScreen}
             />
 
