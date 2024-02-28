@@ -10,7 +10,6 @@ export default function useRefreshOnFocus(refetch) {
                 firstTimeRef.current = false;
                 return;
             }
-
             refetch()
         }, [refetch])
     )

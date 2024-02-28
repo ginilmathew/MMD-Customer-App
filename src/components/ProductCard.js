@@ -22,7 +22,6 @@ const ProductCard = ({ item, key, time }) => {
     useEffect(() => {
         setQuantity(0)
         calculatePrice()
-
     }, [time])
 
 
@@ -61,8 +60,6 @@ const ProductCard = ({ item, key, time }) => {
                     tax,
                     taxValue: (offerPrice / 100) * tax
                 }
-
-
             }
             else {
                 price = {
@@ -99,14 +96,6 @@ const ProductCard = ({ item, key, time }) => {
 
 
 
-
-
-
-
-
-
-
-
     const NavigateToSingleProduct = useCallback(() => {
         navigation.navigate('SingleProduct', { item: item?.products ? item?.products?.[0] : item , quantity })
     }, [item, quantity])
@@ -114,10 +103,7 @@ const ProductCard = ({ item, key, time }) => {
     useEffect(() => {
         if (products && price) {
             const { description, details, image, imageBasePath, status, units, updated_at, created_at, featuredList, variants, categories, subcategories, unit, ...other } = products
-
-
-            const { finalPrice, tax, taxValue, costPrice } = price
-
+            const { finalPrice, tax, taxValue, costPrice } = price;
             let productObj = {
                 ...other,
                 unit: {

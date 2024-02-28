@@ -86,9 +86,16 @@ const Home = ({ navigation, route }) => {
 
 
     const NavigateToAllPages = useCallback(() => {
-        navigation.navigate('AllProducts')
+        navigation.navigate('AllProducts',{
+            mode:'product'
+        })
     }, [navigation])
 
+
+    const NavigateToOfferPages = useCallback(()=>{
+        navigation.navigate('Offer')
+  
+    },[])
     const NavigateToSearch = useCallback(() => {
         navigation.navigate('Search')
     }, [navigation])
@@ -103,6 +110,9 @@ const Home = ({ navigation, route }) => {
         const sliders = data?.data?.data?.sliders || [];
         const categories = data?.data?.data?.categories || [];
         const featuredList = data?.data?.data?.featuredList?.[0]?.featured_list;
+        const offerProducts = data?.data?.data?.offerProducts || [];
+        const allFeatures = data?.data?.data?.allFeatures || [];
+
 
         return (
             <View style={{ backgroundColor: COLORS.white }}>
@@ -131,6 +141,30 @@ const Home = ({ navigation, route }) => {
                         </ScrollView>
                     </View>
                 )}
+
+
+                {offerProducts && <View style={{ marginTop: 3 }}>
+                    <CustomHeading label={'Offer Products'} hide={true} onPress={NavigateToOfferPages} marginH={20} />
+                    <Animated.View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
+                        {/* <ItemCard key={index} item={item} /> */}
+
+                        {offerProducts?.map((item, index) => (
+                            <View style={{marginVertical:5}}>
+                                <ProductCard key={index} item={item} cartItems={cartItems} time={time} />
+                            </View>
+
+                        ))}
+                    </Animated.View>
+                </View>}
+                <View style={{ marginTop: 20 }}>
+                        <CustomHeading label={'HighLights'} hide={false} marginH={20} />
+                    </View>
+                    <View style={[styles.boxItem, styles.footerBox]}>
+                        {allFeatures.map((res, index) => (
+                            <ItemBox onPress={() => NavigateToFeatured(res)} key={res?._id} item={res} index={index} />
+                        ))}
+                    </View>
+
                 {featuredList && (
                     <View style={{ marginTop: 3 }}>
                         <CustomHeading label={'Popular Products'} hide={true} onPress={NavigateToAllPages} marginH={20} />
@@ -140,7 +174,7 @@ const Home = ({ navigation, route }) => {
         );
     }, [data?.data?.data]);
 
-    
+
 
 
     const renderItem = ({ item, index }) => {
@@ -156,23 +190,15 @@ const Home = ({ navigation, route }) => {
 
 
     const ListFooterComponent = useCallback(() => {
-        const allFeatures = data?.data?.data?.allFeatures || [];
-
+       
 
         return (
-            allFeatures.length > 0 && (
+     
                 <View style={{ marginBottom: 130 }}>
-                    <View style={{ marginTop: 20 }}>
-                        <CustomHeading label={'HighLights'} hide={false} marginH={20} />
-                    </View>
-                    <View style={[styles.boxItem, styles.footerBox]}>
-                        {allFeatures.map((res, index) => (
-                            <ItemBox onPress={() => NavigateToFeatured(res)} key={res?._id} item={res} index={index} />
-                        ))}
-                    </View>
+                    
                     {/* <View style={{ marginBottom: 40 }} /> */}
                 </View>
-            )
+            
         );
     }, [data?.data?.data, NavigateToFeatured]);
 
