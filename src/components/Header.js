@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import React, { memo, useCallback, useContext, useEffect } from 'react';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
-import { COLORS } from '../constants/COLORS';
+import COLORS from '../constants/COLORS';
 import CartContext from '../context/cart';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import LocationContext from '../context/location';
@@ -28,6 +28,7 @@ const Header = memo(({ onPress, text, icon }) => {
     const [user] = useMMKVStorage('user', storage);
     const [cart_id] = useMMKVStorage('cart_id', storage);
     const navigation = useNavigation();
+    const [logo] = useMMKVStorage('dynamicLogo', storage)
 
     const badgeJumpAnimation = useSharedValue(0);
 
@@ -40,6 +41,8 @@ const Header = memo(({ onPress, text, icon }) => {
         badgeJumpAnimation.value = initialPosition;
         badgeJumpAnimation.value = withSpring(0);
     }, []);
+
+    
 
 
     const { mutate, refetch } = useMutation({
@@ -101,7 +104,7 @@ const Header = memo(({ onPress, text, icon }) => {
         return (
             <View style={styles.container}>
                 <View style={styles.imageContainer}>
-                    <Image source={require('../images/DGLogo.png')} style={styles.logo} />
+                    <Image source={{ uri: logo?.image }} style={styles.logo} />
                 </View>
 
                 {location && user && (
@@ -188,7 +191,7 @@ const styles = StyleSheet.create({
     logo: {
         width: 50,
         height: 50,
-        resizeMode: 'contain',
+        resizeMode: 'cover',
     },
     count: {
         color: COLORS.white,

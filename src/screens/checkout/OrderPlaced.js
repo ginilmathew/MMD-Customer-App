@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useEffect } from 'react'
 import LottieView from 'lottie-react-native';
-import { COLORS } from '../../constants/COLORS';
+import COLORS from '../../constants/COLORS';
 import Header from '../../components/Header';
 import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';

@@ -1,8 +1,10 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import { COLORS } from '../constants/COLORS'
+import COLORS from '../constants/COLORS'
 
 const AddToCart = ({ isCartAdded, handleDecrement, handleAddToCart, handleIncrement, quantity }) => {
+
+    const styles = makeStyle(COLORS)
 
     if (isCartAdded) {
         return (
@@ -27,9 +29,9 @@ const AddToCart = ({ isCartAdded, handleDecrement, handleAddToCart, handleIncrem
 
 export default AddToCart
 
-const styles = StyleSheet.create({
+const makeStyle = (color) => StyleSheet.create({
     button: {
-        backgroundColor: COLORS.primary,
+        backgroundColor: color.primary,
         width: 80,
         height: 27,
         borderRadius: 6,
@@ -56,7 +58,7 @@ const styles = StyleSheet.create({
         gap: 4,
     },
     incrementButton: {
-        backgroundColor: COLORS.primary,
+        backgroundColor: color.primary,
         width: 27,
         height: 27,
         borderRadius: 6,

@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity, Linking, Modal, Platform } from 'react-native'
 import React, { useCallback, useContext, useState } from 'react'
-import { COLORS } from '../../constants/COLORS'
+import COLORS from '../../constants/COLORS'
 import CommonHeader from '../../components/CommonHeader'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'

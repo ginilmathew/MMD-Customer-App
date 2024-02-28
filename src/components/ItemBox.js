@@ -1,15 +1,24 @@
 import React from 'react';
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
-import { COLORS } from '../constants/COLORS';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, ImageBackground } from 'react-native';
+import COLORS from '../constants/COLORS';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 const ItemBox = ({ onPress, key, item, index }) => {
     return (
         <Animated.View key={key} entering={FadeInDown.delay(index * 300).duration(400).springify().damping(12)}>
             <TouchableOpacity style={styles.container} onPress={onPress}>
-                <View style={styles.box}>
+                {item?.image ? ( 
+ 
+                <ImageBackground source={{uri : item?.image}} style={styles.imgBox}>
                     <Text style={styles.text}>{item?.name}</Text>
-                </View>
+                </ImageBackground>
+
+                ) : (<View style={styles.box}>
+                    <Text style={styles.text}>{item?.name}</Text>
+                </View>)}
             </TouchableOpacity>
+            <View style={styles.shade}>
+            <Text style={styles.text}>{item?.name}</Text>
+                </View>
         </Animated.View>
     );
 };
@@ -46,6 +55,29 @@ const styles = StyleSheet.create({
         textAlign: "center",
         width:"80%"
     },
+    imgBox: {
+        width: itemWidth,
+        height: 100,
+        borderRadius: 12, // Border radius for rounded corners
+        overflow: 'hidden', // Ensure that the image respects the borderRadius
+        justifyContent: 'center', // Center text vertically
+        alignItems: 'center',
+        textAlign: 'center', // Center text horizontally
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        // elevation: 5, // For Android shadow
+    },
+    shade: {
+        position: "absolute",
+        backgroundColor: "rgba(0,0,0,0.3)",
+        width: "100%",
+        height: "100%",
+        borderRadius: 12,
+         alignItems: "center",
+         justifyContent: "center"
+    }
 });
 
 export default ItemBox;

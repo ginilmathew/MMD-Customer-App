@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity, Alert, Linking } from 'react-native'
 import React, { useCallback, useContext } from 'react'
-import { COLORS } from '../../constants/COLORS'
+import COLORS from '../../constants/COLORS'
 import CommonHeader from '../../components/CommonHeader'
 import ProfileButton from '../../components/ProfileButton'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -27,21 +27,23 @@ const Profile = ({ navigation }) => {
     mutationFn: logoutApi,
     onSuccess(data) {
 
-      queryClient.resetQueries();
-      storage.clearStore();
-      setMode('');
-      //setLocation(null)
-      setCurrentLoc('')
-      setCartItems([])
       storage.setString('success', data?.data?.message)
+      queryClient.resetQueries()
+      storage.clearStore();
+      //setLocation(null)
+      
     }
   })
-
+  
 
   const { mutate } = useMutation({
     mutationKey: 'post-cart',
     mutationFn: PostAddToCart,
     async onSuccess(data) {
+      setMode('');
+      setCurrentLoc('')
+      setCartItems([])
+      setUser(null);
 
       const token = await messaging().getToken();
       logoutMutate(token);
@@ -52,11 +54,12 @@ const Profile = ({ navigation }) => {
   const { data, refetch } = useQuery('profile-query', {
     queryFn: getProfile,
     onSuccess({ data }) {
-      setUser({ ...user, user: data })
-    }
+      // setUser({ ...user, user: data })
+    },
+    enabled: !!user
   })
 
-  useRefetch(refetch)
+  useRefetch(user && refetch)
 
   const navToEdit = useCallback(() => {
     navigation.navigate('EditProfile')
@@ -95,7 +98,7 @@ const Profile = ({ navigation }) => {
       <View style={styles.container}>
 
         <View style={styles.user}>
-          <Text style={styles.name}>{data?.data?.name}</Text>
+          <Text style={[styles.name, {color: COLORS.primary}]}>{data?.data?.name}</Text>
           <Text style={styles.email}>{data?.data?.email}</Text>
         </View>
 

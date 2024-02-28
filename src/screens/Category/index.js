@@ -40,7 +40,6 @@ const Category = () => {
     const ListHeaderComponent = memo(() => {
         return (
             <View>
-             <Header icon={true}/>
                 <CommonHeader heading={"Categories"} backBtn={true} />
             </View>
         )
@@ -57,18 +56,21 @@ const Category = () => {
     }, [])
 
     return (
-        <FlatList
-            StickyHeaderComponent={[0]}
-            ListHeaderComponent={ListHeaderComponent}
-            data={data?.data?.data}
-            numColumns={4}
-            renderItem={renderSectionHeader}
-            refreshing={isLoading}
-            onRefresh={refetch}
-            keyExtractor={KeyExtractor}
-            contentContainerStyle={styles.flatListContent}
-            ListEmptyComponent={emptyScreen}
-        />
+        <>
+            <Header icon={true}/>
+            <FlatList
+                StickyHeaderComponent={[0]}
+                ListHeaderComponent={ListHeaderComponent}
+                data={data?.data?.data}
+                numColumns={4}
+                renderItem={renderSectionHeader}
+                refreshing={isLoading}
+                onRefresh={refetch}
+                keyExtractor={KeyExtractor}
+                contentContainerStyle={styles.flatListContent}
+                ListEmptyComponent={emptyScreen}
+            />
+        </>
 
     );
 };

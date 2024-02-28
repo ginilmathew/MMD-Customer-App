@@ -3,7 +3,7 @@ import React, { useCallback, useContext } from 'react'
 import Background from './Background';
 import CommonButton from '../../components/CommonButton';
 import CustomInput from '../../components/CustomInput';
-import { COLORS } from '../../constants/COLORS';
+import COLORS from '../../constants/COLORS';
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -14,12 +14,16 @@ import locationContext from '../../context/location';
 import messaging from '@react-native-firebase/messaging';
 import CartContext from '../../context/cart';
 import { PERMISSIONS, request } from 'react-native-permissions';
+import reactotron from 'reactotron-react-native';
+import { useMMKVStorage } from 'react-native-mmkv-storage';
 
 
 const Login = ({ navigation }) => {
 
     const { getLocation, setMode } = useContext(locationContext)
     const { setCartItems } = useContext(CartContext)
+
+
 
     const { mutate: tokenMutate } = useMutation({
         mutationKey: 'token-key',
@@ -37,6 +41,8 @@ const Login = ({ navigation }) => {
     })
 
     const onSuccess = async ({ data }) => {
+
+        reactotron.log(data, "LOG")
 
         // let permission = "denied";
 

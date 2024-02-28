@@ -5,7 +5,7 @@ import CommonButton from '../../components/CommonButton'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
-import { COLORS } from '../../constants/COLORS'
+import COLORS from '../../constants/COLORS'
 import CommonHeader from '../../components/CommonHeader'
 import NoData from '../../components/NoData'
 import IonIcons from 'react-native-vector-icons/Ionicons'
@@ -16,7 +16,6 @@ import Header from '../../components/Header'
 import { storage } from '../../../App'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import LocationContext from '../../context/location'
-import reactotron from 'reactotron-react-native'
 
 
 const EditAddress = ({ navigation, route }) => {
@@ -28,7 +27,6 @@ const EditAddress = ({ navigation, route }) => {
     const [refresh, setRefresh] = useState(false);
     const [defaultAddress, setDefaultAddress] = useState("");
 
-    reactotron.log(defaultAddress, "defa")
 
     const { refetch, data } = useQuery({
         queryKey: ['address-query'],

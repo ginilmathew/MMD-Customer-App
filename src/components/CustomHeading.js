@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { memo } from 'react';
-import { COLORS } from '../constants/COLORS';
+import COLORS from '../constants/COLORS';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 const CustomHeading = ({ label, hide, onPress, marginH }) => {
   return (
@@ -8,7 +8,7 @@ const CustomHeading = ({ label, hide, onPress, marginH }) => {
       <Text style={styles.text}>{label}</Text>
       {hide &&
         <TouchableOpacity style={styles.iconConatiner} onPress={onPress}>
-          <Text style={styles.text2}>{'View All'}</Text>
+          <Text style={[styles.text2, {color: COLORS.primary}]}>{'View All'}</Text>
           <Ionicons name='arrow-forward' color={COLORS.primary} size={18} />
         </TouchableOpacity>}
     </View>

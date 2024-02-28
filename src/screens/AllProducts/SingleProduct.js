@@ -11,8 +11,7 @@ import {
 } from 'react-native';
 import Header from '../../components/Header';
 import CommonHeader from '../../components/CommonHeader';
-import { COLORS } from '../../constants/COLORS'
-import reactotron from 'reactotron-react-native';
+import COLORS from '../../constants/COLORS'
 import Animated, { interpolate } from 'react-native-reanimated';
 import { AddToCart } from '../../components/ItemCard';
 import Entypo from 'react-native-vector-icons/Entypo'
@@ -136,7 +135,6 @@ const SingleProduct = ({ navigation, route }) => {
                     taxValue: (sellingPrice / 100) * tax
                 };
 
-                //reactotron.log({ price })
             }
 
             setPrice(price)
@@ -708,7 +706,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         textAlign: 'right',
-        color: COLORS.dark
+        color: COLORS.dark,
     },
     stock: {
         fontFamily: 'Poppins-bold',
@@ -759,6 +757,7 @@ const styles = StyleSheet.create({
         color: COLORS.light,
         opacity: 0.5,
         marginTop: -5,
+        textAlign: 'right',
         textDecorationLine: 'line-through',
     }
 });

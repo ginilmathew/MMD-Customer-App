@@ -2,7 +2,7 @@ import { ActivityIndicator, Image, Modal, ScrollView, StyleSheet, Text, View } f
 import React, { useCallback } from 'react'
 import CommonHeader from '../../components/CommonHeader'
 import Header from '../../components/Header'
-import { COLORS } from '../../constants/COLORS'
+import COLORS from '../../constants/COLORS'
 import SubHeading from '../../components/SubHeading'
 import moment from 'moment'
 import { useFocusEffect } from '@react-navigation/native'

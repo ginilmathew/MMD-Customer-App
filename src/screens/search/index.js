@@ -1,9 +1,9 @@
-import { ActivityIndicator, FlatList, StyleSheet, View, useWindowDimensions } from 'react-native'
+import { ActivityIndicator, FlatList, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native'
 import React, { useCallback, useContext, useState } from 'react'
 import Header from '../../components/Header'
 import CommonHeader from '../../components/CommonHeader'
 import CustomSearch from '../../components/CustomSearch'
-import { COLORS } from '../../constants/COLORS'
+import COLORS from '../../constants/COLORS'
 import { useMutation } from 'react-query'
 import { getSearchList } from '../../api/Search'
 import Animated, { FadeInDown } from 'react-native-reanimated'
@@ -45,9 +45,9 @@ const Search = () => {
     )
 
 
-    const AnimatedStyle = useCallback((index)=>{
+    const AnimatedStyle = useCallback((index) => {
         return FadeInDown.delay(index * 300).duration(200).springify().damping(12);
-      },[])
+    }, [])
 
 
     const renderItem = useCallback(({ item, index }) => {
@@ -74,7 +74,7 @@ const Search = () => {
     if (isLoading) {
         return (
             <View style={{ flex: 1, backgroundColor: COLORS.white }}>
-               <Header icon={true}/>
+                <Header icon={true} />
                 <CommonHeader heading={'Search'} backBtn />
                 <View>
                     <CustomSearch values={value} onChangeText={onChangeProduct} />
@@ -88,32 +88,31 @@ const Search = () => {
     if (!data?.data?.data || data?.data?.data.length === 0) {
         return (
             <View style={{ flex: 1, backgroundColor: COLORS.white }}>
-               <Header icon={true}/>
+                <Header icon={true} />
                 <CommonHeader heading={'Search'} backBtn />
                 <View>
                     <CustomSearch values={value} onChangeText={onChangeProduct} />
                 </View>
-                <NoData/>
+                <NoData />
             </View>
         );
     }
 
     const commonKeyExtractor = (item, index) => {
         // Replace 'id' with the actual identifier in your data
-        return item._id ;
-      };
-      
+        return item._id;
+    };
+
 
     return (
 
-        <View style={{ flex: 1, backgroundColor: COLORS.white }}>
-             <Header icon={true}/>
+        <KeyboardAvoidingView style={{ flex: 1, backgroundColor: COLORS.white }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+            <Header icon={true} />
             <CommonHeader heading={'Search'} backBtn />
             <View style={styles.searchcontainer}>
-                <CustomSearch values={value} onChangeText={onChangeProduct} placeholder={"Search Products..."}/>
+                <CustomSearch values={value} onChangeText={onChangeProduct} placeholder={"Search Products..."} />
             </View>
             <FlatList
-
                 ListFooterComponent={ListFooter}
                 StickyHeaderComponent={[0]}
                 data={data?.data?.data}
@@ -122,7 +121,7 @@ const Search = () => {
                 keyExtractor={commonKeyExtractor}
                 contentContainerStyle={{ flexGrow: 1, marginHorizontal: 10 }}
             />
-        </View>
+        </KeyboardAvoidingView>
 
 
 
@@ -133,7 +132,7 @@ const Search = () => {
 export default Search
 
 const styles = StyleSheet.create({
-    searchcontainer:{
-        marginBottom:10
+    searchcontainer: {
+        marginBottom: 10
     }
 })

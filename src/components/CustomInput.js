@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useCallback, useState } from 'react'
-import { COLORS } from '../constants/COLORS'
+import COLORS from '../constants/COLORS'
 import IonIcons from 'react-native-vector-icons/Ionicons'
 import { Controller } from 'react-hook-form'
 

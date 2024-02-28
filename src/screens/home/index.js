@@ -3,7 +3,7 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from 'rea
 import CustomSlider from '../../components/CustomSlider'
 import CustomHeading from '../../components/CustomHeading'
 import CategoryCard from '../../components/CategoryCard'
-import { COLORS } from '../../constants/COLORS'
+import COLORS from '../../constants/COLORS'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import DummySearch from '../../components/DummySearch'
 import ItemBox from '../../components/ItemBox'
@@ -77,14 +77,6 @@ const Home = ({ navigation, route }) => {
         // }
     }, [location?.address]))
 
-
-    React.useEffect(() => {
-        const unsubscribe = navigation.addListener('blur', () => {
-            setHomeFocus(false);
-        });
-
-        return unsubscribe;
-    }, [navigation]);
 
 
     const NavigateToCategory = useCallback(() => {

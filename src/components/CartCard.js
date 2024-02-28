@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { COLORS } from '../constants/COLORS';
+import COLORS from '../constants/COLORS';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import CartContext from '../context/cart';
 import AddToCart from './AddToCart';

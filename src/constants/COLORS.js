@@ -1,5 +1,12 @@
-export const COLORS = {
-    primary:'#8EBE44',
+import { MMKVLoader, useMMKVStorage } from "react-native-mmkv-storage"
+//import { storage } from "../../App"
+import reactotron from "reactotron-react-native"
+
+//const [logo] = useMMKVStorage('dynamicLogo', storage)
+let logo;
+
+let COLORS = {
+    primary: '#8EBE44',
     primary_light: '#dae6dd',
     light: '#515151',
     dark: '#000000',
@@ -17,5 +24,37 @@ export const COLORS = {
     status_paid: '#4D9FFF',
     white: '#fff',
     Offer_box:'#ffd8d8',
-    border_color: "#707070" 
+    border_color: "#707070",
+    logo: ''
 }
+
+
+let storage = new MMKVLoader().initialize();
+
+// storage?.getMap("dynamicLogo", (error, result) => {
+//     if (error) {
+//       console.log(error);
+//       return;
+//     }
+
+//     logo = result
+
+//     if(logo) {
+//         setColors(logo)
+//     }
+    
+  
+//     console.log({result}, result?.primary_color); // Logs 'string';
+// });
+
+export function setColors(color){
+    COLORS.primary = color?.primary_color
+    COLORS.blue = color?.secondary_color
+    COLORS.logo = color?.image
+}
+
+reactotron.log(logo, "LOG")
+
+
+
+export default COLORS;

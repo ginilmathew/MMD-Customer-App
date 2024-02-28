@@ -3,9 +3,9 @@ import React, { memo, useCallback, useContext, useState } from 'react'
 import Header from '../../components/Header'
 import CommonHeader from '../../components/CommonHeader'
 import Animated, { FadeInDown } from 'react-native-reanimated'
-import { getAllProducts } from '../../api/allProducts'
+import { getAllProducts, offerProducts } from '../../api/allProducts'
 import { useInfiniteQuery } from 'react-query'
-import COLORS from '../../constants/COLORS'
+import  COLORS  from '../../constants/COLORS'
 import NoData from '../../components/NoData'
 import ProductCard from '../../components/ProductCard'
 import CartContext from '../../context/cart'
@@ -32,8 +32,13 @@ const AllProducts = ({ navigation }) => {
         isLoading,
         remove: infiniteQueryRemove
     } = useInfiniteQuery({
-        queryKey: ['allProducts'],
-        queryFn: getAllProducts,
+        queryKey: ['offerproducts'],
+        queryFn: () => offerProducts({
+            "coordinates": [
+                8.5204866, 76.9371447
+            ],
+            // coordinates: [location?.location?.latitude, location?.location?.longitude],
+        }),
         getNextPageParam: (lastPage, pages) => {
             if (lastPage.length === 0) return undefined;
             return pages?.length + 1
@@ -98,8 +103,7 @@ const AllProducts = ({ navigation }) => {
 
     return (
         <View style={{ backgroundColor: '#fff' }}>
-            <Header icon={true}/>
-            <CommonHeader heading={"Products"} backBtn={true} />
+            <CommonHeader heading={"Offer Products"} />
             <FlatList
                 data={data?.pages?.map(page => page?.data?.data?.data)?.flat()}
                 ListFooterComponent={ListFooterComponents}
@@ -113,7 +117,7 @@ const AllProducts = ({ navigation }) => {
                 ListEmptyComponent={emptyScreen}
             />
 
-            <CartButton bottom={120}/>
+            <CartButton bottom={120} />
         </View>
     )
 }
@@ -121,18 +125,18 @@ const AllProducts = ({ navigation }) => {
 export default AllProducts
 
 const makeStyle = (color) => StyleSheet.create({
-    scrollToTopButton: {
+    // scrollToTopButton: {
 
-        bottom: 20,
-        right: 20,
-        backgroundColor: color.primary,
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 8,
-        elevation: 5,
-    },
-    scrollToTopButtonText: {
-        color: COLORS.white,
-        fontWeight: 'bold',
-    },
+    //     bottom: 20,
+    //     right: 20,
+    //     backgroundColor: color.primary,
+    //     paddingVertical: 10,
+    //     paddingHorizontal: 20,
+    //     borderRadius: 8,
+    //     elevation: 5,
+    // },
+    // scrollToTopButtonText: {
+    //     color: COLORS.white,
+    //     fontWeight: 'bold',
+    // },
 })

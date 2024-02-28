@@ -4,9 +4,8 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import CartContext from '../context/cart';
 import AddToCart from './AddToCart';
 import { useNavigation } from '@react-navigation/native';
-import { COLORS } from '../constants/COLORS';
+import COLORS from '../constants/COLORS';
 import moment from 'moment';
-import reactotron from 'reactotron-react-native';
 
 
 const ProductCard = ({ item, key, time }) => {

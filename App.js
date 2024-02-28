@@ -15,10 +15,16 @@ import notifee, { AndroidImportance, EventType } from '@notifee/react-native'
 import CartProvider from './src/context/cart/cartContext'
 import { useAppState } from './src/hooks/appStateManagement'
 import SlotProvider from './src/context/slot/slotContext'
-import { PERMISSIONS, request, requestMultiple } from 'react-native-permissions'
+import { PERMISSIONS, check, request, requestMultiple } from 'react-native-permissions'
 import reactotron from 'reactotron-react-native'
 import NotificationContext from './src/context/notification/notificationCount'
 import { navigationRef } from './src/navigation/RootNavigation'
+import useRefetch from './src/hooks/useRefetch'
+import customAxios from './src/customAxios'
+import { COLORS, colorNew, setColors } from './src/constants/COLORS'
+// import LogoContext from './src/context/logo&color'
+// import LogoProvider from './src/context/logo&color/logoContext'
+
 
 
 
@@ -27,8 +33,47 @@ export const storage = new MMKVLoader().initialize()
 
 const App = () => {
 
+
+
 	const [locationPermission, setLocationPermission] = useState(false)
 	const [loading, setLoading] = useState(true)
+	const [logoLoading, setLogoLoading] = useState(true)
+	//const { setMainLogo } = useContext(LogoContext);
+	//const [logo] = useMMKVStorage('dynamicLogo', storage)
+
+	//reactotron.log(logo,"Fdsafsdf")
+
+	useEffect(() => {
+		getLogo()
+		//colorNew()
+	}, [])
+
+	const getLogo = async () => {
+
+		try {
+			const res = await customAxios.get('public/api/auth/logo')
+			if (res?.data?.message === "Success") {
+				setColors(res?.data)
+				//await storage.setMapAsync('dynamicLogo', res?.data)
+				setLogoLoading(false)
+				//setMainLogo(res?.data)
+			} else {
+				throw "Internal server error"
+			}
+		} catch (error) {
+			setLogoLoading(false)
+			storage.setString("error", `${error}`)
+		}
+		finally {
+			// setTimeout(() => {
+			// 	setLogoLoading(false)
+			// }, 1000);
+			
+		}
+	}
+
+
+
 
 
 
@@ -39,18 +84,19 @@ const App = () => {
 	});
 
 
+
 	async function requestUserPermission() {
 
 		if (Platform.OS === 'android') {
 			let permissions = await requestMultiple([PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION, PERMISSIONS.ANDROID.POST_NOTIFICATIONS])
 			// if (permissions?.['android.permission.POST_NOTIFICATIONS'] === "granted") {
 			// 	console.log('yess');
-				await notifee?.createChannel({
-					id: 'default',
-					name: 'Default Channel',
-					importance: AndroidImportance.HIGH,
-					sound: 'sound'
-				})
+			await notifee?.createChannel({
+				id: 'default',
+				name: 'Default Channel',
+				importance: AndroidImportance.HIGH,
+				sound: 'sound'
+			})
 			// }
 
 			if (permissions?.['android.permission.ACCESS_FINE_LOCATION'] === "granted") {
@@ -127,9 +173,9 @@ const App = () => {
 	// }
 
 
+
 	async function onMessageReceived(message) {
 
-		console.log(message);
 
 		// Display Notification
 		await notifee.displayNotification({
@@ -145,6 +191,10 @@ const App = () => {
 				},
 				sound: 'sound',
 			},
+			ios: {
+				channelId: 'default',
+				sound: 'sound'
+			}
 		});
 
 	}
@@ -183,27 +233,31 @@ const App = () => {
 	}, [])
 
 
-	if (loading) {
+	
+
+
+	if (loading || logoLoading) {
 		return (
 			<View />
 		)
 	}
 
-
-
+	console.log({loading, logoLoading})
 
 	return (
 		<QueryClientProvider client={queryClient}>
 			<SafeAreaView style={styles.safeArea}>
-				<LocationContext>
-					<NotificationContext>
-						<CartProvider>
-							<SlotProvider>
-								<Navigation location={locationPermission} />
-							</SlotProvider>
-						</CartProvider>
-					</NotificationContext>
-				</LocationContext>
+				{/* <LogoProvider> */}
+					<LocationContext>
+						<NotificationContext>
+							<CartProvider>
+								<SlotProvider>
+									<Navigation location={locationPermission} />
+								</SlotProvider>
+							</CartProvider>
+						</NotificationContext>
+					</LocationContext>
+				{/* </LogoProvider> */}
 			</SafeAreaView>
 		</QueryClientProvider>
 	)

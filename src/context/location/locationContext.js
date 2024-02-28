@@ -10,7 +10,7 @@ import { navigationRef } from '../../navigation/RootNavigation';
 import { useMMKVStorage } from 'react-native-mmkv-storage';
 import { storage } from '../../../App';
 import { PERMISSIONS, check, RESULTS, request } from 'react-native-permissions'
-import reactotron from 'reactotron-react-native';
+
 
 
 
@@ -144,7 +144,6 @@ const locationContext = ({ children }) => {
                     }).then(function (success) {
                         getOneTimeLocation()
                     }).catch((error) => {
-                        console.log(error.message);
                     });
                 }
             },

@@ -12,7 +12,7 @@ import { storage } from '../../App';
 import { useNetInfo } from '@react-native-community/netinfo';
 import Toast from '../components/Toast';
 import LocationPage from '../screens/auth/LocationPage';
-import { COLORS } from '../constants/COLORS';
+import COLORS from '../constants/COLORS';
 import ChangePasswd from '../screens/Profile/ChangePasswd';
 import GoogleLocation from '../screens/Profile/GoogleLocation';
 import LocationContext from '../context/location';
@@ -21,6 +21,9 @@ import { useAppState } from '../hooks/appStateManagement';
 import { useMutation } from 'react-query';
 import { PostAddToCart, getCartItems } from '../api/cart';
 import AuthNavigation from './AuthNavigation';
+// import reactotron from 'reactotron-react-native';
+// import LogoContext from '../context/logo&color';
+// import customAxios from '../customAxios';
 
 
 
@@ -35,6 +38,7 @@ const Navigation = ({ location }) => {
     const [success] = useMMKVStorage('success', storage, '');
     const [homeAdd] = useMMKVStorage('homeAdd', storage, false)
     const { getLocation, location: locationData } = useContext(LocationContext)
+    // const { setMainLogo } = useContext(LogoContext)
 
 
     const { cartItems, setCartItems } = useContext(CartContext);
@@ -51,29 +55,29 @@ const Navigation = ({ location }) => {
         mutationKey: 'cartItems',
         mutationFn: getCartItems,
         onSuccess: (data) => {
-            if(data?.data?.data?.product){
+            if (data?.data?.data?.product) {
                 setCartItems(data?.data?.data?.product)
             }
-          
+
         }
-      });
+    });
 
 
     const appState = useAppState();
 
     useEffect(() => {
-        if(cart_id && user){
+        if (cart_id && user) {
             getCarts({ cartId: cart_id })
-        } else if(cart_id) {
+        } else if (cart_id) {
             storage.setString('cart_id', '')
         }
 
 
-        if(location){
+        if (location) {
             getLocation()
         }
     }, [cart_id, location])
-    
+
 
 
     useEffect(() => {
@@ -84,8 +88,8 @@ const Navigation = ({ location }) => {
                     //     ...item.item,
                     //     qty: item.qty
                     // }));
-                   if(user) mutate({ product: cartItems, cartId: cart_id })
-                   else await storage.setStringAsync('cart_id', '')
+                    if (user) mutate({ product: cartItems, cartId: cart_id })
+                    else await storage.setStringAsync('cart_id', '')
 
                 } catch (err) {
 
@@ -111,6 +115,22 @@ const Navigation = ({ location }) => {
 
 
 
+    // useEffect(() => {
+    //     const getLogo = async () => {
+
+    //         try {
+    //             const { data } = await customAxios.get('public/api/auth/logo');
+    //             setMainLogo(data);
+                
+    //         } catch (error) {
+    //             storage.setString("error", `${error}`)
+    //         }
+    //     }
+    //     getLogo()
+
+    // }, [])
+
+
 
     if (!user) {
         return (
@@ -123,7 +143,7 @@ const Navigation = ({ location }) => {
                         <Stack.Screen name="Login" component={Login} />
                         <Stack.Screen name="Register" component={Register} />
                         <Stack.Screen name="Forget" component={Forget} />
-                        <Stack.Screen name='ChangePasswd' component={ChangePasswd} />        
+                        <Stack.Screen name='ChangePasswd' component={ChangePasswd} />
                         {/* <Stack.Screen name='LocationPage' component={LocationPage} />
                         <Stack.Screen name='GoogleLocation' component={GoogleLocation} /> */}
                     </Stack.Navigator>
@@ -153,10 +173,10 @@ const Navigation = ({ location }) => {
         )
     }
 
-    if(!location){
+    if (!location) {
         <View />
     }
-    
+
 
     if (user) {
         return (
@@ -170,7 +190,7 @@ const Navigation = ({ location }) => {
                         <Stack.Screen name='GoogleLocation' component={GoogleLocation} />
                     </Stack.Navigator>
                 </NavigationContainer>
-                
+
                 {
                     isConnected !== null && !isConnected && (
                         <Modal visible transparent>

@@ -1,11 +1,11 @@
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
 import React, { useCallback } from 'react'
 import CustomInput from '../../components/CustomInput'
 import CommonButton from '../../components/CommonButton'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
-import { COLORS } from '../../constants/COLORS'
+import COLORS from '../../constants/COLORS'
 import CommonHeader from '../../components/CommonHeader'
 import { useMutation } from 'react-query'
 import { changePasswd } from '../../api/Profile'
@@ -20,7 +20,7 @@ const ChangePasswd = ({ navigation, route }) => {
     mutationKey: 'change-query',
     mutationFn: changePasswd,
     onSuccess({ data }) {
-      
+
       storage.setString('success', data?.message)
 
       if (route?.params?.user) {
@@ -50,9 +50,10 @@ const ChangePasswd = ({ navigation, route }) => {
   }, [])
 
   return (
-    <>
-      {route?.params?.user && <Header /> }
-
+    <KeyboardAvoidingView style={{
+      flex: 1
+    }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      {route?.params?.user && <Header />}
       <CommonHeader heading={route?.params?.user ? 'Reset Password' : 'Change Password'} backBtn={!route?.params?.user ? true : false} onPress={route?.params?.user ? navToLogin : null} />
       <View style={styles.container}>
 
@@ -72,7 +73,7 @@ const ChangePasswd = ({ navigation, route }) => {
 
         <CommonButton text={'Update'} mt='auto' loading={isLoading} onPress={handleSubmit(mutate)} />
       </View>
-    </>
+    </KeyboardAvoidingView>
   )
 }
 

@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useCallback } from 'react';
 import { StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
 import Animated from 'react-native-reanimated';
-import { COLORS } from '../constants/COLORS';
+import COLORS from '../constants/COLORS';
 
 const CategoryCard = ({ key,item }) => {
 

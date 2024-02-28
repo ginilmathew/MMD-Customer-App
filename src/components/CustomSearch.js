@@ -1,7 +1,7 @@
 import { StyleSheet, TextInput, View } from 'react-native'
 import React, { memo, useCallback, useRef } from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { COLORS } from '../constants/COLORS'
+import COLORS from '../constants/COLORS'
 import { useFocusEffect } from '@react-navigation/native'
 
 

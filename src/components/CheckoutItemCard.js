@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import CartContext from '../context/cart';
-import { COLORS } from '../constants/COLORS';
+import COLORS from '../constants/COLORS';
 import moment from 'moment';
 
 
