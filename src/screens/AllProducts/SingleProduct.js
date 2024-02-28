@@ -135,7 +135,11 @@ const SingleProduct = ({ navigation, route }) => {
                     taxValue: (sellingPrice / 100) * tax
                 };
 
+<<<<<<< HEAD
 
+=======
+                //reactotron.log({ price })
+>>>>>>> main
             }
 
             setPrice(price)

@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, Text, StyleSheet, ScrollView } from 'react-native'
+import { View, TouchableOpacity, Text, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
@@ -119,8 +119,8 @@ const MapAddress = ({ navigation, route }) => {
         <>
            <Header icon={true}/>
             <CommonHeader heading={'Add Address'} backBtn />
-
-            <ScrollView contentContainerStyle={mode === 'map' && { flex: 1 }} style={styles.container} keyboardShouldPersistTaps='always'>
+            <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{flex: 1, marginBottom: 20}}>
+            <ScrollView contentContainerStyle={mode === 'map' && { flexGrow: 1 }} style={styles.container} keyboardShouldPersistTaps='always'>
 
                 {
                     mode === "map" ? (
@@ -342,6 +342,7 @@ const MapAddress = ({ navigation, route }) => {
                 <CommonButton
                     w='85%'
                     mt={mode === 'address' && 60}
+                    mb={mode === "map" ? 0 : 60}
                     onPress={(mode === "map" || route?.params?.mode === "map") ? changeMode : handleSubmit(onSubmit)}
                     text={`CONFIRM ${mode === "map" ? "LOCATION" : ""}`}
                     loading={isLoading}
@@ -349,7 +350,7 @@ const MapAddress = ({ navigation, route }) => {
 
 
             </ScrollView>
-
+            </KeyboardAvoidingView>
         </>
     )
 }
