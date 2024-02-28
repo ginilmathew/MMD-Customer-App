@@ -38,7 +38,7 @@ const Navigation = ({ location }) => {
     const [success] = useMMKVStorage('success', storage, '');
     const [homeAdd] = useMMKVStorage('homeAdd', storage, false)
     const { getLocation, location: locationData } = useContext(LocationContext)
-    const { setMainLogo } = useContext(LogoContext)
+    // const { setMainLogo } = useContext(LogoContext)
 
 
     const { cartItems, setCartItems } = useContext(CartContext);

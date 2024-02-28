@@ -41,8 +41,6 @@
 	<string>$(PRODUCT_NAME) would like to use your camera to update user profile</string>
 	<key>NSContactsUsageDescription</key>
 	<string>$(PRODUCT_NAME) Not Used Contacts API </string>
-	<!-- <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>$(PRODUCT_NAME) would like to access Library for route navigation</string> -->
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>$(PRODUCT_NAME) would like to access Library for route navigation</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

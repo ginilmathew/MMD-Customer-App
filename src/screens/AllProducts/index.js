@@ -15,6 +15,8 @@ import CartButton from '../../components/CartButton'
 
 const AllProducts = ({ navigation }) => {
 
+    const styles = makeStyle(COLORS)
+
     const { cartItems } = useContext(CartContext);
     const [time, setTime] = useState(moment().unix())
 
@@ -118,12 +120,12 @@ const AllProducts = ({ navigation }) => {
 
 export default AllProducts
 
-const styles = StyleSheet.create({
+const makeStyle = (color) => StyleSheet.create({
     scrollToTopButton: {
 
         bottom: 20,
         right: 20,
-        backgroundColor: COLORS.primary,
+        backgroundColor: color.primary,
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 8,

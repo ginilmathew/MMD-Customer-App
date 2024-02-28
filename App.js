@@ -22,8 +22,8 @@ import { navigationRef } from './src/navigation/RootNavigation'
 import useRefetch from './src/hooks/useRefetch'
 import customAxios from './src/customAxios'
 import { COLORS, colorNew, setColors } from './src/constants/COLORS'
-import LogoContext from './src/context/logo&color'
-import LogoProvider from './src/context/logo&color/logoContext'
+// import LogoContext from './src/context/logo&color'
+// import LogoProvider from './src/context/logo&color/logoContext'
 
 
 
@@ -247,7 +247,7 @@ const App = () => {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<SafeAreaView style={styles.safeArea}>
-				<LogoProvider>
+				{/* <LogoProvider> */}
 					<LocationContext>
 						<NotificationContext>
 							<CartProvider>
@@ -257,7 +257,7 @@ const App = () => {
 							</CartProvider>
 						</NotificationContext>
 					</LocationContext>
-				</LogoProvider>
+				{/* </LogoProvider> */}
 			</SafeAreaView>
 		</QueryClientProvider>
 	)
