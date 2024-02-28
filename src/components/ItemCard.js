@@ -8,6 +8,7 @@ import moment from 'moment';
 
 const CustomItemCard = memo(({ onPress, item, key }) => {
 
+    const styles = makeStyle(COLORS)
 
     const navigation = useNavigation();
 
@@ -234,7 +235,7 @@ const AddToCart = memo(({ isCartAdded, handleDecrement, handleAddToCart, handleI
     );
 });
 
-const styles = StyleSheet.create({
+const makeStyle = (color) => StyleSheet.create({
     container: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -292,7 +293,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     button: {
-        backgroundColor: COLORS.primary,
+        backgroundColor: color.primary,
         width: 80,
         height: 27,
         borderRadius: 6,
@@ -319,7 +320,7 @@ const styles = StyleSheet.create({
         gap: 4,
     },
     incrementButton: {
-        backgroundColor: COLORS.primary,
+        backgroundColor: color.primary,
         width: 27,
         height: 27,
         borderRadius: 6,

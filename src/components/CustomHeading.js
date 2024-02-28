@@ -3,12 +3,15 @@ import React, { memo } from 'react';
 import COLORS from '../constants/COLORS';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 const CustomHeading = ({ label, hide, onPress, marginH }) => {
+
+  const styles = makeStyle(COLORS)
+
   return (
     <View style={[styles.container, { marginHorizontal: marginH ? marginH : 20 }]}>
       <Text style={styles.text}>{label}</Text>
       {hide &&
         <TouchableOpacity style={styles.iconConatiner} onPress={onPress}>
-          <Text style={[styles.text2, {color: COLORS.primary}]}>{'View All'}</Text>
+          <Text style={styles.text2}>{'View All'}</Text>
           <Ionicons name='arrow-forward' color={COLORS.primary} size={18} />
         </TouchableOpacity>}
     </View>
@@ -17,7 +20,7 @@ const CustomHeading = ({ label, hide, onPress, marginH }) => {
 
 export default memo(CustomHeading);
 
-const styles = StyleSheet.create({
+const makeStyle = (color) => StyleSheet.create({
   container: {
     borderBottomWidth: 1, // Add a border to the bottom
     borderBottomColor: COLORS.gray, // Set the border color
@@ -39,7 +42,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
     letterSpacing: 1,
     fontSize: 15, // Adjust the font size as needed
-    color: COLORS.primary// Optional: Apply bold styling
+    color: color.primary,// Optional: Apply bold styling
   },
   iconConatiner: {
     alignItems: 'center',

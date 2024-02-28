@@ -104,7 +104,7 @@ const Header = memo(({ onPress, text, icon }) => {
         return (
             <View style={styles.container}>
                 <View style={styles.imageContainer}>
-                    <Image source={{ uri: logo?.image }} style={styles.logo} />
+                    <Image source={{ uri: COLORS.logo }} style={styles.logo} resizeMode='cover'/>
                 </View>
 
                 {location && user && (

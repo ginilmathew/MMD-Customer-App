@@ -10,6 +10,8 @@ import moment from 'moment';
 
 const ProductCard = ({ item, key, time }) => {
 
+    const styles = makeStyle(COLORS)
+
     const [quantity, setQuantity] = useState(0)
     const { addItemToCart, cartItems } = useContext(CartContext);
     const navigation = useNavigation()
@@ -197,7 +199,7 @@ const ProductCard = ({ item, key, time }) => {
 
 export default memo(ProductCard) 
 
-const styles = StyleSheet.create({
+const makeStyle = (color) => StyleSheet.create({
     container: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -255,7 +257,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     button: {
-        backgroundColor: COLORS.primary,
+        backgroundColor: color.primary,
         width: 80,
         height: 27,
         borderRadius: 6,
@@ -282,7 +284,7 @@ const styles = StyleSheet.create({
         gap: 4,
     },
     incrementButton: {
-        backgroundColor: COLORS.primary,
+        backgroundColor: color.primary,
         width: 27,
         height: 27,
         borderRadius: 6,

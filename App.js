@@ -2,7 +2,6 @@
 import { Platform, StyleSheet, Text, View, AppState, PermissionsAndroid, SafeAreaView } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import Navigation from './src/navigation'
-//import { SafeAreaView } from 'react-native-safe-area-context'
 import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage'
 import { QueryClientProvider, QueryClient } from 'react-query'
 import NetInfo from '@react-native-community/netinfo';
@@ -11,7 +10,6 @@ import { focusManager } from '@tanstack/react-query';
 import LocationContext from './src/context/location/locationContext'
 import messaging from '@react-native-firebase/messaging';
 import notifee, { AndroidImportance, EventType } from '@notifee/react-native'
-
 import CartProvider from './src/context/cart/cartContext'
 import { useAppState } from './src/hooks/appStateManagement'
 import SlotProvider from './src/context/slot/slotContext'
@@ -22,8 +20,7 @@ import { navigationRef } from './src/navigation/RootNavigation'
 import useRefetch from './src/hooks/useRefetch'
 import customAxios from './src/customAxios'
 import { COLORS, colorNew, setColors } from './src/constants/COLORS'
-// import LogoContext from './src/context/logo&color'
-// import LogoProvider from './src/context/logo&color/logoContext'
+
 
 
 
@@ -33,19 +30,12 @@ export const storage = new MMKVLoader().initialize()
 
 const App = () => {
 
-
-
 	const [locationPermission, setLocationPermission] = useState(false)
 	const [loading, setLoading] = useState(true)
 	const [logoLoading, setLogoLoading] = useState(true)
-	//const { setMainLogo } = useContext(LogoContext);
-	//const [logo] = useMMKVStorage('dynamicLogo', storage)
-
-	//reactotron.log(logo,"Fdsafsdf")
 
 	useEffect(() => {
 		getLogo()
-		//colorNew()
 	}, [])
 
 	const getLogo = async () => {
@@ -54,9 +44,7 @@ const App = () => {
 			const res = await customAxios.get('public/api/auth/logo')
 			if (res?.data?.message === "Success") {
 				setColors(res?.data)
-				//await storage.setMapAsync('dynamicLogo', res?.data)
 				setLogoLoading(false)
-				//setMainLogo(res?.data)
 			} else {
 				throw "Internal server error"
 			}
@@ -247,7 +235,6 @@ const App = () => {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<SafeAreaView style={styles.safeArea}>
-				{/* <LogoProvider> */}
 					<LocationContext>
 						<NotificationContext>
 							<CartProvider>
@@ -257,7 +244,6 @@ const App = () => {
 							</CartProvider>
 						</NotificationContext>
 					</LocationContext>
-				{/* </LogoProvider> */}
 			</SafeAreaView>
 		</QueryClientProvider>
 	)

@@ -30,6 +30,7 @@ import NotificationContext from '../../context/notification'
 const Home = ({ navigation, route }) => {
 
     // const notifyOnChangeProps = useFocusNotifyOnChangeProps()
+    const styles = makeStyle(COLORS)
 
     const { currentLoc, setMode, getLocation, mode, setHomeFocus, location } = useContext(LocationContext)
     const checkLocRef = useRef(null)
@@ -250,7 +251,7 @@ const Home = ({ navigation, route }) => {
 
 export default Home
 
-const styles = StyleSheet.create({
+const makeStyle = (color) => StyleSheet.create({
     scrollViewContent: {
         paddingHorizontal: 20,
         marginBottom: 20
@@ -260,7 +261,7 @@ const styles = StyleSheet.create({
         marginTop: 2,
         letterSpacing: 1,
         fontSize: 15, // Adjust the font size as needed
-        color: COLORS.primary// Optional: Apply bold styling
+        color: color.primary// Optional: Apply bold styling
     },
     iconConatiner: {
         alignItems: 'center',

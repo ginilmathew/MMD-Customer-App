@@ -5,6 +5,9 @@ import COLORS from '../constants/COLORS';
 
 
 const CheckoutCard = ({item}) => {
+
+    const styles = makeStyle(COLORS)
+
     const AnimatedStyle = FadeInDown.easing().delay(300);
 
     return (
@@ -46,7 +49,7 @@ const CheckoutCard = ({item}) => {
 
 export default CheckoutCard
 
-const styles = StyleSheet.create({
+const makeStyle = (color) => StyleSheet.create({
     container: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -104,7 +107,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     button: {
-        backgroundColor: COLORS.primary,
+        backgroundColor: color.primary,
         width: 80,
         height: 27,
         borderRadius: 6,
@@ -131,7 +134,7 @@ const styles = StyleSheet.create({
         gap: 4
     },
     incrementButton: {
-        backgroundColor: COLORS.primary,
+        backgroundColor: color.primary,
         width: 30,
         height: 27,
         borderRadius: 6,

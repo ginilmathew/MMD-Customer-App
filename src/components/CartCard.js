@@ -8,6 +8,8 @@ import { Swipeable } from 'react-native-gesture-handler';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 const CartCard = ({ item, increaseQuantity, decreaseQuantity, key, removeItem }) => {
 
+    const styles = makeStyle(COLORS)
+
     const { cartItems } = useContext(CartContext);
 
     const AnimatedStyle = FadeInDown.easing().delay(300);
@@ -88,7 +90,7 @@ const CartCard = ({ item, increaseQuantity, decreaseQuantity, key, removeItem })
 
 export default CartCard
 
-const styles = StyleSheet.create({
+const makeStyle = (color) => StyleSheet.create({
     container: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -146,7 +148,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     button: {
-        backgroundColor: COLORS.primary,
+        backgroundColor: color.primary,
         width: 80,
         height: 27,
         borderRadius: 6,
@@ -173,7 +175,7 @@ const styles = StyleSheet.create({
         gap: 4,
     },
     incrementButton: {
-        backgroundColor: COLORS.primary,
+        backgroundColor: color.primary,
         width: 27,
         height: 27,
         borderRadius: 6,

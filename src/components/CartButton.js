@@ -10,6 +10,8 @@ import { useNavigation } from '@react-navigation/native';
 
 const CartButton = ({ bottom }) => {
 
+    const styles = makeStyle(COLORS)
+
     const { cartItems } = useContext(CartContext);
     const [cart_id] = useMMKVStorage('cart_id', storage)
     const navigation = useNavigation()
@@ -42,7 +44,7 @@ const CartButton = ({ bottom }) => {
                     <Text style={styles.items}>{cartItems?.length} Items</Text>
                 </View>
             </View>
-            <View style={[styles.rightContainer, {backgroundColor: COLORS.primary}]}>
+            <View style={styles.rightContainer}>
                 <Text style={styles.totalText}>{'Total'}</Text>
                 <View style={styles.priceContainer}>
                     <Text style={styles.price}>₹ {total}</Text>
@@ -52,7 +54,7 @@ const CartButton = ({ bottom }) => {
     );
 };
 
-const styles = StyleSheet.create({
+const makeStyle = (color) => StyleSheet.create({
     container: {
         flexDirection: 'row',
         alignSelf: 'center',
@@ -103,7 +105,7 @@ const styles = StyleSheet.create({
         marginRight: 5
     },
     rightContainer: {
-        backgroundColor: COLORS.primary,
+        backgroundColor: color.primary,
         flex: 1,
         paddingTop: 2,
         paddingBottom: 2,

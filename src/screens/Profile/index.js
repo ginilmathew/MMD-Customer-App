@@ -18,6 +18,8 @@ import { PostAddToCart } from '../../api/cart'
 
 const Profile = ({ navigation }) => {
 
+  const styles = makeStyle(COLORS)
+
   const [user, setUser] = useMMKVStorage('user', storage)
   const { setMode, setLocation, setCurrentLoc, setModal, setHomeFocus } = useContext(LocationContext)
   const { setCartItems, cartItems } = useContext(CartContext)
@@ -98,7 +100,7 @@ const Profile = ({ navigation }) => {
       <View style={styles.container}>
 
         <View style={styles.user}>
-          <Text style={[styles.name, {color: COLORS.primary}]}>{data?.data?.name}</Text>
+          <Text style={styles.name}>{data?.data?.name}</Text>
           <Text style={styles.email}>{data?.data?.email}</Text>
         </View>
 
@@ -118,7 +120,7 @@ const Profile = ({ navigation }) => {
 }
 
 
-const styles = StyleSheet.create({
+const makeStyle = (color) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
@@ -131,7 +133,7 @@ const styles = StyleSheet.create({
   },
   name: {
     fontFamily: 'Poppins-Medium',
-    color: COLORS.primary,
+    color: color.primary,
     letterSpacing: 1,
     fontSize: 25
   },

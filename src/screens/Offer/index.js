@@ -117,7 +117,7 @@ const AllProducts = ({ navigation }) => {
                 ListEmptyComponent={emptyScreen}
             />
 
-            <CartButton bottom={120} />
+            <CartButton bottom={45} />
         </View>
     )
 }
