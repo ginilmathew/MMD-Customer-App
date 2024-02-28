@@ -34,10 +34,10 @@ const AllProducts = ({ navigation }) => {
     } = useInfiniteQuery({
         queryKey: ['offerproducts'],
         queryFn: () => offerProducts({
-            "coordinates": [
-                8.5204866, 76.9371447
-            ],
-            // coordinates: [location?.location?.latitude, location?.location?.longitude],
+            // "coordinates": [
+            //     8.5204866, 76.9371447
+            // ],
+            coordinates: [location?.location?.latitude, location?.location?.longitude],
         }),
         getNextPageParam: (lastPage, pages) => {
             if (lastPage.length === 0) return undefined;

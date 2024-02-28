@@ -53,7 +53,7 @@ export function setColors(color){
     COLORS.logo = color?.image
 }
 
-reactotron.log(logo, "LOG")
+
 
 
 

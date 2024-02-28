@@ -6,19 +6,20 @@ const ItemBox = ({ onPress, key, item, index }) => {
     return (
         <Animated.View key={key} entering={FadeInDown.delay(index * 300).duration(400).springify().damping(12)}>
             <TouchableOpacity style={styles.container} onPress={onPress}>
-                {item?.image ? ( 
- 
-                <ImageBackground source={{uri : item?.image}} style={styles.imgBox}>
-                    <Text style={styles.text}>{item?.name}</Text>
-                </ImageBackground>
+                {item?.image ? (
+
+                    <ImageBackground source={{ uri: item?.image }} style={styles.imgBox}>
+                        <Text style={styles.text}>{item?.name}</Text>
+                    </ImageBackground>
 
                 ) : (<View style={styles.box}>
                     <Text style={styles.text}>{item?.name}</Text>
                 </View>)}
-            </TouchableOpacity>
-            <View style={styles.shade}>
-            <Text style={styles.text}>{item?.name}</Text>
+                <View style={styles.shade}>
+                    <Text style={styles.text}>{item?.name}</Text>
                 </View>
+            </TouchableOpacity>
+
         </Animated.View>
     );
 };
@@ -53,7 +54,7 @@ const styles = StyleSheet.create({
         letterSpacing: 1.5,
         fontFamily: 'Poppins-Medium',
         textAlign: "center",
-        width:"80%"
+        width: "80%"
     },
     imgBox: {
         width: itemWidth,
@@ -75,8 +76,8 @@ const styles = StyleSheet.create({
         width: "100%",
         height: "100%",
         borderRadius: 12,
-         alignItems: "center",
-         justifyContent: "center"
+        alignItems: "center",
+        justifyContent: "center"
     }
 });
 
