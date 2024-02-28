@@ -7,7 +7,6 @@ import { storage } from '../../../App';
 
 const Background = ({ headline, subhead, children, onPress, link, description }) => {
 
-    const [logo] = useMMKVStorage('dynamicLogo', storage)
 
     const handlePress = useCallback(() => {
         Keyboard.dismiss();
@@ -19,7 +18,7 @@ const Background = ({ headline, subhead, children, onPress, link, description })
             <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps='handled'>
 
                 <View style={styles.img}>
-                    <Image source={{ uri: logo?.image }} style={styles.image} />
+                    <Image source={{ uri: COLORS.logo }} style={styles.image} />
                 </View>
 
                 <View style={styles.headline}>

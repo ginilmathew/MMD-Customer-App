@@ -4,9 +4,11 @@ import COLORS from '../constants/COLORS'
 
 const CommonButton = ({ text, mb, mt, onPress, w, loading }) => {
 
+    const styles = makeStyle(COLORS)
+
     return (
         <View style={[styles.container, { marginTop: mt, marginBottom: mb, width: w || '100%', alignSelf: 'center' }]}>
-            <TouchableOpacity style={[styles.button, {backgroundColor: COLORS.primary}]} onPress={loading ? null : onPress}>
+            <TouchableOpacity style={styles.button} onPress={loading ? null : onPress}>
                 {
                     loading ? (
                         <ActivityIndicator color={COLORS.white} />
@@ -20,13 +22,13 @@ const CommonButton = ({ text, mb, mt, onPress, w, loading }) => {
     )
 }
 
-const styles = StyleSheet.create({
+const makeStyle = (color) => StyleSheet.create({
     container: {
         width: '100%',
         height: 56,
     },
     button: {
-        backgroundColor: COLORS.primary,
+        backgroundColor: color.primary,
         height: '100%',
         width: '100%',
         borderRadius: 12,
@@ -38,7 +40,7 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 22,
-        color: COLORS.white,
+        color: color.white,
         letterSpacing: .5,
         fontFamily: "Poppins-SemiBold",
     }

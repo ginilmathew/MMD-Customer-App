@@ -24,7 +24,8 @@ let COLORS = {
     status_paid: '#4D9FFF',
     white: '#fff',
     Offer_box:'#ffd8d8',
-    border_color: "#707070" 
+    border_color: "#707070",
+    logo: ''
 }
 
 
@@ -49,6 +50,7 @@ let storage = new MMKVLoader().initialize();
 export function setColors(color){
     COLORS.primary = color?.primary_color
     COLORS.blue = color?.secondary_color
+    COLORS.logo = color?.image
 }
 
 reactotron.log(logo, "LOG")

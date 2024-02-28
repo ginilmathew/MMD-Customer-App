@@ -39,7 +39,7 @@ const App = () => {
 	const [loading, setLoading] = useState(true)
 	const [logoLoading, setLogoLoading] = useState(true)
 	//const { setMainLogo } = useContext(LogoContext);
-	const [logo] = useMMKVStorage('dynamicLogo', storage)
+	//const [logo] = useMMKVStorage('dynamicLogo', storage)
 
 	//reactotron.log(logo,"Fdsafsdf")
 
@@ -54,16 +54,21 @@ const App = () => {
 			const res = await customAxios.get('public/api/auth/logo')
 			if (res?.data?.message === "Success") {
 				setColors(res?.data)
-				await storage.setMapAsync('dynamicLogo', res?.data)
+				//await storage.setMapAsync('dynamicLogo', res?.data)
+				setLogoLoading(false)
 				//setMainLogo(res?.data)
 			} else {
 				throw "Internal server error"
 			}
 		} catch (error) {
+			setLogoLoading(false)
 			storage.setString("error", `${error}`)
 		}
 		finally {
-			setLogoLoading(false)
+			// setTimeout(() => {
+			// 	setLogoLoading(false)
+			// }, 1000);
+			
 		}
 	}
 
@@ -225,13 +230,16 @@ const App = () => {
 	}, [])
 
 
+	
+
+
 	if (loading || logoLoading) {
 		return (
 			<View />
 		)
 	}
 
-
+	console.log({loading, logoLoading})
 
 	return (
 		<QueryClientProvider client={queryClient}>
