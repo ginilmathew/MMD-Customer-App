@@ -15,7 +15,7 @@ import notifee, { AndroidImportance, EventType } from '@notifee/react-native'
 import CartProvider from './src/context/cart/cartContext'
 import { useAppState } from './src/hooks/appStateManagement'
 import SlotProvider from './src/context/slot/slotContext'
-import { PERMISSIONS, request, requestMultiple } from 'react-native-permissions'
+import { PERMISSIONS, check, request, requestMultiple } from 'react-native-permissions'
 import reactotron from 'reactotron-react-native'
 import NotificationContext from './src/context/notification/notificationCount'
 import { navigationRef } from './src/navigation/RootNavigation'
@@ -90,6 +90,7 @@ const App = () => {
 		if (Platform.OS === 'android') {
 			let permissions = await requestMultiple([PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION, PERMISSIONS.ANDROID.POST_NOTIFICATIONS])
 			// if (permissions?.['android.permission.POST_NOTIFICATIONS'] === "granted") {
+			// 	console.log('yess');
 			await notifee?.createChannel({
 				id: 'default',
 				name: 'Default Channel',
@@ -139,7 +140,6 @@ const App = () => {
 		//getCurrentLocation()
 	}
 
-
 	// async function requestUserPermission() {
 
 	// 	const token = await messaging().getToken();
@@ -177,7 +177,6 @@ const App = () => {
 	async function onMessageReceived(message) {
 
 
-
 		// Display Notification
 		await notifee.displayNotification({
 			id: message?.messageId,
@@ -192,6 +191,10 @@ const App = () => {
 				},
 				sound: 'sound',
 			},
+			ios: {
+				channelId: 'default',
+				sound: 'sound'
+			}
 		});
 
 	}

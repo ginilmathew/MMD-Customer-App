@@ -1,4 +1,4 @@
-import { ImageBackground, StyleSheet, Image, View, Text, TouchableOpacity, ScrollView, Keyboard } from 'react-native'
+import { ImageBackground, StyleSheet, Image, View, Text, TouchableOpacity, ScrollView, Keyboard, KeyboardAvoidingView, Platform } from 'react-native'
 import React, { useCallback } from 'react'
 import COLORS from '../../constants/COLORS';
 import { useMMKVStorage } from 'react-native-mmkv-storage';
@@ -15,29 +15,33 @@ const Background = ({ headline, subhead, children, onPress, link, description })
 
     return (
         <ImageBackground source={require('../../images/login.png')} resizeMode="cover" style={styles.bg}>
-            <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps='handled'>
+            <KeyboardAvoidingView style={{
+                flex: 1
+            }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+                <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
 
                 <View style={styles.img}>
-                    <Image source={{ uri: COLORS.logo }} style={styles.image} />
+                    <Image source={{ uri: COLORS.logo }} style={styles.image} resizeMode='cover'/>
                 </View>
 
-                <View style={styles.headline}>
-                    <Text style={styles.text_headline}>{headline}</Text>
-                </View>
+                    <View style={styles.headline}>
+                        <Text style={styles.text_headline}>{headline}</Text>
+                    </View>
 
-                <Text style={styles.subHead}>{subhead}</Text>
+                    <Text style={styles.subHead}>{subhead}</Text>
 
-                {children}
+                    {children}
 
-                <View style={styles.footer}>
-                    <Text style={styles.description}>{description}</Text>
-                    <View style={styles.line} />
+                    <View style={styles.footer}>
+                        <Text style={styles.description}>{description}</Text>
+                        <View style={styles.line} />
 
-                    <TouchableOpacity onPress={handlePress}>
-                        <Text style={styles.link}>{link}</Text>
-                    </TouchableOpacity>
-                </View>
-            </ScrollView>
+                        <TouchableOpacity onPress={handlePress}>
+                            <Text style={styles.link}>{link}</Text>
+                        </TouchableOpacity>
+                    </View>
+                </ScrollView>
+            </KeyboardAvoidingView>
         </ImageBackground>
     );
 
@@ -57,7 +61,7 @@ const styles = StyleSheet.create({
     },
     image: {
         height: 73,
-        width: '50%',
+        width: 73,
         resizeMode: 'cover',
         marginTop: 'auto',
         alignSelf: "center"

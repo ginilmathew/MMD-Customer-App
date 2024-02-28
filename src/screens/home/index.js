@@ -44,7 +44,7 @@ const Home = ({ navigation, route }) => {
         "coordinates": [
             8.5204866, 76.9371447
         ],
-        //coordinates: [location?.location?.latitude, location?.location?.longitude],
+        // coordinates: [location?.location?.latitude, location?.location?.longitude],
         // cartId: cart_id,
     }
 
@@ -77,14 +77,6 @@ const Home = ({ navigation, route }) => {
         // }
     }, [location?.address]))
 
-
-    React.useEffect(() => {
-        const unsubscribe = navigation.addListener('blur', () => {
-            setHomeFocus(false);
-        });
-
-        return unsubscribe;
-    }, [navigation]);
 
 
     const NavigateToCategory = useCallback(() => {

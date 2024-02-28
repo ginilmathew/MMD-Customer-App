@@ -1,4 +1,4 @@
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
 import React from 'react'
 import COLORS from '../../constants/COLORS'
 import CommonHeader from '../../components/CommonHeader'
@@ -19,7 +19,7 @@ const EditProfile = ({ navigation }) => {
     const [user] = useMMKVStorage('user', storage);
 
     const { mutate } = useMutation({
-        mutationKey: 'update-query', 
+        mutationKey: 'update-query',
         mutationFn: updateProfile,
         onSuccess({ data }) {
             storage.setString('success', data?.message)
@@ -44,11 +44,11 @@ const EditProfile = ({ navigation }) => {
 
 
     return (
-        <>  
+        <>
             <Header />
             <CommonHeader heading={'Edit Profile'} backBtn />
 
-            <View style={styles.container}>
+            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
                 <CustomInput
                     control={control}
                     name='name'
@@ -69,7 +69,7 @@ const EditProfile = ({ navigation }) => {
                 />
 
                 <CommonButton text={'Update'} mt='auto' onPress={handleSubmit(mutate)} />
-            </View >
+            </KeyboardAvoidingView>
         </>
 
     )

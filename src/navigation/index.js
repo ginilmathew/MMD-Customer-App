@@ -21,9 +21,9 @@ import { useAppState } from '../hooks/appStateManagement';
 import { useMutation } from 'react-query';
 import { PostAddToCart, getCartItems } from '../api/cart';
 import AuthNavigation from './AuthNavigation';
-import reactotron from 'reactotron-react-native';
-import LogoContext from '../context/logo&color';
-import customAxios from '../customAxios';
+// import reactotron from 'reactotron-react-native';
+// import LogoContext from '../context/logo&color';
+// import customAxios from '../customAxios';
 
 
 
@@ -64,8 +64,6 @@ const Navigation = ({ location }) => {
 
 
     const appState = useAppState();
-
-    reactotron.log(appState, "SHOAS")
 
     useEffect(() => {
         if (cart_id && user) {
@@ -117,20 +115,20 @@ const Navigation = ({ location }) => {
 
 
 
-    useEffect(() => {
-        const getLogo = async () => {
+    // useEffect(() => {
+    //     const getLogo = async () => {
 
-            try {
-                const { data } = await customAxios.get('public/api/auth/logo');
-                setMainLogo(data);
+    //         try {
+    //             const { data } = await customAxios.get('public/api/auth/logo');
+    //             setMainLogo(data);
                 
-            } catch (error) {
-                storage.setString("error", `${error}`)
-            }
-        }
-        getLogo()
+    //         } catch (error) {
+    //             storage.setString("error", `${error}`)
+    //         }
+    //     }
+    //     getLogo()
 
-    }, [])
+    // }, [])
 
 
 

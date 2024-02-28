@@ -16,10 +16,10 @@ const CommonHeader = ({ heading, backBtn, onPress }) => {
         <>
             <View style={styles.container}>
                 <View style={styles.insideContainer}>
-                    {backBtn && <TouchableOpacity onPress={onPress ? onPress : goBack} style={styles.backBTN}>
-                        <Ionicons name={"chevron-back"} size={30} color='#000' />
-                    </TouchableOpacity>}
-                    <Text style={styles.headingStyle}>{heading}</Text>
+                    <TouchableOpacity activeOpacity={!backBtn} onPress={!backBtn ? null : onPress ? onPress : goBack} style={styles.backBTN}>
+                        {backBtn && <Ionicons name={"chevron-back"} size={30} color='#000' />}
+                        <Text style={styles.headingStyle}>{heading}</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
             <View style={styles.borderStyle} />
@@ -47,7 +47,9 @@ const styles = StyleSheet.create({
         paddingLeft: 5
     },
     backBTN: {
-        marginTop: -5
+        marginTop: -5,
+        flexDirection: 'row',
+        alignItems: 'center'
     },
     borderStyle: {
         borderBottomWidth: 0.5,
@@ -56,6 +58,6 @@ const styles = StyleSheet.create({
         shadowColor: "#646464",
         elevation: 3,
         zIndex: 99
-        
+
     }
 })
