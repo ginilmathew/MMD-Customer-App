@@ -10,11 +10,12 @@ export function navigate(name, params) {
 
 export function getCurrentScreenPath() {
   if (navigationRef.isReady()) {
-    const state = navigationRef.dangerouslyGetState();
-    const currentRoute = state?.routes[state?.index];
+    // const state = navigationRef.dangerouslyGetState();
+    // const currentRoute = state?.routes[state?.index];
 
     // Extract the path from the current route
-    const screenPath = currentRoute?.name;
+    const screenPath = navigationRef.getCurrentRoute()?.name;
+    console.log(screenPath);
 
     return screenPath;
   }

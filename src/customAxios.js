@@ -38,27 +38,26 @@ customAxios.interceptors.response.use(function (res) {
 
     storage.setBool('loading', false);
     return Promise.resolve(res);
-}, (err) => {
+}, async (err) => {
 
+
+    const user = await storage.getMapAsync('user')
 
     if (err?.response?.status === 403) {
         queryClient.resetQueries();
         storage.clearStore();
 
-        if (navRef?.isReady() && getCurrentScreenPath() === 'login') {
-            return;
-        }
-
         navRef?.reset({
             index: 0,
-            routes: [{ name: LOGIN }]
+            routes: [{ name: 'Login' }]
         });
+
     }
 
-    console.log(err);
     storage.setString('error', err?.response?.data?.message || err?.response?.data?.error);
     storage.setBool('loading', false);
     return Promise.reject(err?.response?.data?.message)
+
 })
 
 export default customAxios;
