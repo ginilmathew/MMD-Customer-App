@@ -2,11 +2,13 @@ import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import CartContext from '../context/cart';
-import { COLORS } from '../constants/COLORS';
+import COLORS from '../constants/COLORS';
 import moment from 'moment';
 
 
 const CheckoutItemCard = ({ item }) => {
+
+    const styles = makeStyle(COLORS)
 
     const [price, setPrice] = useState(null)
     let products = item.products ? item.products[0] : item?.item;
@@ -115,7 +117,7 @@ const CheckoutItemCard = ({ item }) => {
 
 export default CheckoutItemCard
 
-const styles = StyleSheet.create({
+const makeStyle = (color) => StyleSheet.create({
     container: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -173,7 +175,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     button: {
-        backgroundColor: COLORS.primary,
+        backgroundColor: color.primary,
         width: 80,
         height: 27,
         borderRadius: 6,
@@ -200,7 +202,7 @@ const styles = StyleSheet.create({
         gap: 4
     },
     incrementButton: {
-        backgroundColor: COLORS.primary,
+        backgroundColor: color.primary,
         width: 30,
         height: 27,
         borderRadius: 6,

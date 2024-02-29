@@ -1,13 +1,12 @@
 import { ImageBackground, StyleSheet, Image, View, Text, TouchableOpacity, ScrollView, Keyboard, KeyboardAvoidingView, Platform } from 'react-native'
 import React, { useCallback } from 'react'
-import { COLORS } from '../../constants/COLORS';
+import COLORS from '../../constants/COLORS';
 import { useMMKVStorage } from 'react-native-mmkv-storage';
 import { storage } from '../../../App';
 
 
 const Background = ({ headline, subhead, children, onPress, link, description }) => {
 
-    const [logo] = useMMKVStorage('dynamicLogo', storage)
 
     const handlePress = useCallback(() => {
         Keyboard.dismiss();
@@ -15,14 +14,14 @@ const Background = ({ headline, subhead, children, onPress, link, description })
     }, [])
 
     return (
-        <ImageBackground source={require('../../images/login.png')} resizeMode="cover" style={styles.bg}>
+        <ImageBackground source={require('../../images/urbansLogo.jpg')} resizeMode="cover" style={styles.bg}>
             <KeyboardAvoidingView style={{
                 flex: 1
             }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                 <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
 
                 <View style={styles.img}>
-                    <Image source={{ uri: logo?.image }} style={styles.image} resizeMode='cover' />
+                    <Image source={{ uri: COLORS?.logo }} style={styles.image} resizeMode='contain'/>
                 </View>
 
                     <View style={styles.headline}>
@@ -57,12 +56,17 @@ const styles = StyleSheet.create({
         padding: 21
     },
     img: {
+        justifyContent:'center',
+        alignItems:'center',
+        display:'flex',
+
+        width:'100%',
         height: 150,
         marginBottom: 'auto',
     },
     image: {
-        height: 73,
-        width: 73,
+        height: "100%",
+        width: '70%',
         resizeMode: 'cover',
         marginTop: 'auto',
         alignSelf: "center"

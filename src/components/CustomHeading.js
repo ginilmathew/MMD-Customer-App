@@ -1,8 +1,11 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { memo } from 'react';
-import { COLORS } from '../constants/COLORS';
+import COLORS from '../constants/COLORS';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 const CustomHeading = ({ label, hide, onPress, marginH }) => {
+
+  const styles = makeStyle(COLORS)
+
   return (
     <View style={[styles.container, { marginHorizontal: marginH ? marginH : 20 }]}>
       <Text style={styles.text}>{label}</Text>
@@ -17,7 +20,7 @@ const CustomHeading = ({ label, hide, onPress, marginH }) => {
 
 export default memo(CustomHeading);
 
-const styles = StyleSheet.create({
+const makeStyle = (color) => StyleSheet.create({
   container: {
     borderBottomWidth: 1, // Add a border to the bottom
     borderBottomColor: COLORS.gray, // Set the border color
@@ -39,7 +42,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
     letterSpacing: 1,
     fontSize: 15, // Adjust the font size as needed
-    color: COLORS.primary// Optional: Apply bold styling
+    color: color.primary,// Optional: Apply bold styling
   },
   iconConatiner: {
     alignItems: 'center',

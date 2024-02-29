@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Image, FlatList, TouchableOpacity } from 'react
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import Header from '../../components/Header'
 import CommonHeader from '../../components/CommonHeader'
-import { COLORS } from '../../constants/COLORS'
+import COLORS from '../../constants/COLORS'
 import CommonButton from '../../components/CommonButton'
 import CartContext from '../../context/cart'
 import { PostAddToCart, addToCart, getCartItems } from '../../api/cart'

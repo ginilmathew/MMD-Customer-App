@@ -1,9 +1,9 @@
-import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from 'react-native'
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import CustomSlider from '../../components/CustomSlider'
 import CustomHeading from '../../components/CustomHeading'
 import CategoryCard from '../../components/CategoryCard'
-import { COLORS } from '../../constants/COLORS'
+import COLORS from '../../constants/COLORS'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import DummySearch from '../../components/DummySearch'
 import ItemBox from '../../components/ItemBox'
@@ -23,13 +23,17 @@ import ProductCard from '../../components/ProductCard'
 import moment from 'moment'
 import CartButton from '../../components/CartButton'
 import NotificationContext from '../../context/notification'
+import reactotron from '../../ReactotronConfig'
 
 
 
 
 const Home = ({ navigation, route }) => {
 
+    const { width } = useWindowDimensions()
+
     // const notifyOnChangeProps = useFocusNotifyOnChangeProps()
+    const styles = makeStyle(COLORS)
 
     const { currentLoc, setMode, getLocation, mode, setHomeFocus, location } = useContext(LocationContext)
     const checkLocRef = useRef(null)
@@ -41,10 +45,10 @@ const Home = ({ navigation, route }) => {
 
 
     let payload = {
-        "coordinates": [
-            8.5204866, 76.9371447
-        ],
-        // coordinates: [location?.location?.latitude, location?.location?.longitude],
+        // "coordinates": [
+        //     8.5204866, 76.9371447
+        // ],
+        coordinates: [location?.location?.latitude, location?.location?.longitude],
         // cartId: cart_id,
     }
 
@@ -85,9 +89,16 @@ const Home = ({ navigation, route }) => {
 
 
     const NavigateToAllPages = useCallback(() => {
-        navigation.navigate('AllProducts')
+        navigation.navigate('AllProducts', {
+            mode: 'product'
+        })
     }, [navigation])
 
+
+    const NavigateToOfferPages = useCallback(() => {
+        navigation.navigate('Offer')
+    }, [])
+    
     const NavigateToSearch = useCallback(() => {
         navigation.navigate('Search')
     }, [navigation])
@@ -97,20 +108,43 @@ const Home = ({ navigation, route }) => {
     }, [navigation])
 
 
+    const NaviagteToSlder = useCallback(() => {
+        null
+    }, [])
+
+
+    const NavigateToMarketingSlider = useCallback((item) => {
+        if (item?.type === 'product') {
+            let quantity = 0;
+            const findProduct = cartItems?.find((res) => res?._id === item?._id);
+            if (findProduct) {
+                quantity = findProduct?.qty * 1;
+            }
+            navigation.navigate('SingleProduct', { item: item?.product, quantity })
+        } else if (item?.type === 'category') {
+            navigation.navigate('SingleCategory', { item: item?.category?.slug })
+        }
+
+    }, [navigation])
+
+
 
     const HeaderComponents = useCallback(() => {
         const sliders = data?.data?.data?.sliders || [];
         const categories = data?.data?.data?.categories || [];
         const featuredList = data?.data?.data?.featuredList?.[0]?.featured_list;
+        const offerProducts = data?.data?.data?.offerProducts || [];
+        const allFeatures = data?.data?.data?.allFeatures || [];
+        const MarketingSlider = data?.data?.data?.marketing || [];
 
         return (
             <View style={{ backgroundColor: COLORS.white }}>
-                {sliders.length > 0 && (
+                {sliders?.length > 0 && (
                     <View style={{ marginVertical: 4, marginBottom: 20 }}>
-                        <CustomSlider item={sliders} />
+                        <CustomSlider item={sliders} onPress={NaviagteToSlder} />
                     </View>
                 )}
-                {categories.length > 0 && (
+                {categories?.length > 0 && (
                     <View style={{ marginTop: 5 }}>
                         <CustomHeading label={'Categories'} hide={false} marginH={20} />
                         <ScrollView
@@ -118,8 +152,8 @@ const Home = ({ navigation, route }) => {
                             showsHorizontalScrollIndicator={false}
                             contentContainerStyle={styles.scrollViewContent}
                         >
-                            {categories.map((res) => (
-                                <View style={{ marginRight: 8 }} key={res?._id}>
+                            {categories?.map((res) => (
+                                <View style={{ marginRight: 8, width: width / 4 - 20 }} key={res?._id}>
                                     <CategoryCard item={res} />
                                 </View>
                             ))}
@@ -130,6 +164,38 @@ const Home = ({ navigation, route }) => {
                         </ScrollView>
                     </View>
                 )}
+
+
+                {offerProducts && <View style={{ marginTop: 3 }}>
+                    <CustomHeading label={'Todays Offers'} hide={true} onPress={NavigateToOfferPages} marginH={20} />
+                    <Animated.View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
+                        {/* <ItemCard key={index} item={item} /> */}
+
+                        {offerProducts?.map((item, index) => (
+                            <View style={{ marginVertical: 5 }}>
+                                <ProductCard key={index} item={item} cartItems={cartItems} time={time} />
+                            </View>
+
+                        ))}
+                    </Animated.View>
+                </View>}
+                {MarketingSlider?.length > 0 && (
+                    <>
+
+                        <View style={{ marginVertical: 2, marginBottom: 20 }}>
+                            <CustomSlider item={MarketingSlider} onPress={NavigateToMarketingSlider} />
+                        </View></>
+
+                )}
+                <View style={{ marginTop: 5 }}>
+                    <CustomHeading label={'HighLights'} hide={false} marginH={20} />
+                </View>
+                <View style={[styles.boxItem, styles.footerBox]}>
+                    {allFeatures?.map((res, index) => (
+                        <ItemBox onPress={() => NavigateToFeatured(res)} key={res?._id} item={res} index={index} />
+                    ))}
+                </View>
+
                 {featuredList && (
                     <View style={{ marginTop: 3 }}>
                         <CustomHeading label={'Popular Products'} hide={true} onPress={NavigateToAllPages} marginH={20} />
@@ -139,7 +205,7 @@ const Home = ({ navigation, route }) => {
         );
     }, [data?.data?.data]);
 
-    
+
 
 
     const renderItem = ({ item, index }) => {
@@ -155,23 +221,15 @@ const Home = ({ navigation, route }) => {
 
 
     const ListFooterComponent = useCallback(() => {
-        const allFeatures = data?.data?.data?.allFeatures || [];
 
 
         return (
-            allFeatures.length > 0 && (
-                <View style={{ marginBottom: 130 }}>
-                    <View style={{ marginTop: 20 }}>
-                        <CustomHeading label={'HighLights'} hide={false} marginH={20} />
-                    </View>
-                    <View style={[styles.boxItem, styles.footerBox]}>
-                        {allFeatures.map((res, index) => (
-                            <ItemBox onPress={() => NavigateToFeatured(res)} key={res?._id} item={res} index={index} />
-                        ))}
-                    </View>
-                    {/* <View style={{ marginBottom: 40 }} /> */}
-                </View>
-            )
+
+            <View style={{ marginBottom: 130 }}>
+
+                {/* <View style={{ marginBottom: 40 }} /> */}
+            </View>
+
         );
     }, [data?.data?.data, NavigateToFeatured]);
 
@@ -250,7 +308,7 @@ const Home = ({ navigation, route }) => {
 
 export default Home
 
-const styles = StyleSheet.create({
+const makeStyle = (color) => StyleSheet.create({
     scrollViewContent: {
         paddingHorizontal: 20,
         marginBottom: 20
@@ -260,7 +318,7 @@ const styles = StyleSheet.create({
         marginTop: 2,
         letterSpacing: 1,
         fontSize: 15, // Adjust the font size as needed
-        color: COLORS.primary// Optional: Apply bold styling
+        color: color.primary// Optional: Apply bold styling
     },
     iconConatiner: {
         alignItems: 'center',

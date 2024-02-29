@@ -4,11 +4,13 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import CartContext from '../context/cart';
 import AddToCart from './AddToCart';
 import { useNavigation } from '@react-navigation/native';
-import { COLORS } from '../constants/COLORS';
+import COLORS from '../constants/COLORS';
 import moment from 'moment';
 
 
 const ProductCard = ({ item, key, time }) => {
+
+    const styles = makeStyle(COLORS)
 
     const [quantity, setQuantity] = useState(0)
     const { addItemToCart, cartItems } = useContext(CartContext);
@@ -20,7 +22,6 @@ const ProductCard = ({ item, key, time }) => {
     useEffect(() => {
         setQuantity(0)
         calculatePrice()
-
     }, [time])
 
 
@@ -59,8 +60,6 @@ const ProductCard = ({ item, key, time }) => {
                     tax,
                     taxValue: (offerPrice / 100) * tax
                 }
-
-
             }
             else {
                 price = {
@@ -97,14 +96,6 @@ const ProductCard = ({ item, key, time }) => {
 
 
 
-
-
-
-
-
-
-
-
     const NavigateToSingleProduct = useCallback(() => {
         navigation.navigate('SingleProduct', { item: item?.products ? item?.products?.[0] : item , quantity })
     }, [item, quantity])
@@ -112,10 +103,7 @@ const ProductCard = ({ item, key, time }) => {
     useEffect(() => {
         if (products && price) {
             const { description, details, image, imageBasePath, status, units, updated_at, created_at, featuredList, variants, categories, subcategories, unit, ...other } = products
-
-
-            const { finalPrice, tax, taxValue, costPrice } = price
-
+            const { finalPrice, tax, taxValue, costPrice } = price;
             let productObj = {
                 ...other,
                 unit: {
@@ -197,7 +185,7 @@ const ProductCard = ({ item, key, time }) => {
 
 export default memo(ProductCard) 
 
-const styles = StyleSheet.create({
+const makeStyle = (color) => StyleSheet.create({
     container: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -255,7 +243,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     button: {
-        backgroundColor: COLORS.primary,
+        backgroundColor: color.primary,
         width: 80,
         height: 27,
         borderRadius: 6,
@@ -282,7 +270,7 @@ const styles = StyleSheet.create({
         gap: 4,
     },
     incrementButton: {
-        backgroundColor: COLORS.primary,
+        backgroundColor: color.primary,
         width: 27,
         height: 27,
         borderRadius: 6,

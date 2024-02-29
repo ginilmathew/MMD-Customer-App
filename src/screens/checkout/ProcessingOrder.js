@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useContext, useEffect } from 'react'
-import { COLORS } from '../../constants/COLORS'
+import COLORS from '../../constants/COLORS'
 import LottieView from 'lottie-react-native'
 import RazorpayCheckout from 'react-native-razorpay';
 import { useMutation } from 'react-query'

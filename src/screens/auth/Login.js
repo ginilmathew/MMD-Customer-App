@@ -3,7 +3,7 @@ import React, { useCallback, useContext } from 'react'
 import Background from './Background';
 import CommonButton from '../../components/CommonButton';
 import CustomInput from '../../components/CustomInput';
-import { COLORS } from '../../constants/COLORS';
+import COLORS from '../../constants/COLORS';
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup';

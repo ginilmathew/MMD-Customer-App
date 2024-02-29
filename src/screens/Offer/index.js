@@ -5,15 +5,22 @@ import CommonHeader from '../../components/CommonHeader'
 import Animated, { FadeInDown } from 'react-native-reanimated'
 import { getAllProducts, offerProducts } from '../../api/allProducts'
 import { useInfiniteQuery } from 'react-query'
-import { COLORS } from '../../constants/COLORS'
+import  COLORS  from '../../constants/COLORS'
 import NoData from '../../components/NoData'
 import ProductCard from '../../components/ProductCard'
 import CartContext from '../../context/cart'
 import { useFocusEffect } from '@react-navigation/native'
 import moment from 'moment'
 import CartButton from '../../components/CartButton'
+import LocationContext from '../../context/location'
+import reactotron from 'reactotron-react-native'
+import useRefreshOnFocus from '../../hooks/useRefetch'
 
 const AllProducts = ({ navigation }) => {
+
+    const styles = makeStyle(COLORS)
+    const { location } = useContext(LocationContext)
+
 
     const { cartItems } = useContext(CartContext);
     const [time, setTime] = useState(moment().unix())
@@ -28,20 +35,30 @@ const AllProducts = ({ navigation }) => {
         isFetchingNextPage,
         status,
         isLoading,
-        remove: infiniteQueryRemove
+        remove: infiniteQueryRemove,
+        
     } = useInfiniteQuery({
         queryKey: ['offerproducts'],
-        queryFn: () => offerProducts({
-            "coordinates": [
-                8.5204866, 76.9371447
-            ],
-            // coordinates: [location?.location?.latitude, location?.location?.longitude],
+        enabled:true,
+        queryFn: ({pageParam = 1 }) => offerProducts(pageParam,{
+            coordinates: [location?.location?.latitude, location?.location?.longitude],
         }),
         getNextPageParam: (lastPage, pages) => {
-            if (lastPage.length === 0) return undefined;
-            return pages?.length + 1
+            if(pages?.length > 0){
+                return pages?.length + 1
+            }
+            else{
+                return 1
+            }
+            //reactotron.log({lastPage, pages})
+            //if (lastPage.length === 0) return undefined;
+            //return pages?.length + 1
         },
+        
     })
+
+
+    //reactotron.log({hasNextPage})
 
 
 
@@ -53,18 +70,20 @@ const AllProducts = ({ navigation }) => {
     )
 
 
+    useRefreshOnFocus(refetch)
 
-    const last_Page = data?.pages[0]?.data?.data?.last_page;
+    // const last_Page = data?.pages[0]?.data?.data?.last_page;
 
-    const pageCount = data?.pages?.length;
+    // const pageCount = data?.pages?.length;
 
 
 
-    const onEndReach = useCallback(() => {
-        if (!isFetching && !isFetchingNextPage && hasNextPage && (last_Page * 1 !== pageCount * 1)) {
+    const onEndReach = () => {
+        reactotron.log({data})
+        if(data?.pages?.length < data?.pages?.[0]?.data?.data?.last_page){
             fetchNextPage()
         }
-    }, [!isFetching, !isFetchingNextPage, hasNextPage])
+    }
 
     // const scrollToTop = () => {
     //     if (flatListRef.current) {
@@ -100,7 +119,7 @@ const AllProducts = ({ navigation }) => {
     }
 
     return (
-        <View style={{ backgroundColor: '#fff' }}>
+        <Animated.View style={{ backgroundColor: '#fff' }}>
             <CommonHeader heading={"Offer Products"} />
             <FlatList
                 data={data?.pages?.map(page => page?.data?.data?.data)?.flat()}
@@ -111,30 +130,29 @@ const AllProducts = ({ navigation }) => {
                 onEndReached={onEndReach}
                 refreshing={isLoading}
                 onRefresh={refetch}
-                onEndReachedThreshold={.1}
                 ListEmptyComponent={emptyScreen}
             />
 
-            <CartButton bottom={120} />
-        </View>
+            <CartButton bottom={45} />
+        </Animated.View>
     )
 }
 
 export default AllProducts
 
-const styles = StyleSheet.create({
-    scrollToTopButton: {
+const makeStyle = (color) => StyleSheet.create({
+    // scrollToTopButton: {
 
-        bottom: 20,
-        right: 20,
-        backgroundColor: COLORS.primary,
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 8,
-        elevation: 5,
-    },
-    scrollToTopButtonText: {
-        color: COLORS.white,
-        fontWeight: 'bold',
-    },
+    //     bottom: 20,
+    //     right: 20,
+    //     backgroundColor: color.primary,
+    //     paddingVertical: 10,
+    //     paddingHorizontal: 20,
+    //     borderRadius: 8,
+    //     elevation: 5,
+    // },
+    // scrollToTopButtonText: {
+    //     color: COLORS.white,
+    //     fontWeight: 'bold',
+    // },
 })

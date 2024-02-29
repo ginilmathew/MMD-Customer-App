@@ -2,7 +2,6 @@
 import { Platform, StyleSheet, Text, View, AppState, PermissionsAndroid, SafeAreaView } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import Navigation from './src/navigation'
-//import { SafeAreaView } from 'react-native-safe-area-context'
 import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage'
 import { QueryClientProvider, QueryClient } from 'react-query'
 import NetInfo from '@react-native-community/netinfo';
@@ -11,7 +10,6 @@ import { focusManager } from '@tanstack/react-query';
 import LocationContext from './src/context/location/locationContext'
 import messaging from '@react-native-firebase/messaging';
 import notifee, { AndroidImportance, EventType } from '@notifee/react-native'
-
 import CartProvider from './src/context/cart/cartContext'
 import { useAppState } from './src/hooks/appStateManagement'
 import SlotProvider from './src/context/slot/slotContext'
@@ -21,7 +19,9 @@ import NotificationContext from './src/context/notification/notificationCount'
 import { navigationRef } from './src/navigation/RootNavigation'
 import useRefetch from './src/hooks/useRefetch'
 import customAxios from './src/customAxios'
-import { COLORS } from './src/constants/COLORS'
+import { COLORS, colorNew, setColors } from './src/constants/COLORS'
+
+
 
 
 
@@ -30,33 +30,37 @@ export const storage = new MMKVLoader().initialize()
 
 const App = () => {
 
-
-
 	const [locationPermission, setLocationPermission] = useState(false)
 	const [loading, setLoading] = useState(true)
-	const [logo] = useMMKVStorage('dynamicLogo', storage)
+	const [logoLoading, setLogoLoading] = useState(true)
 
-	reactotron.log(logo,"Fdsafsdf")
+	useEffect(() => {
+		getLogo()
+	}, [])
 
 	const getLogo = async () => {
 
 		try {
 			const res = await customAxios.get('public/api/auth/logo')
 			if (res?.data?.message === "Success") {
-				await storage.setMapAsync('dynamicLogo', res?.data)
+				setColors(res?.data)
+				setLogoLoading(false)
 			} else {
 				throw "Internal server error"
 			}
 		} catch (error) {
+			setLogoLoading(false)
 			storage.setString("error", `${error}`)
+		}
+		finally {
+			// setTimeout(() => {
+			// 	setLogoLoading(false)
+			// }, 1000);
+			
 		}
 	}
 
-	useEffect(() => {
-		if (!logo) {
-			getLogo()
-		}
-	}, [logo])
+
 
 
 
@@ -217,26 +221,29 @@ const App = () => {
 	}, [])
 
 
-	if (loading) {
+	
+
+
+	if (loading || logoLoading) {
 		return (
 			<View />
 		)
 	}
 
-
+	console.log({loading, logoLoading})
 
 	return (
 		<QueryClientProvider client={queryClient}>
 			<SafeAreaView style={styles.safeArea}>
-				<LocationContext>
-					<NotificationContext>
-						<CartProvider>
-							<SlotProvider>
-								<Navigation location={locationPermission} />
-							</SlotProvider>
-						</CartProvider>
-					</NotificationContext>
-				</LocationContext>
+					<LocationContext>
+						<NotificationContext>
+							<CartProvider>
+								<SlotProvider>
+									<Navigation location={locationPermission} />
+								</SlotProvider>
+							</CartProvider>
+						</NotificationContext>
+					</LocationContext>
 			</SafeAreaView>
 		</QueryClientProvider>
 	)

@@ -5,7 +5,7 @@ import Profile from '../screens/Profile';
 import IonIcons from 'react-native-vector-icons/Ionicons'
 import { useCallback, useContext } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View, useWindowDimensions } from 'react-native';
-import { COLORS } from '../constants/COLORS';
+import  COLORS  from '../constants/COLORS';
 import Header from '../components/Header';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 import LocationContext from '../context/location';

@@ -1,6 +1,6 @@
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useContext, useState } from 'react'
-import { COLORS } from '../../constants/COLORS'
+import COLORS from '../../constants/COLORS'
 import CommonHeader from '../../components/CommonHeader'
 import Header from '../../components/Header'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -27,6 +27,8 @@ import reactotron from 'reactotron-react-native'
 
 
 const Checkout = ({ route }) => {
+
+  const styles = makeStyle(COLORS)
 
   const [order_id] = useMMKVStorage('order_id', storage);
   const [user] = useMMKVStorage('user', storage);
@@ -288,7 +290,7 @@ const Checkout = ({ route }) => {
 
 export default Checkout
 
-const styles = StyleSheet.create({
+const makeStyle = (color) => StyleSheet.create({
   container: {
     backgroundColor: COLORS.white,
     flex: 1
@@ -416,7 +418,7 @@ const styles = StyleSheet.create({
   edit: {
     fontFamily: "Poppins-SemiBold",
     fontSize: 12,
-    color: COLORS.primary
+    color: color.primary,
   },
   shipping: {
     flexDirection: "row",

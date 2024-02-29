@@ -5,7 +5,7 @@ import CommonHeader from '../../components/CommonHeader'
 import Animated, { FadeInDown } from 'react-native-reanimated'
 import { getAllProducts } from '../../api/allProducts'
 import { useInfiniteQuery } from 'react-query'
-import { COLORS } from '../../constants/COLORS'
+import COLORS from '../../constants/COLORS'
 import NoData from '../../components/NoData'
 import ProductCard from '../../components/ProductCard'
 import CartContext from '../../context/cart'
@@ -14,6 +14,8 @@ import moment from 'moment'
 import CartButton from '../../components/CartButton'
 
 const AllProducts = ({ navigation }) => {
+
+    const styles = makeStyle(COLORS)
 
     const { cartItems } = useContext(CartContext);
     const [time, setTime] = useState(moment().unix())
@@ -118,12 +120,12 @@ const AllProducts = ({ navigation }) => {
 
 export default AllProducts
 
-const styles = StyleSheet.create({
+const makeStyle = (color) => StyleSheet.create({
     scrollToTopButton: {
 
         bottom: 20,
         right: 20,
-        backgroundColor: COLORS.primary,
+        backgroundColor: color.primary,
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 8,

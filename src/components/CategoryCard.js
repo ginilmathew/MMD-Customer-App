@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useCallback } from 'react';
 import { StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
 import Animated from 'react-native-reanimated';
-import { COLORS } from '../constants/COLORS';
+import COLORS from '../constants/COLORS';
 
 const CategoryCard = ({ key,item }) => {
 
@@ -17,7 +17,7 @@ const CategoryCard = ({ key,item }) => {
         <Animated.View key={key}>
             <TouchableOpacity style={styles.container} key={key} onPress={NavigateToSingle}>
                 <Image source={{uri:item?.image}} style={styles.image} />
-                <Text style={styles.text}>{item?.name}</Text>
+                <Text numberOfLines={1} style={styles.text}>{item?.name}</Text>
             </TouchableOpacity>
         </Animated.View>
     );
@@ -30,17 +30,20 @@ const styles = StyleSheet.create({
         marginTop: 5,
         justifyContent: 'center',
         alignItems: 'center',
+  
+ 
 
 
     },
     image: {
         width: 60,
         height: 60,
-        borderRadius: 25,
+        borderRadius: 30,
         marginBottom: 5,
     },
     text: {
-        fontSize: 12,
+        width:'100%',
+        fontSize: 11,
         fontFamily: "Poppins-Regular",
         color:COLORS.light,
         opacity: 0.8,

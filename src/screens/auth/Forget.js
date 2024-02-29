@@ -6,7 +6,7 @@ import CommonButton from '../../components/CommonButton'
 import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup';
-import { COLORS } from '../../constants/COLORS'
+import COLORS from '../../constants/COLORS'
 import OTPInput from 'react-native-otp-textinput'
 import { useMutation } from 'react-query'
 import { forgetApi, otpApi } from '../../api/auth'

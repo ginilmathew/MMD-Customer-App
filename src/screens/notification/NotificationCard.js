@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useCallback } from 'react'
-import { COLORS } from '../../constants/COLORS'
+import COLORS from '../../constants/COLORS'
 import moment from 'moment'
 import { useNavigation } from '@react-navigation/native'
 import { useMutation } from 'react-query'

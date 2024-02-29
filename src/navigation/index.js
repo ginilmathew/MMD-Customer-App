@@ -12,7 +12,7 @@ import { storage } from '../../App';
 import { useNetInfo } from '@react-native-community/netinfo';
 import Toast from '../components/Toast';
 import LocationPage from '../screens/auth/LocationPage';
-import { COLORS } from '../constants/COLORS';
+import COLORS from '../constants/COLORS';
 import ChangePasswd from '../screens/Profile/ChangePasswd';
 import GoogleLocation from '../screens/Profile/GoogleLocation';
 import LocationContext from '../context/location';
@@ -21,6 +21,9 @@ import { useAppState } from '../hooks/appStateManagement';
 import { useMutation } from 'react-query';
 import { PostAddToCart, getCartItems } from '../api/cart';
 import AuthNavigation from './AuthNavigation';
+// import reactotron from 'reactotron-react-native';
+// import LogoContext from '../context/logo&color';
+// import customAxios from '../customAxios';
 
 
 
@@ -35,6 +38,7 @@ const Navigation = ({ location }) => {
     const [success] = useMMKVStorage('success', storage, '');
     const [homeAdd] = useMMKVStorage('homeAdd', storage, false)
     const { getLocation, location: locationData } = useContext(LocationContext)
+    // const { setMainLogo } = useContext(LogoContext)
 
 
     const { cartItems, setCartItems } = useContext(CartContext);
@@ -109,6 +113,22 @@ const Navigation = ({ location }) => {
         SplashScreen.hide()
     }, [])
 
+
+
+    // useEffect(() => {
+    //     const getLogo = async () => {
+
+    //         try {
+    //             const { data } = await customAxios.get('public/api/auth/logo');
+    //             setMainLogo(data);
+                
+    //         } catch (error) {
+    //             storage.setString("error", `${error}`)
+    //         }
+    //     }
+    //     getLogo()
+
+    // }, [])
 
 
 

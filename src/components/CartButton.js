@@ -3,12 +3,14 @@ import React, { useCallback, useContext } from 'react'
 import { useMMKVStorage } from 'react-native-mmkv-storage'
 import { storage } from '../../App';
 import IonIcon from 'react-native-vector-icons/Ionicons'
-import { COLORS } from '../constants/COLORS';
+import COLORS from '../constants/COLORS';
 import CartContext from '../context/cart';
 import { useNavigation } from '@react-navigation/native';
 
 
 const CartButton = ({ bottom }) => {
+
+    const styles = makeStyle(COLORS)
 
     const { cartItems } = useContext(CartContext);
     const [cart_id] = useMMKVStorage('cart_id', storage)
@@ -52,7 +54,7 @@ const CartButton = ({ bottom }) => {
     );
 };
 
-const styles = StyleSheet.create({
+const makeStyle = (color) => StyleSheet.create({
     container: {
         flexDirection: 'row',
         alignSelf: 'center',
@@ -103,7 +105,7 @@ const styles = StyleSheet.create({
         marginRight: 5
     },
     rightContainer: {
-        backgroundColor: COLORS.primary,
+        backgroundColor: color.primary,
         flex: 1,
         paddingTop: 2,
         paddingBottom: 2,

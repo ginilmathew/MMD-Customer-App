@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity, Linking, Modal, Platform } from 'react-native'
 import React, { useCallback, useContext, useState } from 'react'
-import { COLORS } from '../../constants/COLORS'
+import COLORS from '../../constants/COLORS'
 import CommonHeader from '../../components/CommonHeader'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -15,6 +15,8 @@ import Entypo from 'react-native-vector-icons/Entypo'
 
 
 const GoogleLocation = ({ navigation, route }) => {
+
+	const styles = makeStyle(COLORS)
 
 	const { setLocation, getLocation, mode, setCurrentLoc, setModal, setMode, handleModal } = useContext(locationContext)
 	const [homeAdd, setHomeAdd] = useMMKVStorage('homeAdd', storage);
@@ -224,7 +226,7 @@ const GoogleLocation = ({ navigation, route }) => {
 }
 
 
-const styles = StyleSheet.create({
+const makeStyle = (color) => StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: COLORS.white,
@@ -259,7 +261,7 @@ const styles = StyleSheet.create({
 	},
 	name: {
 		fontFamily: 'Poppins-bold',
-		color: COLORS.primary,
+		color: color.primary,
 		letterSpacing: .6,
 		fontSize: 23
 	},

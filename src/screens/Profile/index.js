@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity, Alert, Linking } from 'react-native'
 import React, { useCallback, useContext } from 'react'
-import { COLORS } from '../../constants/COLORS'
+import COLORS from '../../constants/COLORS'
 import CommonHeader from '../../components/CommonHeader'
 import ProfileButton from '../../components/ProfileButton'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -17,6 +17,8 @@ import { PostAddToCart } from '../../api/cart'
 
 
 const Profile = ({ navigation }) => {
+
+  const styles = makeStyle(COLORS)
 
   const [user, setUser] = useMMKVStorage('user', storage)
   const { setMode, setLocation, setCurrentLoc, setModal, setHomeFocus } = useContext(LocationContext)
@@ -118,7 +120,7 @@ const Profile = ({ navigation }) => {
 }
 
 
-const styles = StyleSheet.create({
+const makeStyle = (color) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
@@ -131,7 +133,7 @@ const styles = StyleSheet.create({
   },
   name: {
     fontFamily: 'Poppins-Medium',
-    color: COLORS.primary,
+    color: color.primary,
     letterSpacing: 1,
     fontSize: 25
   },

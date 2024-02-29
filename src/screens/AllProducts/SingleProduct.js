@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import Header from '../../components/Header';
 import CommonHeader from '../../components/CommonHeader';
-import { COLORS } from '../../constants/COLORS'
+import COLORS from '../../constants/COLORS'
 import Animated, { interpolate } from 'react-native-reanimated';
 import { AddToCart } from '../../components/ItemCard';
 import Entypo from 'react-native-vector-icons/Entypo'
@@ -402,7 +402,7 @@ const SingleProduct = ({ navigation, route }) => {
 
 
     return (
-        <View style={[styles.mainContainer,]}>
+        <Animated.View style={[styles.mainContainer,]}>
             <View style={{ height: height / 1.05, }}>
                 <Header icon={false} />
                 <CommonHeader heading={item?.name?.length > 18 ? item?.name?.slice(0, 18) + "..." : item?.name} backBtn />
@@ -567,7 +567,7 @@ const SingleProduct = ({ navigation, route }) => {
                     />}
                 </View>
             </View>
-        </View>
+        </Animated.View>
     );
 };
 
