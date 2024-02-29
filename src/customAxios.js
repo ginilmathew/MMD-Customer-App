@@ -36,17 +36,16 @@ customAxios.interceptors.request.use(async function (config) {
 
 customAxios.interceptors.response.use(function (res) {
 
-
-
     storage.setBool('loading', false);
     return Promise.resolve(res);
 }, (err) => {
+
 
     if (err?.response?.status === 403) {
         queryClient.resetQueries();
         storage.clearStore();
 
-        if (getCurrentScreenPath() === 'login') {
+        if (navRef?.isReady() && getCurrentScreenPath() === 'login') {
             return;
         }
 
@@ -56,8 +55,7 @@ customAxios.interceptors.response.use(function (res) {
         });
     }
 
-
-    console.log(err?.response?.data?.message);
+    console.log(err);
     storage.setString('error', err?.response?.data?.message || err?.response?.data?.error);
     storage.setBool('loading', false);
     return Promise.reject(err?.response?.data?.message)
