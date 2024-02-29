@@ -144,6 +144,7 @@ const locationContext = ({ children }) => {
                     }).then(function (success) {
                         getOneTimeLocation()
                     }).catch((error) => {
+                        navigationRef.navigate('LocationPage')
                     });
                 }
             },

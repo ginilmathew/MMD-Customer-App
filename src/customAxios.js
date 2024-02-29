@@ -57,6 +57,7 @@ customAxios.interceptors.response.use(function (res) {
     }
 
 
+    console.log(err?.response?.data?.message);
     storage.setString('error', err?.response?.data?.message || err?.response?.data?.error);
     storage.setBool('loading', false);
     return Promise.reject(err?.response?.data?.message)
