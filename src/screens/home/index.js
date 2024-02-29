@@ -1,4 +1,4 @@
-import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from 'react-native'
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import CustomSlider from '../../components/CustomSlider'
 import CustomHeading from '../../components/CustomHeading'
@@ -23,11 +23,14 @@ import ProductCard from '../../components/ProductCard'
 import moment from 'moment'
 import CartButton from '../../components/CartButton'
 import NotificationContext from '../../context/notification'
+import reactotron from '../../ReactotronConfig'
 
 
 
 
 const Home = ({ navigation, route }) => {
+
+    const { width } = useWindowDimensions()
 
     // const notifyOnChangeProps = useFocusNotifyOnChangeProps()
     const styles = makeStyle(COLORS)
@@ -42,10 +45,10 @@ const Home = ({ navigation, route }) => {
 
 
     let payload = {
-        "coordinates": [
-            8.5204866, 76.9371447
-        ],
-        // coordinates: [location?.location?.latitude, location?.location?.longitude],
+        // "coordinates": [
+        //     8.5204866, 76.9371447
+        // ],
+        coordinates: [location?.location?.latitude, location?.location?.longitude],
         // cartId: cart_id,
     }
 
@@ -86,22 +89,42 @@ const Home = ({ navigation, route }) => {
 
 
     const NavigateToAllPages = useCallback(() => {
-        navigation.navigate('AllProducts',{
-            mode:'product'
+        navigation.navigate('AllProducts', {
+            mode: 'product'
         })
     }, [navigation])
 
 
-    const NavigateToOfferPages = useCallback(()=>{
+    const NavigateToOfferPages = useCallback(() => {
         navigation.navigate('Offer')
-  
-    },[])
+    }, [])
+    
     const NavigateToSearch = useCallback(() => {
         navigation.navigate('Search')
     }, [navigation])
 
     const NavigateToFeatured = useCallback((res) => {
         navigation.navigate('FeaturedProduct', { id: res._id, name: res.name })
+    }, [navigation])
+
+
+    const NaviagteToSlder = useCallback(() => {
+        null
+    }, [])
+
+
+    const NavigateToMarketingSlider = useCallback((item) => {
+        if (item?.type === 'product') {
+            let quantity = 0;
+            const findProduct = cartItems?.find((res) => res?._id === item?._id);
+            if (findProduct) {
+                quantity = findProduct?.qty * 1;
+            }
+            navigation.navigate('SingleProduct', { item: item?.product, quantity })
+        } else if (item?.type === 'category') {
+            navigation.navigate('SingleCategory', { item: item?.category?.slug })
+        }
+
     }, [navigation])
 
 
@@ -112,16 +135,16 @@ const Home = ({ navigation, route }) => {
         const featuredList = data?.data?.data?.featuredList?.[0]?.featured_list;
         const offerProducts = data?.data?.data?.offerProducts || [];
         const allFeatures = data?.data?.data?.allFeatures || [];
-
+        const MarketingSlider = data?.data?.data?.marketing || [];
 
         return (
             <View style={{ backgroundColor: COLORS.white }}>
-                {sliders.length > 0 && (
+                {sliders?.length > 0 && (
                     <View style={{ marginVertical: 4, marginBottom: 20 }}>
-                        <CustomSlider item={sliders} />
+                        <CustomSlider item={sliders} onPress={NaviagteToSlder} />
                     </View>
                 )}
-                {categories.length > 0 && (
+                {categories?.length > 0 && (
                     <View style={{ marginTop: 5 }}>
                         <CustomHeading label={'Categories'} hide={false} marginH={20} />
                         <ScrollView
@@ -129,8 +152,8 @@ const Home = ({ navigation, route }) => {
                             showsHorizontalScrollIndicator={false}
                             contentContainerStyle={styles.scrollViewContent}
                         >
-                            {categories.map((res) => (
-                                <View style={{ marginRight: 8 }} key={res?._id}>
+                            {categories?.map((res) => (
+                                <View style={{ marginRight: 8, width: width / 4 - 20 }} key={res?._id}>
                                     <CategoryCard item={res} />
                                 </View>
                             ))}
@@ -144,26 +167,34 @@ const Home = ({ navigation, route }) => {
 
 
                 {offerProducts && <View style={{ marginTop: 3 }}>
-                    <CustomHeading label={'Offer Products'} hide={true} onPress={NavigateToOfferPages} marginH={20} />
+                    <CustomHeading label={'Todays Offers'} hide={true} onPress={NavigateToOfferPages} marginH={20} />
                     <Animated.View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
                         {/* <ItemCard key={index} item={item} /> */}
 
                         {offerProducts?.map((item, index) => (
-                            <View style={{marginVertical:5}}>
+                            <View style={{ marginVertical: 5 }}>
                                 <ProductCard key={index} item={item} cartItems={cartItems} time={time} />
                             </View>
 
                         ))}
                     </Animated.View>
                 </View>}
-                <View style={{ marginTop: 20 }}>
-                        <CustomHeading label={'HighLights'} hide={false} marginH={20} />
-                    </View>
-                    <View style={[styles.boxItem, styles.footerBox]}>
-                        {allFeatures.map((res, index) => (
-                            <ItemBox onPress={() => NavigateToFeatured(res)} key={res?._id} item={res} index={index} />
-                        ))}
-                    </View>
+                {MarketingSlider?.length > 0 && (
+                    <>
+
+                        <View style={{ marginVertical: 2, marginBottom: 20 }}>
+                            <CustomSlider item={MarketingSlider} onPress={NavigateToMarketingSlider} />
+                        </View></>
+
+                )}
+                <View style={{ marginTop: 5 }}>
+                    <CustomHeading label={'HighLights'} hide={false} marginH={20} />
+                </View>
+                <View style={[styles.boxItem, styles.footerBox]}>
+                    {allFeatures?.map((res, index) => (
+                        <ItemBox onPress={() => NavigateToFeatured(res)} key={res?._id} item={res} index={index} />
+                    ))}
+                </View>
 
                 {featuredList && (
                     <View style={{ marginTop: 3 }}>
@@ -190,15 +221,15 @@ const Home = ({ navigation, route }) => {
 
 
     const ListFooterComponent = useCallback(() => {
-       
+
 
         return (
-     
-                <View style={{ marginBottom: 130 }}>
-                    
-                    {/* <View style={{ marginBottom: 40 }} /> */}
-                </View>
-            
+
+            <View style={{ marginBottom: 130 }}>
+
+                {/* <View style={{ marginBottom: 40 }} /> */}
+            </View>
+
         );
     }, [data?.data?.data, NavigateToFeatured]);
 

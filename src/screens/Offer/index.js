@@ -14,6 +14,7 @@ import moment from 'moment'
 import CartButton from '../../components/CartButton'
 import LocationContext from '../../context/location'
 import reactotron from 'reactotron-react-native'
+import useRefreshOnFocus from '../../hooks/useRefetch'
 
 const AllProducts = ({ navigation }) => {
 
@@ -34,9 +35,11 @@ const AllProducts = ({ navigation }) => {
         isFetchingNextPage,
         status,
         isLoading,
-        remove: infiniteQueryRemove
+        remove: infiniteQueryRemove,
+        
     } = useInfiniteQuery({
         queryKey: ['offerproducts'],
+        enabled:true,
         queryFn: ({pageParam = 1 }) => offerProducts(pageParam,{
             coordinates: [location?.location?.latitude, location?.location?.longitude],
         }),
@@ -67,10 +70,11 @@ const AllProducts = ({ navigation }) => {
     )
 
 
+    useRefreshOnFocus(refetch)
 
-    const last_Page = data?.pages[0]?.data?.data?.last_page;
+    // const last_Page = data?.pages[0]?.data?.data?.last_page;
 
-    const pageCount = data?.pages?.length;
+    // const pageCount = data?.pages?.length;
 
 
 
@@ -115,7 +119,7 @@ const AllProducts = ({ navigation }) => {
     }
 
     return (
-        <View style={{ backgroundColor: '#fff' }}>
+        <Animated.View style={{ backgroundColor: '#fff' }}>
             <CommonHeader heading={"Offer Products"} />
             <FlatList
                 data={data?.pages?.map(page => page?.data?.data?.data)?.flat()}
@@ -130,7 +134,7 @@ const AllProducts = ({ navigation }) => {
             />
 
             <CartButton bottom={45} />
-        </View>
+        </Animated.View>
     )
 }
 

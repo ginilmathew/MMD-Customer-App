@@ -52,11 +52,12 @@ const makeStyle = (color) => StyleSheet.create({
     },
     text: {
         color: '#fff', // Text color
-        fontSize: 14,
+        fontSize: 12,
         letterSpacing: 1.5,
-        fontFamily: 'Poppins-Medium',
+        fontFamily: 'Poppins-Bold',
         textAlign: "center",
-        width: "80%"
+        width: "80%",
+     
     },
     imgBox: {
         width: itemWidth,

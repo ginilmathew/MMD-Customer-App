@@ -104,7 +104,7 @@ const Header = memo(({ onPress, text, icon }) => {
         return (
             <View style={styles.container}>
                 <View style={styles.imageContainer}>
-                    <Image source={{ uri: COLORS.logo }} style={styles.logo} resizeMode='cover'/>
+                    <Image source={{ uri: COLORS.logo }} style={styles.logo} resizeMode='contain'/>
                 </View>
 
                 {location && user && (
@@ -189,9 +189,9 @@ const styles = StyleSheet.create({
         gap: 15,
     },
     logo: {
-        width: 50,
-        height: 50,
-        resizeMode: 'cover',
+        width: 60,
+        height: 60,
+   
     },
     count: {
         color: COLORS.white,
