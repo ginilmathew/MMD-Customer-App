@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     text: {
-        // width:60,
+        width:'100%',
         fontSize: 11,
         fontFamily: "Poppins-Regular",
         color:COLORS.light,
