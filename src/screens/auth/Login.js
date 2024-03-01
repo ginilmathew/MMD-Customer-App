@@ -42,7 +42,7 @@ const Login = ({ navigation }) => {
 
     const onSuccess = async ({ data }) => {
 
-        reactotron.log(data, "LOG")
+
 
         // let permission = "denied";
 
