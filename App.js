@@ -216,7 +216,7 @@ const App = () => {
 
 		const unsubscribe = messaging().onMessage(onMessageReceived);
 
-		messaging().setBackgroundMessageHandler(onMessageReceived);
+		//messaging().setBackgroundMessageHandler(onMessageReceived);
 
 		return unsubscribe;
 	}, [])
