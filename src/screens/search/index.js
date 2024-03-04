@@ -28,15 +28,32 @@ const Search = () => {
 
     })
 
+
+
     let timeoutId;
 
-    const onChangeProduct = useCallback((data) => {
-        setValue(data);
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => {
-            mutate(data)
-        }, 2000);
-    }, [value]);
+    const debounce = (func, delay) => {
+        return function () {
+          const context = this;
+          const args = arguments;
+      
+          clearTimeout(timeoutId);
+          timeoutId = setTimeout(() => func.apply(context, args), delay);
+        };
+      };
+
+
+      const onChangeProduct = useCallback(
+        (data) => {
+          setValue(data);
+          debounceFunc(data);
+        },
+        []
+      );
+    
+      const debounceFunc = debounce((data) => {
+        mutate(data);
+      }, 1500);
 
     useFocusEffect(
         useCallback(() => {

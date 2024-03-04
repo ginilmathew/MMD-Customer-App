@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import {
     ActivityIndicator,
+    Image,
     Platform,
     ScrollView,
     StyleSheet,
@@ -25,11 +26,17 @@ import { storage } from '../../../App';
 import { useMMKVStorage } from 'react-native-mmkv-storage';
 import moment from 'moment';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import reactotron from '../../ReactotronConfig';
+import CustomHeading from '../../components/CustomHeading';
+import ProductCard from '../../components/ProductCard';
 
 
 const SingleProduct = ({ navigation, route }) => {
 
     const { item } = route.params;
+
+
+
     const { height } = useWindowDimensions()
     const [selectedUnit, setSelectedUnit] = useState(null)
     const [selectedVariant, setSelectedVariant] = useState(null)
@@ -39,9 +46,10 @@ const SingleProduct = ({ navigation, route }) => {
     const [price, setPrice] = useState(null)
     const [quantity, setQuantity] = useState(0)
     const insets = useSafeAreaInsets();
+    const [image, setImage] = useState([]);
+    const [selectImage, setSelectedImage] = useState([])
 
-
-
+    const [time, setTime] = useState(moment().unix())
     const [qty, setQty] = useState(null)
     const { cartItems, addItemToCart } = useContext(CartContext);
     const { data, refetch } = useQuery({
@@ -55,13 +63,17 @@ const SingleProduct = ({ navigation, route }) => {
         keepPreviousData: false
     })
 
+
+
+
+
+
     useEffect(() => {
 
         async function setInitialDatas(product) {
 
             setSelectedUnit(product?.units?.[0])
             setUnitList(product?.units?.map(unit => unit?.name))
-
             setVariantsList(product?.units?.[0]?.variants?.map(vari => vari?.name))
             setSelectedVariant(product?.units?.[0]?.variants?.[0])
 
@@ -93,8 +105,8 @@ const SingleProduct = ({ navigation, route }) => {
 
             if (fromDate && toDate && offerPrice) {
 
-                let startDate = moment(fromDate, "YYY-MM-DD").add(-1, 'day');
-                let endDate = moment(toDate, "YYYY-MM-DD").add(1, 'day')
+                let startDate = moment(`${moment(fromDate, "YYYY-MM-DD").format("YYYY-MM-DD")} 00:00:00`, "YYYY-MM-DD HH:mm:ss");
+                let endDate = moment(`${moment(toDate, "YYYY-MM-DD").format("YYYY-MM-DD")} 23:59:59`, "YYYY-MM-DD HH:mm:ss");
                 if (moment().isBetween(startDate, endDate)) {
                     price = {
                         ...selectedVariant,
@@ -300,17 +312,13 @@ const SingleProduct = ({ navigation, route }) => {
                 variant: selectedVariant,
                 qty: quantity,
                 price: finalPrice,
-                image: `${imageBasePath}${image[0]}`,
+                image: `${imageBasePath}${image}`,
                 tax,
                 taxValue,
                 total: finalPrice + taxValue,
                 costPrice
                 //tax: 
             }
-
-
-
-
             addItemToCart(productObj)
         }
 
@@ -397,8 +405,23 @@ const SingleProduct = ({ navigation, route }) => {
     }
 
 
+    useEffect(() => {
+        if (item?.image) {
+            setImage(item?.image?.[0])
+        }
+    }, [data?.data?.data,item])
+
+
+    const OnchngeImage = useCallback((image) => {
+        setImage(image)
+    }, [image])
+
+
     const BASEPATHPRODCT = item?.imageBasePath || "";
     //const units = item?.units?.map(({ name }) => name)
+
+
+
 
 
     return (
@@ -410,7 +433,23 @@ const SingleProduct = ({ navigation, route }) => {
                     contentContainerStyle={[styles.container]}
                     scrollEnabled={true}
                     showsVerticalScrollIndicator={false}>
-                    <Animated.Image source={{ uri: BASEPATHPRODCT + item?.image?.[0] || "" }} style={styles.mainImage} resizeMode="contain" sharedTransitionTag={item?._id} />
+                    <Animated.Image source={{ uri: BASEPATHPRODCT + image || "" }} style={styles.mainImage} resizeMode="contain" sharedTransitionTag={item?._id} />
+                    <ScrollView horizontal style={styles.scrollviewmultipleImage}>
+                        {item?.image?.map((item, index) => (
+                            <TouchableOpacity
+                                key={index}
+                                style={styles.multipleImagesBox}
+                                onPress={() => OnchngeImage(item)}>
+                                <Image
+                                    key={index}
+                                    source={{ uri: BASEPATHPRODCT + item }}
+                                    style={styles.multipleImages}
+                                />
+
+                            </TouchableOpacity>
+                        ))}
+                    </ScrollView>
+
                     <ProductData item={product} price={price} quantity={quantity} />
 
                     <View style={styles.dropdownContainer}>
@@ -507,8 +546,14 @@ const SingleProduct = ({ navigation, route }) => {
 
                     </View>
 
+                 
                     {product?.details ? <AboutSection item={product} /> : null}
                     {product?.description ? <DescriptionSection item={product} /> : null}
+                    {data?.data?.data?.recommendedProduct ?
+                        <RelatedProduct item={data?.data?.data?.recommendedProduct} time={time} cartItems={cartItems}/> : null
+
+                    }
+
 
                 </ScrollView>
 
@@ -598,6 +643,19 @@ const ProductData = React.memo(({ item, price, quantity }) => {
 });
 
 
+const RelatedProduct = React.memo(({ item ,time,cartItems}) => (
+    <View>
+        <CustomHeading label={'Releated Products'} hide={false} marginH={10} />
+        {item?.map((item,index)=>(
+            <View style={{marginBottom:10}}>
+                        <ProductCard key={index} item={item} cartItems={cartItems} time={time} />
+            </View>
+      
+        ))}
+    </View>
+));
+
+
 
 const AboutSection = React.memo(({ item }) => (
     <View style={[styles.aboutContainer, { marginTop: 10 }]}>
@@ -648,7 +706,25 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         width: '100%',
         height: 200,
-        marginBottom: 10,
+
+    },
+    scrollviewmultipleImage: {
+
+    },
+    multipleImagesBox: {
+        height: 80,
+        width: 80,
+        marginRight: 10,
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginVertical: 10,
+
+    },
+    multipleImages: {
+        borderRadius: 6,
+        width: '100%',
+        height: 120,
+
     },
     smallImagesContainer: {
         flexDirection: 'row',
@@ -760,6 +836,8 @@ const styles = StyleSheet.create({
         textAlign: 'right',
         textDecorationLine: 'line-through',
     }
+
+
 });
 
 export default SingleProduct;

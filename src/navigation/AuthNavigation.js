@@ -21,6 +21,7 @@ import MapAddress from '../screens/Profile/MapAddress';
 import OrderPlaced from '../screens/checkout/OrderPlaced';
 import EditAddress from '../screens/checkout/EditAddress';
 import ProcessingOrder from '../screens/checkout/ProcessingOrder';
+import Highlights from '../screens/Highlights';
 
 const Stack = createNativeStackNavigator();
 
@@ -49,6 +50,7 @@ const AuthNavigation = () => {
             <Stack.Screen name='OrderPlaced' component={OrderPlaced} />
             <Stack.Screen name='EditAddress' component={EditAddress} />
             <Stack.Screen name='Processing' component={ProcessingOrder} />
+            <Stack.Screen name='Highlights' component={Highlights}/>
         </Stack.Navigator>
     )
 }

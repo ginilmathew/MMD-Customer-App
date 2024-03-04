@@ -113,6 +113,11 @@ const Home = ({ navigation, route }) => {
     }, [])
 
 
+    const NavigateToHighlights = useCallback(()=>{
+        navigation.navigate('Highlights')
+    },[])
+
+
     const NavigateToMarketingSlider = useCallback((item) => {
         if (item?.type === 'product') {
             let quantity = 0;
@@ -188,7 +193,7 @@ const Home = ({ navigation, route }) => {
 
                 )}
                 <View style={{ marginTop: 5 }}>
-                    <CustomHeading label={'HighLights'} hide={false} marginH={20} />
+                    <CustomHeading label={'HighLights'} hide={true} marginH={20} onPress={NavigateToHighlights}/>
                 </View>
                 <View style={[styles.boxItem, styles.footerBox]}>
                     {allFeatures?.map((res, index) => (
