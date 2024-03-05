@@ -231,7 +231,6 @@ const Home = ({ navigation, route }) => {
         return (
 
             <View style={{ marginBottom: 130 }}>
-
                 {/* <View style={{ marginBottom: 40 }} /> */}
             </View>
 
@@ -269,109 +268,114 @@ const Home = ({ navigation, route }) => {
 
     return (
 
-        <ScrollView style={{ backgroundColor: '#fff' }}>
-            {currentLoc?.address && (
-                <TouchableOpacity onPress={changeAdd} style={{
-                    flexDirection: 'row',
-                    paddingLeft: 20,
-                    paddingTop: 10,
-                    alignItems: 'center'
-                }}>
-                    <IonIcon name='location' size={23} color={COLORS.primary} />
-                    <Text style={{
-                        fontSize: 13,
-                        color: COLORS.text,
-                        marginLeft: 8
-                    }}>{currentLoc?.address
-                        ?.slice(...addLeng ? [0, 40] : [0])
-                        ?.concat(addLeng ? ' ...' : '')}</Text>
-                </TouchableOpacity>
-            )
-            }
-            <DummySearch press={NavigateToSearch} />
-            <View style={{ backgroundColor: COLORS.white }}>
-                {data?.data?.data?.sliders?.length > 0 && (
-                    <View style={{ marginVertical: 4, marginBottom: 20 }}>
-                        <CustomSlider item={data?.data?.data?.sliders} onPress={NaviagteToSlder} />
-                    </View>
-                )}
-                {data?.data?.data?.categories?.length > 0 && (
-                    <View style={{ marginTop: 5 }}>
-                        <CustomHeading label={'Categories'} hide={false} marginH={20} />
-                        <ScrollView
-                            horizontal={true}
-                            showsHorizontalScrollIndicator={false}
-                            contentContainerStyle={styles.scrollViewContent}
-                        >
-                            {data?.data?.data?.categories?.map((res) => (
-                                <View style={{ marginRight: 8, width: width / 4 - 20 }} key={res?._id}>
-                                    <CategoryCard item={res} />
+        <View>
+
+            <ScrollView style={{ backgroundColor: '#fff' }}>
+                {currentLoc?.address && (
+                    <TouchableOpacity onPress={changeAdd} style={{
+                        flexDirection: 'row',
+                        paddingLeft: 20,
+                        paddingTop: 10,
+                        alignItems: 'center'
+                    }}>
+                        <IonIcon name='location' size={23} color={COLORS.primary} />
+                        <Text style={{
+                            fontSize: 13,
+                            color: COLORS.text,
+                            marginLeft: 8
+                        }}>{currentLoc?.address
+                            ?.slice(...addLeng ? [0, 40] : [0])
+                            ?.concat(addLeng ? ' ...' : '')}</Text>
+                    </TouchableOpacity>
+                )
+                }
+                <DummySearch press={NavigateToSearch} />
+                <View style={{ backgroundColor: COLORS.white }}>
+                    {data?.data?.data?.sliders?.length > 0 && (
+                        <View style={{ marginVertical: 4, marginBottom: 20 }}>
+                            <CustomSlider item={data?.data?.data?.sliders} onPress={NaviagteToSlder} />
+                        </View>
+                    )}
+                    {data?.data?.data?.categories?.length > 0 && (
+                        <View style={{ marginTop: 5 }}>
+                            <CustomHeading label={'Categories'} hide={false} marginH={20} />
+                            <ScrollView
+                                horizontal={true}
+                                showsHorizontalScrollIndicator={false}
+                                contentContainerStyle={styles.scrollViewContent}
+                            >
+                                {data?.data?.data?.categories?.map((res) => (
+                                    <View style={{ marginRight: 8, width: width / 4 - 20 }} key={res?._id}>
+                                        <CategoryCard item={res} />
+                                    </View>
+                                ))}
+                                <TouchableOpacity style={styles.iconConatiner} onPress={NavigateToCategory}>
+                                    <Text style={styles.text2}>{'View All'}</Text>
+                                    <Ionicons name='arrow-forward' color={COLORS.primary} size={18} />
+                                </TouchableOpacity>
+                            </ScrollView>
+                        </View>
+                    )}
+
+
+                    {data?.data?.data?.offerProducts && <View style={{ marginTop: 3 }}>
+                        <CustomHeading label={'Todays Offers'} hide={true} onPress={NavigateToOfferPages} marginH={20} />
+                        <Animated.View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
+                            {/* <ItemCard key={index} item={item} /> */}
+
+                            {data?.data?.data?.offerProducts?.map((item, index) => (
+                                <View style={{ marginVertical: 5 }}>
+                                    <ProductCard key={index} item={item} cartItems={cartItems} time={time} />
                                 </View>
+
                             ))}
-                            <TouchableOpacity style={styles.iconConatiner} onPress={NavigateToCategory}>
-                                <Text style={styles.text2}>{'View All'}</Text>
-                                <Ionicons name='arrow-forward' color={COLORS.primary} size={18} />
-                            </TouchableOpacity>
-                        </ScrollView>
+                        </Animated.View>
+                    </View>}
+                    {data?.data?.data?.marketing?.length > 0 && (
+                        <>
+
+                            <View style={{ marginVertical: 2, marginBottom: 20 }}>
+                                <CustomSlider item={data?.data?.data?.marketing} onPress={NavigateToMarketingSlider} />
+                            </View></>
+
+                    )}
+                    <View style={{ marginTop: 5 }}>
+                        <CustomHeading label={'HighLights'} hide={true} marginH={20} onPress={NavigateToHighlights} />
                     </View>
-                )}
-
-
-                {data?.data?.data?.offerProducts && <View style={{ marginTop: 3 }}>
-                    <CustomHeading label={'Todays Offers'} hide={true} onPress={NavigateToOfferPages} marginH={20} />
-                    <Animated.View style={{ paddingHorizontal: 16, paddingVertical: 5 }}>
-                        {/* <ItemCard key={index} item={item} /> */}
-
-                        {data?.data?.data?.offerProducts?.map((item, index) => (
-                            <View style={{ marginVertical: 5 }}>
-                                <ProductCard key={index} item={item} cartItems={cartItems} time={time} />
-                            </View>
-
+                    <View style={[styles.boxItem, styles.footerBox]}>
+                        {data?.data?.data?.allFeatures?.map((res, index) => (
+                            <ItemBox onPress={() => NavigateToFeatured(res)} key={res?._id} item={res} index={index} />
                         ))}
-                    </Animated.View>
-                </View>}
-                {data?.data?.data?.marketing?.length > 0 && (
-                    <>
-
-                        <View style={{ marginVertical: 2, marginBottom: 20 }}>
-                            <CustomSlider item={data?.data?.data?.marketing} onPress={NavigateToMarketingSlider} />
-                        </View></>
-
-                )}
-                <View style={{ marginTop: 5 }}>
-                    <CustomHeading label={'HighLights'} hide={true} marginH={20} onPress={NavigateToHighlights} />
-                </View>
-                <View style={[styles.boxItem, styles.footerBox]}>
-                    {data?.data?.data?.allFeatures?.map((res, index) => (
-                        <ItemBox onPress={() => NavigateToFeatured(res)} key={res?._id} item={res} index={index} />
-                    ))}
-                </View>
-
-                {data?.data?.data?.featuredList?.[0]?.featured_list && (
-                    <View style={{ marginTop: 3 }}>
-                        <CustomHeading label={'Popular Products'} hide={true} onPress={NavigateToAllPages} marginH={20} />
                     </View>
-                )}
-            </View>
 
-            <FlatList
-                data={data?.data?.data.featuredList?.[0]?.featured_list || []}
-                renderItem={renderItem}
-                keyExtractor={keyExtractor}
-                showsVerticalScrollIndicator={false}
-                ListFooterComponent={ListFooterComponent}
-                initialNumToRender={10}
-                refreshing={isLoading}
-                onRefresh={refetch}
-                maxToRenderPerBatch={10}
-                windowSize={10}
-                getItemLayout={(data, index) => ({ length: 80, offset: 80 * index, index })}
-                ListEmptyComponent={<NoData heights={500} />}
-                extraData={cartTotal}
-            />
+                    {data?.data?.data?.featuredList?.[0]?.featured_list && (
+                        <View style={{ marginTop: 3 }}>
+                            <CustomHeading label={'Popular Products'} hide={true} onPress={NavigateToAllPages} marginH={20} />
+                        </View>
+                    )}
+                </View>
 
-            <CartButton bottom={60} />
-        </ScrollView>
+                <FlatList
+                    data={data?.data?.data.featuredList?.[0]?.featured_list || []}
+                    renderItem={renderItem}
+                    keyExtractor={keyExtractor}
+                    showsVerticalScrollIndicator={false}
+                    ListFooterComponent={ListFooterComponent}
+                    initialNumToRender={10}
+                    refreshing={isLoading}
+                    onRefresh={refetch}
+                    maxToRenderPerBatch={10}
+                    windowSize={10}
+                    getItemLayout={(data, index) => ({ length: 80, offset: 80 * index, index })}
+                    ListEmptyComponent={<NoData heights={500} />}
+                    extraData={cartTotal}
+                />
+
+
+            </ScrollView>
+
+            <CartButton bottom={20} />
+        </View>
     )
 }
 

@@ -295,6 +295,7 @@ const SingleProduct = ({ navigation, route }) => {
 
 
     const changeQty = () => {
+        storage.setString('success', 'added to cart')
         setQuantity(1)
     }
 
@@ -315,7 +316,8 @@ const SingleProduct = ({ navigation, route }) => {
                 variant: selectedVariant,
                 qty: quantity,
                 price: finalPrice,
-                image: `${imageBasePath}${image}`,
+                // image: `${imageBasePath}${image}`,
+                image: imageBasePath + product?.image?.[0],
                 tax,
                 taxValue,
                 total: finalPrice + taxValue,
@@ -608,7 +610,6 @@ const SingleProduct = ({ navigation, route }) => {
 
                     </View>}
 
-                    <CartButton bottom={120} />
 
                     {quantity === 0 && <BuyButton
                         loading={isLoading}
