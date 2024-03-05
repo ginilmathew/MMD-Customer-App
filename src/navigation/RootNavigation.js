@@ -15,7 +15,7 @@ export function getCurrentScreenPath() {
 
     // Extract the path from the current route
     const screenPath = navigationRef.getCurrentRoute()?.name;
-    console.log(screenPath);
+  
 
     return screenPath;
   }
