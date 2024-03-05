@@ -12,6 +12,7 @@ const ProductCard = ({ item, key, time }) => {
 
     const styles = makeStyle(COLORS)
 
+
     const [quantity, setQuantity] = useState(0)
     const { addItemToCart, cartItems } = useContext(CartContext);
     const navigation = useNavigation()
@@ -91,7 +92,7 @@ const ProductCard = ({ item, key, time }) => {
 
         setPrice(price)
 
-    }, [cartItems])
+    }, [cartItems,item])
 
 
 

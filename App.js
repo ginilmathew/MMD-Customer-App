@@ -202,6 +202,14 @@ const App = () => {
 
 					if (data?.order_id) {
 						navigationRef.navigate('SingleOrder', { id: data?.order_id })
+					} else if (data?.type1) {
+						const type = data?.type1;
+
+						if(type === 'product') {
+							navigationRef.navigate('SingleProduct', { item: { slug: data?.product_slug, _id: data?.product_id } })
+						} else if (type === 'category') {
+							navigationRef.navigate('SingleCategory', { item: data?.category_slug })
+						}
 					}
 
 					break;
