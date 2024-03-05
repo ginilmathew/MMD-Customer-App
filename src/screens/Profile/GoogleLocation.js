@@ -24,13 +24,13 @@ const GoogleLocation = ({ navigation, route }) => {
 
 
 	const modalVisible = () => {
-        setModals(prev => !prev)
-    }
+		setModals(prev => !prev)
+	}
 
 
 	const addLoc = (_, data) => {
 
-		if(route?.params?.mode === "header"){
+		if (route?.params?.mode === "header") {
 			setLocation({
 				location: {
 					latitude: data?.geometry?.location?.lat,
@@ -58,7 +58,12 @@ const GoogleLocation = ({ navigation, route }) => {
 				},
 				address: data?.formatted_address
 			})
-			navigationRef.navigate('HomeNavigator');
+			navigationRef.reset({
+				index: 0,
+				routes: [
+					{ name: 'HomeNavigator' }
+				]
+			});
 
 		} else if (mode === 'map') {
 			setLocation({
@@ -82,48 +87,53 @@ const GoogleLocation = ({ navigation, route }) => {
 		handleModal()
 	}, [route?.params?.cartID])
 
-	const getLocationPermission = async() => {
-        let permissions;
-        if(Platform.OS === 'android'){
-            permissions = await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
-            if(permissions === "granted"){
-                getLocation()
+	const getLocationPermission = async () => {
+		let permissions;
+		if (Platform.OS === 'android') {
+			permissions = await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+			if (permissions === "granted") {
+				getLocation()
 				if (route?.params?.mode === 'home') {
-					navigation.navigate('HomeNavigator')
+					navigation.reset({
+						index: 0,
+						routes: [
+							{ name: 'HomeNavigator' }
+						]
+					})
 				}
-				else if(route?.params?.mode === "header" || mode === 'home'){
+				else if (route?.params?.mode === "header" || mode === 'home') {
 					navigation.goBack()
 				}
-				else if(mode === "map" || route?.params?.mode === "map"){
-		
-					navigationRef.navigate('MapPage', route?.params?.cartID && { cartID: route?.params?.cartID })
-				} 
-            }
-            else{
-                if(permissions === "blocked"){
-                    setModals(true)
-                }
-                //storage.setString("error", `Location Permission ${permissions} by the user`)
-            }
-        }
-        else{
-            permissions = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
-            if(permissions === "granted"){
-                getLocation()
-				if(route?.params?.mode === "header"){
-					navigation.goBack()
-				}
-				else if(mode === "map" || route?.params?.mode === "map"){
-					navigationRef.navigate('MapPage', route?.params?.cartID && { cartID: route?.params?.cartID })
-				}
-            }
-            else{
-                storage.setString("error", `Location Permission ${permissions} by the user`)
-            }
-        }
+				else if (mode === "map" || route?.params?.mode === "map") {
 
-        
-    }
+					navigationRef.navigate('MapPage', route?.params?.cartID && { cartID: route?.params?.cartID })
+				}
+			}
+			else {
+				if (permissions === "blocked") {
+					setModals(true)
+				}
+				//storage.setString("error", `Location Permission ${permissions} by the user`)
+			}
+		}
+		else {
+			permissions = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
+			if (permissions === "granted") {
+				getLocation()
+				if (route?.params?.mode === "header") {
+					navigation.goBack()
+				}
+				else if (mode === "map" || route?.params?.mode === "map") {
+					navigationRef.navigate('MapPage', route?.params?.cartID && { cartID: route?.params?.cartID })
+				}
+			}
+			else {
+				storage.setString("error", `Location Permission ${permissions} by the user`)
+			}
+		}
+
+
+	}
 
 	const renderRow = (data) => (
 		<View style={{ pointerEvents: 'none', flexDirection: 'row', alignItems: 'center' }}>
@@ -137,18 +147,18 @@ const GoogleLocation = ({ navigation, route }) => {
 	)
 
 	const openSettings = () => {
-        Linking.openSettings()
-    }
+		Linking.openSettings()
+	}
 
 
 	return (
 		<>
 
 			{homeAdd || route?.params?.mode === "map" && (
-			<>
-				{/* <Header /> */}
-				<CommonHeader heading={'Place'} backBtn />
-			</>
+				<>
+					{/* <Header /> */}
+					<CommonHeader heading={'Place'} backBtn />
+				</>
 			)}
 
 			<View style={styles.container}>
@@ -159,70 +169,70 @@ const GoogleLocation = ({ navigation, route }) => {
 				</TouchableOpacity>
 
 				<GooglePlacesAutocomplete
-          isRowScrollable
-          keyboardShouldPersistTaps='always'
-          placeholder={'Search Location ...'}
-          fetchDetails
-          minLength={2}
-          enablePoweredByContainer={false}
-          listViewDisplayed={false}
-          nearbyPlacesAPI="GooglePlacesSearch"
-          renderRow={renderRow}
-          textInputProps={{
-            placeholderTextColor: COLORS.light
-          }}
-          styles={{
-            textInput: {
-              color: COLORS.light,
-              borderWidth: 1,
-              borderColor: "#e8e8e8",
-              fontFamily: 'Poppins-Regular',
-              borderRadius: 8
-            },
-            description: {
-              fontWeight: 'bold',
-            },
-            predefinedPlacesDescription: {
-              color: '#1faadb',
-            },
-            listView: {
-              color: 'black', //To see where exactly the list is
-              zIndex: 1000, //To popover the component outwards
-              position: 'absolute',
-              top: 50
-            },
-          }}
-          onPress={addLoc}
-          query={{
-            key: GOOGLE_API,
-            language: 'en'
-          }}
-        />
+					isRowScrollable
+					keyboardShouldPersistTaps='always'
+					placeholder={'Search Location ...'}
+					fetchDetails
+					minLength={2}
+					enablePoweredByContainer={false}
+					listViewDisplayed={false}
+					nearbyPlacesAPI="GooglePlacesSearch"
+					renderRow={renderRow}
+					textInputProps={{
+						placeholderTextColor: COLORS.light
+					}}
+					styles={{
+						textInput: {
+							color: COLORS.light,
+							borderWidth: 1,
+							borderColor: "#e8e8e8",
+							fontFamily: 'Poppins-Regular',
+							borderRadius: 8
+						},
+						description: {
+							fontWeight: 'bold',
+						},
+						predefinedPlacesDescription: {
+							color: '#1faadb',
+						},
+						listView: {
+							color: 'black', //To see where exactly the list is
+							zIndex: 1000, //To popover the component outwards
+							position: 'absolute',
+							top: 50
+						},
+					}}
+					onPress={addLoc}
+					query={{
+						key: GOOGLE_API,
+						language: 'en'
+					}}
+				/>
 			</View>
 			<Modal visible={modal} transparent>
-                    <View style={styles.modal}>
-                        <View style={styles.box}>
-                            <View style={styles.box__header}>
-                                <Text style={styles.header__main}>Turn On Location permission</Text>
-                                <TouchableOpacity style={{ alignSelf: 'flex-start' }} onPress={modalVisible}>
-                                    <Entypo name='circle-with-cross' size={23} color={COLORS.light} />
-                                </TouchableOpacity>
-                            </View>
-                            <Text style={styles.box__description}>Please go to Settings - Location to turn on Location permission</Text>
-                            <View style={styles.box__container}>
-                                <TouchableOpacity style={[styles.box__btn, { backgroundColor: COLORS.primary_light }]} onPress={modalVisible}>
-                                    <Text style={[styles.btn__text, { color: COLORS.primary }]}>Cancel</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={[styles.box__btn, { backgroundColor: COLORS.primary }]} onPress={openSettings}>
-                                    <Text style={[styles.btn__text, { color: COLORS.white }]}>Settings</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    </View>
-                </Modal>
+				<View style={styles.modal}>
+					<View style={styles.box}>
+						<View style={styles.box__header}>
+							<Text style={styles.header__main}>Turn On Location permission</Text>
+							<TouchableOpacity style={{ alignSelf: 'flex-start' }} onPress={modalVisible}>
+								<Entypo name='circle-with-cross' size={23} color={COLORS.light} />
+							</TouchableOpacity>
+						</View>
+						<Text style={styles.box__description}>Please go to Settings - Location to turn on Location permission</Text>
+						<View style={styles.box__container}>
+							<TouchableOpacity style={[styles.box__btn, { backgroundColor: COLORS.primary_light }]} onPress={modalVisible}>
+								<Text style={[styles.btn__text, { color: COLORS.primary }]}>Cancel</Text>
+							</TouchableOpacity>
+							<TouchableOpacity style={[styles.box__btn, { backgroundColor: COLORS.primary }]} onPress={openSettings}>
+								<Text style={[styles.btn__text, { color: COLORS.white }]}>Settings</Text>
+							</TouchableOpacity>
+						</View>
+					</View>
+				</View>
+			</Modal>
 		</>
 	)
-        
+
 }
 
 
