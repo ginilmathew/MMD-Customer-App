@@ -2,7 +2,7 @@
 export const GOOGLE_API = 'AIzaSyBBcghyB0FvhqML5Vjmg3uTwASFdkV8wZY'
 
 
-export const env = "dev"
+export const env = "fashion"
 
 const URLS = {
     fashion: "https://digifashionapi.diginestsolutions.in/",
