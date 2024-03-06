@@ -32,6 +32,8 @@ import ProductCard from '../../components/ProductCard';
 import useRefreshOnFocus from '../../hooks/useRefetch';
 import CartButton from '../../components/CartButton';
 import { useFocusEffect } from '@react-navigation/native';
+import RelatedProduct from './RelatedProduct'
+import { useIsFocused } from '@react-navigation/native'
 
 
 const SingleProduct = ({ navigation, route }) => {
@@ -48,6 +50,7 @@ const SingleProduct = ({ navigation, route }) => {
     const insets = useSafeAreaInsets();
     const [image, setImage] = useState([]);
     const [selectImage, setSelectedImage] = useState([])
+
 
     const [time, setTime] = useState(moment().unix())
     const [qty, setQty] = useState(null)
@@ -292,6 +295,7 @@ const SingleProduct = ({ navigation, route }) => {
 
 
     const changeQty = () => {
+        storage.setString('success', 'added to cart')
         setQuantity(1)
     }
 
@@ -312,7 +316,8 @@ const SingleProduct = ({ navigation, route }) => {
                 variant: selectedVariant,
                 qty: quantity,
                 price: finalPrice,
-                image: `${imageBasePath}${image}`,
+                // image: `${imageBasePath}${image}`,
+                image: imageBasePath + product?.image?.[0],
                 tax,
                 taxValue,
                 total: finalPrice + taxValue,
@@ -548,12 +553,12 @@ const SingleProduct = ({ navigation, route }) => {
 
                     </View>
 
-                 
+
                     {product?.details ? <AboutSection item={product} /> : null}
                     {product?.description ? <DescriptionSection item={product} /> : null}
-                    {data?.data?.data?.recommendedProduct ?
-                        <RelatedProduct item={data?.data?.data?.recommendedProduct} time={time} cartItems={cartItems}/> : null
-                    }
+                    {/* {data?.data?.data?.recommendedProduct ?
+                        <RelatedProduct item={data?.data?.data?.recommendedProduct} time={time} cartItems={cartItems} /> : null
+                    } */}
 
 
                 </ScrollView>
@@ -607,7 +612,6 @@ const SingleProduct = ({ navigation, route }) => {
 
                     </View>}
 
-                    <CartButton bottom={120} />
 
                     {quantity === 0 && <BuyButton
                         loading={isLoading}
@@ -646,19 +650,6 @@ const ProductData = React.memo(({ item, price, quantity }) => {
 });
 
 
-const RelatedProduct = React.memo(({ item ,time,cartItems}) => {
-    return (
-        <View>
-            <CustomHeading label={'Releated Products'} hide={false} marginH={10} />
-            {item?.map((item, index) => (
-                <View style={{ marginBottom: 10 }}>
-                    <ProductCard key={index} item={item} cartItems={cartItems} time={time} />
-                </View>
-
-            ))}
-        </View>
-    )
-});
 
 
 

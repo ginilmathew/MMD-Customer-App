@@ -76,7 +76,7 @@ const FeaturedProduct = ({ route }) => {
     return (
         <>
             <FlatList
-                data={data?.data?.data?.[0]?.featured_list}
+                data={data?.data?.data?.[0]?.featuredList}
                 stickyHeaderIndices={[0]}
                 ListHeaderComponent={ListHeaderComponents}
                 renderItem={renderItem}

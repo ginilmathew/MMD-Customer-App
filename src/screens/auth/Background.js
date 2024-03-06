@@ -14,7 +14,7 @@ const Background = ({ headline, subhead, children, onPress, link, description })
     }, [])
 
     return (
-        <ImageBackground source={require('../../images/urbansLogo.jpg')} resizeMode="cover" style={styles.bg}>
+        <ImageBackground source={require('../../images/vaidasBack.png')} resizeMode="cover" style={styles.bg}>
             <KeyboardAvoidingView style={{
                 flex: 1
             }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>

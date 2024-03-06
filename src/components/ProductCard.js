@@ -33,7 +33,9 @@ const ProductCard = ({ item, key, time }) => {
         if(cartItems){
             let carts = [...cartItems];
 
+
             let quanti = carts?.find(cart => cart?._id === products?._id && cart?.unit?.id === products?.units?.[0]?.id && products?.units?.[0]?.variants?.[0]?.name === cart?.variant?.name)
+
     
             if (quanti) {
                 setQuantity(quanti?.qty)
@@ -95,14 +97,14 @@ const ProductCard = ({ item, key, time }) => {
 
         setPrice(price)
 
-    }, [cartItems,item])
-
+    }, [cartItems, item])
 
 
 
     const NavigateToSingleProduct = useCallback(() => {
         navigation.navigate('SingleProduct', { item: item?.products ? item?.products?.[0] : item , quantity })
-    }, [item, quantity])
+    }, [item, quantity, navigation])
+
 
     useEffect(() => {
         if (products && price) {
