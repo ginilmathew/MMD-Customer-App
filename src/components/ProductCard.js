@@ -6,6 +6,7 @@ import AddToCart from './AddToCart';
 import { useNavigation } from '@react-navigation/native';
 import COLORS from '../constants/COLORS';
 import moment from 'moment';
+import reactotron from '../ReactotronConfig';
 
 
 const ProductCard = ({ item, key, time }) => {
@@ -19,6 +20,8 @@ const ProductCard = ({ item, key, time }) => {
     let products = item?.products ? item?.products[0] : item;
     const [price, setPrice] = useState(null)
     
+
+
 
     useEffect(() => {
         setQuantity(0)

@@ -178,7 +178,7 @@ const Home = ({ navigation, route }) => {
 
                         {offerProducts?.map((item, index) => (
                             <View style={{ marginVertical: 5 }}>
-                                <ProductCard key={index} item={item} cartItems={cartItems} time={time} />
+                                <ProductCard key={item?._id} item={item} cartItems={cartItems} time={time} />
                             </View>
 
                         ))}
@@ -289,6 +289,7 @@ const Home = ({ navigation, route }) => {
             )
             }
             <DummySearch press={NavigateToSearch} />
+            
             <FlatList
                 data={data?.data?.data.featuredList?.[0]?.featured_list || []}
                 ListHeaderComponent={HeaderComponents}

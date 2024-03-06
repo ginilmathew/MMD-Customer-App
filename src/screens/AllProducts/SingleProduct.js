@@ -319,6 +319,8 @@ const SingleProduct = ({ navigation, route }) => {
                 costPrice
                 //tax: 
             }
+
+            reactotron.log({productObj})
             addItemToCart(productObj)
         }
 
