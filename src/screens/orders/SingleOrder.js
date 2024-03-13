@@ -124,10 +124,6 @@ const SingleOrder = ({ route }) => {
                             <Text style={styles.subBox}>GST</Text>
                             <Text style={styles.priceBox}>₹ {parseFloat(item?.tax)?.toFixed(2)}</Text>
                         </View>
-                        {item?.discount ? <View style={styles.textBox}>
-                            <Text style={styles.subBox}>Discount</Text>
-                            <Text style={styles.priceBox}>- ₹ {parseFloat(item?.discount)?.toFixed(2)}</Text>
-                        </View> : null}
                         <View style={styles.textBox}>
                             <Text style={styles.subBox}>Delivery Charge</Text>
                             <Text style={styles.priceBox}>₹ {parseFloat(item?.delivery_charge)?.toFixed(2)}</Text>
@@ -136,6 +132,10 @@ const SingleOrder = ({ route }) => {
                             <Text style={styles.textStyle}>Grand Total</Text>
                             <Text style={[styles.priceBox, { fontFamily: "Poppins-Bold" }]}>₹ {parseFloat(item?.total)?.toFixed(2)}</Text>
                         </View>
+                        {item?.discount ? <View style={styles.textBox}>
+                            <Text style={styles.subBox}>Discount Applied</Text>
+                            <Text style={styles.priceBox}>₹ {parseFloat(item?.discount)?.toFixed(2)}</Text>
+                        </View> : null}
                     </View>
                 </View>
 

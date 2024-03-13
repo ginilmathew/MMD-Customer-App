@@ -56,7 +56,7 @@ const App = () => {
 			// setTimeout(() => {
 			// 	setLogoLoading(false)
 			// }, 1000);
-			
+
 		}
 	}
 
@@ -163,7 +163,7 @@ const App = () => {
 
 
 	async function onMessageReceived(message) {
-
+	
 
 		// Display Notification
 		await notifee.displayNotification({
@@ -178,6 +178,7 @@ const App = () => {
 					id: message?.messageId,
 				},
 				sound: 'sound',
+				image:message?.notification?.image,
 			},
 			ios: {
 				channelId: 'default',
@@ -191,7 +192,7 @@ const App = () => {
 	useEffect(() => {
 
 		return notifee.onForegroundEvent(({ type, detail }) => {
-			// console.log(detail.notification.data);
+
 
 			switch (type) {
 				case EventType.DISMISSED:
@@ -201,6 +202,14 @@ const App = () => {
 
 					if (data?.order_id) {
 						navigationRef.navigate('SingleOrder', { id: data?.order_id })
+					} else if (data?.type1) {
+						const type = data?.type1;
+
+						if(type === 'product') {
+							navigationRef.navigate('SingleProduct', { item: { slug: data?.product_slug, _id: data?.product_id } })
+						} else if (type === 'category') {
+							navigationRef.navigate('SingleCategory', { item: data?.category_slug })
+						}
 					}
 
 					break;
@@ -215,13 +224,13 @@ const App = () => {
 
 		const unsubscribe = messaging().onMessage(onMessageReceived);
 
-		messaging().setBackgroundMessageHandler(onMessageReceived);
+		//messaging().setBackgroundMessageHandler(onMessageReceived);
 
 		return unsubscribe;
 	}, [])
 
 
-	
+
 
 
 	if (loading || logoLoading) {
@@ -230,20 +239,20 @@ const App = () => {
 		)
 	}
 
-	console.log({loading, logoLoading})
+	console.log({ loading, logoLoading })
 
 	return (
 		<QueryClientProvider client={queryClient}>
 			<SafeAreaView style={styles.safeArea}>
-					<LocationContext>
-						<NotificationContext>
-							<CartProvider>
-								<SlotProvider>
-									<Navigation location={locationPermission} />
-								</SlotProvider>
-							</CartProvider>
-						</NotificationContext>
-					</LocationContext>
+				<LocationContext>
+					<NotificationContext>
+						<CartProvider>
+							<SlotProvider>
+								<Navigation location={locationPermission} />
+							</SlotProvider>
+						</CartProvider>
+					</NotificationContext>
+				</LocationContext>
 			</SafeAreaView>
 		</QueryClientProvider>
 	)

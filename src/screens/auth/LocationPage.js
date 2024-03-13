@@ -32,33 +32,43 @@ const LocationPage = ({ navigation }) => {
     }
 
 
-    const getLocationPermission = async() => {
+    const getLocationPermission = async () => {
         let permissions;
-        if(Platform.OS === 'android'){
+        if (Platform.OS === 'android') {
             permissions = await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
-            if(permissions === "granted"){
+            if (permissions === "granted") {
                 getLocation()
-                navigation.navigate('HomeNavigator')
+                navigation.reset({
+                    index: 0,
+                    routes: [
+                        { name: 'HomeNavigator' }
+                    ]
+                })
             }
-            else{
-                if(permissions === "blocked"){
+            else {
+                if (permissions === "blocked") {
                     setModal(true)
                 }
                 //storage.setString("error", `Location Permission ${permissions} by the user`)
             }
         }
-        else{
+        else {
             permissions = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)
-            if(permissions === "granted"){
+            if (permissions === "granted") {
                 getLocation()
-                navigation.navigate('HomeNavigator')
+                navigation.reset({
+                    index: 0,
+                    routes: [
+                        { name: 'HomeNavigator' }
+                    ]
+                })
             }
-            else{
+            else {
                 storage.setString("error", `Location Permission ${permissions} by the user`)
             }
         }
 
-        
+
     }
 
     return (
@@ -74,11 +84,11 @@ const LocationPage = ({ navigation }) => {
             <View style={styles.header}>
                 <CommonButton text={'Allow location access'} onPress={getLocationPermission} />
 
-                <TouchableOpacity 
-                style={{
-                    marginTop: 23,
-                }}
-                onPress={onPress}>
+                <TouchableOpacity
+                    style={{
+                        marginTop: 23,
+                    }}
+                    onPress={onPress}>
                     <Text style={{
                         color: COLORS.primary,
                         textAlign: 'center',
@@ -87,26 +97,26 @@ const LocationPage = ({ navigation }) => {
                 </TouchableOpacity>
             </View>
             <Modal visible={modal} transparent>
-                    <View style={styles.modal}>
-                        <View style={styles.box}>
-                            <View style={styles.box__header}>
-                                <Text style={styles.header__main}>Turn On Location permission</Text>
-                                <TouchableOpacity style={{ alignSelf: 'flex-start' }} onPress={modalVisible}>
-                                    <Entypo name='circle-with-cross' size={23} color={COLORS.light} />
-                                </TouchableOpacity>
-                            </View>
-                            <Text style={styles.box__description}>Please go to Settings - Location to turn on Location permission</Text>
-                            <View style={styles.box__container}>
-                                <TouchableOpacity style={[styles.box__btn, { backgroundColor: COLORS.primary_light }]} onPress={modalVisible}>
-                                    <Text style={[styles.btn__text, { color: COLORS.primary }]}>Cancel</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={[styles.box__btn, { backgroundColor: COLORS.primary }]} onPress={openSettings}>
-                                    <Text style={[styles.btn__text, { color: COLORS.white }]}>Settings</Text>
-                                </TouchableOpacity>
-                            </View>
+                <View style={styles.modal}>
+                    <View style={styles.box}>
+                        <View style={styles.box__header}>
+                            <Text style={styles.header__main}>Turn On Location permission</Text>
+                            <TouchableOpacity style={{ alignSelf: 'flex-start' }} onPress={modalVisible}>
+                                <Entypo name='circle-with-cross' size={23} color={COLORS.light} />
+                            </TouchableOpacity>
+                        </View>
+                        <Text style={styles.box__description}>Please go to Settings - Location to turn on Location permission</Text>
+                        <View style={styles.box__container}>
+                            <TouchableOpacity style={[styles.box__btn, { backgroundColor: COLORS.primary_light }]} onPress={modalVisible}>
+                                <Text style={[styles.btn__text, { color: COLORS.primary }]}>Cancel</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={[styles.box__btn, { backgroundColor: COLORS.primary }]} onPress={openSettings}>
+                                <Text style={[styles.btn__text, { color: COLORS.white }]}>Settings</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
-                </Modal>
+                </View>
+            </Modal>
         </View>
     )
 }

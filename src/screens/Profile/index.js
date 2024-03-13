@@ -28,10 +28,12 @@ const Profile = ({ navigation }) => {
     mutationKey: 'logout-key',
     mutationFn: logoutApi,
     onSuccess(data) {
-
+      //setUser(null);
+      storage.clearStore();
       storage.setString('success', data?.data?.message)
       queryClient.resetQueries()
-      storage.clearStore();
+      
+      
       //setLocation(null)
       
     }
@@ -45,7 +47,6 @@ const Profile = ({ navigation }) => {
       setMode('');
       setCurrentLoc('')
       setCartItems([])
-      setUser(null);
 
       const token = await messaging().getToken();
       logoutMutate(token);
@@ -55,9 +56,6 @@ const Profile = ({ navigation }) => {
 
   const { data, refetch } = useQuery('profile-query', {
     queryFn: getProfile,
-    onSuccess({ data }) {
-      // setUser({ ...user, user: data })
-    },
     enabled: !!user
   })
 

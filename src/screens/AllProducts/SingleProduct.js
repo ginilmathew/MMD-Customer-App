@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import {
     ActivityIndicator,
+    Image,
     Platform,
     ScrollView,
     StyleSheet,
@@ -25,11 +26,19 @@ import { storage } from '../../../App';
 import { useMMKVStorage } from 'react-native-mmkv-storage';
 import moment from 'moment';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import reactotron from '../../ReactotronConfig';
+import CustomHeading from '../../components/CustomHeading';
+import ProductCard from '../../components/ProductCard';
+import useRefreshOnFocus from '../../hooks/useRefetch';
+import CartButton from '../../components/CartButton';
+import { useFocusEffect } from '@react-navigation/native';
+import RelatedProduct from './RelatedProduct'
+import { useIsFocused } from '@react-navigation/native'
 
 
 const SingleProduct = ({ navigation, route }) => {
 
-    const { item } = route.params;
+
     const { height } = useWindowDimensions()
     const [selectedUnit, setSelectedUnit] = useState(null)
     const [selectedVariant, setSelectedVariant] = useState(null)
@@ -39,21 +48,29 @@ const SingleProduct = ({ navigation, route }) => {
     const [price, setPrice] = useState(null)
     const [quantity, setQuantity] = useState(0)
     const insets = useSafeAreaInsets();
+    const [image, setImage] = useState([]);
+    const [selectImage, setSelectedImage] = useState([])
 
 
-
+    const [time, setTime] = useState(moment().unix())
     const [qty, setQty] = useState(null)
     const { cartItems, addItemToCart } = useContext(CartContext);
     const { data, refetch } = useQuery({
         queryKey: 'single-product',
-        initialData: item,
-        queryFn: () => singProduct(item?.slug),
+        queryFn: () => singProduct(route?.params?.item?.slug),
         onSuccess(data) {
-            const initialQty = cartItems?.find(({ _id }) => _id === item?._id);
-            setQty(initialQty?.qty || 1)
+            const initialQty = cartItems?.find(({ _id }) => _id === data?.data?.data?.product?._id);
+            setQuantity(initialQty?.qty || 0)
         },
         keepPreviousData: false
     })
+
+
+
+    useFocusEffect(useCallback(() => {
+        refetch()
+    }, [route?.params]))
+
 
     useEffect(() => {
 
@@ -61,7 +78,6 @@ const SingleProduct = ({ navigation, route }) => {
 
             setSelectedUnit(product?.units?.[0])
             setUnitList(product?.units?.map(unit => unit?.name))
-
             setVariantsList(product?.units?.[0]?.variants?.map(vari => vari?.name))
             setSelectedVariant(product?.units?.[0]?.variants?.[0])
 
@@ -70,7 +86,6 @@ const SingleProduct = ({ navigation, route }) => {
             //let quanti = cartsDatas?.find(cart => cart?._id === product?._id && cart?.unit?.id === product?.units?.[0]?.id && product?.units?.[0]?.variants?.[0]?.name === cart?.variant?.name)
 
             //if (quanti) {
-            setQuantity(route?.params?.quantity)
             //}
 
 
@@ -93,8 +108,8 @@ const SingleProduct = ({ navigation, route }) => {
 
             if (fromDate && toDate && offerPrice) {
 
-                let startDate = moment(fromDate, "YYY-MM-DD").add(-1, 'day');
-                let endDate = moment(toDate, "YYYY-MM-DD").add(1, 'day')
+                let startDate = moment(`${moment(fromDate, "YYYY-MM-DD").format("YYYY-MM-DD")} 00:00:00`, "YYYY-MM-DD HH:mm:ss");
+                let endDate = moment(`${moment(toDate, "YYYY-MM-DD").format("YYYY-MM-DD")} 23:59:59`, "YYYY-MM-DD HH:mm:ss");
                 if (moment().isBetween(startDate, endDate)) {
                     price = {
                         ...selectedVariant,
@@ -280,6 +295,7 @@ const SingleProduct = ({ navigation, route }) => {
 
 
     const changeQty = () => {
+        storage.setString('success', 'added to cart')
         setQuantity(1)
     }
 
@@ -300,7 +316,8 @@ const SingleProduct = ({ navigation, route }) => {
                 variant: selectedVariant,
                 qty: quantity,
                 price: finalPrice,
-                image: `${imageBasePath}${image[0]}`,
+                // image: `${imageBasePath}${image}`,
+                image: imageBasePath + product?.image?.[0],
                 tax,
                 taxValue,
                 total: finalPrice + taxValue,
@@ -308,9 +325,7 @@ const SingleProduct = ({ navigation, route }) => {
                 //tax: 
             }
 
-
-
-
+            reactotron.log({productObj})
             addItemToCart(productObj)
         }
 
@@ -397,20 +412,51 @@ const SingleProduct = ({ navigation, route }) => {
     }
 
 
-    const BASEPATHPRODCT = item?.imageBasePath || "";
+    useEffect(() => {
+        if (data?.data?.data?.product?.image) {
+            setImage(data?.data?.data?.product?.image?.[0])
+        }
+    }, [data?.data?.data])
+
+
+    const OnchngeImage = useCallback((image) => {
+        setImage(image)
+    }, [image])
+
+
+    const BASEPATHPRODCT = data?.data?.data?.product?.imageBasePath || "";
     //const units = item?.units?.map(({ name }) => name)
+
+
+
 
 
     return (
         <Animated.View style={[styles.mainContainer,]}>
             <View style={{ height: height / 1.05, }}>
                 <Header icon={false} />
-                <CommonHeader heading={item?.name?.length > 18 ? item?.name?.slice(0, 18) + "..." : item?.name} backBtn />
+                <CommonHeader heading={data?.data?.data?.product?.name?.length > 18 ? data?.data?.data?.product?.name?.slice(0, 18) + "..." : data?.data?.data?.product?.name} backBtn />
                 <ScrollView
                     contentContainerStyle={[styles.container]}
                     scrollEnabled={true}
                     showsVerticalScrollIndicator={false}>
-                    <Animated.Image source={{ uri: BASEPATHPRODCT + item?.image?.[0] || "" }} style={styles.mainImage} resizeMode="contain" sharedTransitionTag={item?._id} />
+                    <Animated.Image source={{ uri: BASEPATHPRODCT + image || "" }} style={styles.mainImage} resizeMode="contain" sharedTransitionTag={data?.data?.data?.product?._id} />
+                    <ScrollView horizontal style={styles.scrollviewmultipleImage}>
+                        {data?.data?.data?.product?.image?.map((item, index) => (
+                            <TouchableOpacity
+                                key={index}
+                                style={styles.multipleImagesBox}
+                                onPress={() => OnchngeImage(item)}>
+                                <Image
+                                    key={index}
+                                    source={{ uri: BASEPATHPRODCT + item }}
+                                    style={styles.multipleImages}
+                                />
+
+                            </TouchableOpacity>
+                        ))}
+                    </ScrollView>
+
                     <ProductData item={product} price={price} quantity={quantity} />
 
                     <View style={styles.dropdownContainer}>
@@ -507,8 +553,13 @@ const SingleProduct = ({ navigation, route }) => {
 
                     </View>
 
+
                     {product?.details ? <AboutSection item={product} /> : null}
                     {product?.description ? <DescriptionSection item={product} /> : null}
+                    {/* {data?.data?.data?.recommendedProduct ?
+                        <RelatedProduct item={data?.data?.data?.recommendedProduct} time={time} cartItems={cartItems} /> : null
+                    } */}
+
 
                 </ScrollView>
 
@@ -561,6 +612,7 @@ const SingleProduct = ({ navigation, route }) => {
 
                     </View>}
 
+
                     {quantity === 0 && <BuyButton
                         loading={isLoading}
                         onPress={changeQty}
@@ -596,6 +648,8 @@ const ProductData = React.memo(({ item, price, quantity }) => {
         </View>
     );
 });
+
+
 
 
 
@@ -648,7 +702,25 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         width: '100%',
         height: 200,
-        marginBottom: 10,
+
+    },
+    scrollviewmultipleImage: {
+
+    },
+    multipleImagesBox: {
+        height: 80,
+        width: 80,
+        marginRight: 10,
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginVertical: 10,
+
+    },
+    multipleImages: {
+        borderRadius: 6,
+        width: '100%',
+        height: 120,
+
     },
     smallImagesContainer: {
         flexDirection: 'row',
@@ -760,6 +832,8 @@ const styles = StyleSheet.create({
         textAlign: 'right',
         textDecorationLine: 'line-through',
     }
+
+
 });
 
 export default SingleProduct;

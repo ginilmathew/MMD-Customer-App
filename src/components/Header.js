@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.white,
     },
     imageContainer: {
-        marginLeft: -5,
+        marginLeft: -6,
     },
     iconContainer: {
         display: 'flex',

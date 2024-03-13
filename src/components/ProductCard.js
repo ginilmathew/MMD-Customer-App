@@ -6,11 +6,13 @@ import AddToCart from './AddToCart';
 import { useNavigation } from '@react-navigation/native';
 import COLORS from '../constants/COLORS';
 import moment from 'moment';
+import reactotron from '../ReactotronConfig';
 
 
 const ProductCard = ({ item, key, time }) => {
 
     const styles = makeStyle(COLORS)
+
 
     const [quantity, setQuantity] = useState(0)
     const { addItemToCart, cartItems } = useContext(CartContext);
@@ -18,6 +20,8 @@ const ProductCard = ({ item, key, time }) => {
     let products = item?.products ? item?.products[0] : item;
     const [price, setPrice] = useState(null)
     
+
+
 
     useEffect(() => {
         setQuantity(0)
@@ -29,7 +33,9 @@ const ProductCard = ({ item, key, time }) => {
         if(cartItems){
             let carts = [...cartItems];
 
+
             let quanti = carts?.find(cart => cart?._id === products?._id && cart?.unit?.id === products?.units?.[0]?.id && products?.units?.[0]?.variants?.[0]?.name === cart?.variant?.name)
+
     
             if (quanti) {
                 setQuantity(quanti?.qty)
@@ -91,14 +97,14 @@ const ProductCard = ({ item, key, time }) => {
 
         setPrice(price)
 
-    }, [cartItems])
-
+    }, [cartItems, item])
 
 
 
     const NavigateToSingleProduct = useCallback(() => {
         navigation.navigate('SingleProduct', { item: item?.products ? item?.products?.[0] : item , quantity })
-    }, [item, quantity])
+    }, [item, quantity, navigation])
+
 
     useEffect(() => {
         if (products && price) {

@@ -9,18 +9,18 @@ const CustomSearch = ({ placeholder, placeHoldeColor, keyboardType, onPress, onC
 
     const textRef = useRef(null);
 
-    useFocusEffect(
-        useCallback(() => {
-            // When the screen is focused
-            const focus = () => {
-                setTimeout(() => {
-                    textRef?.current?.focus();
-                }, 1);
-            };
-            focus();
-            return focus; // cleanup
-        }, []),
-    );
+    // useFocusEffect(
+    //     useCallback(() => {
+    //         // When the screen is focused
+    //         const focus = () => {
+    //             setTimeout(() => {
+    //                 textRef?.current?.focus();
+    //             }, 1);
+    //         };
+    //         focus();
+    //         return focus; // cleanup
+    //     }, []),
+    // );
 
     return (
 

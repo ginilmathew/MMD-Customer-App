@@ -8,4 +8,4 @@ export const forgetApi = async (data) => customAxios.post('public/api/customer/f
 
 export const otpApi = async (data) => customAxios.post('public/api/customer/forgot-customer-password-change', data)
 
-export const tokenApi = async (data) => customAxios.post('public/api/customer/updatecustomertoken', { token: data })
+export const tokenApi = async (data) => customAxios.post('public/api/customer/updatecustomertoken', { token: data,type:'app' })
